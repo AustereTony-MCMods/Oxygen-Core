@@ -1,0 +1,10 @@
+{
+  "homepage": "https://minecraft.curseforge.com/projects/oxygen-core",
+  "1.12.2": {
+    "0.1.0": "Initial release."
+  },
+  "promos": {
+    "1.12.2-latest": "0.1.0",
+    "1.12.2-recommended": "0.1.0"
+  }
+}
