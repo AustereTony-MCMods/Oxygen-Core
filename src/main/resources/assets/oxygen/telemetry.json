@@ -1,0 +1,9 @@
+{
+  "main": {
+    "collect_data": false,
+    "log_file_changing_interval_hours": 24,
+    "cache_file_volume_seconds": 3600, 
+    "cache_files_amount": 2, 
+    "recording_interval_seconds": 300
+  }
+}
