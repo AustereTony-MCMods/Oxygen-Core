@@ -1,0 +1,7 @@
+0.2.0a
++Added notifications menu, "N" key by default. 
++Added keybindings for fast request (notification) reply, "R" to accept and "X" to reject.
++Added privileges management with chat commands.
+
+0.1.0a
++Initial release.
