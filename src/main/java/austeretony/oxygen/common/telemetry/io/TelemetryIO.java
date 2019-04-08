@@ -16,10 +16,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.api.OxygenTask;
 import austeretony.oxygen.common.io.OxygenIOServer;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.telemetry.ILogType;
 import austeretony.oxygen.common.telemetry.TelemetryManager;
 import austeretony.oxygen.common.telemetry.api.ILog;
@@ -47,11 +48,11 @@ public class TelemetryIO {
     }
 
     public static TelemetryIO instance() {
-        return OxygenMain.getTelemetryManager().getIO();
+        return OxygenManagerServer.instance().getTelemetryManager().getIO();
     }
 
     private void loadLogFilesDelegated() {
-        OxygenHelperServer.addIOTaskServer(new OxygenTask() {
+        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
 
             @Override
             public void execute() {

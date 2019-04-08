@@ -3,7 +3,8 @@ package austeretony.oxygen.common.delegate;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import austeretony.oxygen.common.main.IOxygenTask;
+import austeretony.oxygen.common.api.IOxygenTask;
+import austeretony.oxygen.common.main.OxygenMain;
 
 public class OxygenThread extends Thread {
 
@@ -19,9 +20,16 @@ public class OxygenThread extends Thread {
         IOxygenTask task;
         while (!interrupted()) {            
             try {
-                task = tasks.take();
-                task.execute();
-            } catch (InterruptedException exception) {}
+                task = this.tasks.take();
+                try {
+                    task.execute();
+                } catch (Exception exception) {
+                    OxygenMain.OXYGEN_LOGGER.error("An error intercepted from thread {}.", this.getName());
+                    exception.printStackTrace();
+                }
+            } catch (InterruptedException exception) {
+                OxygenMain.OXYGEN_LOGGER.info("Interrupted thread {}.", this.getName());
+            }
         }
     }
 

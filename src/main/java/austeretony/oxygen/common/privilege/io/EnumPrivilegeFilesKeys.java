@@ -7,7 +7,7 @@ public enum EnumPrivilegeFilesKeys {
     TITLE,
     PREFIX,
     SUFFIX,
-    NICKNAME_COLOR,
+    USERNAME_COLOR,
     PREFIX_COLOR,
     SUFFIX_COLOR,
     CHAT_COLOR,

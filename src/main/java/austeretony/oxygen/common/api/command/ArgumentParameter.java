@@ -15,7 +15,11 @@ public class ArgumentParameter implements IArgumentParameter {
         this.name = hasValue ? "-" + name : "--" + name;
         this.hasValue = hasValue;
     }
-    
+
+    public ArgumentParameter(String name) {
+        this(name, false);
+    }
+
     @Override
     public String getBaseName() {
         return this.baseName;

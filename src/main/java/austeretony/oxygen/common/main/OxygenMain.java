@@ -1,33 +1,40 @@
 package austeretony.oxygen.common.main;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import austeretony.oxygen.client.gui.settings.GUISettings;
+import austeretony.oxygen.client.handler.OxygenKeyHandler;
+import austeretony.oxygen.client.handler.OxygenOverlayHandler;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.api.network.OxygenNetworkHandler;
+import austeretony.oxygen.common.api.network.OxygenNetwork;
+import austeretony.oxygen.common.config.ConfigLoader;
 import austeretony.oxygen.common.config.OxygenConfig;
+import austeretony.oxygen.common.events.OxygenEvents;
 import austeretony.oxygen.common.network.client.CPShowMessage;
 import austeretony.oxygen.common.network.client.CPSyncConfigs;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.network.client.CPSyncMainData;
+import austeretony.oxygen.common.network.client.CPSyncNotification;
 import austeretony.oxygen.common.network.client.CPSyncPlayersData;
 import austeretony.oxygen.common.network.server.SPGroupSyncRequest;
-import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
-import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
+import austeretony.oxygen.common.network.server.SPRequestReply;
 import austeretony.oxygen.common.privilege.command.CommandPrivilege;
 import austeretony.oxygen.common.privilege.config.OxygenPrivilegeConfig;
 import austeretony.oxygen.common.reference.CommonReference;
-import austeretony.oxygen.common.telemetry.TelemetryManager;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
 import austeretony.oxygen.common.telemetry.io.TelemetryIO;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(
         modid = OxygenMain.MODID, 
@@ -39,8 +46,8 @@ public class OxygenMain {
 
     public static final String 
     MODID = "oxygen", 
-    NAME = "Oxygen", 
-    VERSION = "0.1.0", 
+    NAME = "Oxygen Core", 
+    VERSION = "0.2.0", 
     VERSION_CUSTOM = VERSION + ":alpha:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/versions_forge.json";
@@ -50,36 +57,33 @@ public class OxygenMain {
     TELEMETRY_LOGGER = LogManager.getLogger(NAME + "-Telemetry"),
     PRIVILEGE_LOGGER = LogManager.getLogger(NAME + "-Privilege");
 
-    private static OxygenManagerServer oxygenManagerServer;
-
-    @SideOnly(Side.CLIENT)
-    private static OxygenManagerClient oxygenManagerClient;
-
-    private static OxygenNetworkHandler network;
+    private static OxygenNetwork network;
 
     public static final int OXYGEN_MOD_INDEX = 0;
 
-    static {
-        OxygenHelperServer.loadConfig(CommonReference.getGameFolder() + "/config/oxygen/config.json", 
-                "assets/oxygen/config.json", new OxygenConfig());
-        if (OxygenConfig.TELEMETRY.getBooleanValue())
-            OxygenHelperServer.loadConfig(CommonReference.getGameFolder() + "/config/oxygen/telemetry/telemetry.json", 
-                    "assets/oxygen/telemetry.json", new OxygenTelemetryConfig());
-        if (OxygenConfig.PRIVILEGES.getBooleanValue())
-            OxygenHelperServer.loadConfig(CommonReference.getGameFolder() + "/config/oxygen/privilege/privilege.json", 
-                    "assets/oxygen/privilege.json", new OxygenPrivilegeConfig());
+    public static final DateFormat SIMPLE_ID_DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmssSSS");
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        OxygenHelperServer.registerConfig(new OxygenConfig());
+        OxygenHelperServer.registerConfig(new OxygenTelemetryConfig());
+        OxygenHelperServer.registerConfig(new OxygenPrivilegeConfig());
+        ConfigLoader.loadConfigs();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         this.initNetwork();
-        oxygenManagerServer = OxygenManagerServer.create();
-        oxygenManagerServer.createOxygenServerThreads();
-        oxygenManagerServer.init(event);
-        CommonReference.registerEvent(new OxygenServerEvents());
+        OxygenManagerServer.create();
+        OxygenManagerServer.instance().createOxygenServerThreads();
+        OxygenManagerServer.instance().init(event);
+        CommonReference.registerEvent(new OxygenEvents());
         if (event.getSide() == Side.CLIENT) {
-            oxygenManagerClient = OxygenManagerClient.create();
-            OxygenHelperClient.registerChatMessageInfoListener(new OxygenChatMessagesListener());
+            CommonReference.registerEvent(new OxygenKeyHandler());
+            CommonReference.registerEvent(new OxygenOverlayHandler());
+            OxygenManagerClient.create();
+            OxygenHelperClient.registerChatMessageInfoListener(new ChatMessagesInfoListener());
+            GUISettings.create();
         }
     }
 
@@ -89,55 +93,35 @@ public class OxygenMain {
         worldName = event.getServer().getFolderName(),
         worldFolder = event.getServer().isSinglePlayer() ? CommonReference.getGameFolder() + "/saves/" + worldName : CommonReference.getGameFolder() + "/" + worldName;
         OXYGEN_LOGGER.info("Initializing IO for world: {}.", worldName);
-        oxygenManagerServer.initIO(worldFolder, event.getServer().getMaxPlayers());
-        if (OxygenConfig.TELEMETRY.getBooleanValue())
-            oxygenManagerServer.getTelemetryManager().initIO();
-        oxygenManagerServer.getPrivilegeManagerServer().initIO();    
-        if (OxygenConfig.PRIVILEGES.getBooleanValue())
+        OxygenManagerServer.instance().initIO(worldFolder, event.getServer().getMaxPlayers());
+        if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
+            OxygenManagerServer.instance().getTelemetryManager().initIO();
+        OxygenManagerServer.instance().getPrivilegeManager().initIO();    
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue())
             CommonReference.registerCommand(event, new CommandPrivilege("privilege"));
     }
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        if (OxygenConfig.TELEMETRY.getBooleanValue())
+        if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
             TelemetryIO.instance().forceSave();           
     }
 
-    public static OxygenManagerServer getOxygenManagerServer() {
-        return oxygenManagerServer;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static OxygenManagerClient getOxygenManagerClient() {
-        return oxygenManagerClient;
-    }
-
-    public static TelemetryManager getTelemetryManager() {
-        return oxygenManagerServer.getTelemetryManager();
-    }
-
-    public static PrivilegeManagerServer getPrivilegeManagerServer() {
-        return oxygenManagerServer.getPrivilegeManagerServer();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static PrivilegeManagerClient getPrivilegeManagerClient() {
-        return oxygenManagerClient.getPrivilegeManagerClient();
-    }
-
-    public static OxygenNetworkHandler network() {
+    public static OxygenNetwork network() {
         return network;
     }
 
     private void initNetwork() {
         network = OxygenHelperServer.createNetworkHandler(MODID + ":core");
 
-        network.register(CPSyncConfigs.class);
-        network.register(CPSyncMainData.class);
-        network.register(CPSyncGroup.class);
-        network.register(CPSyncPlayersData.class);
-        network.register(CPShowMessage.class);
+        network.registerPacket(CPSyncConfigs.class);
+        network.registerPacket(CPSyncMainData.class);
+        network.registerPacket(CPSyncGroup.class);
+        network.registerPacket(CPSyncPlayersData.class);
+        network.registerPacket(CPShowMessage.class);
+        network.registerPacket(CPSyncNotification.class);
 
-        network.register(SPGroupSyncRequest.class);
+        network.registerPacket(SPGroupSyncRequest.class);
+        network.registerPacket(SPRequestReply.class);
     }
 }

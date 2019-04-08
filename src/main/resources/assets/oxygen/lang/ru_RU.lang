@@ -1,0 +1,27 @@
+key.oxygen.notifications=Открыть Меню Уведомлений
+key.oxygen.accept=Принять
+key.oxygen.reject=Отказаться
+
+oxygen.notifications.menu.title=Уведомления
+oxygen.notifications.menu.empty=У вас нет активных уведомлений.
+
+oxygen.message.command.privilege.info.groupInfo=Группа: %s - титул: %s, префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет суффикса: %s, цвет чата: %s.
+oxygen.message.command.privilege.info.groupPrivileges=Привелегии группы <%s>:
+oxygen.message.command.privilege.info.groupsList=Группы:
+oxygen.message.command.privilege.info.playerGroup=Игрок %s сосотоит в группе: %s.
+oxygen.message.command.privilege.group.create=Создана группа <%s>.
+oxygen.message.command.privilege.group.edit=Группа <%s> отредактирована.
+oxygen.message.command.privilege.group.remove=Группа <%s> удалена.
+oxygen.message.command.privilege.privilege.add=Привелегия <%s> со значением <%s> добавлена для группы <%s>.
+oxygen.message.command.privilege.privilege.remove=Привелегия <%s> удалена для группы <%s>.
+oxygen.message.command.privilege.promote=Игрок %s добавлен в группу %s.
+
+oxygen.command.exception.playerNotFound=Игрок %s не найден.
+oxygen.command.exception.groupNotFound=Группа %s не найдена.
+oxygen.command.exception.privilegeNotFound=Привелегия %s не найдена.
+
+oxygen.command.exception.wrongArg=Неверный аргумент: %s.
+oxygen.command.exception.noParams=Не указаны параметры.
+oxygen.command.exception.unnecessaryParams=Указаны лишние параметры: %s , ...
+oxygen.command.exception.wrongParamValue=Неверное значение параметра %s: %s.
+oxygen.command.exception.unnecessaryParamValue=Указан лишнее значение для параметра %s: %s.

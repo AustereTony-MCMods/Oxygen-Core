@@ -9,9 +9,9 @@ import net.minecraft.util.text.TextFormatting;
 
 public interface IPrivilegedGroup {
 
-    long getGroupId();
+    long getId();
 
-    String getGroupName();
+    String getName();
 
     String getTitle();
 
@@ -19,7 +19,7 @@ public interface IPrivilegedGroup {
 
     String getSuffix();
 
-    TextFormatting getNicknameColor();
+    TextFormatting getUsernameColor();
 
     TextFormatting getPrefixColor();
 
@@ -33,9 +33,11 @@ public interface IPrivilegedGroup {
 
     IPrivilege getPrivilege(String privilegeName);
 
-    void addPrivilege(IPrivilege privilege);
+    void addPrivilege(IPrivilege privilege, boolean save);
 
-    void removePrivilege(String privilegeName);
+    void addPrivileges(boolean save, IPrivilege... privileges);
+
+    void removePrivilege(String privilegeName, boolean save);
 
     JsonObject serialize();
 

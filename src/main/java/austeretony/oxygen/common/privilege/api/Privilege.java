@@ -25,7 +25,7 @@ public class Privilege implements IPrivilege {
     }
 
     @Override
-    public String getPrivilegeName() {
+    public String getName() {
         return this.name;
     }
 
@@ -35,9 +35,9 @@ public class Privilege implements IPrivilege {
     }
 
     @Override
-    public JsonObject serealize() {
+    public JsonObject serialize() {
         JsonObject privilegeObject = new JsonObject();
-        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getPrivilegeName()));
+        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getName()));
         privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.VALUE), new JsonPrimitive(this.getValue()));
         return privilegeObject;
     }
@@ -50,7 +50,7 @@ public class Privilege implements IPrivilege {
 
     @Override
     public void write(PacketBuffer buffer) {
-        PacketBufferUtils.writeString(this.getPrivilegeName(), buffer);
+        PacketBufferUtils.writeString(this.getName(), buffer);
         buffer.writeInt(this.getValue());
     }
 

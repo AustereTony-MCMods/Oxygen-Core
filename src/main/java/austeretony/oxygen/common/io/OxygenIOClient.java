@@ -19,7 +19,7 @@ import austeretony.oxygen.common.util.JsonUtils;
 public class OxygenIOClient {
 
     public static void loadCustomLocalization(List<String> languageList, Map<String, String> properties) {
-        if (OxygenConfig.CUSTOM_LOCALIZATION.getBooleanValue()) {
+        if (OxygenConfig.ENABLE_CUSTOM_LOCALIZATION.getBooleanValue()) {
             String localizationFolder = CommonReference.getGameFolder() + "/config/oxygen/localization/localization.json";
             Path localizationPath = Paths.get(localizationFolder);      
             if (Files.exists(localizationPath)) {

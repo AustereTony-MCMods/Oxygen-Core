@@ -25,8 +25,12 @@ public class ClientReference {
         return getMinecraft().player;
     }
 
-    public static void openGuiScreen(GuiScreen guiScreen) {
-        Minecraft.getMinecraft().displayGuiScreen(guiScreen);
+    public static boolean hasActiveGUI() {
+        return !getMinecraft().inGameHasFocus;
+    }
+
+    public static void displayGuiScreen(GuiScreen guiScreen) {
+        getMinecraft().displayGuiScreen(guiScreen);
     }
 
     public static void showMessage(ITextComponent message) {

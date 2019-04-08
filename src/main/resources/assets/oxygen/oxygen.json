@@ -1,0 +1,9 @@
+{
+  "main": {
+    "sync_configs": true,
+    "sync_privileges": true,
+    "enable_custom_localization": false,
+    "enable_telemetry": false,
+    "enable_privileges": true
+  }
+}

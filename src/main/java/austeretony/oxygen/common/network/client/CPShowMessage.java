@@ -25,8 +25,9 @@ public class CPShowMessage extends ProxyPacket {
         buffer.writeByte(this.modIndex);
         buffer.writeByte(this.messageIndex);
         buffer.writeByte(this.args.length);
-        for (String arg : this.args)
-            PacketBufferUtils.writeString(arg, buffer);
+        if (this.args.length > 0)
+            for (String arg : this.args)
+                PacketBufferUtils.writeString(arg, buffer);
     }
 
     @Override
@@ -34,8 +35,9 @@ public class CPShowMessage extends ProxyPacket {
         this.modIndex = buffer.readByte();
         this.messageIndex = buffer.readByte();
         this.args = new String[buffer.readByte()];
-        for (int i = 0; i < this.args.length; i++)
-            this.args[i] = PacketBufferUtils.readString(buffer);
+        if (this.args.length > 0)
+            for (int i = 0; i < this.args.length; i++)
+                this.args[i] = PacketBufferUtils.readString(buffer);
         OxygenManagerClient.instance().notifyChatMessageInfoListeners(this.modIndex, this.messageIndex, this.args);
     }
 }

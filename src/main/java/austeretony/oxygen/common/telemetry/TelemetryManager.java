@@ -3,6 +3,7 @@ package austeretony.oxygen.common.telemetry;
 import java.util.Set;
 
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.telemetry.api.ILog;
 import austeretony.oxygen.common.telemetry.api.LogType;
 import austeretony.oxygen.common.telemetry.delegate.TelemetryIOThread;
@@ -30,7 +31,7 @@ public class TelemetryManager {
     }
 
     public static TelemetryManager instance() {
-        return OxygenMain.getTelemetryManager();
+        return OxygenManagerServer.instance().getTelemetryManager();
     }
 
     public void initIO() {

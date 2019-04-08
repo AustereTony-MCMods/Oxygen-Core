@@ -5,6 +5,7 @@ import java.util.Queue;
 import austeretony.oxygen.common.api.config.AbstractConfigHolder;
 import austeretony.oxygen.common.api.config.ConfigValue;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.reference.CommonReference;
 
 public class OxygenTelemetryConfig extends AbstractConfigHolder {
 
@@ -18,6 +19,16 @@ public class OxygenTelemetryConfig extends AbstractConfigHolder {
     @Override
     public String getModId() {
         return OxygenMain.MODID + ":telemetry";
+    }
+
+    @Override
+    public String getExternalPath() {
+        return CommonReference.getGameFolder() + "/config/oxygen/telemetry/telemetry.json";
+    }
+
+    @Override
+    public String getInternalPath() {
+        return "assets/oxygen/telemetry.json";
     }
 
     @Override

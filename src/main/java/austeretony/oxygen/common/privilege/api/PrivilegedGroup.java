@@ -1,7 +1,5 @@
 package austeretony.oxygen.common.privilege.api;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -26,8 +24,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PrivilegedGroup implements IPrivilegedGroup {      
 
-    public static final DateFormat GROUP_ID_FORMAT = new SimpleDateFormat("yyMMddHHmmss");
-
     public final String groupName;    
 
     private String title, prefix, suffix;
@@ -38,14 +34,9 @@ public class PrivilegedGroup implements IPrivilegedGroup {
 
     private final Map<String, IPrivilege> privileges = new ConcurrentHashMap<String, IPrivilege>();
 
-    public static final PrivilegedGroup DEFAULT_GROUP = new PrivilegedGroup(OxygenMain.MODID + ":defaultGroup");
-
-    public PrivilegedGroup(String groupName) {
-        this.groupId = Long.parseLong(GROUP_ID_FORMAT.format(new Date()));
-        this.groupName = groupName;
-        this.title = this.prefix = this.suffix = "";
-        this.nicknameColor = this.prefixColor = this.suffixColor = this.chatColor = TextFormatting.WHITE;
-    }
+    public static final PrivilegedGroup 
+    DEFAULT_GROUP = new PrivilegedGroup("defaultGroup"),
+    OPERATORS_GROUP = new PrivilegedGroup("operatorsGroup");
 
     public PrivilegedGroup(String groupName, long groupId) {
         this.groupId = groupId;
@@ -54,13 +45,17 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         this.nicknameColor = this.prefixColor = this.suffixColor = this.chatColor = TextFormatting.WHITE;
     }
 
+    public PrivilegedGroup(String groupName) {
+        this(groupName, Long.parseLong(OxygenMain.SIMPLE_ID_DATE_FORMAT.format(new Date())));
+    }
+
     @Override
-    public long getGroupId() {
+    public long getId() {
         return this.groupId;
     }
 
     @Override
-    public String getGroupName() {
+    public String getName() {
         return this.groupName;
     }
 
@@ -95,11 +90,11 @@ public class PrivilegedGroup implements IPrivilegedGroup {
     }
 
     @Override
-    public TextFormatting getNicknameColor() {
+    public TextFormatting getUsernameColor() {
         return this.nicknameColor;
     }
 
-    public void setNicknameColor(TextFormatting color) {
+    public void setUsernameColor(TextFormatting color) {
         this.nicknameColor = color;
         this.markEdited();
     }
@@ -151,38 +146,52 @@ public class PrivilegedGroup implements IPrivilegedGroup {
     }
 
     @Override
-    public void addPrivilege(IPrivilege privilege) {
-        this.privileges.put(privilege.getPrivilegeName(), privilege);
-        this.markEdited();
-        PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+    public void addPrivilege(IPrivilege privilege, boolean save) {
+        this.privileges.put(privilege.getName(), privilege);
+        if (save) {
+            this.markEdited();
+            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+        }
     }
 
     @Override
-    public void removePrivilege(String privilegeName) {
+    public void addPrivileges(boolean save, IPrivilege... privileges) {
+        for (IPrivilege privilege : privileges)
+            this.privileges.put(privilege.getName(), privilege);
+        if (save) {
+            this.markEdited();
+            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+        }
+    }
+
+    @Override
+    public void removePrivilege(String privilegeName, boolean save) {
         this.privileges.remove(privilegeName);
-        this.markEdited();
-        PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+        if (save) {
+            this.markEdited();
+            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+        }
     }
 
     private void markEdited() {
-        this.groupId = Long.parseLong(GROUP_ID_FORMAT.format(new Date()));
+        this.groupId = Long.parseLong(OxygenMain.SIMPLE_ID_DATE_FORMAT.format(new Date()));
     }
 
     @Override
     public JsonObject serialize() {
         JsonObject groupObject = new JsonObject();
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID), new JsonPrimitive(this.getGroupId()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getGroupName()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID), new JsonPrimitive(this.getId()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getName()));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.TITLE), new JsonPrimitive(this.getTitle()));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX), new JsonPrimitive(this.getPrefix()));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX), new JsonPrimitive(this.getSuffix()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NICKNAME_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getNicknameColor())));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.USERNAME_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getUsernameColor())));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getPrefixColor())));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getSuffixColor())));
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.CHAT_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getChatColor())));
         JsonArray privilegesArray = new JsonArray();
         for (IPrivilege privilege : this.privileges.values())
-            privilegesArray.add(privilege.serealize());
+            privilegesArray.add(privilege.serialize());
         groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PRIVILEGES), privilegesArray);
         return groupObject;
     }
@@ -194,7 +203,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         group.title = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.TITLE)).getAsString();
         group.prefix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX)).getAsString();
         group.suffix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX)).getAsString();
-        group.nicknameColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NICKNAME_COLOR)).getAsString());
+        group.nicknameColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.USERNAME_COLOR)).getAsString());
         group.prefixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX_COLOR)).getAsString());
         group.suffixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX_COLOR)).getAsString());
         group.chatColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.CHAT_COLOR)).getAsString());
@@ -202,9 +211,9 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         Privilege privilege;
         for (JsonElement privilegesElement : privilegesArray) {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());
-            group.privileges.put(privilege.getPrivilegeName(), privilege);
+            group.privileges.put(privilege.getName(), privilege);
         }
-        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getGroupName());
+        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getName());
         return group;
     }
 
@@ -218,16 +227,16 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         Privilege privilege;
         for (JsonElement privilegesElement : privilegesArray) {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());
-            group.privileges.put(privilege.getPrivilegeName(), privilege);
+            group.privileges.put(privilege.getName(), privilege);
         }
-        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getGroupName());
+        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getName());
         return group;
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-        PacketBufferUtils.writeString(this.getGroupName(), buffer);
-        buffer.writeLong(this.getGroupId());
+        PacketBufferUtils.writeString(this.getName(), buffer);
+        buffer.writeLong(this.getId());
         PacketBufferUtils.writeString(this.getTitle(), buffer);
         buffer.writeByte(this.privileges.size());
         for (IPrivilege privilege : this.privileges.values())
@@ -241,7 +250,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         Privilege privilege;
         for (int i = 0; i < amount; i++) {
             privilege = Privilege.read(buffer);
-            group.privileges.put(privilege.getPrivilegeName(), privilege);
+            group.privileges.put(privilege.getName(), privilege);
         }
         return group;
     }

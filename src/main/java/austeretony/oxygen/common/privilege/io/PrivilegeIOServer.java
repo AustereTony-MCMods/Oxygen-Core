@@ -12,10 +12,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.api.OxygenTask;
 import austeretony.oxygen.common.io.OxygenIOServer;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
@@ -24,7 +25,6 @@ import austeretony.oxygen.common.util.OxygenUtils;
 
 public class PrivilegeIOServer {
 
-    private String privilegeFolder;
 
     private PrivilegeIOServer() {
         this.loadPrivilegeDataDelegated();
@@ -35,24 +35,23 @@ public class PrivilegeIOServer {
     }
 
     public static PrivilegeIOServer instance() {
-        return OxygenMain.getPrivilegeManagerServer().getIO();
+        return OxygenManagerServer.instance().getPrivilegeManager().getIO();
     }
 
     public void loadPrivilegeDataDelegated() {
-        OxygenHelperServer.addIOTaskServer(new OxygenTask() {
+        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
 
             @Override
             public void execute() {
                 loadPrivilegedGroups();
                 loadPlayerList();
-                PrivilegeManagerServer.instance().addDefaultGroup();//It should be somewhere...
+                PrivilegeManagerServer.instance().addDefaultGroups();//It should be somewhere...
             }           
         });
     }
 
     private void loadPlayerList() {
-        this.privilegeFolder = OxygenIOServer.getDataFolder() + "/server/privilege";
-        String folder = this.privilegeFolder + "/players.json";
+        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/players.json";
         Path path = Paths.get(folder);     
         if (Files.exists(path)) {
             try {      
@@ -75,13 +74,13 @@ public class PrivilegeIOServer {
     }
 
     private void loadPrivilegedGroups() {
-        String folder = this.privilegeFolder + "/groups.json";
+        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/groups.json";
         Path path = Paths.get(folder);     
         if (Files.exists(path)) {
             try {      
                 JsonArray groupArray = JsonUtils.getExternalJsonData(folder).getAsJsonArray();
                 for (JsonElement groupElement : groupArray)
-                    PrivilegeManagerServer.instance().addGroup(PrivilegedGroup.deserializeServer(groupElement.getAsJsonObject()));
+                    PrivilegeManagerServer.instance().addGroup(PrivilegedGroup.deserializeServer(groupElement.getAsJsonObject()), false);
                 OxygenMain.PRIVILEGE_LOGGER.info("Privileged groups loaded.");
             } catch (IOException exception) {
                 OxygenMain.PRIVILEGE_LOGGER.error("Privileged groups loading failed.");
@@ -91,7 +90,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePlayerListDelegated() {
-        OxygenHelperServer.addIOTaskServer(new OxygenTask() {
+        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -101,7 +100,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePlayerList() {
-        String folder = this.privilegeFolder + "/players.json";
+        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/players.json";
         Path path = Paths.get(folder);    
         if (!Files.exists(path)) {
             try {                   
@@ -128,7 +127,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePrivilegedGroupsDelegated() {
-        OxygenHelperServer.addIOTaskServer(new OxygenTask() {
+        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -138,7 +137,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePrivilegedGroups() {
-        String folder = this.privilegeFolder + "/groups.json";
+        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/groups.json";
         Path path = Paths.get(folder);    
         if (!Files.exists(path)) {
             try {                   

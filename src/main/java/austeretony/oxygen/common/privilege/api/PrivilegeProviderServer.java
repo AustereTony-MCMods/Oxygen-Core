@@ -2,10 +2,10 @@ package austeretony.oxygen.common.privilege.api;
 
 import java.util.UUID;
 
-import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
+import austeretony.oxygen.common.reference.CommonReference;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PrivilegeProviderServer {
@@ -19,50 +19,66 @@ public class PrivilegeProviderServer {
     }
 
     public static IPrivilegedGroup getDefaultGroup(){
-        return getGroup(PrivilegedGroup.DEFAULT_GROUP.getGroupName());
+        return getGroup(PrivilegedGroup.DEFAULT_GROUP.getName());
     }
 
     public static IPrivilegedGroup getPlayerGroup(UUID playerUUID){
         return PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID);
     }
 
-    public static void addGroup(IPrivilegedGroup group) {
-        PrivilegeManagerServer.instance().addGroup(group);
+    public static void addGroup(IPrivilegedGroup group, boolean save) {
+        PrivilegeManagerServer.instance().addGroup(group, save);
     }
 
     public static void removeGroup(String groupName) {
         PrivilegeManagerServer.instance().removeGroup(groupName);
     }
 
+    public static void promotePlayer(UUID playerUUID, String groupName) {
+        PrivilegeManagerServer.instance().promotePlayer(playerUUID, groupName);
+    }
+
     public static void promotePlayer(EntityPlayer player, String groupName) {
-        PrivilegeManagerServer.instance().promotePlayer(OxygenHelperServer.uuid(player), groupName);
+        promotePlayer(CommonReference.uuid(player), groupName);
+    }
+
+    public static void resetPlayerGroup(UUID playerUUID) {
+        promotePlayer(playerUUID, PrivilegedGroup.DEFAULT_GROUP.getName());
     }
 
     public static void resetPlayerGroup(EntityPlayer player) {
-        PrivilegeManagerServer.instance().promotePlayer(OxygenHelperServer.uuid(player), PrivilegedGroup.DEFAULT_GROUP.getGroupName());
+        promotePlayer(CommonReference.uuid(player), PrivilegedGroup.DEFAULT_GROUP.getName());
     }
 
-    public static void addPrivilege(String groupName, String privilegeName) {
-        PrivilegeManagerServer.instance().getGroup(groupName).addPrivilege(new Privilege(privilegeName));
+    public static void addPrivilege(String groupName, String privilegeName, boolean save) {
+        PrivilegeManagerServer.instance().getGroup(groupName).addPrivilege(new Privilege(privilegeName), save);
     }
 
-    public static void addPrivilege(String groupName, String privilegeName, int value) {
-        PrivilegeManagerServer.instance().getGroup(groupName).addPrivilege(new Privilege(privilegeName, value));
+    public static void addPrivilege(String groupName, String privilegeName, int value, boolean save) {
+        PrivilegeManagerServer.instance().getGroup(groupName).addPrivilege(new Privilege(privilegeName, value), save);
     }
 
-    public static void removePrivilege(String groupName, String privilegeName) {
-        PrivilegeManagerServer.instance().getGroup(groupName).removePrivilege(privilegeName);
+    public static void removePrivilege(String groupName, String privilegeName, boolean save) {
+        PrivilegeManagerServer.instance().getGroup(groupName).removePrivilege(privilegeName, save);
     }
 
     public static boolean getPrivilegeValue(UUID playerUUID, String privilegeName, boolean defaultValue) {
-        if (OxygenConfig.PRIVILEGES.getBooleanValue() && PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
             return true;
         return defaultValue;
     }
 
     public static int getPrivilegeValue(UUID playerUUID, String privilegeName, int defaultValue) {
-        if (OxygenConfig.PRIVILEGES.getBooleanValue() && PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
             return PrivilegeManagerServer.instance().getPlayerPrivilegedGroup(playerUUID).getPrivilege(privilegeName).getValue();
         return defaultValue;
+    }
+
+    public static void registerPrivilege(String privilegeName, String modName) {
+        PrivilegeManagerServer.PRIVILEGES_REGISTRY.put(privilegeName, modName);
+    }
+
+    public static boolean privilegeExist(String privilegeName) {
+        return PrivilegeManagerServer.PRIVILEGES_REGISTRY.containsKey(privilegeName);
     }
 }

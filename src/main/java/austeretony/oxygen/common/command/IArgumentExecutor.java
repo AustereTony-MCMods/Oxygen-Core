@@ -17,5 +17,5 @@ public interface IArgumentExecutor {
 
     void process(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
 
-    void execute(MinecraftServer server, ICommandSender sender, Map<String, IArgumentParameter> params) throws CommandException;
+    void execute(MinecraftServer server, ICommandSender sender, Set<IArgumentParameter> params) throws CommandException;
 }

@@ -10,7 +10,7 @@ public class OxygenHooks {
 
     //Hook to <net.minecraft.client.resources.Locale> class to <loadLocaleDataFiles()> method.
     public static void loadCustomLocalization(List<String> languageList, Map<String, String> properties) {
-        if (OxygenConfig.CUSTOM_LOCALIZATION.getBooleanValue())
+        if (OxygenConfig.ENABLE_CUSTOM_LOCALIZATION.getBooleanValue())
             OxygenIOClient.loadCustomLocalization(languageList, properties);
     }
 }

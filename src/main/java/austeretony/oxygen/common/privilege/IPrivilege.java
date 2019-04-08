@@ -6,11 +6,11 @@ import net.minecraft.network.PacketBuffer;
 
 public interface IPrivilege {
 
-    String getPrivilegeName();
+    String getName();
 
     int getValue();
 
-    JsonObject serealize();
+    JsonObject serialize();
 
     void write(PacketBuffer buffer);
 }

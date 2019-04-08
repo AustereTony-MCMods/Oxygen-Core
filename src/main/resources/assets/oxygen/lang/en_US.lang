@@ -1,0 +1,27 @@
+key.oxygen.notifications=Open Notifications Menu
+key.oxygen.accept=Accept
+key.oxygen.reject=Reject
+
+oxygen.notifications.menu.title=Notifications
+oxygen.notifications.menu.empty=You have no active notifications.
+
+oxygen.message.command.privilege.info.groupInfo=Group: %s - title: %s, prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.
+oxygen.message.command.privilege.info.groupPrivileges=Group <%s> privileges:
+oxygen.message.command.privilege.info.groupsList=Groups:
+oxygen.message.command.privilege.info.playerGroup=Player %s group: %s.
+oxygen.message.command.privilege.group.create=Created group <%s>.
+oxygen.message.command.privilege.group.edit=Edited group <%s>.
+oxygen.message.command.privilege.group.remove=Removed group <%s>.
+oxygen.message.command.privilege.privilege.add=Added privilege <%s> with value <%s> to group <%s>.
+oxygen.message.command.privilege.privilege.remove=Removed privilege <%s> from group <%s>.
+oxygen.message.command.privilege.promote=Player <%s> promoted to group <%s>.
+
+oxygen.command.exception.playerNotFound=Player <%s> not found.
+oxygen.command.exception.groupNotFound=Group <%s? not found.
+oxygen.command.exception.privilegeNotFound=Privilege <%s> not found.
+
+oxygen.command.exception.wrongArg=Wrong argument: %s.
+oxygen.command.exception.noParams=No parameters provided.
+oxygen.command.exception.unnecessaryParams=Defined unnecessary parameters: %s , ...
+oxygen.command.exception.wrongParamValue=Wrong parameter <%s> value: %s.
+oxygen.command.exception.unnecessaryParamValue=Defined unnecessary parameter <%s> value: %s.

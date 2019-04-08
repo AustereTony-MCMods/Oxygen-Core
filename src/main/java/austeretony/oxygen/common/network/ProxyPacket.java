@@ -11,8 +11,7 @@ public abstract class ProxyPacket {
 
     public static ProxyPacket create(HashBiMap<Integer, Class<? extends ProxyPacket>> packets, int id) {
         try {
-            Class<? extends ProxyPacket> packetClass = packets.get(id);
-            return packetClass == null ? null : packetClass.newInstance();
+            return packets.get(id).newInstance();
         } catch (Exception exception) {
             exception.printStackTrace();
         }

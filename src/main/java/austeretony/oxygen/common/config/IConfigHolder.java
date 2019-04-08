@@ -12,6 +12,10 @@ public interface IConfigHolder {
     Queue<ConfigValue> values();
     
     String getModId();
+    
+    String getExternalPath();
+    
+    String getInternalPath();
 
     void getValues(Queue<ConfigValue> values);
 

@@ -1,12 +1,17 @@
 package austeretony.oxygen.common.main;
 
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.process.ITemporaryProcess;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class OxygenPlayerData implements Comparable<OxygenPlayerData> {
 
@@ -16,7 +21,14 @@ public class OxygenPlayerData implements Comparable<OxygenPlayerData> {
 
     private int dimension;
 
-    private Map<Integer, ByteBuffer> additionalData = new ConcurrentHashMap<Integer, ByteBuffer>();
+    private boolean processesExist;
+
+    @SideOnly(Side.CLIENT)
+    private boolean opped;
+
+    private final Map<Long, ITemporaryProcess> processes = new ConcurrentHashMap<Long, ITemporaryProcess>();
+
+    private final Map<Integer, ByteBuffer> additionalData = new ConcurrentHashMap<Integer, ByteBuffer>();
 
     public OxygenPlayerData() {}
 
@@ -57,6 +69,45 @@ public class OxygenPlayerData implements Comparable<OxygenPlayerData> {
 
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean isOpped() {
+        return this.opped;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setOpped(boolean flag) {
+        this.opped = flag;
+    }
+
+    public Map<Long, ITemporaryProcess> getProcesses() {
+        return this.processes;
+    }
+
+    public void addProcess(ITemporaryProcess process) {
+        this.processes.put(process.getId(), process);
+        this.processesExist = true;
+    }
+
+    public boolean haveProcess(long processId) {
+        return this.processes.containsKey(processId);
+    }
+
+    public ITemporaryProcess getProcess(long processId) {
+        return this.processes.get(processId);
+    }
+
+    public void process() {
+        if (this.processesExist) {
+            Iterator<ITemporaryProcess> iterator = this.processes.values().iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().isExpired()) {
+                    iterator.remove();
+                    this.processesExist = this.processes.size() > 0;
+                }
+            }
+        }
     }
 
     public Map<Integer, ByteBuffer> getData() {

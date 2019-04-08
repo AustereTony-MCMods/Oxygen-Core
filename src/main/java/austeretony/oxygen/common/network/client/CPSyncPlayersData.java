@@ -3,6 +3,7 @@ package austeretony.oxygen.common.network.client;
 import java.util.Map;
 import java.util.UUID;
 
+import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenManagerClient;
 import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.main.OxygenPlayerData;
@@ -14,9 +15,12 @@ public class CPSyncPlayersData extends ProxyPacket {
 
     private int[] ids;
 
+    private boolean opped;
+
     public CPSyncPlayersData() {}
 
-    public CPSyncPlayersData(int... identifiers) {
+    public CPSyncPlayersData(boolean opped, int... identifiers) {
+        this.opped = opped;
         this.ids = identifiers;
     }
 
@@ -31,6 +35,7 @@ public class CPSyncPlayersData extends ProxyPacket {
             buffer.writeLong(entry.getKey().getLeastSignificantBits());
             entry.getValue().write(buffer, this.ids);
         }
+        buffer.writeBoolean(this.opped);
     }    
 
     @Override
@@ -54,5 +59,6 @@ public class CPSyncPlayersData extends ProxyPacket {
             } else
                 OxygenManagerClient.instance().getPlayerData(playerUUID).read(buffer, this.ids);
         }
+        OxygenHelperClient.getClientPlayerData().setOpped(buffer.readBoolean());
     }
 }

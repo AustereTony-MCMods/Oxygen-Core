@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import austeretony.oxygen.common.api.chat.IChatMessageInfoListener;
-import austeretony.oxygen.common.main.IOxygenTask;
 import austeretony.oxygen.common.main.OxygenManagerClient;
 import austeretony.oxygen.common.main.OxygenPlayerData;
+import austeretony.oxygen.common.notification.NotificationManagerClient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,6 +46,10 @@ public class OxygenHelperClient {
         return OxygenManagerClient.instance().getPlayersData();
     }
 
+    public static OxygenPlayerData getClientPlayerData() {
+        return OxygenManagerClient.instance().getPlayerData(getPlayerUUID());
+    }
+
     public static OxygenPlayerData getPlayerData(UUID playerUUID) {
         return OxygenManagerClient.instance().getPlayerData(playerUUID);
     }
@@ -59,6 +63,14 @@ public class OxygenHelperClient {
     }
 
     public static void registerChatMessageInfoListener(IChatMessageInfoListener listener) {
-        OxygenManagerClient.instance().addChatMessageInfoListener(listener);
+        OxygenManagerClient.instance().addChatMessagesInfoListener(listener);
+    }
+
+    public static void registerClientInitListener(ICientInitListener listener) {
+        OxygenManagerClient.instance().addClientInitListener(listener);
+    }
+
+    public static void registerNotificationIcon(int index, ResourceLocation textureLocation) {
+        NotificationManagerClient.instance().addIcon(index, textureLocation);
     }
 }

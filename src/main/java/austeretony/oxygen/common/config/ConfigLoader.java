@@ -18,8 +18,16 @@ public class ConfigLoader {
 
     public static final Queue<IConfigHolder> CONFIG_HOLDERS = new ConcurrentLinkedQueue<IConfigHolder>();
 
-    public static void load(String externalFile, String internalFile, IConfigHolder configHolder) {
-        CONFIG_HOLDERS.add(configHolder);
+    public static void addConfig(IConfigHolder config) {
+        CONFIG_HOLDERS.add(config);
+    }
+
+    public static void loadConfigs() {
+        for (IConfigHolder config : CONFIG_HOLDERS) 
+            load(config.getExternalPath(), config.getInternalPath(), config);
+    }
+
+    private static void load(String externalFile, String internalFile, IConfigHolder configHolder) {
         Path configPath = Paths.get(externalFile);      
         if (Files.exists(configPath)) {
             try {      

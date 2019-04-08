@@ -1,6 +1,7 @@
 package austeretony.oxygen.common.privilege;
 
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenManagerClient;
 import austeretony.oxygen.common.network.server.SPGroupSyncRequest;
 import austeretony.oxygen.common.privilege.io.PrivilegeIOClient;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,7 +21,7 @@ public class PrivilegeManagerClient {
     }
 
     public static PrivilegeManagerClient instance() {
-        return OxygenMain.getPrivilegeManagerClient();
+        return OxygenManagerClient.instance().getPrivilegeManager();
     }
 
     public void initIO() {
@@ -33,7 +34,7 @@ public class PrivilegeManagerClient {
 
     public void setPrivelegedGroup(IPrivilegedGroup group) {
         this.group = group;
-        OxygenMain.PRIVILEGE_LOGGER.info("Group set to <{}>.", group.getGroupName());
+        OxygenMain.PRIVILEGE_LOGGER.info("Group set to <{}>.", group.getName());
     }
 
     public IPrivilegedGroup getPrivilegedGroup() {

@@ -11,9 +11,10 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.api.OxygenTask;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.reference.CommonReference;
 
 public class OxygenIOServer {
@@ -37,11 +38,11 @@ public class OxygenIOServer {
     }
 
     public static OxygenIOServer instance() {
-        return OxygenMain.getOxygenManagerServer().getIO();
+        return OxygenManagerServer.instance().getIO();
     }
 
     private void createOrLoadWorldIdDelegated() {
-        OxygenHelperServer.addIOTaskServer(new OxygenTask() {
+        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
 
             @Override
             public void execute() {

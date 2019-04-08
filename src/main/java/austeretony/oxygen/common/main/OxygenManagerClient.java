@@ -6,8 +6,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.common.api.chat.IChatMessageInfoListener;
+import austeretony.oxygen.client.gui.notifications.NotificationsGUIScreen;
+import austeretony.oxygen.client.reference.ClientReference;
+import austeretony.oxygen.common.api.IChatMessageInfoListener;
+import austeretony.oxygen.common.api.ICientInitListener;
+import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.delegate.OxygenThread;
+import austeretony.oxygen.common.notification.NotificationManagerClient;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.reference.CommonReference;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class OxygenManagerClient {
+
+    private static OxygenManagerClient instance;
 
     private long worldId, groupId;
 
@@ -26,25 +33,28 @@ public class OxygenManagerClient {
 
     private OxygenThread ioThreadClient, routineThreadClient, networkThreadClient;
 
-    private static PrivilegeManagerClient privilegeManagerClient;
+    private PrivilegeManagerClient privilegeManagerClient;
 
     private final Map<UUID, OxygenPlayerData> playersData = new ConcurrentHashMap<UUID, OxygenPlayerData>();
 
     private final Set<UUID> onlinePlayers = new HashSet<UUID>();
 
-    private final Set<IChatMessageInfoListener> messageListeners = new HashSet<IChatMessageInfoListener>();
+    private final Set<IChatMessageInfoListener> chatMessagesListeners = new HashSet<IChatMessageInfoListener>();
+
+    private final Set<ICientInitListener> clientInitListeners = new HashSet<ICientInitListener>();
 
     private OxygenManagerClient() {
         this.createOxygenClientThreads();
+        NotificationManagerClient.create();
     }
 
-    public static OxygenManagerClient create() {
+    public static void create() {
         OxygenMain.OXYGEN_LOGGER.info("Created Oxygen client manager.");
-        return new OxygenManagerClient();
+        instance = new OxygenManagerClient();
     }
 
     public static OxygenManagerClient instance() {
-        return OxygenMain.getOxygenManagerClient();
+        return instance;
     }
 
     public void createOxygenClientThreads() {
@@ -125,8 +135,8 @@ public class OxygenManagerClient {
         return this.playerUUID;
     }
 
-    public static PrivilegeManagerClient getPrivilegeManagerClient() {
-        return privilegeManagerClient;
+    public PrivilegeManagerClient getPrivilegeManager() {
+        return this.privilegeManagerClient;
     }
 
     public Map<UUID, OxygenPlayerData> getPlayersData() {
@@ -145,16 +155,33 @@ public class OxygenManagerClient {
         return this.onlinePlayers.contains(playerUUID);
     }
 
-    public Set<IChatMessageInfoListener> getMessageListeners() {
-        return this.messageListeners;      
+    public Set<IChatMessageInfoListener> getChatMessagesInfoListeners() {
+        return this.chatMessagesListeners;      
     }
 
-    public void addChatMessageInfoListener(IChatMessageInfoListener listener) {
-        this.messageListeners.add(listener);
+    public void addChatMessagesInfoListener(IChatMessageInfoListener listener) {
+        this.chatMessagesListeners.add(listener);
     }
 
     public void notifyChatMessageInfoListeners(int mod, int message, String... args) {
-        for (IChatMessageInfoListener listener : this.messageListeners)
+        for (IChatMessageInfoListener listener : this.chatMessagesListeners)
             listener.show(mod, message, args);
+    }
+
+    public Set<ICientInitListener> getClientInitListeners() {
+        return this.clientInitListeners;      
+    }
+
+    public void addClientInitListener(ICientInitListener listener) {
+        this.clientInitListeners.add(listener);
+    }
+
+    public void notifyClientInitListeners() {
+        for (ICientInitListener listener : this.clientInitListeners)
+            listener.init();
+    }
+
+    public void openNotificationsMenu() {
+        ClientReference.displayGuiScreen(new NotificationsGUIScreen());
     }
 }
