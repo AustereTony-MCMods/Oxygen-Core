@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
 
     public final GUIEnumOrientation orientation;
@@ -22,8 +21,9 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
     private int buttonsOffset, buttonWidth, buttonHeight;
 
     public final List<GUIButton> 
-    visibleButtons = new ArrayList<GUIButton>(),
-    buttonsBuffer = new ArrayList<GUIButton>();
+    visibleButtons = new ArrayList<GUIButton>(5),
+    buttonsBuffer = new ArrayList<GUIButton>(5),
+    searchButtons = new ArrayList<GUIButton>(5);
 
     /**
      * Панель для кнопок.
@@ -87,6 +87,9 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
     public void reset() {
         this.visibleButtons.clear();
         this.buttonsBuffer.clear();
+        this.searchButtons.clear();
+        if (this.hasScroller())
+            this.getScroller().resetPosition();
     }
 
     /**
@@ -104,13 +107,19 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
 
     @Override
     public void draw(int mouseX, int mouseY) {   
-        super.draw(mouseX, mouseY);
         if (this.isVisible()) {             	        	   	
             for (GUIButton button : this.visibleButtons)                	
                 button.draw(mouseX, mouseY);          	     
             if (this.hasScroller() && this.getScroller().hasSlider())			
-                this.getScroller().getSlider().draw(mouseX, mouseY);				
+                this.getScroller().getSlider().draw(mouseX, mouseY);
         }
+    }
+
+    @Override
+    public void drawContextMenu(int mouseX, int mouseY) {   
+        if (this.isVisible())                                        
+            if (this.hasContextMenu() && this.getContextMenu().isDragged()) 
+                this.getContextMenu().drawContextMenu(mouseX, mouseY);
     }
 
     @Override
@@ -121,23 +130,46 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
     }
 
     @Override
-    public void mouseOver(int mouseX, int mouseY) {   	
+    public void mouseOver(int mouseX, int mouseY) {
         if (this.isEnabled()) {   	
             for (GUIButton button : this.visibleButtons)
                 button.mouseOver(mouseX, mouseY);		
-            if (this.hasScroller() && this.getScroller().hasSlider()) {    			
-                this.getScroller().getSlider().mouseOver(mouseX, mouseY);        			
-                this.getScroller().getSlider().mouseClicked(mouseX, mouseY);        			
-                this.screen.handlePanelSlidebar(this, mouseY);	  
-            }
+            if (this.hasScroller() && this.getScroller().hasSlider())  			
+                this.getScroller().getSlider().mouseOver(mouseX, mouseY); 
         }    	
-        this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight());   
+        this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight());
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
-        for (GUIButton button : this.visibleButtons)   		
-            button.mouseClicked(mouseX, mouseY);   	
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (this.isEnabled()) {  
+            if (this.hasContextMenu() && this.getContextMenu().isDragged())                       
+                this.getContextMenu().mouseClicked(mouseX, mouseY, mouseButton);
+            for (GUIButton button : this.visibleButtons) {   		
+                if (button.mouseClicked(mouseX, mouseY, mouseButton) && this.hasContextMenu() && mouseButton == 1)
+                    this.getContextMenu().open(button, mouseX, mouseY);
+            }
+            if (this.hasScroller() && this.getScroller().hasSlider()) {                         
+                this.getScroller().getSlider().mouseClicked(mouseX, mouseY, mouseButton);                               
+                this.screen.handlePanelSlidebar(this, mouseY);    
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char typedChar, int keyCode) { 
+        for (GUIButton button : this.visibleButtons)            
+            button.keyTyped(typedChar, keyCode);
+        if (this.isEnabled()) {         
+            if (this.hasSearchField()) {               
+                if (this.getSearchField().keyTyped(typedChar, keyCode)) {
+                    this.screen.searchButtonPanel(this);
+                    if (this.hasScroller() && this.getScroller().hasSlider())
+                        this.getScroller().getSlider().reset();
+                }
+            }
+        }
         return false;
     }
 

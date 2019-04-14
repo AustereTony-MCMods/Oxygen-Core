@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import austeretony.oxygen.common.telemetry.ILogType;
+import austeretony.oxygen.common.telemetry.LogContainer;
+import austeretony.oxygen.common.telemetry.LogFiles;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
-import austeretony.oxygen.common.telemetry.delegate.LogContainer;
-import austeretony.oxygen.common.telemetry.io.LogFiles;
 
 public class LogType<T extends ILog> implements ILogType {
 

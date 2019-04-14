@@ -13,6 +13,8 @@ public interface IConfigHolder {
     
     String getModId();
     
+    String getVersion();
+    
     String getExternalPath();
     
     String getInternalPath();

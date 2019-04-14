@@ -31,7 +31,7 @@ public class ConfigLoader {
         Path configPath = Paths.get(externalFile);      
         if (Files.exists(configPath)) {
             try {      
-                loadData(OxygenUtils.updateConfig(JsonUtils.getInternalJsonData(internalFile).getAsJsonObject(), externalFile), configHolder);
+                loadData(OxygenUtils.updateConfig(JsonUtils.getInternalJsonData(internalFile).getAsJsonObject(), externalFile, configHolder), configHolder);
             } catch (IOException exception) {  
                 OxygenMain.OXYGEN_LOGGER.error("External configuration file for <{}> damaged!", configHolder.getModId());
                 exception.printStackTrace();

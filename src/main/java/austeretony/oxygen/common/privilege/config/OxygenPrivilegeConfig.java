@@ -4,8 +4,8 @@ import java.util.Queue;
 
 import austeretony.oxygen.common.api.config.AbstractConfigHolder;
 import austeretony.oxygen.common.api.config.ConfigValue;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.reference.CommonReference;
 
 public class OxygenPrivilegeConfig extends AbstractConfigHolder {
 
@@ -20,6 +20,11 @@ public class OxygenPrivilegeConfig extends AbstractConfigHolder {
     @Override
     public String getModId() {
         return OxygenMain.MODID + ":privilege";
+    }
+
+    @Override
+    public String getVersion() {
+        return OxygenMain.VERSION_CUSTOM;
     }
 
     @Override

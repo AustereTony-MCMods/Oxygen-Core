@@ -7,15 +7,12 @@ import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUIBaseElement;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс-основа всплывающих окон для ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUICallback> {
 
     private final List<GUIBaseElement> elements = new ArrayList<GUIBaseElement>();
@@ -28,9 +25,9 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
 
     public AbstractGUICallback(AbstractGUIScreen screen, AbstractGUISection section, int width, int height) {				
         this.initScreen(screen);			
-        this.setSize(width, height);				
-        this.setPosition(screen.guiLeft - screen.getWorkspace().getXAlignment() + ((screen.getWorkspace().getWidth() - width) / 2), 
-                screen.guiTop - screen.getWorkspace().getYAlignment() + ((screen.getWorkspace().getHeight() - height) / 2));		
+        this.setSize(width, height);	
+        //this.setPosition((screen.getWorkspace().getWidth() - width) / 2, (screen.getWorkspace().getHeight() - height) / 2);	
+        this.setPosition((this.screen.width - this.getWidth()) / 2, (this.screen.height - this.getHeight()) / 2);           
         this.enableFull();		
     }
 
@@ -104,10 +101,10 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {  	       
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {  	       
         for (GUIBaseElement element : this.getElements()) {         
             if (element == this.lastHoveredElement)        	
-                element.mouseClicked(mouseX, mouseY);
+                element.mouseClicked(mouseX, mouseY, mouseButton);
             else if (element.isDragged())        		
                 element.setDragged(false);
         }    	   	

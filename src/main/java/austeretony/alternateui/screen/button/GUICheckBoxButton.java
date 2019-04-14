@@ -3,15 +3,12 @@ package austeretony.alternateui.screen.button;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Кнопка-флажок для ГПИ. Может быть автономна или добавлена на панель GUIButtonPanel.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
 
     private int innerBoxSize;
@@ -77,13 +74,12 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
      * 
      * @param mouseX 
      * @param mouseY 
-     * 
      * @return true если клик совершён
      */
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
-        boolean flag = super.mouseClicked(mouseX, mouseY);
-        if (flag) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (flag && mouseButton == 0) {
             this.setToggled(!this.isToggled());
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);

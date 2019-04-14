@@ -5,15 +5,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс-основа сложных (текстурированных) графических элементов ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIAdvancedElement<T extends GUISimpleElement> extends GUISimpleElement<T> {
 
     private ResourceLocation texture;

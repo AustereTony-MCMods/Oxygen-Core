@@ -35,7 +35,7 @@ public class NotificationsGUIScreen extends AbstractGUIScreen {
     public void handleElementClick(AbstractGUISection section, GUIBaseElement element) {}
 
     @Override
-    public boolean doesGuiPauseGame() {
+    protected boolean doesGUIPauseGame() {
         return false;
     }
 }

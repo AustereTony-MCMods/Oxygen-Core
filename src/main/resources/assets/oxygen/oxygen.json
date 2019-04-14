@@ -4,6 +4,16 @@
     "sync_privileges": true,
     "enable_custom_localization": false,
     "enable_telemetry": false,
-    "enable_privileges": true
+    "enable_privileges": true,
+    "enable_currency": false
+  },
+  "friends": {
+    "enable_friends": true,
+    "friend_request_expire_time_seconds": 30,
+    "max_friends": 20,
+    "max_ignored": 20
+  },
+  "players_gui": {
+    "enable_players_gui": false
   }
 }

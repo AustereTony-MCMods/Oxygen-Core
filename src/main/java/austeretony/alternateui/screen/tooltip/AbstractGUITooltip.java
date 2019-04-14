@@ -2,15 +2,12 @@ package austeretony.alternateui.screen.tooltip;
 
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Тултип для элементов.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public abstract class AbstractGUITooltip extends GUIAdvancedElement<AbstractGUITooltip> {
 
     private int xPopupOffset, yPopupOffset;

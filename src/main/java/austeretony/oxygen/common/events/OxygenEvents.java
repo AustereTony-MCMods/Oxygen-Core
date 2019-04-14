@@ -1,24 +1,14 @@
 package austeretony.oxygen.common.events;
 
-import austeretony.oxygen.common.main.OxygenManagerServer;
-import austeretony.oxygen.common.notification.NotificationManagerClient;
+import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.common.OxygenManagerServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class OxygenEvents {
 
-    @SubscribeEvent
-    public void onPlayerLogIn(PlayerLoggedInEvent event) {
-        OxygenManagerServer.instance().onPlayerLoggedIn(event.player);
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogOut(PlayerLoggedOutEvent event) {
-        OxygenManagerServer.instance().onPlayerLoggedOut(event.player);
-    }
+    //TODO Change events for custom listeners
 
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
@@ -26,7 +16,7 @@ public class OxygenEvents {
     }
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event) {     
+    public void onServerTick(TickEvent.ServerTickEvent event) {   
         if (event.phase == TickEvent.Phase.START) {
             OxygenManagerServer.instance().processWorld();
             OxygenManagerServer.instance().processPlayers();
@@ -35,7 +25,7 @@ public class OxygenEvents {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {     
-        if (event.phase == TickEvent.Phase.START && NotificationManagerClient.instance() != null)
-            NotificationManagerClient.instance().processNotifications();
+        if (event.phase == TickEvent.Phase.START && OxygenManagerClient.instance().getNotificationsManager() != null)
+            OxygenManagerClient.instance().getNotificationsManager().processNotifications();
     }
 }

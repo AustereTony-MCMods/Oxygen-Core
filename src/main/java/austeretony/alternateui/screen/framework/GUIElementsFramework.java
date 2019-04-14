@@ -5,18 +5,15 @@ import java.util.Set;
 
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Объект-каркас для работы с элементами ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIElementsFramework extends GUISimpleElement<GUIElementsFramework> {
 
-    private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>();
+    private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>(5);
 
     private GUIBaseElement hoveredElement;
 
@@ -52,11 +49,11 @@ public class GUIElementsFramework extends GUISimpleElement<GUIElementsFramework>
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
         //TODO mouseClicked()
         for (GUIBaseElement element : this.getElements()) {
             if (element == this.hoveredElement)
-                element.mouseClicked(mouseX, mouseY);
+                element.mouseClicked(mouseX, mouseY, mouseButton);
         }
         return false;
     }

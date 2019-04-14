@@ -12,13 +12,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.io.OxygenIOServer;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
-import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
 import austeretony.oxygen.common.util.JsonUtils;
 import austeretony.oxygen.common.util.OxygenUtils;
@@ -39,19 +37,19 @@ public class PrivilegeIOServer {
     }
 
     public void loadPrivilegeDataDelegated() {
-        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
                 loadPrivilegedGroups();
                 loadPlayerList();
-                PrivilegeManagerServer.instance().addDefaultGroups();//It should be somewhere...
+                OxygenManagerServer.instance().getPrivilegeManager().addDefaultGroups();//It should be somewhere...
             }           
         });
     }
 
     private void loadPlayerList() {
-        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/players.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/privilege/players.json";
         Path path = Paths.get(folder);     
         if (Files.exists(path)) {
             try {      
@@ -63,7 +61,7 @@ public class PrivilegeIOServer {
                     playerUUID = new UUID(
                             object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PLAYER_UUID_MSB)).getAsLong(),
                             object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PLAYER_UUID_LSB)).getAsLong());
-                    PrivilegeManagerServer.instance().promotePlayer(playerUUID, object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.GROUP)).getAsString());
+                    OxygenManagerServer.instance().getPrivilegeManager().promotePlayer(playerUUID, object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.GROUP)).getAsString());
                 }
                 OxygenMain.PRIVILEGE_LOGGER.info("Loaded player list.");
             } catch (IOException exception) {
@@ -74,13 +72,13 @@ public class PrivilegeIOServer {
     }
 
     private void loadPrivilegedGroups() {
-        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/groups.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/privilege/groups.json";
         Path path = Paths.get(folder);     
         if (Files.exists(path)) {
             try {      
                 JsonArray groupArray = JsonUtils.getExternalJsonData(folder).getAsJsonArray();
                 for (JsonElement groupElement : groupArray)
-                    PrivilegeManagerServer.instance().addGroup(PrivilegedGroup.deserializeServer(groupElement.getAsJsonObject()), false);
+                    OxygenManagerServer.instance().getPrivilegeManager().addGroup(PrivilegedGroup.deserializeServer(groupElement.getAsJsonObject()), false);
                 OxygenMain.PRIVILEGE_LOGGER.info("Privileged groups loaded.");
             } catch (IOException exception) {
                 OxygenMain.PRIVILEGE_LOGGER.error("Privileged groups loading failed.");
@@ -90,7 +88,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePlayerListDelegated() {
-        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -100,7 +98,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePlayerList() {
-        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/players.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/privilege/players.json";
         Path path = Paths.get(folder);    
         if (!Files.exists(path)) {
             try {                   
@@ -112,7 +110,7 @@ public class PrivilegeIOServer {
         try {      
             JsonArray jsonArray = new JsonArray();
             JsonObject object;
-            for (Map.Entry<UUID, String> entry : PrivilegeManagerServer.instance().getPlayers().entrySet()) {
+            for (Map.Entry<UUID, String> entry : OxygenManagerServer.instance().getPrivilegeManager().getPlayers().entrySet()) {
                 object = new JsonObject();
                 object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PLAYER_UUID_MSB), new JsonPrimitive(entry.getKey().getMostSignificantBits()));
                 object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PLAYER_UUID_LSB), new JsonPrimitive(entry.getKey().getLeastSignificantBits()));
@@ -127,7 +125,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePrivilegedGroupsDelegated() {
-        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -137,7 +135,7 @@ public class PrivilegeIOServer {
     }
 
     public void savePrivilegedGroups() {
-        String folder = OxygenIOServer.getDataFolder() + "/server/privilege/groups.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/privilege/groups.json";
         Path path = Paths.get(folder);    
         if (!Files.exists(path)) {
             try {                   
@@ -149,7 +147,7 @@ public class PrivilegeIOServer {
         try {      
             JsonArray jsonArray = new JsonArray();
             JsonObject object;
-            for (IPrivilegedGroup group : PrivilegeManagerServer.instance().getGroups().values())
+            for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values())
                 jsonArray.add(group.serialize());
             JsonUtils.createExternalJsonFile(folder, jsonArray);
         } catch (IOException exception) {

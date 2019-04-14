@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIScroller {
 
     private AbstractGUIScreen screen;

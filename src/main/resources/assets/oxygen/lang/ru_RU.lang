@@ -1,11 +1,61 @@
-key.oxygen.notifications=Открыть Меню Уведомлений
+key.oxygen.notifications=Меню Уведомлений
 key.oxygen.accept=Принять
 key.oxygen.reject=Отказаться
+key.oxygen.friends=Список Друзей
 
-oxygen.notifications.menu.title=Уведомления
-oxygen.notifications.menu.empty=У вас нет активных уведомлений.
+oxygen.gui.username=Ник
+oxygen.gui.name=Название
+oxygen.gui.description=Описание
+oxygen.gui.note=Заметка
+oxygen.gui.downloadCallback=Загрузка Данных
+oxygen.gui.downloadCallback.request=Загрузить с сервера?
+oxygen.gui.editNoteCallback=Редактирование Заметки
+oxygen.gui.confirmButton=Принять
+oxygen.gui.cancelButton=Отмена
+oxygen.gui.playerFound=Игрок найден
+oxygen.gui.playerNotFound=Игрок не найден
 
-oxygen.message.command.privilege.info.groupInfo=Группа: %s - титул: %s, префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет суффикса: %s, цвет чата: %s.
+oxygen.gui.notifications.title=Уведомления
+oxygen.gui.notifications.empty=У вас нет активных уведомлений.
+
+oxygen.gui.friends.title=Друзья
+oxygen.gui.ignored.title=Игнорируемые
+oxygen.gui.friends.username=Ник
+oxygen.gui.friends.dimension=Измерение
+oxygen.gui.friends.addFriendCallback=Добавить 
+oxygen.gui.friends.addFriendCallback.request=Отправить игроку запрос в друзья.
+oxygen.gui.friends.removeFriendCallback=Удалить
+oxygen.gui.friends.removeFriendCallback.request=%s будет удалён из списка друзей.
+oxygen.gui.friends.ignoreCallback=Игнорировать
+oxygen.gui.friends.ignoreCallback.request=%s будет добавлен в игнор лист.
+oxygen.gui.ignored.addIgnoredCallback=Добавить
+oxygen.gui.ignored.addIgnoredCallback.request=Добавить игрока в игнор лист.
+oxygen.gui.ignored.removeIgnoredCallback=Удалить 
+oxygen.gui.ignored.removeIgnoredCallback.request=%s будет удалён из списка игнорируемых.
+
+oxygen.gui.action.remove=Удалить
+oxygen.gui.action.ignore=Игнорировать
+oxygen.gui.action.editNote=Редакт. Заметку
+
+oxygen.friends.addButton=Добавить
+
+oxygen.request.friendRequest=Игрок %s отправил вам запрос в друзья.
+
+oxygen.status.online=В сети
+oxygen.status.away=Нет на месте
+oxygen.status.notDisturb=Не беспокоить
+oxygen.status.offline=Не в сети
+
+oxygen.tooltip.online=В сети
+oxygen.tooltip.download=Загрузка
+oxygen.tooltip.search=Поиск
+oxygen.tooltip.refresh=Обновить
+oxygen.tooltip.sort=Сортировать
+oxygen.gui.friends.tooltip.friends=Друзья
+oxygen.gui.friends.tooltip.ignored=Игнорируемые
+
+oxygen.message.command.privilege.info.groupInfo=Группа: %s - титул: %s, префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет 
+суффикса: %s, цвет чата: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Привелегии группы <%s>:
 oxygen.message.command.privilege.info.groupsList=Группы:
 oxygen.message.command.privilege.info.playerGroup=Игрок %s сосотоит в группе: %s.
@@ -16,6 +66,19 @@ oxygen.message.command.privilege.privilege.add=Привелегия <%s> со з
 oxygen.message.command.privilege.privilege.remove=Привелегия <%s> удалена для группы <%s>.
 oxygen.message.command.privilege.promote=Игрок %s добавлен в группу %s.
 
+oxygen.message.statusChanged=Статус изменен на %s.
+oxygen.message.requestReset=Запрос сброшен.
+oxygen.message.targetOffline=Игрок вне сети.
+oxygen.message.senderIgnored=Игрок вас игнорирует.
+oxygen.message.senderFriendRequestAccepted=Ваш запрос в друзья принят.
+oxygen.message.targetFriendRequestAccepted=Вы приняли запрос в друзья.
+oxygen.message.senderFriendRequestRejected=Ваш запрос в друзья отклонён.
+oxygen.message.targetFriendRequestRejected=Вы отклонили запрос в друзья.
+oxygen.message.friendRemoved=Игрок убран из списка друзей.
+oxygen.message.addedToIgnored=Игрок добавлен в игнор лист.
+oxygen.message.noteEdited=Заметка отредактирована.
+oxygen.message.ignoredRemoved=Игрок убран из списка игнорируемых.
+
 oxygen.command.exception.playerNotFound=Игрок %s не найден.
 oxygen.command.exception.groupNotFound=Группа %s не найдена.
 oxygen.command.exception.privilegeNotFound=Привелегия %s не найдена.
@@ -25,3 +88,9 @@ oxygen.command.exception.noParams=Не указаны параметры.
 oxygen.command.exception.unnecessaryParams=Указаны лишние параметры: %s , ...
 oxygen.command.exception.wrongParamValue=Неверное значение параметра %s: %s.
 oxygen.command.exception.unnecessaryParamValue=Указан лишнее значение для параметра %s: %s.
+
+oxygen.dim.unknown=Неиизвестно
+oxygen.dim.overworld=Верхний Мир
+oxygen.dim.nether=Нижний Мир
+oxygen.dim.end=Край
+oxygen.dim.twilightForest=Сумеречный Лес

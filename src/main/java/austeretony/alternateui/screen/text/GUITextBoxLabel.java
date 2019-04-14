@@ -5,15 +5,12 @@ import java.util.List;
 
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Графический элемент в виде набора строк.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
 
     private final List<String> lines = new ArrayList<String>();

@@ -5,20 +5,17 @@ import java.util.Set;
 
 import austeretony.alternateui.util.EnumGUIAlignment;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс для настройки рабочей области ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
 
     private boolean initOnSectionChange, enableDefaultBackground;
 
-    private final Set<AbstractGUISection> sectionsList = new LinkedHashSet<AbstractGUISection>();
+    private final Set<AbstractGUISection> sectionsList = new LinkedHashSet<AbstractGUISection>(3);
 
     private AbstractGUISection currentSection;
 

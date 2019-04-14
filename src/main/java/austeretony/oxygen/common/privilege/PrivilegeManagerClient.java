@@ -1,27 +1,20 @@
 package austeretony.oxygen.common.privilege;
 
+import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenManagerClient;
 import austeretony.oxygen.common.network.server.SPGroupSyncRequest;
 import austeretony.oxygen.common.privilege.io.PrivilegeIOClient;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class PrivilegeManagerClient {
+
+    private final OxygenManagerClient manager;
 
     private PrivilegeIOClient privilegeIO;
 
     private IPrivilegedGroup group;  
 
-    private PrivilegeManagerClient() {}
-
-    public static PrivilegeManagerClient create() {
-        return new PrivilegeManagerClient();
-    }
-
-    public static PrivilegeManagerClient instance() {
-        return OxygenManagerClient.instance().getPrivilegeManager();
+    public PrivilegeManagerClient(OxygenManagerClient manager) {
+        this.manager = manager;
     }
 
     public void initIO() {

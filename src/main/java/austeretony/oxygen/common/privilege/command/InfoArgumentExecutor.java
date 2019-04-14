@@ -2,17 +2,17 @@ package austeretony.oxygen.common.privilege.command;
 
 import java.util.Set;
 
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.EnumChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
-import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
-import austeretony.oxygen.common.reference.CommonReference;
 import austeretony.oxygen.common.util.OxygenUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -103,11 +103,11 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                 if (sender instanceof EntityPlayerMP) {
                     EntityPlayerMP playerMP = (EntityPlayerMP) sender;
                     OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_GROUPS_LIST.ordinal()); 
-                    for (IPrivilegedGroup group : PrivilegeManagerServer.instance().getGroups().values()) 
+                    for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values()) 
                         OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.SIMPLE_LINE.ordinal(), group.getName()); 
                 } else {
                     server.sendMessage(new TextComponentString("Groups:"));
-                    for (IPrivilegedGroup group : PrivilegeManagerServer.instance().getGroups().values())      
+                    for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values())      
                         server.sendMessage(new TextComponentString(group.getName()));
                 }
                 break;

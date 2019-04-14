@@ -3,20 +3,18 @@ package austeretony.alternateui.overlay.core;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import austeretony.alternateui.screen.core.AlternateUIReference;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class GUIOverlay {
 
     private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>();
 
-    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final Minecraft mc = AlternateUIReference.getMinecraft();
 
     private EnumGUIAlignment alignment;
 

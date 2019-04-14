@@ -2,15 +2,12 @@ package austeretony.alternateui.screen.text;
 
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Графический элемент в виде строки символов.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUITextLabel extends GUISimpleElement<GUITextLabel> {
 
     public GUITextLabel(int xPosition, int yPosition) {		

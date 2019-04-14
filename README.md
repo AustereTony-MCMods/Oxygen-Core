@@ -1,2 +1,2 @@
 # Oxygen-Core
-Core modification.
+Core modification and API for Oxygen mod series.

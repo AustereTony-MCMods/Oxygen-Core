@@ -2,21 +2,17 @@ package austeretony.alternateui.screen.core;
 
 import austeretony.alternateui.screen.tooltip.AbstractGUITooltip;
 import austeretony.alternateui.util.EnumGUIAlignment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс-основа простых (без текстур) графических элементов ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T> {
 
     public final static int 
@@ -53,7 +49,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
 
     private AbstractGUITooltip advancedTooltip;
 
-    protected RenderItem itemRender = Minecraft.getMinecraft().getRenderItem();
+    protected RenderItem itemRender = AlternateUIReference.getRenderItem();
 
     @Override
     public void draw(int mouseX, int mouseY) {
@@ -100,9 +96,10 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     @Override
     public void drawTooltip(int mouseX, int mouseY) {  	
         if (this.isHovered()) {  
-            if (this.hasSimpleTooltip()) {      
+            if (this.hasSimpleTooltip()) {   
+                int width = (int) ((float) this.tooltipWidth * this.tooltipScaleFactor);
                 GlStateManager.pushMatrix();           
-                GlStateManager.translate(mouseX, mouseY - 11, 0.0F);           
+                GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11, 0.0F);           
                 GlStateManager.scale(this.tooltipScaleFactor, this.tooltipScaleFactor, 0.0F);    
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 this.drawRect(ZERO, ZERO, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
@@ -114,7 +111,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     }
 
     @Override
-    public void mouseOver(int mouseX, int mouseY) {  	       	  	
+    public void mouseOver(int mouseX, int mouseY) {  	 
         this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + (int) (this.getWidth() * this.getScale()) && mouseY < this.getY() + (int) (this.getHeight() * this.getScale()));   
     }
 

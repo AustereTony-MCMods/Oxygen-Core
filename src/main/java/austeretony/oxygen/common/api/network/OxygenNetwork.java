@@ -48,7 +48,7 @@ public class OxygenNetwork {
 
     @SubscribeEvent
     public void onClientPacketRecieve(FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException {
-        OxygenHelperClient.addNetworkTaskClient(new IOxygenTask() {
+        OxygenHelperClient.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -64,7 +64,7 @@ public class OxygenNetwork {
 
     @SubscribeEvent
     public void onServerPacketRecieve(FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -98,7 +98,7 @@ public class OxygenNetwork {
     }
 
     public void sendToServer(ProxyPacket packet) {
-        OxygenHelperClient.addNetworkTaskClient(new IOxygenTask() {
+        OxygenHelperClient.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -108,7 +108,7 @@ public class OxygenNetwork {
     }
 
     public void sendTo(ProxyPacket packet, EntityPlayerMP player) {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -118,7 +118,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAll(ProxyPacket packet) {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -128,7 +128,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllAround(ProxyPacket packet, TargetPoint point) {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -138,7 +138,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllTracking(ProxyPacket packet, Entity entity) {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -148,7 +148,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllTracking(ProxyPacket packet, TargetPoint point) {
-        OxygenHelperServer.addNetworkTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
 
             @Override
             public void execute() {

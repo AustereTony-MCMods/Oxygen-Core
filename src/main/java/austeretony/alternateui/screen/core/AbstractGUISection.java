@@ -7,8 +7,6 @@ import org.lwjgl.input.Mouse;
 
 import austeretony.alternateui.screen.callback.AbstractGUICallback;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс, инкапсулирующий элементы ГПИ. ГПИ может содержать несколько разных разделов. 
@@ -16,7 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUISection> {
 
     private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>();
@@ -88,8 +85,7 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
 
 				framework.mouseOver(mouseX, mouseY);
 			}*/
-        } else   		
-            this.currentCallback.mouseOver(mouseX, mouseY);
+        }
     }
 
     @Override
@@ -116,39 +112,48 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
         }
     }
 
+    @Override
+    public void drawContextMenu(int mouseX, int mouseY) {           
+        if (!this.hasCurrentCallback())                    
+            for (GUIBaseElement element : this.getElements())                
+                element.drawContextMenu(mouseX, mouseY);            
+    }
+
     public void drawCallback(int mouseX, int mouseY) {   	
-        if (this.hasCurrentCallback())   		
-            this.currentCallback.draw(mouseX, mouseY);
+        this.currentCallback.draw(mouseX, mouseY);
     }
 
     public void drawCallbackTooltip(int mouseX, int mouseY) {   	
-        if (this.hasCurrentCallback())	
-            this.currentCallback.drawTooltip(mouseX, mouseY);
+        this.currentCallback.drawTooltip(mouseX, mouseY);
+    }
+
+    public void drawCallbackContextMenu(int mouseX, int mouseY) {       
+        this.currentCallback.drawContextMenu(mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {    	
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {    	
         //TODO mouseClicked()
         for (GUIBaseElement element : this.getElements()) {
             if (element == this.hoveredElement)
-                element.mouseClicked(mouseX, mouseY);
+                element.mouseClicked(mouseX, mouseY, mouseButton);
             else if (element.isDragged())       		
                 element.setDragged(false);
         }    	      
         if (this.hasCurrentCallback())    		
-            this.currentCallback.mouseClicked(mouseX, mouseY);
+            this.currentCallback.mouseClicked(mouseX, mouseY, mouseButton);
         return true;    	   	
     }
 
     @Override
     public void handleScroller(boolean isScrolling) {  	
-        if (isScrolling) {     		
+        if (isScrolling && !hasDraggedElement()) {     		
             for (GUIBaseElement element : this.getElements())                     
                 element.handleScroller(isScrolling);     	
             if (this.hasCurrentCallback())    			
                 this.getCurrentCallback().handleScroller(isScrolling);
         }  	
-        if (!Mouse.isButtonDown(0)) {  		
+        if (!Mouse.isButtonDown(0)) {//TODO Why? 		
             for (GUIBaseElement element : this.getElements())   
                 element.handleSlider();           
             if (this.hasCurrentCallback())
@@ -159,7 +164,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     @Override
     public boolean keyTyped(char typedChar, int keyCode) {    	
         for (GUIBaseElement element : this.getElements())   
-            element.keyTyped(typedChar, keyCode);	     
+            if (!element.isSearchField())
+                element.keyTyped(typedChar, keyCode);	     
         if (this.hasCurrentCallback())
             this.getCurrentCallback().keyTyped(typedChar, keyCode);
         return true;
@@ -171,9 +177,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
             element.updateCursorCounter();			
             element.update();			
             /*if (element.hasScroller()) {
-
-				element.getScroller().updateSmoothCounter();
-			}*/
+		element.getScroller().updateSmoothCounter();
+	    }*/
         }	
         if (this.hasCurrentCallback())			
             this.getCurrentCallback().updateScreen();

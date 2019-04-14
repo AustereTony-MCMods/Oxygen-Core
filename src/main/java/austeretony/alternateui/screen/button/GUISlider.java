@@ -1,20 +1,15 @@
 package austeretony.alternateui.screen.button;
 
-import org.lwjgl.input.Mouse;
-
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Слайдер для скроллера.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUISlider extends GUIAdvancedElement<GUISlider> {
 
     private GUIScroller scroller;
@@ -94,8 +89,8 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
-        if (Mouse.isButtonDown(0) && this.isHovered()) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (this.isHovered() && mouseButton == 0) {
             this.setDragged(true);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);

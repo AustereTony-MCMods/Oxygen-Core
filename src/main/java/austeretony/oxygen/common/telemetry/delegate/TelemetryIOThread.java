@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.telemetry.delegate;
 
-import austeretony.oxygen.common.telemetry.TelemetryManager;
+import austeretony.oxygen.common.OxygenManagerServer;
 
 public class TelemetryIOThread extends Thread {
 
@@ -11,10 +11,10 @@ public class TelemetryIOThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
-            if (TelemetryManager.instance().getProcessingThread().isRecording()) {
-                TelemetryManager.instance().record();
-                TelemetryManager.instance().getProcessingThread().stopRecord();
+        while (!interrupted()) {            
+            if (OxygenManagerServer.instance().getTelemetryManager().getProcessingThread().isRecording()) {
+                OxygenManagerServer.instance().getTelemetryManager().record();
+                OxygenManagerServer.instance().getTelemetryManager().getProcessingThread().stopRecord();
             }
         }
     }

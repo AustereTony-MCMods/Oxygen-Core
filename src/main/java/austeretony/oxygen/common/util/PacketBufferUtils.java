@@ -1,5 +1,7 @@
 package austeretony.oxygen.common.util;
 
+import java.util.UUID;
+
 import net.minecraft.network.PacketBuffer;
 
 public class PacketBufferUtils {
@@ -9,7 +11,16 @@ public class PacketBufferUtils {
         buffer.writeString(value);
     }
 
+    public static void writeUUID(UUID uuid, PacketBuffer buffer) {
+        buffer.writeLong(uuid.getMostSignificantBits());
+        buffer.writeLong(uuid.getLeastSignificantBits());
+    }
+
     public static String readString(PacketBuffer buffer) {
         return buffer.readString(buffer.readByte());
+    }
+
+    public static UUID readUUID(PacketBuffer buffer) {
+        return new UUID(buffer.readLong(), buffer.readLong());
     }
 }

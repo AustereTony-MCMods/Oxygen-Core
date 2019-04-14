@@ -3,32 +3,31 @@ package austeretony.alternateui.screen.list;
 import java.util.ArrayList;
 import java.util.List;
 
-import austeretony.alternateui.screen.core.GUIAdvancedElement;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import austeretony.alternateui.screen.core.GUISimpleElement;
 
 /**
  * Выпадающий список для ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
-public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
+public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
+
+    public final List<GUIDropDownElement> 
+    visibleElements = new ArrayList<GUIDropDownElement>(5),
+    elementsBuffer = new ArrayList<GUIDropDownElement>(5);
 
     private int elementsOffset;
-
-    public final List<GUIDropDownElement> visibleElements = new ArrayList<GUIDropDownElement>();
-
-    public final List<GUIDropDownElement> elementsBuffer = new ArrayList<GUIDropDownElement>();
 
     private GUIDropDownElement choosenElement, hoveredElement;
 
     private boolean resetScroller, hasChoosenElement;
 
+    private int actionBoxWidth, actionBoxHeight;
+
     public GUIDropDownList(int xPosition, int yPosition, int buttonWidth, int buttonHeight) {   	
         this.setPosition(xPosition, yPosition);
-        this.setSize(buttonWidth, buttonHeight);       
+        this.actionBoxWidth = buttonWidth;
+        this.actionBoxHeight = buttonHeight;
         this.enableFull();
     }
 
@@ -39,16 +38,19 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
      * 
      * @return вызывающий объект
      */
-    public GUIDropDownList addElement(GUIDropDownElement dropDownElement) {   	
+    public GUIDropDownList addElement(GUIDropDownElement dropDownElement) {
+        if (this.visibleElements.size() == 0)
+            this.setSize((int) ((float) this.actionBoxWidth * this.getScale()), (int) ((float) this.actionBoxHeight * this.getScale()));  
         int size;		
         dropDownElement.initScreen(this.getScreen()); 
         dropDownElement.setTextScale(this.getTextScale());
         dropDownElement.setTextAlignment(this.getTextAlignment(), this.getTextOffset());
+        this.bind(dropDownElement);
         if (!this.visibleElements.contains(dropDownElement)) {   		
             size = this.visibleElements.size();    		
             if (!this.hasScroller()) {   		
-                dropDownElement.setPosition(this.getX(), this.getY() + (int) ((this.getHeight() + this.getElementsOffset()) * this.getScale() * (size + 1)));  		
-                dropDownElement.setSize(this.getWidth(), this.getHeight());   		
+                dropDownElement.setPosition(this.getX(), this.getY() + (int) (this.getHeight() * this.getScale() * (size + 1)));  		
+                dropDownElement.setSize(this.actionBoxWidth, this.actionBoxHeight);   		
                 dropDownElement.setScale(this.getScale());   	
                 dropDownElement.setTextAlignment(this.getTextAlignment(), this.getTextOffset());    		    		
                 this.visibleElements.add(dropDownElement);
@@ -56,7 +58,7 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
         }    	
         if (!this.elementsBuffer.contains(dropDownElement)) {    		
             size = this.elementsBuffer.size();    		
-            dropDownElement.setPosition(this.getX(), this.getY() + (int) ((this.getHeight() + this.getElementsOffset()) * this.getScale() * (size + 1)));  		
+            dropDownElement.setPosition(this.getX(), this.getY() + (int) (this.getHeight() * this.getScale() * (size + 1)));  		
             dropDownElement.setSize(this.getWidth(), this.getHeight());   		
             dropDownElement.setScale(this.getScale());
             dropDownElement.setTextAlignment(this.getTextAlignment(), this.getTextOffset());    		
@@ -83,23 +85,24 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
 
     @Override
     public void mouseOver(int mouseX, int mouseY) {    	
-        if (this.isEnabled() && this.isDragged()) {    	
-            for (GUIDropDownElement element : this.visibleElements) {
-                element.mouseOver(mouseX, mouseY);   			
-                if (element.isHovered())   				
-                    this.hoveredElement = element;
+        if (this.isEnabled()) {
+            this.setHovered(mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + (this.isDragged() ? this.getHeight() * this.visibleElements.size() : this.getHeight()));   
+            if (this.isDragged()) {    	
+                for (GUIDropDownElement element : this.visibleElements) {
+                    element.mouseOver(mouseX, mouseY);   			
+                    if (element.isHovered())   				
+                        this.hoveredElement = element;
+                }
             }
         } 
-        this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() 
-        && mouseY < this.getY() + this.getHeight() + (this.isDragged() ? this.getHeight() * this.visibleElements.size() : 0));   
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {    	
-        boolean flag = super.mouseClicked(mouseX, mouseY);    	      	    	
-        if (flag) {    		 
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {    	
+        boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);    	      	    	
+        if (flag && mouseButton == 0) {    		 
             for (GUIDropDownElement element : this.visibleElements) {    			
-                if (element.mouseClicked(mouseX, mouseY)) {  				    				
+                if (element.mouseClicked(mouseX, mouseY, mouseButton)) {  				    				
                     this.choosenElement = element;    				
                     this.setDisplayText(element.getDisplayText());   				
                     this.hasChoosenElement = true;    				
@@ -115,7 +118,7 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
                 }
             }
         }    	
-        this.setDragged(flag);    	
+        this.setDragged(flag && mouseButton == 0);    	
         if (this.shouldResetScrollerOnClosing()) 		
             this.reset();
         return false;
@@ -139,7 +142,7 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
             if (i < this.elementsBuffer.size()) {			
                 dropDownElement = this.elementsBuffer.get(i);  			            	            	
                 size = this.visibleElements.size();				    				
-                dropDownElement.setPosition(this.getX(), this.getY() + (size + 1) * (this.getHeight() + this.getElementsOffset()) - (size / this.getVisibleElementsAmount()) * (this.getMaxElementsAmount() * (this.getHeight() + this.getElementsOffset())));				
+                dropDownElement.setPosition(this.getX(), this.getY() + (size + 1) * this.getHeight() - (size / this.getVisibleElementsAmount()) * (this.getMaxElementsAmount() * this.getHeight()));				
                 this.visibleElements.add(dropDownElement);
             }
         }
@@ -178,39 +181,6 @@ public class GUIDropDownList extends GUIAdvancedElement<GUIDropDownList> {
      */
     public GUIDropDownList resetScrollerOnClosing() {    	
         this.resetScroller = true;    	
-        return this;
-    }
-
-    /**
-     * Установка текстуры для кнопки.
-     * 
-     * @param textureLoctaion путь к текстуре
-     * @param textureWidth ширина
-     * @param textureHeight высота
-     * 
-     * @return вызывающий объект
-     */
-    @Override
-    public GUIDropDownList setTexture(ResourceLocation texture, int textureWidth, int textureHeight) {    	
-        this.setTexture(texture);    	
-        this.setTextureSize(textureWidth, textureHeight);   	
-        this.setImageSize(textureWidth * 3, textureHeight);   	
-        return this;
-    }
-
-    public int getElementsOffset() {    	
-        return this.elementsOffset;
-    } 
-
-    /**
-     * Устанавливает расстояние между элементами.
-     * 
-     * @param offset
-     * 
-     * @return
-     */
-    public GUIDropDownList setElementsOffset(int offset) {   	
-        this.elementsOffset = offset;    	
         return this;
     }
 }

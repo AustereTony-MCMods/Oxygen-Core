@@ -9,6 +9,6 @@ public interface ITemporaryProcess {
     void expired();
 
     boolean isExpired();
-    
+
     int getCounter();
 }

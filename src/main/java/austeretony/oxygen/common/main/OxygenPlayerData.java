@@ -1,157 +1,259 @@
 package austeretony.oxygen.common.main;
 
-import java.nio.ByteBuffer;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.common.notification.EnumRequestReply;
 import austeretony.oxygen.common.notification.IOxygenNotification;
 import austeretony.oxygen.common.process.ITemporaryProcess;
-import austeretony.oxygen.common.util.PacketBufferUtils;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import austeretony.oxygen.common.util.StreamUtils;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class OxygenPlayerData implements Comparable<OxygenPlayerData> {
+public class OxygenPlayerData {
 
-    private UUID uuid;
+    private UUID playerUUID;
 
-    private String username, title;
-
-    private int dimension;
+    private EnumStatus status;
 
     private boolean processesExist;
 
-    @SideOnly(Side.CLIENT)
-    private boolean opped;
+    private final Map<Long, ITemporaryProcess> temporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>();
 
-    private final Map<Long, ITemporaryProcess> processes = new ConcurrentHashMap<Long, ITemporaryProcess>();
+    private final Map<Long, FriendListEntry> friendList = new ConcurrentHashMap<Long, FriendListEntry>();
 
-    private final Map<Integer, ByteBuffer> additionalData = new ConcurrentHashMap<Integer, ByteBuffer>();
+    //cached in memory just for fast access
+    private final Map<UUID, Long> friendListAccess = new ConcurrentHashMap<UUID, Long>();
 
-    public OxygenPlayerData() {}
+    private int friendsAmount, ignoredAmount, currency;
 
-    public OxygenPlayerData(UUID uuid, String username, String title, int dimension) {
-        this.uuid = uuid;
-        this.username = username;
-        this.title = title;
-        this.dimension = dimension;
+    private boolean syncing, requesting, requested;
+
+    private boolean opped;//for client only
+
+    public OxygenPlayerData() {
+        this.status = EnumStatus.ONLINE;
     }
 
-    public UUID getUUID() {
-        return this.uuid;
+    public OxygenPlayerData(UUID playerUUID) {
+        this();
+        this.playerUUID = playerUUID;
     }
 
-    public void setUUID(UUID uuid) {
-        this.uuid = uuid;
+    public UUID getPlayerUUID() {
+        return this.playerUUID;
     }
 
-    public String getUsername() {
-        return this.username;
+    public void setPlayerUUID(UUID playerUUID) {
+        this.playerUUID = playerUUID;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public EnumStatus getStatus() {
+        return this.status;
     }
 
-    public String getTitle() {
-        return this.title;
+    public void setStatus(EnumStatus status) {
+        this.status = status;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getDimension() {
-        return this.dimension;
-    }
-
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public boolean isOpped() {
-        return this.opped;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void setOpped(boolean flag) {
-        this.opped = flag;
-    }
-
-    public Map<Long, ITemporaryProcess> getProcesses() {
-        return this.processes;
+    public Collection<ITemporaryProcess> getProcesses() {
+        return this.temporaryProcesses.values();
     }
 
     public void addProcess(ITemporaryProcess process) {
-        this.processes.put(process.getId(), process);
+        this.temporaryProcesses.put(process.getId(), process);
         this.processesExist = true;
     }
 
+    public void removeProcess(long processId) {
+        this.temporaryProcesses.remove(processId);
+        this.processesExist = this.temporaryProcesses.size() > 0;
+    }
+
     public boolean haveProcess(long processId) {
-        return this.processes.containsKey(processId);
+        return this.temporaryProcesses.containsKey(processId);
     }
 
     public ITemporaryProcess getProcess(long processId) {
-        return this.processes.get(processId);
+        return this.temporaryProcesses.get(processId);
+    }
+
+    public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long id) {
+        if (this.haveProcess(id)) {
+            switch (reply) {
+            case ACCEPT:
+                ((IOxygenNotification) this.getProcess(id)).accepted(player);
+                break;
+            case REJECT:
+                ((IOxygenNotification) this.getProcess(id)).rejected(player);
+                break;
+            }
+            this.removeProcess(id);
+        }
     }
 
     public void process() {
         if (this.processesExist) {
-            Iterator<ITemporaryProcess> iterator = this.processes.values().iterator();
+            Iterator<ITemporaryProcess> iterator = this.temporaryProcesses.values().iterator();
             while (iterator.hasNext()) {
                 if (iterator.next().isExpired()) {
                     iterator.remove();
-                    this.processesExist = this.processes.size() > 0;
+                    this.processesExist = this.temporaryProcesses.size() > 0;
                 }
             }
         }
     }
 
-    public Map<Integer, ByteBuffer> getData() {
-        return this.additionalData;
+    public Set<Long> getFriendListEntriesIds() {
+        return this.friendList.keySet();
     }
 
-    public void addData(int id, ByteBuffer buffer) {
-        this.additionalData.put(id, buffer);
+    public Collection<FriendListEntry> getFriendListEntries() {
+        return this.friendList.values();
     }
 
-    public boolean exist(int id) {
-        return this.additionalData.containsKey(id);
+    public int getFriendsAmount() {
+        return this.friendsAmount;
     }
 
-    public ByteBuffer getData(int id) {
-        return this.additionalData.get(id);
+    public int getIgnoredAmount() {
+        return this.ignoredAmount;
     }
 
-    public void write(PacketBuffer buffer, int... identifiers) {
-        PacketBufferUtils.writeString(this.getUsername(), buffer);
-        PacketBufferUtils.writeString(this.getTitle(), buffer);
-        buffer.writeInt(this.getDimension());
-        ByteBuffer byteBuffer;
-        for (int id : identifiers) {
-            byteBuffer = this.additionalData.get(id);
-            buffer.writeInt(byteBuffer.capacity());
-            buffer.writeBytes(byteBuffer.array());//writing array because PacketBuffer#writeBytes(ByteBuffer) isn't working properly
+    public boolean haveFriendListEntryForUUID(UUID playerUUID) {
+        return this.friendListAccess.containsKey(playerUUID);
+    }
+
+    public long getFriendListEntryIdByUUID(UUID playerUUID) {
+        return this.friendListAccess.get(playerUUID);
+    }
+
+    public FriendListEntry getFriendListEntryByUUID(UUID playerUUID) {
+        return this.friendList.get(this.friendListAccess.get(playerUUID));
+    }
+
+    public FriendListEntry getFriendListEntry(long id) {
+        return this.friendList.get(id);
+    }
+
+    public void addFriendListEntry(FriendListEntry friend) {
+        if (friend.ignored)
+            this.ignoredAmount++;
+        else
+            this.friendsAmount++;
+        this.friendList.put(friend.getId(), friend);
+        this.friendListAccess.put(friend.playerUUID, friend.getId());
+    }
+
+    public void removeFriendListEntry(long id) {
+        if (this.friendList.containsKey(id)) {
+            FriendListEntry entry = this.friendList.remove(id);
+            if (entry.ignored)
+                this.ignoredAmount--;
+            else
+                this.friendsAmount--;
+            this.friendListAccess.remove(entry.playerUUID);
         }
-    }
+    } 
 
-    public void read(PacketBuffer buffer, int... identifiers) {
-        this.setUsername(PacketBufferUtils.readString(buffer)); 
-        this.setTitle(PacketBufferUtils.readString(buffer));
-        this.setDimension(buffer.readInt());
-        ByteBuffer byteBuffer;
-        for (int id : identifiers) {
-            byteBuffer = ByteBuffer.allocate(buffer.readInt());
-            buffer.readBytes(byteBuffer);
-            this.additionalData.put(id, byteBuffer);
+    public void removeFriendListEntry(UUID playerUUID) {
+        if (this.friendListAccess.containsKey(playerUUID)) {
+            FriendListEntry entry = this.friendList.remove(this.friendListAccess.remove(playerUUID));
+            if (entry.ignored)
+                this.ignoredAmount--;
+            else
+                this.friendsAmount--;
         }
+    } 
+
+    public int getCurrency() {
+        return this.currency;
     }
 
-    @Override
-    public int compareTo(OxygenPlayerData other) {        
-        return this.username.compareTo(other.username);
+    public int setCurrency(int value) {
+        return this.currency = value;
+    }
+
+    public int addCurrency(int value) {
+        return this.currency += value;
+    }
+
+    public int removeCurrency(int value) {
+        return this.currency -= value;
+    }
+
+    public boolean isSyncing() {
+        return this.syncing;
+    }
+
+    public void setSyncing(boolean flag) {
+        this.syncing = flag;
+    }
+
+    public boolean isRequesting() {
+        return this.requesting;
+    }
+
+    public void setRequesting(boolean flag) {
+        this.requesting = flag;
+    }
+
+    public boolean isRequested() {
+        return this.requested;
+    }
+
+    public void setRequested(boolean flag) {
+        this.requested = flag;
+    }
+
+    public boolean isOpped() {
+        return this.opped;
+    }
+
+    public void setOpped(boolean flag) {
+        this.opped = flag;
+    }
+
+    public void write(BufferedOutputStream bos) throws IOException {
+        StreamUtils.write(this.playerUUID, bos);
+        StreamUtils.write(this.currency, bos);
+        StreamUtils.write((byte) this.status.ordinal(), bos);
+        StreamUtils.write((short) this.friendList.size(), bos);
+        for (FriendListEntry listEntry : this.friendList.values()) 
+            listEntry.write(bos);
+    }
+
+    public void read(BufferedInputStream bis) throws IOException {
+        this.playerUUID = StreamUtils.readUUID(bis);
+        this.currency = StreamUtils.readInt(bis);
+        this.status = EnumStatus.values()[StreamUtils.readByte(bis)];
+        int amount = StreamUtils.readShort(bis);
+        for (int i = 0; i < amount; i++)
+            this.addFriendListEntry(FriendListEntry.read(bis));
+    }
+
+    public enum EnumStatus {
+
+        ONLINE("oxygen.status.online"),
+        AWAY("oxygen.status.away"),
+        NOT_DISTURB("oxygen.status.notDisturb"),
+        OFFLINE("oxygen.status.offline");
+
+        public final String key;
+
+        EnumStatus(String key) {
+            this.key = key;
+        }       
+
+        public String getLocalizedName() {
+            return I18n.format(this.key);
+        }
     }
 }

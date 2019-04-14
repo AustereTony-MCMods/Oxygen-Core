@@ -4,9 +4,9 @@ import java.util.Set;
 
 import austeretony.oxygen.common.api.command.AbstractOxygenCommand;
 import austeretony.oxygen.common.command.IArgumentExecutor;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
-import austeretony.oxygen.common.reference.CommonReference;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

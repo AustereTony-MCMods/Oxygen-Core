@@ -16,13 +16,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.io.OxygenIOServer;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.telemetry.ILogType;
-import austeretony.oxygen.common.telemetry.TelemetryManager;
+import austeretony.oxygen.common.telemetry.LogFiles;
 import austeretony.oxygen.common.telemetry.api.ILog;
 import austeretony.oxygen.common.telemetry.api.LogType;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
@@ -31,8 +30,6 @@ import austeretony.oxygen.common.util.StreamUtils;
 import austeretony.oxygen.common.util.TimeCounter;
 
 public class TelemetryIO {
-
-    private String telemetryFolder;
 
     private long lastRecordTime, lastAppendingTime;
 
@@ -52,7 +49,7 @@ public class TelemetryIO {
     }
 
     private void loadLogFilesDelegated() {
-        OxygenHelperServer.addIOTaskServer(new IOxygenTask() {
+        OxygenHelperServer.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -63,8 +60,7 @@ public class TelemetryIO {
     }
 
     private void loadLogFiles() {
-        this.telemetryFolder = OxygenIOServer.getDataFolder() + "/server/telemetry";
-        String folder = this.telemetryFolder + "/log_files.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/telemetry/log_files.json";
         Path path = Paths.get(folder);     
         LogFiles.initLogFileChangingInterval();
         long currentTime = System.currentTimeMillis();
@@ -109,7 +105,7 @@ public class TelemetryIO {
         String cacheFileFolder;
         for (ILogType logType : LogType.getLogTypes()) {
             for (int i = 0; i < OxygenTelemetryConfig.CACHE_FILES_AMOUNT.getIntValue(); i++) {
-                cacheFileFolder = this.telemetryFolder + "/" + logType.getFolderName() + "/" + logType.getCacheFileName() + "_" + i + ".dat";
+                cacheFileFolder = OxygenHelperServer.getDataFolder() + "/server/telemetry/" + logType.getFolderName() + "/" + logType.getCacheFileName() + "_" + i + ".dat";
                 try (OutputStream os = new FileOutputStream(cacheFileFolder)) { 
                     //just clearing file
                 } catch (IOException exception) {
@@ -117,10 +113,6 @@ public class TelemetryIO {
                 }  
             }
         }
-    }
-
-    public String getTelemetryDataFolder() {
-        return this.telemetryFolder;
     }
 
     public TimeCounter getCacheAppendingCounter() {
@@ -142,8 +134,8 @@ public class TelemetryIO {
     public void writeCachedLog(ILogType logType, Queue<ILog> cache) {
         if (!cache.isEmpty()) {
             String 
-            prevCacheFileFolder = this.telemetryFolder + "/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLatestCacheFile() + ".dat",
-            newCacheFileFolder = this.telemetryFolder + "/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getCacheFile() + ".dat";
+            prevCacheFileFolder = OxygenHelperServer.getDataFolder() + "/server/telemetry/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLatestCacheFile() + ".dat",
+            newCacheFileFolder = OxygenHelperServer.getDataFolder() + "/server/telemetry/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getCacheFile() + ".dat";
             Path path = Paths.get(newCacheFileFolder);            
             if (!Files.exists(path)) {
                 try {                   
@@ -188,8 +180,8 @@ public class TelemetryIO {
 
     private void appendCachedLog(ILogType logType) {
         String 
-        cacheFileFolder = this.telemetryFolder + "/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLatestCacheFile() + ".dat",
-        logFileFolder = this.telemetryFolder + "/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLogFile() + ".dat";
+        cacheFileFolder = OxygenHelperServer.getDataFolder() + "/server/telemetry/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLatestCacheFile() + ".dat",
+        logFileFolder = OxygenHelperServer.getDataFolder() + "/server/telemetry/" + logType.getFolderName() + "/" + this.getLogFiles(logType).getLogFile() + ".dat";
         Path path = Paths.get(logFileFolder);            
         if (!Files.exists(path)) {
             try {                   
@@ -223,7 +215,7 @@ public class TelemetryIO {
     }
 
     private void saveLogFileNames() {
-        String folder = this.telemetryFolder + "/log_files.json";
+        String folder = OxygenHelperServer.getDataFolder() + "/server/telemetry/log_files.json";
         Path path = Paths.get(folder);     
         try {               
             Files.createDirectories(path.getParent());
@@ -244,6 +236,6 @@ public class TelemetryIO {
 
     public void forceSave() {
         this.appendingCounter.setExpired();
-        TelemetryManager.instance().getProcessingThread().startRecord();
+        OxygenManagerServer.instance().getTelemetryManager().getProcessingThread().startRecord();
     }
 }

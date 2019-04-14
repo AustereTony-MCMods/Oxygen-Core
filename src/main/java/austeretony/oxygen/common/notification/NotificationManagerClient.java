@@ -5,14 +5,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.client.reference.ClientReference;
+import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.gui.notifications.NotificationsGUIScreen;
+import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.server.SPRequestReply;
 import net.minecraft.util.ResourceLocation;
 
 public class NotificationManagerClient {
 
-    private static NotificationManagerClient instance;
+    private final OxygenManagerClient manager;
 
     private final Map<Long, IOxygenNotification> notifications = new ConcurrentHashMap<Long, IOxygenNotification>();
 
@@ -22,14 +24,12 @@ public class NotificationManagerClient {
 
     private boolean notificationsExist, notificationsOverlayInitialized;
 
-    private NotificationManagerClient() {}
-
-    public static void create() {
-        instance = new NotificationManagerClient();
+    public NotificationManagerClient(OxygenManagerClient manager) {
+        this.manager = manager;
     }
 
-    public static NotificationManagerClient instance() {
-        return instance;
+    public void openNotificationsMenu() {
+        ClientReference.displayGuiScreen(new NotificationsGUIScreen());
     }
 
     public Map<Integer, ResourceLocation> getIcons() {

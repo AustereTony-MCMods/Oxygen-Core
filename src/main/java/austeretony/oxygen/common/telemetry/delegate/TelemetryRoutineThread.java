@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.telemetry.delegate;
 
-import austeretony.oxygen.common.telemetry.TelemetryManager;
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
 import austeretony.oxygen.common.util.TimeCounter;
 
@@ -18,9 +18,9 @@ public class TelemetryRoutineThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (!interrupted()) {            
             if (!this.isRecording()) {
-                TelemetryManager.instance().process();
+                OxygenManagerServer.instance().getTelemetryManager().process();
                 if (this.recordCounter.expired())
                     this.startRecord();
             }

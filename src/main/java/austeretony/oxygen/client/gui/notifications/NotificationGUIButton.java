@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import austeretony.alternateui.screen.button.GUIButton;
-import austeretony.oxygen.client.reference.ClientReference;
+import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.notification.EnumNotifications;
 import austeretony.oxygen.common.notification.IOxygenNotification;
-import austeretony.oxygen.common.notification.NotificationManagerClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,7 @@ public class NotificationGUIButton extends GUIButton {
     public NotificationGUIButton(IOxygenNotification notification) {
         super();
         this.notification = notification;
-        this.hasIcon = (this.icon = NotificationManagerClient.instance().getIcon(notification.getIndex())) != null;
+        this.hasIcon = (this.icon = OxygenManagerClient.instance().getNotificationsManager().getIcon(notification.getIndex())) != null;
     }
 
     @Override
@@ -46,11 +46,11 @@ public class NotificationGUIButton extends GUIButton {
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);     
             if (this.hasIcon) {
                 this.mc.getTextureManager().bindTexture(this.icon);
-                this.drawCustomSizedTexturedRect(6, 5, 0, 0, 8, 8, 8, 8);
+                this.drawCustomSizedTexturedRect(6, 3, 0, 0, 10, 10, 10, 10);
             }
             this.acceptButton.draw(mouseX, mouseY);
             this.rejectButton.draw(mouseX, mouseY);
-            GlStateManager.scale(0.75F, 0.75F, 0.0F);    
+            GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);    
             int color;                          
             if (this.isHovered() || this.isToggled())                                          
                 color = this.getHoveredTextColor();
@@ -89,11 +89,11 @@ public class NotificationGUIButton extends GUIButton {
     }
 
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {       
-        if (this.acceptButton.mouseClicked(mouseX, mouseY)) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {       
+        if (this.acceptButton.mouseClicked(mouseX, mouseY, mouseButton)) {
             this.notification.accepted(ClientReference.getClientPlayer());
             return true;
-        } else if (this.rejectButton.mouseClicked(mouseX, mouseY)) {
+        } else if (this.rejectButton.mouseClicked(mouseX, mouseY, mouseButton)) {
             this.notification.rejected(ClientReference.getClientPlayer());;
             return true;
         }

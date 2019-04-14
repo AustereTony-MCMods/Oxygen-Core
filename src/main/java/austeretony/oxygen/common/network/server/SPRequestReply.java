@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.network.server;
 
-import austeretony.oxygen.common.main.OxygenManagerServer;
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.notification.EnumRequestReply;
 import net.minecraft.network.INetHandler;

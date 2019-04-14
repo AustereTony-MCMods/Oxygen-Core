@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.network.client;
 
-import austeretony.oxygen.common.main.OxygenManagerClient;
+import austeretony.oxygen.client.ListenersRegistryClient;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;
@@ -38,6 +38,6 @@ public class CPShowMessage extends ProxyPacket {
         if (this.args.length > 0)
             for (int i = 0; i < this.args.length; i++)
                 this.args[i] = PacketBufferUtils.readString(buffer);
-        OxygenManagerClient.instance().notifyChatMessageInfoListeners(this.modIndex, this.messageIndex, this.args);
+        ListenersRegistryClient.instance().notifyChatMessageInfoListeners(this.modIndex, this.messageIndex, this.args);
     }
 }

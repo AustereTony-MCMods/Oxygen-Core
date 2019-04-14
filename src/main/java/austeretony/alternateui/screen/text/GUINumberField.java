@@ -8,15 +8,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Простое однострочное поле для ввода чисел.
- * 
- * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUINumberField extends GUISimpleElement<GUINumberField> {
 
     protected char cursorSymbol;
@@ -426,7 +421,7 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
 
     //TODO mouseClicked()
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
         boolean flag = false;
         if (this.isDoubleClickRequired()) {
             if (this.isClickedLately()) {
@@ -438,14 +433,16 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
             flag = true;
         if (flag) {
             if (this.isEnabled()) {
-                this.setDragged(this.isHovered());	            
+                this.setDragged(this.isHovered());	
+                if (this.isDragged() && this.shouldCancelDraggedLogic())
+                    resetDragged();
                 if (!this.isHovered() && this.shouldResetOnMisclick())
                     this.setText("");	   	       
                 if (this.isDragged() && this.isHovered()) {
                     int l = mouseX - this.getX();
                     if (this.isDynamicBackgroundEnabled())
                         l -= 4;
-                    String s = this.mc.fontRenderer.trimStringToWidth(this.typedNumber.substring(this.lineScrollOffset), this.getWidth());
+                    String s = this.mc.fontRenderer.trimStringToWidth(this.typedNumber.substring(this.lineScrollOffset), (int) ((float) this.getWidth() * this.getScale()));
                     this.setCursorPosition(this.mc.fontRenderer.trimStringToWidth(s, l).length() + this.lineScrollOffset);
                 }
                 this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);

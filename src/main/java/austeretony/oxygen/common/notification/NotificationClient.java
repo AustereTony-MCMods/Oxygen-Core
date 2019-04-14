@@ -1,5 +1,6 @@
 package austeretony.oxygen.common.notification;
 
+import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.server.SPRequestReply;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,20 +66,20 @@ public class NotificationClient implements IOxygenNotification, Comparable<Notif
     public void accepted(EntityPlayer player) {
         if (this.type == EnumNotifications.REQUEST) {
             OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.ACCEPT, this.id));
-            if (this.id == NotificationManagerClient.instance().getLatestRequestId())
-                NotificationManagerClient.instance().resetLatestRequestId();
+            if (this.id == OxygenManagerClient.instance().getNotificationsManager().getLatestRequestId())
+                OxygenManagerClient.instance().getNotificationsManager().resetLatestRequestId();
         }
-        NotificationManagerClient.instance().getNotifications().remove(this.id);
+        OxygenManagerClient.instance().getNotificationsManager().getNotifications().remove(this.id);
     }
 
     @Override
     public void rejected(EntityPlayer player) {
         if (this.type == EnumNotifications.REQUEST) {
             OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.REJECT, this.id));
-            if (this.id == NotificationManagerClient.instance().getLatestRequestId())
-                NotificationManagerClient.instance().resetLatestRequestId();
+            if (this.id == OxygenManagerClient.instance().getNotificationsManager().getLatestRequestId())
+                OxygenManagerClient.instance().getNotificationsManager().resetLatestRequestId();
         }
-        NotificationManagerClient.instance().getNotifications().remove(this.id);
+        OxygenManagerClient.instance().getNotificationsManager().getNotifications().remove(this.id);
     }
 
     @Override

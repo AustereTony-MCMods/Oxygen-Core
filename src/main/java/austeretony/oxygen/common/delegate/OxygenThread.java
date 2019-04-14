@@ -8,7 +8,7 @@ import austeretony.oxygen.common.main.OxygenMain;
 
 public class OxygenThread extends Thread {
 
-    private BlockingQueue<IOxygenTask> tasks = new LinkedBlockingQueue<IOxygenTask>();
+    private final BlockingQueue<IOxygenTask> tasks = new LinkedBlockingQueue<IOxygenTask>();
 
     public OxygenThread(String threadName) {
         super(threadName);
@@ -24,11 +24,11 @@ public class OxygenThread extends Thread {
                 try {
                     task.execute();
                 } catch (Exception exception) {
-                    OxygenMain.OXYGEN_LOGGER.error("An error intercepted from thread {}.", this.getName());
+                    OxygenMain.OXYGEN_LOGGER.error("Caught exception from thread: {}.", this.getName());
                     exception.printStackTrace();
                 }
             } catch (InterruptedException exception) {
-                OxygenMain.OXYGEN_LOGGER.info("Interrupted thread {}.", this.getName());
+                OxygenMain.OXYGEN_LOGGER.info("Interrupted thread: {}.", this.getName());
             }
         }
     }

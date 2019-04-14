@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.config.IConfigHolder;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.text.TextFormatting;
 
@@ -26,15 +27,15 @@ public class OxygenUtils {
         return TextFormatting.getValueByName(code);
     }
 
-    public static JsonObject updateConfig(JsonObject internalConfig, String externalConfigFolder) throws IOException {
+    public static JsonObject updateConfig(JsonObject internalConfig, String externalConfigFolder, IConfigHolder configHolder) throws IOException {
         try {            
             JsonObject externalConfigOld, externalConfigNew, externalGroupNew;
             externalConfigOld = JsonUtils.getExternalJsonData(externalConfigFolder).getAsJsonObject();   
             JsonElement versionElement = externalConfigOld.get("version");
-            if (versionElement == null || isOutdated(versionElement.getAsString(), OxygenMain.VERSION_CUSTOM)) {
+            if (versionElement == null || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
                 OxygenMain.OXYGEN_LOGGER.info("Updating external config file...");
                 externalConfigNew = new JsonObject();
-                externalConfigNew.add("version", new JsonPrimitive(OxygenMain.VERSION_CUSTOM));
+                externalConfigNew.add("version", new JsonPrimitive(configHolder.getVersion()));
                 Map<String, JsonElement> 
                 internalData = new LinkedHashMap<String, JsonElement>(),
                 externlDataOld = new HashMap<String, JsonElement>(),

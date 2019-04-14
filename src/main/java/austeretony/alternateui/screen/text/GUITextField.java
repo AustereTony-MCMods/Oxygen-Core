@@ -9,15 +9,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Простое однострочное поле для ввода текста.
- * 
- * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected String typedText;
@@ -388,7 +383,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     //TODO mouseClicked()
     @Override
-    public boolean mouseClicked(int mouseX, int mouseY) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
         boolean flag = false;
         if (this.isDoubleClickRequired()) {
             if (this.isClickedLately()) {
@@ -400,7 +395,9 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             flag = true;
         if (flag) {
             if (this.isEnabled()) {
-                this.setDragged(this.isHovered());	            
+                this.setDragged(this.isHovered());
+                if (this.isDragged() && this.shouldCancelDraggedLogic())
+                    resetDragged();
                 if (!this.isHovered() && this.shouldResetOnMisclick())
                     this.setText("");   	       
                 if (this.isDragged() && this.isHovered()) {
@@ -408,7 +405,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                     if (this.isDynamicBackgroundEnabled())
                         l -= 4;                  
                     String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), this.getWidth());
-                    this.setCursorPosition(this.mc.fontRenderer.trimStringToWidth(s, l).length() + this.lineScrollOffset);                  
+                    this.setCursorPosition((int) ((float) this.mc.fontRenderer.trimStringToWidth(s, l).length() * (1.0F + this.getScale())) + this.lineScrollOffset);                  
                     this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
                     this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
                     if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())

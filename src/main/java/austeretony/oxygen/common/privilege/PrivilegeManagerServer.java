@@ -5,16 +5,18 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.OxygenHelperServer;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenManagerServer;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
 import austeretony.oxygen.common.privilege.io.PrivilegeIOServer;
-import austeretony.oxygen.common.reference.CommonReference;
 
 public class PrivilegeManagerServer {
 
+    private final OxygenManagerServer manager;
+    
     public static final Map<String, String> PRIVILEGES_REGISTRY = new HashMap<String, String>();
 
     private final Map<UUID, String> players = new ConcurrentHashMap<UUID, String>();
@@ -23,14 +25,8 @@ public class PrivilegeManagerServer {
 
     private PrivilegeIOServer privilegeIO;
 
-    private PrivilegeManagerServer() {}
-
-    public static PrivilegeManagerServer create() {
-        return new PrivilegeManagerServer();
-    }
-
-    public static PrivilegeManagerServer instance() {
-        return OxygenManagerServer.instance().getPrivilegeManager();
+    public PrivilegeManagerServer(OxygenManagerServer manager) {
+        this.manager = manager;
     }
 
     public void initIO() {

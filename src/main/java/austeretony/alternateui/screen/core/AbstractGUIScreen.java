@@ -1,6 +1,7 @@
 package austeretony.alternateui.screen.core;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.lwjgl.input.Mouse;
 
@@ -13,15 +14,12 @@ import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Модернизированный GuiScreen. Должен быть унаследован вашим ГПИ простого интерфейса.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public abstract class AbstractGUIScreen extends GuiScreen {
 
     public int 
@@ -111,12 +109,21 @@ public abstract class AbstractGUIScreen extends GuiScreen {
             this.drawForegroundLayer(mouseX, mouseY, partialTicks);        	
             GlStateManager.disableLighting();     
             GlStateManager.enableDepth();         	
-            section.drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop);       	
-            section.drawCallback(mouseX - this.guiLeft, mouseY - this.guiTop);	   	        
-            section.drawCallbackTooltip(mouseX - this.guiLeft, mouseY - this.guiTop);	   	        
+            section.drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop);       
             GlStateManager.disableDepth();      
             GlStateManager.enableLighting();      			
             GlStateManager.popMatrix();
+            GlStateManager.disableLighting();     
+            GlStateManager.enableDepth();  
+            section.drawContextMenu(mouseX, mouseY);
+            if (section.hasCurrentCallback()) {
+                section.getCurrentCallback().mouseOver(mouseX, mouseY);
+                section.drawCallback(mouseX, mouseY);                      
+                section.drawCallbackTooltip(mouseX, mouseY);  
+                section.drawCallbackContextMenu(mouseX, mouseY);
+            }
+            GlStateManager.disableDepth();      
+            GlStateManager.enableLighting(); 
             RenderHelper.enableGUIStandardItemLighting();	        	        
             this.yPrevMouse = mouseY;
         }              
@@ -160,8 +167,7 @@ public abstract class AbstractGUIScreen extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {    	
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (mouseButton == 0)   	        	
-            this.getWorkspace().getCurrentSection().mouseClicked(mouseX, mouseY);
+        this.getWorkspace().getCurrentSection().mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     //TODO keyTyped()
@@ -180,26 +186,6 @@ public abstract class AbstractGUIScreen extends GuiScreen {
             this.workspace.getCurrentSection().handleScroller(this.isScrolling);  
     }
 
-    //TODO scrollButtonPanel()
-    public void scrollButtonPanel(GUIButtonPanel panel) {   	
-        int i = 0, size;   	
-        GUIButton button;    	    	
-        panel.visibleButtons.clear();   	
-        if (panel.getScroller().scrollerType == GUIEnumScrollerType.STANDARD) {   		
-            for (i = panel.getScroller().getPosition(); i < panel.getScroller().getPosition() + panel.getScroller().rowsVisible; i++) {    		
-                if (i < panel.buttonsBuffer.size()) {    			
-                    button = panel.buttonsBuffer.get(i);     			            	            	
-                    size = panel.visibleButtons.size();					    				
-                    button.setPosition(panel.orientation == GUIEnumOrientation.HORIZONTAL ? panel.getX() + size * (panel.getButtonWidth() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonWidth() + panel.getButtonsOffset())) : panel.getX(),
-                            panel.orientation == GUIEnumOrientation.VERTICAL ? panel.getY() + size * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())) : panel.getY());    				
-                    panel.visibleButtons.add(button);
-                }
-            }
-        } else {  		
-            //TODO Handle smooth scroller
-        }
-    }
-
     //TODO scrollDropDownList()
     public void scrollDropDownList(GUIDropDownList dropDownList) {   	
         int i = 0, size;    	
@@ -210,32 +196,65 @@ public abstract class AbstractGUIScreen extends GuiScreen {
                 if (i < dropDownList.elementsBuffer.size()) {   			
                     dropDownElement = dropDownList.elementsBuffer.get(i);     			            	            	
                     size = dropDownList.visibleElements.size();					    				
-                    dropDownElement.setPosition(dropDownList.getX(), dropDownList.getY() + (size + 1) * (dropDownList.getHeight() + dropDownList.getElementsOffset()) - (size / dropDownList.getVisibleElementsAmount()) * (dropDownList.getMaxElementsAmount() * (dropDownList.getHeight() + dropDownList.getElementsOffset())));   				
+                    dropDownElement.setPosition(dropDownList.getX(), dropDownList.getY() + (size + 1) * dropDownList.getHeight() - (size / dropDownList.getVisibleElementsAmount()) * (dropDownList.getMaxElementsAmount() * dropDownList.getHeight()));   				
                     dropDownList.visibleElements.add(dropDownElement);
                 }
             }
-        } else {   		
-            //TODO Handle smooth scroller
+        }//TODO Handle smooth scroller
+    }
 
-            /*for (i = dropDownList.getScroller().getPosition(); i < dropDownList.getScroller().getPosition() + dropDownList.getScroller().rowsVisible; i++) {
+    //TODO scrollButtonPanel()
+    public void scrollButtonPanel(GUIButtonPanel panel) {       
+        int i = 0, size, k;
+        boolean scrollingSearch = !panel.searchButtons.isEmpty();
+        GUIButton button;
+        panel.visibleButtons.clear();
+        if (panel.getScroller().scrollerType == GUIEnumScrollerType.STANDARD) {
+            for (i = panel.getScroller().getPosition(); i < panel.getScroller().getPosition() + panel.getVisibleElementsAmount(); i++) {
+                if ((!scrollingSearch && i < panel.buttonsBuffer.size()) || (scrollingSearch && i < panel.searchButtons.size())) {
+                    button = scrollingSearch ? panel.searchButtons.get(i) : panel.buttonsBuffer.get(i);  
+                    size = panel.visibleButtons.size();
+                    button.setPosition(panel.orientation == GUIEnumOrientation.HORIZONTAL ? panel.getX() + size * (panel.getButtonWidth() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonWidth() + panel.getButtonsOffset())) : panel.getX(),
+                            panel.orientation == GUIEnumOrientation.VERTICAL ? panel.getY() + size * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())) : panel.getY());   
+                    panel.visibleButtons.add(button);
+                }
+            }
+        }//TODO Handle smooth scroller
+    }
 
-    			if (i < dropDownList.elementsBuffer.size()) {
-
-    				dropDownElement = dropDownList.elementsBuffer.get(i);  
-
-    				size = dropDownList.visibleElements.size();   
-
-    				while (dropDownList.getScroller().isScrollingDown() || dropDownList.getScroller().isScrollingUp()) {
-
-    					dropDownElement.setPosition(dropDownList.getX(), dropDownList.getY() + size * (dropDownList.getHeight() + dropDownList.getElementsOffset()) + (int) ((float) (dropDownList.getHeight() + dropDownList.getElementsOffset()) * dropDownList.getScroller().getSmoothCounter()) - (size / dropDownList.getVisibleElementsAmount()) * (dropDownList.getMaxElementsAmount() * (dropDownList.getHeight() + dropDownList.getElementsOffset())));    					    				
-    				}
-
-    				dropDownList.visibleElements.add(dropDownElement);
-	    		}
-			}*/
-
-            //TODO Handle smooth scroller
+    //TODO searchButtonPanel()
+    public void searchButtonPanel(GUIButtonPanel panel) {      
+        int buttonIndex, size, k;       
+        GUIButton buttonCopy, button;        
+        String 
+        typedText = panel.getSearchField().getTypedText().toLowerCase(),
+        buttonName;                
+        Iterator<GUIButton> buttonsIterator = panel.buttonsBuffer.iterator();           
+        panel.visibleButtons.clear();  
+        panel.searchButtons.clear();  
+        while (buttonsIterator.hasNext()) {             
+            button = buttonsIterator.next();    
+            if (button != null) {                               
+                buttonName = button.getDisplayText().toLowerCase();             
+                if (buttonName.startsWith(typedText) || buttonName.contains(" " + typedText)) {                                                                                                 
+                    size = panel.searchButtons.size(); 
+                    buttonCopy = button;                                                                                                                                           
+                    k = size;                                           
+                    buttonCopy.setY(panel.getY() + k * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getMaxElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())));         
+                    if (size < panel.getVisibleElementsAmount()) {                           
+                        panel.visibleButtons.add(buttonCopy);    
+                    }
+                    panel.searchButtons.add(buttonCopy);
+                }
+            }
         }
+    }
+
+    protected abstract boolean doesGUIPauseGame();
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return this.doesGUIPauseGame();
     }
 
     //TODO updateScreen()
@@ -252,6 +271,11 @@ public abstract class AbstractGUIScreen extends GuiScreen {
     public void close() {
         this.mc.displayGuiScreen(null);
         this.mc.setIngameFocus();
+    }
+
+    @Override
+    public void onGuiClosed() {
+        GUIBaseElement.resetDragged();
     }
 
     /**

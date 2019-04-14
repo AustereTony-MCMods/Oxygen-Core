@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.main;
 
-import austeretony.oxygen.client.reference.ClientReference;
+import austeretony.oxygen.common.core.api.ClientReference;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,7 +18,19 @@ public enum EnumChatMessages {
     COMMAND_PRIVILEGE_GROUP_REMOVE,
     COMMAND_PRIVILEGE_PRIVILEGE_ADD,
     COMMAND_PRIVILEGE_PRIVILEGE_REMOVE,
-    COMMAND_PRIVILEGE_PROMOTE;
+    COMMAND_PRIVILEGE_PROMOTE,
+    STATUS_CHANGED,
+    REQUEST_RESET,
+    TARGET_OFFLINE,
+    SENDER_IGNORED,
+    FRIEND_REQUEST_ACCEPTED_SENDER,
+    FRIEND_REQUEST_ACCEPTED_TARGET,
+    FRIEND_REQUEST_REJECTED_SENDER,
+    FRIEND_REQUEST_REJECTED_TARGET,
+    FRIEND_REMOVED,
+    ADDED_TO_IGNORED,
+    NOTE_EDITED,
+    IGNORED_REMOVED;
 
     @SideOnly(Side.CLIENT)
     public void show(String... args) {
@@ -55,6 +67,42 @@ public enum EnumChatMessages {
             break;
         case COMMAND_PRIVILEGE_PROMOTE:
             ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.privilege.promote", args[0], args[1]));
+            break;
+        case STATUS_CHANGED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.statusChanged", args[0]));
+            break;
+        case REQUEST_RESET:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.requestReset"));
+            break;
+        case TARGET_OFFLINE:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.targetOffline"));
+            break;
+        case SENDER_IGNORED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.senderIgnored"));
+            break;
+        case FRIEND_REQUEST_ACCEPTED_SENDER:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.senderFriendRequestAccepted"));
+            break;
+        case FRIEND_REQUEST_ACCEPTED_TARGET:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.targetFriendRequestAccepted"));
+            break;
+        case FRIEND_REQUEST_REJECTED_SENDER:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.senderFriendRequestRejected"));
+            break;
+        case FRIEND_REQUEST_REJECTED_TARGET:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.targetFriendRequestRejected"));
+            break;
+        case FRIEND_REMOVED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.friendRemoved"));
+            break;
+        case ADDED_TO_IGNORED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.addedToIgnored"));
+            break;
+        case NOTE_EDITED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.noteEdited"));
+            break;
+        case IGNORED_REMOVED:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.ignoredRemoved"));
             break;
         }
     }

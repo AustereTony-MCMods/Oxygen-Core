@@ -9,13 +9,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenManagerClient;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
-import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
 import austeretony.oxygen.common.util.JsonUtils;
 import austeretony.oxygen.common.util.OxygenUtils;
@@ -35,7 +34,7 @@ public class PrivilegeIOClient {
     }
 
     public void loadPrivilegeDataDelegated() {
-        OxygenHelperClient.addIOTaskClient(new IOxygenTask() {
+        OxygenHelperClient.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -52,10 +51,10 @@ public class PrivilegeIOClient {
                 JsonObject groupObject = JsonUtils.getExternalJsonData(folder).getAsJsonObject();
                 long groupId = groupObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID)).getAsLong();
                 if (groupId == OxygenManagerClient.instance().getGroupId()) {
-                    PrivilegeManagerClient.instance().setPrivelegedGroup(PrivilegedGroup.deserializeClient(groupObject));
+                    OxygenManagerClient.instance().getPrivilegeManager().setPrivelegedGroup(PrivilegedGroup.deserializeClient(groupObject));
                 } else {
                     OxygenMain.OXYGEN_LOGGER.info("Client group id mismatch with id recieved from server.");
-                    PrivilegeManagerClient.instance().requestGroupSync();
+                    OxygenManagerClient.instance().getPrivilegeManager().requestGroupSync();
                 }
             } catch (IOException exception) {
                 OxygenMain.PRIVILEGE_LOGGER.error("Privileged group loading failed.");
@@ -63,12 +62,12 @@ public class PrivilegeIOClient {
             }       
         } else {            
             OxygenMain.OXYGEN_LOGGER.info("Group data file not exist.");
-            PrivilegeManagerClient.instance().requestGroupSync();
+            OxygenManagerClient.instance().getPrivilegeManager().requestGroupSync();
         }
     }
 
     public void savePrivilegedGroupDelegated() {
-        OxygenHelperClient.addIOTaskClient(new IOxygenTask() {
+        OxygenHelperClient.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -88,7 +87,7 @@ public class PrivilegeIOClient {
             }
         }
         try {      
-            IPrivilegedGroup group = PrivilegeManagerClient.instance().getPrivilegedGroup();
+            IPrivilegedGroup group = OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup();
             JsonObject jsonObject = new JsonObject();
             jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID), new JsonPrimitive(group.getId()));
             jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(group.getName()));

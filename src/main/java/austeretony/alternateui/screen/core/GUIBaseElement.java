@@ -1,22 +1,22 @@
 package austeretony.alternateui.screen.core;
 
-import org.lwjgl.input.Mouse;
+import java.util.HashSet;
+import java.util.Set;
 
 import austeretony.alternateui.screen.browsing.GUIScroller;
+import austeretony.alternateui.screen.contextmenu.GUIContextMenu;
+import austeretony.alternateui.screen.text.GUITextField;
 import austeretony.alternateui.util.GUISound;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Класс-основа элементов ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIBaseElement<T extends GUIBaseElement> {
 
-    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final Minecraft mc = AlternateUIReference.getMinecraft();
 
     protected AbstractGUIScreen screen;
 
@@ -26,11 +26,56 @@ public class GUIBaseElement<T extends GUIBaseElement> {
 
     private long lastClickTimeMillis;
 
-    private boolean isEnabled, isHovered, isToggled, isDragged, hasSound, canNotBeDragged, needDoubleClick, hasScroller;
+    private boolean isEnabled, isHovered, isToggled, isDragged, hasSound, canNotBeDragged, needDoubleClick, hasScroller, hasSearchField, isSearchField, hasContextMenu, cancelDraggedLogic;
 
     private GUIScroller scroller;
 
+    private GUITextField searchField;
+
+    private GUIContextMenu contextMenu;
+
     private GUISound sound;
+
+    private Set<GUIBaseElement> boundElements;
+
+    private static GUIBaseElement draggedElement;
+
+    private static boolean hasDraggedElement;
+
+    public void bind(GUIBaseElement element) {
+        if (this.boundElements == null)
+            this.boundElements = new HashSet<GUIBaseElement>();
+        this.boundElements.add(element);
+    }
+
+    public boolean isBound(GUIBaseElement element) {
+        if (this.boundElements == null)
+            return false;
+        return this.boundElements.contains(element);
+    }
+
+    public static void setDragged(GUIBaseElement element) {
+        hasDraggedElement = true;
+        draggedElement = element;
+    }
+
+    public static void resetDragged() {
+        hasDraggedElement = false;
+        draggedElement = null;
+    }
+
+    public static boolean hasDraggedElement() {
+        return hasDraggedElement;
+    }
+
+    public T cancelDraggedElementLogic() {
+        this.cancelDraggedLogic = true;
+        return (T) this;
+    }
+
+    public boolean shouldCancelDraggedLogic() {
+        return this.cancelDraggedLogic;
+    }
 
     /**
      * Вызывается каждый тик.
@@ -56,13 +101,15 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      */
     public void drawTooltip(int mouseX, int mouseY) {}
 
+    public void drawContextMenu(int mouseX, int mouseY) {}
+
     /**
      * Отслеживание положения курсора и "подсвечивание" элемента при наведении.
      * 
      * @param mouseX
      * @param mouseY
      */
-    public void mouseOver(int mouseX, int mouseY) {  	       	    	
+    public void mouseOver(int mouseX, int mouseY) {
         this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight());   
     }
 
@@ -71,10 +118,10 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      * 
      * @param mouseX 
      * @param mouseY 
-     * 
+     * @param mouseButton TODO
      * @return true если клик совершён
      */
-    public boolean mouseClicked(int mouseX, int mouseY) {  	
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {  	
         boolean flag = false;  	
         if (this.isDoubleClickRequired()) {   		
             if (this.isClickedLately()) {   			
@@ -91,7 +138,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
     			this.mc.thePlayer.playSound(this.getSound().soundEvent, this.getSound().volume, this.getSound().pitch);
     		}
     	}*/   	    	
-        return Mouse.isButtonDown(0) && this.isHovered() && flag;
+        return this.isHovered() && flag;
     }
 
     /**
@@ -155,6 +202,37 @@ public class GUIBaseElement<T extends GUIBaseElement> {
         this.hasScroller = true;		
         return (T) this;
     }
+
+    public boolean hasSearchField() {        
+        return this.hasSearchField;
+    }
+
+    public GUITextField getSearchField() {
+        return this.searchField;
+    }
+
+    public T initSearchField(GUITextField searchField) {   
+        searchField.setSearchField();
+        searchField.initScreen(this.getScreen());
+        this.searchField = searchField;
+        this.hasSearchField = true;
+        return (T) this;
+    }    
+
+    public boolean hasContextMenu() {        
+        return this.hasContextMenu;
+    }
+
+    public GUIContextMenu getContextMenu() {
+        return this.contextMenu;
+    }
+
+    public T initContextMenu(GUIContextMenu contextMenu) {   
+        contextMenu.initScreen(this.getScreen());
+        this.contextMenu = contextMenu;
+        this.hasContextMenu = true;
+        return (T) this;
+    }  
 
     public int getVisibleElementsAmount() {    	
         return this.visibleElementsAmount;
@@ -299,8 +377,9 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      * 
      * @return вызывающий объект
      */
-    public T setHovered(boolean isHovered) {   	
-        this.isHovered = isHovered;   	
+    public T setHovered(boolean isHovered) {  
+        if (!this.hasDraggedElement || this == draggedElement || draggedElement.isBound(this))
+            this.isHovered = isHovered;   	
         return (T) this;
     }
 
@@ -355,7 +434,11 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      */
     public T setDragged(boolean isDragged) {   	
         if (!this.isCanNotBeDragged())  		
-            this.isDragged = isDragged;    		   			
+            this.isDragged = isDragged;
+        if (this.isDragged)
+            setDragged(this);
+        else
+            resetDragged();
         return (T) this;
     }
 
@@ -408,5 +491,13 @@ public class GUIBaseElement<T extends GUIBaseElement> {
     public T enable() {		
         this.setEnabled(true);		
         return (T) this;
+    }
+
+    public boolean isSearchField() {
+        return this.isSearchField; 
+    }
+
+    public void setSearchField() {
+        this.isSearchField = true;
     }
 }

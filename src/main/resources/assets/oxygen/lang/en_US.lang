@@ -1,9 +1,58 @@
-key.oxygen.notifications=Open Notifications Menu
+key.oxygen.notifications=Notifications Menu
 key.oxygen.accept=Accept
 key.oxygen.reject=Reject
+key.oxygen.friends=Friends List
 
-oxygen.notifications.menu.title=Notifications
-oxygen.notifications.menu.empty=You have no active notifications.
+oxygen.gui.username=Username
+oxygen.gui.name=Name
+oxygen.gui.description=Description
+oxygen.gui.note=Note
+oxygen.gui.downloadCallback=Download Data
+oxygen.gui.downloadCallback.request=Download from server?
+oxygen.gui.editNoteCallback=Edit Note
+oxygen.gui.confirmButton=Confirm
+oxygen.gui.cancelButton=Cancel
+oxygen.gui.playerFound=Player found
+oxygen.gui.playerNotFound=Player not found
+
+oxygen.gui.notifications.title=Notifications
+oxygen.gui.notifications.empty=You have no active notifications.
+
+oxygen.gui.friends.title=Friends
+oxygen.gui.ignored.title=Ignored
+oxygen.gui.friends.username=Username
+oxygen.gui.friends.dimension=Dimension
+oxygen.gui.friends.addFriendCallback=Add
+oxygen.gui.friends.addFriendCallback.request=Send friend request to player.
+oxygen.gui.friends.removeFriendCallback=Remove
+oxygen.gui.friends.removeFriendCallback.request=%s will be removed from friend list.
+oxygen.gui.friends.ignoreCallback=Ignore
+oxygen.gui.friends.ignoreCallback.request=%s will be added to ignore list.
+oxygen.gui.ignored.addIgnoredCallback=Add
+oxygen.gui.ignored.addIgnoredCallback.request=Add player to ingore list.
+oxygen.gui.ignored.removeIgnoredCallback=Remove
+oxygen.gui.ignored.removeIgnoredCallback.request=%s will be removed from ignore list.
+
+oxygen.gui.action.remove=Remove
+oxygen.gui.action.ignore=Ignore
+oxygen.gui.action.editNote=Edit Note
+
+oxygen.friends.addButton=Add
+
+oxygen.request.friendRequest=Player %s sent you friend request.
+
+oxygen.status.online=Online
+oxygen.status.away=Away
+oxygen.status.notDisturb=Not disturb
+oxygen.status.offline=Offline
+
+oxygen.tooltip.online=Online
+oxygen.tooltip.download=Download
+oxygen.tooltip.search=Search
+oxygen.tooltip.refresh=Refresh
+oxygen.tooltip.sort=Sort
+oxygen.gui.friends.tooltip.friends=Friends
+oxygen.gui.friends.tooltip.ignored=Ignored
 
 oxygen.message.command.privilege.info.groupInfo=Group: %s - title: %s, prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Group <%s> privileges:
@@ -16,6 +65,19 @@ oxygen.message.command.privilege.privilege.add=Added privilege <%s> with value <
 oxygen.message.command.privilege.privilege.remove=Removed privilege <%s> from group <%s>.
 oxygen.message.command.privilege.promote=Player <%s> promoted to group <%s>.
 
+oxygen.message.statusChanged=Status changed to %s.
+oxygen.message.requestReset=Request reset.
+oxygen.message.targetOffline=Player offline.
+oxygen.message.senderIgnored=You ignored by this player.
+oxygen.message.senderFriendRequestAccepted=Your friend request accepted.
+oxygen.message.targetFriendRequestAccepted=You accepted friend request.
+oxygen.message.senderFriendRequestRejected=Your friend request rejected.
+oxygen.message.targetFriendRequestRejected=You rejected friend request.
+oxygen.message.friendRemoved=Player removed from friend list.
+oxygen.message.addedToIgnored=Player added to ignored players list.
+oxygen.message.noteEdited=Note edited.
+oxygen.message.ignoredRemoved=Player removed from ignore list.
+
 oxygen.command.exception.playerNotFound=Player <%s> not found.
 oxygen.command.exception.groupNotFound=Group <%s? not found.
 oxygen.command.exception.privilegeNotFound=Privilege <%s> not found.
@@ -25,3 +87,9 @@ oxygen.command.exception.noParams=No parameters provided.
 oxygen.command.exception.unnecessaryParams=Defined unnecessary parameters: %s , ...
 oxygen.command.exception.wrongParamValue=Wrong parameter <%s> value: %s.
 oxygen.command.exception.unnecessaryParamValue=Defined unnecessary parameter <%s> value: %s.
+
+oxygen.dim.unknown=Unknown
+oxygen.dim.overworld=Overworld
+oxygen.dim.nether=Nether
+oxygen.dim.end=The End
+oxygen.dim.twilightForest=Twilight Forest

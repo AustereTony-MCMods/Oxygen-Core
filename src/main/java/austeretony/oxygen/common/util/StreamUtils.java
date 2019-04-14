@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
@@ -42,6 +43,11 @@ public class StreamUtils {
     public static void write(String value, OutputStream os) throws IOException {
         os.write(value.length());
         os.write(value.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static void write(UUID uuid, OutputStream os) throws IOException {
+        os.write(Longs.toByteArray(uuid.getMostSignificantBits()));
+        os.write(Longs.toByteArray(uuid.getLeastSignificantBits()));
     }
 
     public static boolean readBoolean(InputStream is) throws IOException {
@@ -86,5 +92,13 @@ public class StreamUtils {
         byte[] bytes = new byte[is.read()];
         is.read(bytes);
         return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static UUID readUUID(InputStream is) throws IOException {
+        byte[] bytes = new byte[Long.BYTES * 2];
+        is.read(bytes);
+        return new UUID(
+                Longs.fromBytes(bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]),
+                Longs.fromBytes(bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]));
     }
 }

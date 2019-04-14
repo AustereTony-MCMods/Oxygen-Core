@@ -4,15 +4,12 @@ import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Графический элемент в виде изображения (заливка, текстура или ItemStack).
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
 
     private ItemStack itemStack;
@@ -34,7 +31,8 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
         if (this.isVisible()) {       	
             GlStateManager.pushMatrix();            
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
-            GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);                              	
+            GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);      
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             if (this.isDebugMode())  		
                 this.drawRect(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getDebugColor());	     	
             if (this.isStaticBackgroundEnabled())    		                
