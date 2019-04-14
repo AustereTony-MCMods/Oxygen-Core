@@ -1,3 +1,8 @@
+0.3.0a
++Added player activity statuses: online, away, not disturb and offline.
++Added friend list. 
++Added ignored players list.
+
 0.2.0a
 +Added notifications menu, "N" key by default. 
 +Added keybindings for fast request (notification) reply, "R" to accept and "X" to reject.
