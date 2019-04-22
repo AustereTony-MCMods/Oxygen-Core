@@ -1,3 +1,13 @@
+0.4.0a
++Added privileges:
+ - 'oxygen:preventIgnore' - prevent 'ignore' option for players,
+ - 'oxygen:exposePlayersOffline' - show players with 'offline' activity status in GUIs
++Added tab overlay replacer - player list menu (enabled by default, can be disabled in config).
++Added interaction menu for direct interaction with players.
++Added last activity time display for friends offline.
++Multiple optimizations and improvements.
++GUI improvements.
+
 0.3.0a
 +Added player activity statuses: online, away, not disturb and offline.
 +Added friend list. 
