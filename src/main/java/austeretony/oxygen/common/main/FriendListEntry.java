@@ -12,8 +12,8 @@ import net.minecraft.network.PacketBuffer;
 
 public class FriendListEntry {
 
-    public static final int MAX_DESCRIPTION_LENGTH = 40;
-    
+    public static final int MAX_NOTE_LENGTH = 40;
+
     private long id;
 
     public final UUID playerUUID;
@@ -25,6 +25,8 @@ public class FriendListEntry {
     public final boolean ignored;
 
     private int dimension;
+
+    private long lastActivityTime;
 
     public FriendListEntry(UUID playerUUID, String username, boolean ignored) {
         this.playerUUID = playerUUID;
@@ -62,12 +64,21 @@ public class FriendListEntry {
         this.note = note;
     }
 
+    public long getLastActivityTime() {
+        return this.lastActivityTime;
+    }
+
+    public void setLastActivityTime(long value) {
+        this.lastActivityTime = value;
+    }
+
     public void write(BufferedOutputStream bos) throws IOException {
         StreamUtils.write(this.playerUUID, bos);
         StreamUtils.write(this.username, bos);
         StreamUtils.write(this.ignored, bos);
         StreamUtils.write(this.id, bos);
         StreamUtils.write(this.dimension, bos);
+        StreamUtils.write(this.lastActivityTime, bos);
         StreamUtils.write(this.note, bos);
     }
 
@@ -75,6 +86,7 @@ public class FriendListEntry {
         FriendListEntry friend = new FriendListEntry(StreamUtils.readUUID(bis), StreamUtils.readString(bis), StreamUtils.readBoolean(bis));
         friend.setId(StreamUtils.readLong(bis));
         friend.setDimension(StreamUtils.readInt(bis));
+        friend.setLastActivityTime(StreamUtils.readLong(bis));
         friend.setNote(StreamUtils.readString(bis));
         return friend;
     }
@@ -85,6 +97,7 @@ public class FriendListEntry {
         buffer.writeBoolean(this.ignored);
         buffer.writeLong(this.id);
         buffer.writeInt(this.dimension);
+        buffer.writeLong(this.lastActivityTime);
         PacketBufferUtils.writeString(this.note, buffer);
     }
 
@@ -92,6 +105,7 @@ public class FriendListEntry {
         FriendListEntry friend = new FriendListEntry(PacketBufferUtils.readUUID(buffer), PacketBufferUtils.readString(buffer), buffer.readBoolean());
         friend.setId(buffer.readLong());
         friend.setDimension(buffer.readInt());
+        friend.setLastActivityTime(buffer.readLong());
         friend.setNote(PacketBufferUtils.readString(buffer));
         return friend;
     }

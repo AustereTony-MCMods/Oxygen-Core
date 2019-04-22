@@ -31,10 +31,10 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);     	
             if (this.isDynamicBackgroundEnabled())                       
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getEnabledColor());         
+                this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getEnabledColor());         
             if (!this.lines.isEmpty())       		
                 for (String line : this.lines)       		
-                    this.mc.fontRenderer.drawString(line, ZERO, (8 + this.getLineDistance()) * this.lines.indexOf(line), this.getEnabledTextColor(), this.isTextShadowEnabled());      	
+                    this.mc.fontRenderer.drawString(line, 0, (8 + this.getLineDistance()) * this.lines.indexOf(line), this.getEnabledTextColor(), this.isTextShadowEnabled());      	
             GlStateManager.popMatrix();
         }
     }
@@ -62,7 +62,7 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
         String[] words = displayText.split("[ ]");    	
         if (words.length > 0) {   		
             for (int i = 0; i < words.length; i++) {  		
-                if (this.width(stringBuilder.toString() + words[i]) < this.getWidth())	    			
+                if (this.textWidth(stringBuilder.toString() + words[i], this.getTextScale()) < this.getWidth())	    			
                     stringBuilder.append(words[i]).append(" ");
                 else {	    			
                     if (this.lines.size() * 10 < this.getHeight())	    				

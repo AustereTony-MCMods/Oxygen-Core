@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class GUIOverlay {
 
-    private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>();
+    private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>(5);
 
     protected final Minecraft mc = AlternateUIReference.getMinecraft();
 

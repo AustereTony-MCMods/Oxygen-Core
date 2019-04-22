@@ -5,6 +5,7 @@ import java.util.UUID;
 import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
+import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,12 +52,12 @@ public class PrivilegeProviderServer {
         promotePlayer(CommonReference.uuid(player), PrivilegedGroup.DEFAULT_GROUP.getName());
     }
 
-    public static void addPrivilege(String groupName, String privilegeName, boolean save) {
-        OxygenManagerServer.instance().getPrivilegeManager().getGroup(groupName).addPrivilege(new Privilege(privilegeName), save);
+    public static void addPrivilege(String groupName, IPrivilege privilege, boolean save) {
+        OxygenManagerServer.instance().getPrivilegeManager().getGroup(groupName).addPrivilege(privilege, save);
     }
 
-    public static void addPrivilege(String groupName, String privilegeName, int value, boolean save) {
-        OxygenManagerServer.instance().getPrivilegeManager().getGroup(groupName).addPrivilege(new Privilege(privilegeName, value), save);
+    public static void addPrivileges(String groupName, boolean save, IPrivilege... privileges) {
+        OxygenManagerServer.instance().getPrivilegeManager().getGroup(groupName).addPrivileges(save, privileges);
     }
 
     public static void removePrivilege(String groupName, String privilegeName, boolean save) {

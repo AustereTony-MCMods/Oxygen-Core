@@ -80,7 +80,8 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
             button.setScale(this.getScale());    
             button.setTextScale(this.getTextScale());   		    			   		    		
             this.buttonsBuffer.add(button);
-        }    	    	
+        }    	
+        button.init();
         return this;
     }
 

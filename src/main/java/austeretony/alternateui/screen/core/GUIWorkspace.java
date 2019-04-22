@@ -44,14 +44,14 @@ public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
     @Override
     public void draw(int mouseX, int mouseY) {
         if (this.isDefaultBackgroundEnabled())
-            drawDefaultBackground();
+            this.drawDefaultBackground();
         super.draw(mouseX, mouseY);
         if (this.isTextureEnabled()) {   		
             GlStateManager.disableLighting();     
             GlStateManager.enableDepth();      
             GlStateManager.enableBlend();           
             this.mc.getTextureManager().bindTexture(this.getTexture());           
-            this.drawCustomSizedTexturedRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), 0, 0, this.getTextureWidth(), this.getTextureHeight(), this.getTextureWidth(), this.getTextureHeight());             
+            drawCustomSizedTexturedRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), 0, 0, this.getTextureWidth(), this.getTextureHeight(), this.getTextureWidth(), this.getTextureHeight());             
             GlStateManager.disableBlend();      
             GlStateManager.disableDepth();      
             GlStateManager.enableLighting();       
@@ -59,7 +59,7 @@ public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
     }
 
     public void drawDefaultBackground() {
-        this.drawRect(0, 0, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
+        drawRect(0, 0, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
     }
 
     public Set<AbstractGUISection> getSections() {		

@@ -27,8 +27,8 @@ public abstract class AbstractGUITooltip extends GUIAdvancedElement<AbstractGUIT
             int i, 
             frameWidth = this.mc.fontRenderer.getStringWidth(popupStrings[0]), 
             frameHeight = FONT_HEIGHT * popupStrings.length, 
-            xStart = ZERO + (int) ((this.getXPopupOffset() != 0 ? this.getXPopupOffset() : 10) * this.getScale()),
-            yStart = ZERO + (int) ((this.getYPopupOffset() != 0 ? this.getYPopupOffset() : - 5) * this.getScale()) - popupStrings.length * 10;    				
+            xStart = 0 + (int) ((this.getXPopupOffset() != 0 ? this.getXPopupOffset() : 10) * this.getScale()),
+            yStart = 0 + (int) ((this.getYPopupOffset() != 0 ? this.getYPopupOffset() : - 5) * this.getScale()) - popupStrings.length * 10;    				
             int 
             color1 = - 267386864,
             color2 = 1347420415,

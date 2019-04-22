@@ -34,9 +34,11 @@ public class OxygenPlayerData {
 
     private int friendsAmount, ignoredAmount, currency;
 
-    private boolean syncing, requesting, requested;
+    private long lastActivityTime;
 
-    private boolean opped;//for client only
+    private boolean requesting, requested, syncFriendsActivity;
+
+    private volatile boolean syncing;
 
     public OxygenPlayerData() {
         this.status = EnumStatus.ONLINE;
@@ -119,6 +121,13 @@ public class OxygenPlayerData {
         return this.friendList.values();
     }
 
+    public void clearFriendListEntries() {
+        this.friendList.clear();
+        this.friendListAccess.clear();
+        this.friendsAmount = 0;
+        this.ignoredAmount = 0;
+    }
+
     public int getFriendsAmount() {
         return this.friendsAmount;
     }
@@ -189,6 +198,22 @@ public class OxygenPlayerData {
         return this.currency -= value;
     }
 
+    public boolean needSyncFriendsActivity() {
+        return this.syncFriendsActivity;
+    }
+
+    public void setNeedSyncFriendsActivity(boolean flag) {
+        this.syncFriendsActivity = flag;
+    }
+
+    public long getLastActivityTime() {
+        return this.lastActivityTime;
+    }
+
+    public void updateLastActivityTime() {
+        this.lastActivityTime = System.currentTimeMillis();
+    }
+
     public boolean isSyncing() {
         return this.syncing;
     }
@@ -213,18 +238,11 @@ public class OxygenPlayerData {
         this.requested = flag;
     }
 
-    public boolean isOpped() {
-        return this.opped;
-    }
-
-    public void setOpped(boolean flag) {
-        this.opped = flag;
-    }
-
     public void write(BufferedOutputStream bos) throws IOException {
         StreamUtils.write(this.playerUUID, bos);
         StreamUtils.write(this.currency, bos);
         StreamUtils.write((byte) this.status.ordinal(), bos);
+        StreamUtils.write(this.lastActivityTime, bos);
         StreamUtils.write((short) this.friendList.size(), bos);
         for (FriendListEntry listEntry : this.friendList.values()) 
             listEntry.write(bos);
@@ -234,9 +252,15 @@ public class OxygenPlayerData {
         this.playerUUID = StreamUtils.readUUID(bis);
         this.currency = StreamUtils.readInt(bis);
         this.status = EnumStatus.values()[StreamUtils.readByte(bis)];
+        this.lastActivityTime = StreamUtils.readLong(bis);
         int amount = StreamUtils.readShort(bis);
         for (int i = 0; i < amount; i++)
             this.addFriendListEntry(FriendListEntry.read(bis));
+    }
+
+    public void resetData() {
+        this.temporaryProcesses.clear();
+        this.clearFriendListEntries();
     }
 
     public enum EnumStatus {

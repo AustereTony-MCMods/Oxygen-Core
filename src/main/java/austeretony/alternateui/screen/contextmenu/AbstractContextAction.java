@@ -7,19 +7,9 @@ import austeretony.alternateui.screen.core.GUIBaseElement;
  */
 public abstract class AbstractContextAction {
 
-    private GUIBaseElement element;
+    protected abstract String getName(GUIBaseElement currElement);
 
-    public void setElement(GUIBaseElement element) {
-        this.element = element;
-    }
+    protected abstract boolean isValid(GUIBaseElement currElement);
 
-    public GUIBaseElement getElement() {
-        return this.element;
-    }
-
-    protected abstract String getName();
-
-    protected abstract boolean isValid();
-
-    protected abstract void execute();
+    protected abstract void execute(GUIBaseElement currElement);
 }

@@ -8,7 +8,7 @@ import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
 import austeretony.oxygen.common.core.api.CommonReference;
-import austeretony.oxygen.common.main.EnumChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
@@ -63,7 +63,7 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                 if (groupName != null) {
                     IPrivilegedGroup group = CommandPrivilege.getPrivilegedGroupByName(groupName);
                     if (sender instanceof EntityPlayerMP)
-                        OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(), 
+                        OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(), 
                                 groupName, 
                                 group.getTitle(), 
                                 group.getPrefix(), 
@@ -89,9 +89,9 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                     IPrivilegedGroup group = CommandPrivilege.getPrivilegedGroupByName(groupName);
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_PRIVILEGES.ordinal(), groupName);
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_PRIVILEGES.ordinal(), groupName);
                         for (IPrivilege privilege : group.getPrivileges())
-                            OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.SIMPLE_LINE.ordinal(), privilege.getName());
+                            OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.SIMPLE_LINE.ordinal(), privilege.getName());
                     } else {
                         server.sendMessage(new TextComponentString(String.format("Group <%s> privileges:", groupName)));
                         for (IPrivilege privilege : group.getPrivileges())
@@ -102,9 +102,9 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
             case GROUPS_LIST:
                 if (sender instanceof EntityPlayerMP) {
                     EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                    OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_GROUPS_LIST.ordinal()); 
+                    OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUPS_LIST.ordinal()); 
                     for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values()) 
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.SIMPLE_LINE.ordinal(), group.getName()); 
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.SIMPLE_LINE.ordinal(), group.getName()); 
                 } else {
                     server.sendMessage(new TextComponentString("Groups:"));
                     for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values())      
@@ -116,7 +116,7 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                     EntityPlayerMP targetMP = getPlayerByUsername(server, playerName);
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_PLAYER_GROUP.ordinal(), 
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_PLAYER_GROUP.ordinal(), 
                                 playerName, 
                                 PrivilegeProviderServer.getPlayerGroup(CommonReference.uuid(targetMP)).getName()); 
 

@@ -1,14 +1,10 @@
 package austeretony.alternateui.util;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 /**
  * Упакованный звук для элементов ГПИ.
  * 
  * @author AustereTony
  */
-@SideOnly(Side.CLIENT)
 public class GUISound {
 
     public final String name;

@@ -8,13 +8,12 @@ import austeretony.alternateui.screen.button.GUISlider;
 import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIBaseElement;
-import austeretony.alternateui.screen.image.GUIImageLabel;
 import austeretony.alternateui.screen.panel.GUIButtonPanel;
 import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
 import austeretony.alternateui.screen.text.GUITextLabel;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.gui.settings.GUISettings;
-import austeretony.oxygen.client.handler.OxygenKeyHandler;
+import austeretony.oxygen.client.input.OxygenKeyHandler;
 import austeretony.oxygen.common.notification.IOxygenNotification;
 import net.minecraft.client.resources.I18n;
 
@@ -31,19 +30,18 @@ public class NotificationsGUISection extends AbstractGUISection {
     }
 
     @Override
-    protected void init() {
-        this.addElement(new GUIImageLabel(- 1, - 1, this.getWidth() + 2, this.getHeight() + 2).enableStaticBackground(GUISettings.instance().getBaseGUIBackgroundColor()));//main background
-        this.addElement(new GUIImageLabel(0, 0, this.getWidth(), 15).enableStaticBackground(GUISettings.instance().getAdditionalGUIBackgroundColor()));//title background
-        this.addElement(new GUIImageLabel(0, 16, this.getWidth() - 3, this.getHeight() - 16).enableStaticBackground(GUISettings.instance().getAdditionalGUIBackgroundColor()));//list background
-        this.addElement(new GUIImageLabel(this.getWidth() - 2, 16, 2, this.getHeight() - 16).enableStaticBackground(GUISettings.instance().getAdditionalGUIBackgroundColor()));//slider background
+    public void init() {
+        this.addElement(new NotificationsBackgroundGUIFiller(0, 0, this.getWidth(), this.getHeight()));
         this.addElement(new GUITextLabel(2, 4).setDisplayText(I18n.format("oxygen.gui.notifications.title"), false, GUISettings.instance().getTitleScale()));
         String baseNoticeStr = I18n.format("oxygen.gui.notifications.empty");
-        this.addElement(this.defaultNoteTextLabel = new GUITextLabel((this.getWidth() - this.width(baseNoticeStr, GUISettings.instance().getTextScale())) / 2, 22).setDisplayText(baseNoticeStr, false, GUISettings.instance().getTextScale()));
+        this.addElement(this.defaultNoteTextLabel = new GUITextLabel((this.getWidth() - this.textWidth(baseNoticeStr, GUISettings.instance().getTextScale())) / 2, 20).setDisplayText(baseNoticeStr, false, GUISettings.instance().getTextScale()));
 
-        this.addElement(this.notificationsPanel = new GUIButtonPanel(GUIEnumOrientation.VERTICAL, 0, 16, 214, 18).setButtonsOffset(1).setTextScale(GUISettings.instance().getTextScale()));   
+        this.addElement(this.notificationsPanel = new GUIButtonPanel(GUIEnumOrientation.VERTICAL, 0, 14, 214, 18).setButtonsOffset(1).setTextScale(GUISettings.instance().getPanelTextScale()));   
         GUIScroller scroller = new GUIScroller(20, 10);
         this.notificationsPanel.initScroller(scroller);
-        scroller.initSlider(new GUISlider(215, 16, 2, 189));
+        GUISlider slider = new GUISlider(215, 14, 2, 189);
+        slider.setDynamicBackgroundColor(GUISettings.instance().getEnabledSliderColor(), GUISettings.instance().getDisabledSliderColor(), GUISettings.instance().getHoveredSliderColor());
+        scroller.initSlider(slider);
     }
 
     public void updateNotifications() {
@@ -59,7 +57,7 @@ public class NotificationsGUISection extends AbstractGUISection {
     }
 
     @Override
-    public void handleElementClick(AbstractGUISection section, GUIBaseElement element) {}
+    public void handleElementClick(AbstractGUISection section, GUIBaseElement element, int mouseButton) {}
 
     @Override
     public boolean keyTyped(char typedChar, int keyCode) {   

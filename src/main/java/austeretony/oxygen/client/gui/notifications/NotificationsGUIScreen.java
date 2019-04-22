@@ -10,15 +10,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class NotificationsGUIScreen extends AbstractGUIScreen {
 
-    public static final ResourceLocation 
-    CHECK_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/check_icons.png"),
-    CROSS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/cross_icons.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/background.png");
 
     protected AbstractGUISection mainSection;
 
     @Override
     protected GUIWorkspace initWorkspace() {
-        return new GUIWorkspace(this, 217, 205).setAlignment(EnumGUIAlignment.RIGHT, - 10, 0);
+        return new GUIWorkspace(this, 217, 203).setAlignment(EnumGUIAlignment.RIGHT, - 10, 0);
     }
 
     @Override

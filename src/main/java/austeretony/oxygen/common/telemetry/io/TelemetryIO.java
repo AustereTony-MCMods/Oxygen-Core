@@ -229,7 +229,7 @@ public class TelemetryIO {
             }
             JsonUtils.createExternalJsonFile(folder, jsonArray);
         } catch (IOException exception) {       
-            OxygenMain.TELEMETRY_LOGGER.error("Log file names saving failed.");
+            OxygenMain.TELEMETRY_LOGGER.error("Log files names saving failed.");
             exception.printStackTrace();
         }   
     }

@@ -2,7 +2,7 @@ package austeretony.oxygen.client;
 
 import java.util.UUID;
 
-import austeretony.oxygen.client.gui.friends.FriendsListGUIScreen;
+import austeretony.oxygen.client.gui.friendlist.FriendListGUIScreen;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.FriendListEntry;
 import austeretony.oxygen.common.main.OxygenMain;
@@ -35,8 +35,7 @@ public class FriendListManagerClient {
     }
 
     private void openFriendsList() {
-        ClientReference.displayGuiScreen(new FriendsListGUIScreen());
-        this.manager.getLoader().savePlayerDataDelegated();
+        ClientReference.displayGuiScreen(new FriendListGUIScreen());
     }
 
     public void changeStatusSynced(OxygenPlayerData.EnumStatus status) {
@@ -44,7 +43,7 @@ public class FriendListManagerClient {
     }
 
     public void downloadFriendsListDataSynced() {
-        this.manager.getPlayerData().getFriendListEntries().clear();
+        this.manager.getPlayerData().clearFriendListEntries();
         this.openFriendsListSynced();
     }
 

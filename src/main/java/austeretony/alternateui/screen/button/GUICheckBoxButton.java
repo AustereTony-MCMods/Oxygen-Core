@@ -46,8 +46,8 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
                 else
                     u += this.getTextureWidth();
                 GlStateManager.enableBlend(); 
-                this.drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, u, this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
-                this.drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, u + this.getTextureWidth() * 3, this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
+                drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, u, this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
+                drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, u + this.getTextureWidth() * 3, this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
                 GlStateManager.disableBlend(); 
             }
             if (this.isDynamicBackgroundEnabled()) {
@@ -62,8 +62,8 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
                     backgroundColor = this.getEnabledColor();
                     innerBoxColor = this.getEnabledInnerBoxColor();
                 }     		
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), backgroundColor);
-                this.drawRect((this.getWidth() - this.getInnerBoxSize()) / 2, (this.getWidth() - this.getInnerBoxSize()) / 2, this.getWidth() - (this.getWidth() - this.getInnerBoxSize()) / 2, this.getHeight() - (this.getWidth() - this.getInnerBoxSize()) / 2, innerBoxColor);
+                drawRect(0, 0, this.getWidth(), this.getHeight(), backgroundColor);
+                drawRect((this.getWidth() - this.getInnerBoxSize()) / 2, (this.getWidth() - this.getInnerBoxSize()) / 2, this.getWidth() - (this.getWidth() - this.getInnerBoxSize()) / 2, this.getHeight() - (this.getWidth() - this.getInnerBoxSize()) / 2, innerBoxColor);
             }
             GlStateManager.popMatrix();
         }
@@ -82,9 +82,9 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
         if (flag && mouseButton == 0) {
             this.setToggled(!this.isToggled());
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
-            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())
-                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
         }
         return flag;
     }

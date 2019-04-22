@@ -11,30 +11,19 @@ import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
-import austeretony.oxygen.common.privilege.io.PrivilegeIOServer;
 
 public class PrivilegeManagerServer {
 
     private final OxygenManagerServer manager;
-    
+
     public static final Map<String, String> PRIVILEGES_REGISTRY = new HashMap<String, String>();
 
     private final Map<UUID, String> players = new ConcurrentHashMap<UUID, String>();
 
     private final Map<String, IPrivilegedGroup> groups = new ConcurrentHashMap<String, IPrivilegedGroup>();
 
-    private PrivilegeIOServer privilegeIO;
-
     public PrivilegeManagerServer(OxygenManagerServer manager) {
         this.manager = manager;
-    }
-
-    public void initIO() {
-        this.privilegeIO = PrivilegeIOServer.create();
-    }
-
-    public PrivilegeIOServer getIO() {
-        return this.privilegeIO;
     }
 
     public Map<UUID, String> getPlayers() {
@@ -46,7 +35,7 @@ public class PrivilegeManagerServer {
             this.players.remove(playerUUID);
         else
             this.players.put(playerUUID, groupName);
-        this.privilegeIO.savePlayerListDelegated();
+        this.manager.getPrivilegeLoader().savePlayerListDelegated();
         if (OxygenHelperServer.isOnline(playerUUID))
             OxygenMain.network().sendTo(new CPSyncGroup(), CommonReference.playerByUUID(playerUUID));
     }
@@ -67,19 +56,18 @@ public class PrivilegeManagerServer {
         if (!this.groupExist(group.getName())) {
             this.groups.put(group.getName(), group);
             if (save)
-                this.privilegeIO.savePrivilegedGroupsDelegated();
+                this.manager.getPrivilegeLoader().savePrivilegedGroupsDelegated();
         }
     }
 
     public void addDefaultGroups() {
         this.addGroup(PrivilegedGroup.DEFAULT_GROUP, false);
         this.addGroup(PrivilegedGroup.OPERATORS_GROUP, true);
-        OxygenMain.PRIVILEGE_LOGGER.info("Added default groups.");
     }
 
     public void removeGroup(String groupName) {
         this.groups.remove(groupName);
-        this.privilegeIO.savePrivilegedGroupsDelegated();
+        this.manager.getPrivilegeLoader().savePrivilegedGroupsDelegated();
     }
 
     private boolean havePrivileges(UUID playerUUID) {

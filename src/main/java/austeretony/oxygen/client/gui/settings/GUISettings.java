@@ -1,43 +1,22 @@
 package austeretony.oxygen.client.gui.settings;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class GUISettings {
 
     private static GUISettings instance;
 
-    private int 
-    baseGUIBackgroundColor, 
-    additionalGUIBackgroundColor, 
-    enabledButtonColor, 
-    disabledButtonColor, 
-    hoveredButtonColor,
-    enabledElementColor, 
-    disabledElementColor, 
-    hoveredElementColor,
-    enabledContextActionColor, 
-    disabledContextActionColor, 
-    hoveredContextActionColor,
-    enabledTextColor, 
-    disabledTextColor, 
-    hoveredTextColor,
-    enabledTextColorDark, 
-    disabledTextColorDark, 
-    hoveredTextColorDark,
-    baseOverlayTextColor,
-    additionalOverlayTextColor,
-    tooltipBackgroundColor,
-    tooltipTextColor,
-    contextMenuWidth;
+    private final GUISettingsLoader loader;
 
-    private float 
-    titleScale,
-    buttonTextScale,
-    tooltipScale,
-    textScale,
-    subTextScale,
-    dropDownListScale,
-    contextMenuScale;
+    private SettingsProfile defaultProfile, currentProfile;
 
-    private GUISettings() {}
+    private final Map<String, SettingsProfile> profiles = new LinkedHashMap<String, SettingsProfile>(1);
+
+    private GUISettings() {
+        this.loader = new GUISettingsLoader(this);
+    }
 
     public static void create() {
         if (instance == null) {
@@ -50,278 +29,355 @@ public class GUISettings {
         return instance;
     }
 
-    private void init() {
-        this.baseGUIBackgroundColor = 0xDC202020;
-        this.additionalGUIBackgroundColor = 0xDC131313;
+    private void init() {       
+        this.loader.loadSettings();
+    }
 
-        this.enabledButtonColor = 0xFF404040;
-        this.disabledButtonColor = 0xFF202020;
-        this.hoveredButtonColor = 0xFF606060;
+    public void reload() {
+        this.loader.loadSettings();
+    }
 
-        this.enabledElementColor = 0xDC131313;
-        this.disabledElementColor = 0xDC101010;
-        this.hoveredElementColor = 0xDC303030;
+    public void save() {
+        //TODO
+    }
 
-        this.enabledContextActionColor = 0xFF282828;
-        this.disabledContextActionColor = 0xFF222222;
-        this.hoveredContextActionColor = 0xFF404040;
+    public SettingsProfile getDefaultProfile() {
+        return this.defaultProfile;
+    }
 
-        this.enabledTextColor = 0xFFCCCCCC;
-        this.disabledTextColor = 0xFF999999;
-        this.hoveredTextColor = 0xFFE5E5E5;
+    public SettingsProfile getCurrentProfile() {
+        return this.currentProfile;
+    }
 
-        this.enabledTextColorDark = 0xFFA5A5A5;
-        this.disabledTextColorDark = 0xFF7F7F7F;
-        this.hoveredTextColorDark = 0xFFBFBFBF;
+    public void setCurrentProfile(SettingsProfile profile) {
+        this.currentProfile = profile;
+    }
 
-        this.baseOverlayTextColor = 0xFFAAAAAA;
-        this.additionalOverlayTextColor = 0xFFEEEEEE;
+    public Collection<SettingsProfile> getProfiles() {
+        return this.profiles.values();
+    }
 
-        this.tooltipBackgroundColor = 0xFF282828;
-        this.tooltipTextColor = 0xFFEEEEEE;
+    public SettingsProfile getProfile(String name) {
+        return this.profiles.get(name);
+    }
 
-        this.contextMenuWidth = 55;
+    public void addProfile(SettingsProfile profile) {
+        this.profiles.put(profile.name, profile);
+    }
 
-        this.titleScale = 0.9F;
-        this.buttonTextScale = 0.7F;
-        this.tooltipScale = 0.7F;
-        this.textScale = 0.7F;
-        this.subTextScale = 0.6F;
-        this.dropDownListScale = 0.9F;
-        this.contextMenuScale = 0.9F;
+    public void removeProfile(String name) {
+        this.profiles.remove(name);
+    }
 
-        //TODO implement GUIs customization for clients (GUI or config)
+    public void setUseTextures(boolean flag) {
+        this.currentProfile.useTextures = flag;
+    }
+
+    public boolean shouldUseTextures() {
+        return this.currentProfile.useTextures;
+    }
+
+    public void setTextureOffsetX(int value) {
+        this.currentProfile.textureOffsetX = value;
+    }
+
+    public int getTextureOffsetX() {
+        return this.currentProfile.textureOffsetX;
+    }
+
+    public void setTextureOffsetY(int value) {
+        this.currentProfile.textureOffsetY = value;
+    }
+
+    public int getTextureOffsetY() {
+        return this.currentProfile.textureOffsetY;
     }
 
     public void setBaseGUIBackgroundColor(int colorHex) {
-        this.baseGUIBackgroundColor = colorHex;
+        this.currentProfile.baseGUIBackgroundColor = colorHex;
     }
 
     public int getBaseGUIBackgroundColor() {
-        return this.baseGUIBackgroundColor;
+        return this.currentProfile.baseGUIBackgroundColor;
     }
 
     public void setAdditionalGUIBackgroundColor(int colorHex) {
-        this.additionalGUIBackgroundColor = colorHex;
+        this.currentProfile.additionalGUIBackgroundColor = colorHex;
     }
 
     public int getAdditionalGUIBackgroundColor() {
-        return this.additionalGUIBackgroundColor;
+        return this.currentProfile.additionalGUIBackgroundColor;
+    }
+
+    public void setPanelGUIBackgroundColor(int colorHex) {
+        this.currentProfile.panelGUIBackgroundColor = colorHex;
+    }
+
+    public int getPanelGUIBackgroundColor() {
+        return this.currentProfile.panelGUIBackgroundColor;
     }
 
     public void setEnabledButtonColor(int colorHex) {
-        this.enabledButtonColor = colorHex;
+        this.currentProfile.enabledButtonColor = colorHex;
     }
 
     public int getEnabledButtonColor() {
-        return this.enabledButtonColor;
+        return this.currentProfile.enabledButtonColor;
     }
 
     public void setDisabledButtonColor(int colorHex) {
-        this.disabledButtonColor = colorHex;
+        this.currentProfile.disabledButtonColor = colorHex;
     }
 
     public int getDisabledButtonColor() {
-        return this.disabledButtonColor;
+        return this.currentProfile.disabledButtonColor;
     }
 
     public void setHoveredButtonColor(int colorHex) {
-        this.hoveredButtonColor = colorHex;
+        this.currentProfile.hoveredButtonColor = colorHex;
     }
 
     public int getHoveredButtonColor() {
-        return this.hoveredButtonColor;
+        return this.currentProfile.hoveredButtonColor;
     }
 
     public void setEnabledElementColor(int colorHex) {
-        this.enabledElementColor = colorHex;
+        this.currentProfile.enabledElementColor = colorHex;
     }
 
     public int getEnabledElementColor() {
-        return this.enabledElementColor;
+        return this.currentProfile.enabledElementColor;
     }
 
     public void setDisabledElementColor(int colorHex) {
-        this.disabledElementColor = colorHex;
+        this.currentProfile.disabledElementColor = colorHex;
     }
 
     public int getDisabledElementColor() {
-        return this.disabledElementColor;
+        return this.currentProfile.disabledElementColor;
     }
 
     public void setHoveredElementColor(int colorHex) {
-        this.hoveredElementColor = colorHex;
+        this.currentProfile.hoveredElementColor = colorHex;
     }
 
     public int getHoveredElementColor() {
-        return this.hoveredElementColor;
+        return this.currentProfile.hoveredElementColor;
     }
 
     public void setEnabledContextActionColor(int colorHex) {
-        this.enabledContextActionColor = colorHex;
+        this.currentProfile.enabledContextActionColor = colorHex;
     }
 
     public int getEnabledContextActionColor() {
-        return this.enabledContextActionColor;
+        return this.currentProfile.enabledContextActionColor;
     }
 
     public void setDisabledContextActionColor(int colorHex) {
-        this.disabledContextActionColor = colorHex;
+        this.currentProfile.disabledContextActionColor = colorHex;
     }
 
     public int getDisabledContextActionColor() {
-        return this.disabledContextActionColor;
+        return this.currentProfile.disabledContextActionColor;
     }
 
     public void setHoveredContextActionColor(int colorHex) {
-        this.hoveredContextActionColor = colorHex;
+        this.currentProfile.hoveredContextActionColor = colorHex;
     }
 
     public int getHoveredContextActionColor() {
-        return this.hoveredContextActionColor;
+        return this.currentProfile.hoveredContextActionColor;
+    }
+
+    public void setEnabledSliderColor(int colorHex) {
+        this.currentProfile.enabledSliderColor = colorHex;
+    }
+
+    public int getEnabledSliderColor() {
+        return this.currentProfile.enabledSliderColor;
+    }
+
+    public void setDisabledSliderColor(int colorHex) {
+        this.currentProfile.disabledSliderColor = colorHex;
+    }
+
+    public int getDisabledSliderColor() {
+        return this.currentProfile.disabledSliderColor;
+    }
+
+    public void setHoveredSliderColor(int colorHex) {
+        this.currentProfile.hoveredSliderColor = colorHex;
+    }
+
+    public int getHoveredSliderColor() {
+        return this.currentProfile.hoveredSliderColor;
     }
 
     public void setEnabledTextColor(int colorHex) {
-        this.enabledTextColor = colorHex;
+        this.currentProfile.enabledTextColor = colorHex;
     }
 
     public int getEnabledTextColor() {
-        return this.enabledTextColor;
+        return this.currentProfile.enabledTextColor;
     }
 
     public void setDisabledTextColor(int colorHex) {
-        this.disabledTextColor = colorHex;
+        this.currentProfile.disabledTextColor = colorHex;
     }
 
     public int getDisabledTextColor() {
-        return this.disabledTextColor;
+        return this.currentProfile.disabledTextColor;
     }
 
     public void setHoveredTextColor(int colorHex) {
-        this.hoveredTextColor = colorHex;
+        this.currentProfile.hoveredTextColor = colorHex;
     }
 
     public int getHoveredTextColor() {
-        return this.hoveredTextColor;
+        return this.currentProfile.hoveredTextColor;
     }
 
     public void setEnabledTextColorDark(int colorHex) {
-        this.enabledTextColorDark = colorHex;
+        this.currentProfile.enabledTextColorDark = colorHex;
     }
 
     public int getEnabledTextColorDark() {
-        return this.enabledTextColorDark;
+        return this.currentProfile.enabledTextColorDark;
     }
 
     public void setDisabledTextColorDark(int colorHex) {
-        this.disabledTextColorDark = colorHex;
+        this.currentProfile.disabledTextColorDark = colorHex;
     }
 
     public int getDisabledTextColorDark() {
-        return this.disabledTextColorDark;
+        return this.currentProfile.disabledTextColorDark;
     }
 
     public void setHoveredTextColorDark(int colorHex) {
-        this.hoveredTextColorDark = colorHex;
+        this.currentProfile.hoveredTextColorDark = colorHex;
     }
 
     public int getHoveredTextColorDark() {
-        return this.hoveredTextColorDark;
+        return this.currentProfile.hoveredTextColorDark;
     }
 
     public void setBaseOverlayTextColor(int colorHex) {
-        this.baseOverlayTextColor = colorHex;
+        this.currentProfile.baseOverlayTextColor = colorHex;
     }
 
     public int getBaseOverlayTextColor() {
-        return this.baseOverlayTextColor;
+        return this.currentProfile.baseOverlayTextColor;
     }
 
     public void setAdditionalOverlayTextColor(int colorHex) {
-        this.additionalOverlayTextColor = colorHex;
+        this.currentProfile.additionalOverlayTextColor = colorHex;
     }
 
     public int getAdditionalOverlayTextColor() {
-        return this.additionalOverlayTextColor;
+        return this.currentProfile.additionalOverlayTextColor;
     }
 
     public int getTooltipBackgroundColor() {
-        return this.tooltipBackgroundColor;
+        return this.currentProfile.tooltipBackgroundColor;
     }
 
     public void setTooltipBackgroundColor(int colorHex) {
-        this.tooltipBackgroundColor = colorHex;
+        this.currentProfile.tooltipBackgroundColor = colorHex;
     }
 
     public int getTooltipTextColor() {
-        return this.tooltipTextColor;
+        return this.currentProfile.tooltipTextColor;
     }
 
     public void setTooltipTextColor(int colorHex) {
-        this.tooltipTextColor = colorHex;
+        this.currentProfile.tooltipTextColor = colorHex;
     }
 
     public float getTitleScale() {
-        return this.titleScale;
+        return this.currentProfile.titleScale;
     }
 
     public void setTitleScale(float scaleFactor) {
-        this.titleScale = scaleFactor;
+        this.currentProfile.titleScale = scaleFactor;
     }
 
     public float getButtonTextScale() {
-        return this.buttonTextScale;
+        return this.currentProfile.buttonTextScale;
     }
 
     public void setButtonTextScale(float scaleFactor) {
-        this.buttonTextScale = scaleFactor;
+        this.currentProfile.buttonTextScale = scaleFactor;
     }
 
     public float getTooltipScale() {
-        return this.tooltipScale;
+        return this.currentProfile.tooltipScale;
     }
 
     public void setTooltipScale(float scaleFactor) {
-        this.tooltipScale = scaleFactor;
+        this.currentProfile.tooltipScale = scaleFactor;
     }
 
     public float getTextScale() {
-        return this.textScale;
+        return this.currentProfile.textScale;
     }
 
     public void setTextScale(float scaleFactor) {
-        this.textScale = scaleFactor;
+        this.currentProfile.textScale = scaleFactor;
     }
 
     public float getSubTextScale() {
-        return this.subTextScale;
+        return this.currentProfile.subTextScale;
     }
 
     public void setSubTextScale(float scaleFactor) {
-        this.subTextScale = scaleFactor;
+        this.currentProfile.subTextScale = scaleFactor;
+    }
+
+    public float getPanelTextScale() {
+        return this.currentProfile.panelTextScale;
+    }
+
+    public void setPanelTextScale(float scaleFactor) {
+        this.currentProfile.panelTextScale = scaleFactor;
     }
 
     public float getDropDownListScale() {
-        return this.dropDownListScale;
+        return this.currentProfile.dropDownListScale;
     }
 
     public void setDropDownListScale(float scaleFactor) {
-        this.dropDownListScale = scaleFactor;
+        this.currentProfile.dropDownListScale = scaleFactor;
     }
 
     public float getContextMenuScale() {
-        return this.contextMenuScale;
+        return this.currentProfile.contextMenuScale;
     }
 
     public void setContextMenuScale(float scaleFactor) {
-        this.contextMenuScale = scaleFactor;
+        this.currentProfile.contextMenuScale = scaleFactor;
+    }
+
+    public float getOverlayScale() {
+        return this.currentProfile.overlayScale;
+    }
+
+    public void setOverlayScale(float scaleFactor) {
+        this.currentProfile.overlayScale = scaleFactor;
+    }
+
+    public int getDropDownListWidth() {
+        return this.currentProfile.dropDownListWidth;
+    }
+
+    public void setDropDownListWidth(int width) {
+        this.currentProfile.dropDownListWidth = width;
     }
 
     public int getContextMenuWidth() {
-        return this.contextMenuWidth;
+        return this.currentProfile.contextMenuWidth;
     }
 
-    public void setContextMenuWidth(int colorHex) {
-        this.contextMenuWidth = colorHex;
+    public void setContextMenuWidth(int width) {
+        this.currentProfile.contextMenuWidth = width;
     }
 }

@@ -61,8 +61,8 @@ public class FriendRequest extends AbstractNotification {
         OxygenManagerServer.instance().getLoader().savePlayerDataDelegated(this.targetUUID);
 
         if (OxygenHelperServer.isOnline(this.senderUUID))
-            OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.FRIEND_REQUEST_ACCEPTED_SENDER.ordinal());
-        OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.FRIEND_REQUEST_ACCEPTED_TARGET.ordinal());
+            OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_ACCEPTED_SENDER.ordinal());
+        OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_ACCEPTED_TARGET.ordinal());
 
         senderData.setRequesting(false);
     }
@@ -70,8 +70,8 @@ public class FriendRequest extends AbstractNotification {
     @Override
     public void rejected(EntityPlayer player) {
         if (OxygenHelperServer.isOnline(this.senderUUID))
-            OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.FRIEND_REQUEST_REJECTED_SENDER.ordinal());
-        OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.FRIEND_REQUEST_REJECTED_TARGET.ordinal());
+            OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_REJECTED_SENDER.ordinal());
+        OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_REJECTED_TARGET.ordinal());
 
         OxygenManagerServer.instance().getPlayerData(this.senderUUID).setRequesting(false);
     }

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import austeretony.oxygen.common.core.api.listeners.client.IChatMessageInfoListener;
 import austeretony.oxygen.common.core.api.listeners.client.ICientInitListener;
+import austeretony.oxygen.common.core.api.listeners.client.IClientTickListener;
 
 public class ListenersRegistryClient {
 
@@ -13,6 +14,8 @@ public class ListenersRegistryClient {
     private Set<IChatMessageInfoListener> chatMessagesListeners;
 
     private Set<ICientInitListener> clientInitListeners;
+
+    private Set<IClientTickListener> clientTickListeners;
 
     private ListenersRegistryClient() {}
 
@@ -46,5 +49,17 @@ public class ListenersRegistryClient {
         if (this.clientInitListeners != null)
             for (ICientInitListener listener : this.clientInitListeners)
                 listener.onClientInit();
+    }
+
+    public void addClientTickListener(IClientTickListener listener) {
+        if (this.clientTickListeners == null)
+            this.clientTickListeners = new LinkedHashSet<IClientTickListener>(3);
+        this.clientTickListeners.add(listener);
+    }
+
+    public void notifyClientTickListeners() {
+        if (this.clientTickListeners != null)
+            for (IClientTickListener listener : this.clientTickListeners)
+                listener.onClientTick();
     }
 }

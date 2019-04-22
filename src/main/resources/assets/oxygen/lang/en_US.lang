@@ -2,6 +2,12 @@ key.oxygen.notifications=Notifications Menu
 key.oxygen.accept=Accept
 key.oxygen.reject=Reject
 key.oxygen.friends=Friends List
+key.oxygen.playersOnline=Players List
+key.oxygen.iteractWithPlayer=Interact
+
+oxygen.gui.interaction.close=Close
+oxygen.gui.interaction.addFriend=Add to Friends
+oxygen.gui.interaction.ignore=Ignore
 
 oxygen.gui.username=Username
 oxygen.gui.name=Name
@@ -12,6 +18,7 @@ oxygen.gui.downloadCallback.request=Download from server?
 oxygen.gui.editNoteCallback=Edit Note
 oxygen.gui.confirmButton=Confirm
 oxygen.gui.cancelButton=Cancel
+oxygen.gui.addButton=Add
 oxygen.gui.playerFound=Player found
 oxygen.gui.playerNotFound=Player not found
 
@@ -33,11 +40,18 @@ oxygen.gui.ignored.addIgnoredCallback.request=Add player to ingore list.
 oxygen.gui.ignored.removeIgnoredCallback=Remove
 oxygen.gui.ignored.removeIgnoredCallback.request=%s will be removed from ignore list.
 
+oxygen.gui.players.title=Players 
+
 oxygen.gui.action.remove=Remove
 oxygen.gui.action.ignore=Ignore
 oxygen.gui.action.editNote=Edit Note
+oxygen.gui.action.addToFriends=Add to Friends
 
-oxygen.friends.addButton=Add
+oxygen.friends.lastActivity.hour=Activity %s hour ago
+oxygen.friends.lastActivity.hours=Activity %s hours ago
+oxygen.friends.lastActivity.day=Activity %s day ago
+oxygen.friends.lastActivity.days=Activity %s days ago
+oxygen.friends.lastActivity.noData=Activity: no data
 
 oxygen.request.friendRequest=Player %s sent you friend request.
 
@@ -54,7 +68,8 @@ oxygen.tooltip.sort=Sort
 oxygen.gui.friends.tooltip.friends=Friends
 oxygen.gui.friends.tooltip.ignored=Ignored
 
-oxygen.message.command.privilege.info.groupInfo=Group: %s - title: %s, prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.
+oxygen.message.command.privilege.info.groupInfo=Group: %s - title: %s, prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix 
+color: %s, chat color: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Group <%s> privileges:
 oxygen.message.command.privilege.info.groupsList=Groups:
 oxygen.message.command.privilege.info.playerGroup=Player %s group: %s.
@@ -66,6 +81,7 @@ oxygen.message.command.privilege.privilege.remove=Removed privilege <%s> from gr
 oxygen.message.command.privilege.promote=Player <%s> promoted to group <%s>.
 
 oxygen.message.statusChanged=Status changed to %s.
+oxygen.message.requestSent=Request sent.
 oxygen.message.requestReset=Request reset.
 oxygen.message.targetOffline=Player offline.
 oxygen.message.senderIgnored=You ignored by this player.
@@ -87,6 +103,8 @@ oxygen.command.exception.noParams=No parameters provided.
 oxygen.command.exception.unnecessaryParams=Defined unnecessary parameters: %s , ...
 oxygen.command.exception.wrongParamValue=Wrong parameter <%s> value: %s.
 oxygen.command.exception.unnecessaryParamValue=Defined unnecessary parameter <%s> value: %s.
+
+oxygen.command.oxygenc.reloadGui=GUI settings reloaded.
 
 oxygen.dim.unknown=Unknown
 oxygen.dim.overworld=Overworld

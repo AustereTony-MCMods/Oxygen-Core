@@ -34,10 +34,10 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);      
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             if (this.isDebugMode())  		
-                this.drawRect(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getDebugColor());	     	
+                drawRect(0, 0, this.getWidth(), this.getHeight(), this.getDebugColor());	     	
             if (this.isStaticBackgroundEnabled())    		                
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
-            if (this.isDynamicBackgroundEnabled()) {       		
+                drawRect(0, 0, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
+            else if (this.isDynamicBackgroundEnabled()) {       		
                 int color;        		
                 if (!this.isEnabled())               	
                     color = this.getDisabledColor();            
@@ -45,20 +45,19 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
                     color = this.getHoveredColor();              
                 else             	
                     color = this.getEnabledColor();  		
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), color);
-            } 
-            if (this.isTextureEnabled()) {   
+                drawRect(0, 0, this.getWidth(), this.getHeight(), color);
+            } else if (this.isTextureEnabled()) {   
                 GlStateManager.enableBlend();    
                 this.mc.getTextureManager().bindTexture(this.getTexture());                         
-                this.drawCustomSizedTexturedRect(ZERO, ZERO, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());       	
+                drawCustomSizedTexturedRect(0, 0, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());       	
                 GlStateManager.disableBlend();      
             }        	
             if (this.hasItemStack()) {            	
                 RenderHelper.enableGUIStandardItemLighting();        
                 RenderHelper.enableStandardItemLighting();	   	        
-                itemRender.renderItemAndEffectIntoGUI(this.getItemStack(), ZERO, ZERO);                
+                this.itemRender.renderItemAndEffectIntoGUI(this.getItemStack(), 0, 0);                
                 if (this.isStackOverlayEnabled())               	
-                    itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.getItemStack(), ZERO, ZERO, null);
+                    this.itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.getItemStack(), 0, 0, null);
             }        	
             GlStateManager.popMatrix();
         }

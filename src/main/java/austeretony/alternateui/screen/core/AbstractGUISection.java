@@ -45,21 +45,22 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     /**
      * Вызывается один раз при инициализации объекта. Используется для добавления неизменяемых элементов.
      */
-    protected abstract void init();
+    @Override
+    public abstract void init();
 
     public void drawBackground() {   	
         if (this.isDefaultBackgroundEnabled())
             drawDefaultBackground();
         if (this.isDebugMode())   		
-            this.drawRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), this.getX() + this.getTextureOffsetX() + this.getTextureWidth(), this.getY() + this.getTextureOffsetY() + this.getTextureHeight(), this.getDebugColor());
+            drawRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), this.getX() + this.getTextureOffsetX() + this.getTextureWidth(), this.getY() + this.getTextureOffsetY() + this.getTextureHeight(), this.getDebugColor());
         if (this.isStaticBackgroundEnabled())     		                
-            this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
+            drawRect(0, 0, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
         if (this.isTextureEnabled()) {
             GlStateManager.disableLighting();     
             GlStateManager.enableDepth();      
             GlStateManager.enableBlend();   
             this.mc.getTextureManager().bindTexture(this.getTexture());
-            this.drawCustomSizedTexturedRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), 0, 0, this.getTextureWidth(), this.getTextureHeight(), this.getTextureWidth(), this.getTextureHeight()); 
+            drawCustomSizedTexturedRect(this.getX() + this.getTextureOffsetX(), this.getY() + this.getTextureOffsetY(), 0, 0, this.getTextureWidth(), this.getTextureHeight(), this.getTextureWidth(), this.getTextureHeight()); 
             GlStateManager.disableBlend();      
             GlStateManager.disableDepth();      
             GlStateManager.enableLighting();   
@@ -67,7 +68,7 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     }
 
     public void drawDefaultBackground() {
-        this.drawRect(0, 0, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
+        drawRect(0, 0, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
     }
 
     @Override
@@ -259,8 +260,9 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
      * 
      * @param section раздел, к которому относится элемент
      * @param element элемент, который был активирован
+     * @param mouseButton 
      */
-    public abstract void handleElementClick(AbstractGUISection section, GUIBaseElement element);
+    public abstract void handleElementClick(AbstractGUISection section, GUIBaseElement element, int mouseButton);
 
     public boolean isDefaultBackgroundEnabled() {
         return this.enableDefaultBackground;

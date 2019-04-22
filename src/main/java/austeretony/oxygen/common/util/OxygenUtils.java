@@ -33,7 +33,7 @@ public class OxygenUtils {
             externalConfigOld = JsonUtils.getExternalJsonData(externalConfigFolder).getAsJsonObject();   
             JsonElement versionElement = externalConfigOld.get("version");
             if (versionElement == null || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
-                OxygenMain.OXYGEN_LOGGER.info("Updating external config file...");
+                OxygenMain.OXYGEN_LOGGER.info("Updating <{}> config file...", configHolder.getModId());
                 externalConfigNew = new JsonObject();
                 externalConfigNew.add("version", new JsonPrimitive(configHolder.getVersion()));
                 Map<String, JsonElement> 
@@ -70,7 +70,7 @@ public class OxygenUtils {
             }
             return externalConfigOld;            
         } catch (IOException exception) {  
-            OxygenMain.OXYGEN_LOGGER.error("External configuration file damaged!");
+            OxygenMain.OXYGEN_LOGGER.error("External configuration file for <{}> damaged!", configHolder.getModId());
             exception.printStackTrace();
         }
         return null;
@@ -113,6 +113,6 @@ public class OxygenUtils {
             OxygenMain.OXYGEN_LOGGER.error("Versions comparison failed!");               
             exception.printStackTrace();
         }
-        return false;
+        return true;
     }
 }

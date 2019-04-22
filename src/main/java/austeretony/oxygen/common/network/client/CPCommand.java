@@ -27,11 +27,19 @@ public class CPCommand extends ProxyPacket {
         case OPEN_FRIENDS_LIST:
             OxygenManagerClient.instance().getFriendListManager().openFriendsListDelegated();
             break;
+        case OPEN_PLAYERS_LIST:
+            OxygenManagerClient.instance().openPlayersListDelegated();
+            break;
+        case OPEN_INTERACT_PLAYER_MENU:
+            OxygenManagerClient.instance().getInteractionManager().openPlayerInteractionMenuDelegated();
+            break;
         }
     }
 
     public enum EnumCommand {
 
-        OPEN_FRIENDS_LIST
+        OPEN_FRIENDS_LIST,
+        OPEN_PLAYERS_LIST,
+        OPEN_INTERACT_PLAYER_MENU
     }
 }

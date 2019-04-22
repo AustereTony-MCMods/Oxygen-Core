@@ -5,32 +5,26 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 
-public class SharedPlayerData implements Comparable<SharedPlayerData> {
+public class SharedPlayerData {
 
-    private UUID playerUUID;
+    private UUID playerUUID;//for server and client
 
-    private String username;
+    private String username;//for client
 
-    private int dimension;
+    private int index;
 
-    private final Map<Integer, ByteBuffer> data = new ConcurrentHashMap<Integer, ByteBuffer>();
+    private final Map<Integer, ByteBuffer> data = new ConcurrentHashMap<Integer, ByteBuffer>(10);
 
     public SharedPlayerData() {}
-
-    public SharedPlayerData(UUID uuid, String username) {
-        this.playerUUID = uuid;
-        this.username = username;
-    }
 
     public UUID getPlayerUUID() {
         return this.playerUUID;
     }
 
-    public void setUUID(UUID uuid) {
-        this.playerUUID = uuid;
+    public void setPlayerUUID(UUID playerUUID) {
+        this.playerUUID = playerUUID;
     }
 
     public String getUsername() {
@@ -41,16 +35,12 @@ public class SharedPlayerData implements Comparable<SharedPlayerData> {
         this.username = username;
     }
 
-    public int getDimension() {
-        return this.dimension;
+    public int getIndex() {
+        return this.index;
     }
 
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
-
-    public Map<Integer, ByteBuffer> getData() {
-        return this.data;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void addData(int id, ByteBuffer buffer) {
@@ -65,30 +55,17 @@ public class SharedPlayerData implements Comparable<SharedPlayerData> {
         return this.data.get(id);
     }
 
-    public void write(PacketBuffer buffer, int... identifiers) {
-        PacketBufferUtils.writeString(this.getUsername(), buffer);
-        buffer.writeInt(this.getDimension());
-        ByteBuffer byteBuffer;
-        for (int id : identifiers) {
-            byteBuffer = this.data.get(id);
-            buffer.writeByte(byteBuffer.capacity());
-            buffer.writeBytes(byteBuffer.array());//writing array because PacketBuffer#writeBytes(ByteBuffer) isn't working properly
-        }
+    public int getSize() {
+        return this.data.size();
+    }
+
+    public void write(PacketBuffer buffer, int valid, int... identifiers) {
+        for (int i = 0; i < valid; i++)                   
+            buffer.writeBytes(this.data.get(identifiers[i]).array());//writing byte array because PacketBuffer#writeBytes(ByteBuffer) isn't working properly
     }
 
     public void read(PacketBuffer buffer, int... identifiers) {
-        this.setUsername(PacketBufferUtils.readString(buffer)); 
-        this.setDimension(buffer.readInt());
-        ByteBuffer byteBuffer;
-        for (int id : identifiers) {
-            byteBuffer = ByteBuffer.allocate(buffer.readByte());
-            buffer.readBytes(byteBuffer);
-            this.data.put(id, byteBuffer);
-        }
-    }
-
-    @Override
-    public int compareTo(SharedPlayerData other) {        
-        return this.username.compareTo(other.username);
+        for (int id : identifiers)
+            buffer.readBytes(this.data.get(id).array());
     }
 }

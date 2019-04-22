@@ -9,7 +9,6 @@ import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.ProxyPacket;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -78,20 +77,18 @@ public class OxygenNetwork {
         });
     }
 
-    private FMLProxyPacket pack(ProxyPacket modPacket, INetHandler netHandler) {
+    private FMLProxyPacket pack(ProxyPacket packet, INetHandler netHandler) {
         PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
-        packetBuffer.writeByte(this.packets.inverse().get(modPacket.getClass()));
-        modPacket.write(packetBuffer, netHandler);
-        FMLProxyPacket packet = new FMLProxyPacket(packetBuffer, this.channelName);
-        return packet;
+        packetBuffer.writeByte(this.packets.inverse().get(packet.getClass()));
+        packet.write(packetBuffer, netHandler);
+        return new FMLProxyPacket(packetBuffer, this.channelName);
     }
 
     private void process(FMLNetworkEvent.CustomPacketEvent event) throws IOException {
-        FMLProxyPacket proxyPacket = event.getPacket();
-        if (this.channelName.equals(proxyPacket.channel())) {
-            ByteBuf byteBuf = proxyPacket.payload();
-            if (byteBuf.readableBytes() != 0) {
-                PacketBuffer buffer = new PacketBuffer(byteBuf);
+        FMLProxyPacket packet = event.getPacket();
+        if (this.channelName.equals(packet.channel())) {
+            if (packet.payload().readableBytes() != 0) {
+                PacketBuffer buffer = new PacketBuffer(packet.payload());
                 ProxyPacket.create(this.packets, buffer.readByte()).read(buffer, event.getHandler());
             }
         }

@@ -35,7 +35,7 @@ public class GUIAdvancedElement<T extends GUISimpleElement> extends GUISimpleEle
                 else if (this.isHovered() || this.isToggled())              	
                     u += this.getTextureWidth() * 2;      
                 GlStateManager.enableBlend(); 
-                this.drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, 
+                drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, 
                         (this.getHeight() - this.getTextureHeight()) / 2, u, this.getTextureV(), this.getTextureWidth(), 
                         this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());        	
                 GlStateManager.disableBlend(); 

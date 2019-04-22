@@ -34,7 +34,7 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
      */
     public GUINumberField(int xPosition, int yPosition, int width, int maxNumber) {
         this.setPosition(xPosition, yPosition);
-        this.setSize(this.width(String.valueOf(maxNumber)), FONT_HEIGHT);        
+        this.setSize(this.textWidth(String.valueOf(maxNumber), 1.0F), FONT_HEIGHT);        
         this.maxNumber = maxNumber;
         this.typedNumber = "";
         this.enableFull();		
@@ -446,9 +446,9 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
                     this.setCursorPosition(this.mc.fontRenderer.trimStringToWidth(s, l).length() + this.lineScrollOffset);
                 }
                 this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
-                this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+                this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
                 if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())
-                    this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+                    this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
                 return true;
             }
         }
@@ -462,9 +462,9 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);
             if (this.isDynamicBackgroundEnabled()) {
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight() + 1, this.getEnabledBackgroundColor());
+                this.drawRect(0, 0, this.getWidth(), this.getHeight() + 1, this.getEnabledBackgroundColor());
                 if (this.isDragged())
-                    this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight() + 1, this.getHoveredBackgroundColor());   
+                    this.drawRect(0, 0, this.getWidth(), this.getHeight() + 1, this.getHoveredBackgroundColor());   
             }
             int 
             i = this.isEnabled() ? this.getEnabledTextColor() : this.getDisabledTextColor(),
@@ -474,7 +474,7 @@ public class GUINumberField extends GUISimpleElement<GUINumberField> {
             boolean 
             flag = j >= 0 && j <= s.length(),
             flag1 = this.isDragged() && this.cursorCounter / 6 % 2 == 0 && flag;
-            int l = this.isDynamicBackgroundEnabled() ? 2 : ZERO, i1 = this.isDynamicBackgroundEnabled() ? (this.getHeight() - FONT_HEIGHT) / 2 : ZERO, j1 = l;
+            int l = this.isDynamicBackgroundEnabled() ? 2 : 0, i1 = this.isDynamicBackgroundEnabled() ? (this.getHeight() - this.textHeight(this.getTextScale())) / 2 : 0, j1 = l;
             if (k > s.length())
                 k = s.length();
             if (s.length() > 0) {

@@ -1,12 +1,8 @@
 package austeretony.alternateui.util;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 /**
  * Enum для определения положения элементов.
  */
-@SideOnly(Side.CLIENT)
 public enum EnumGUIAlignment {
 
     LEFT,

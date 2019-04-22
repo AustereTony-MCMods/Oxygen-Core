@@ -10,17 +10,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.io.EnumPrivilegeFilesKeys;
-import austeretony.oxygen.common.privilege.io.PrivilegeIOServer;
 import austeretony.oxygen.common.util.OxygenUtils;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PrivilegedGroup implements IPrivilegedGroup {      
 
@@ -150,7 +148,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         this.privileges.put(privilege.getName(), privilege);
         if (save) {
             this.markEdited();
-            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
         }
     }
 
@@ -160,7 +158,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
             this.privileges.put(privilege.getName(), privilege);
         if (save) {
             this.markEdited();
-            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
         }
     }
 
@@ -169,7 +167,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         this.privileges.remove(privilegeName);
         if (save) {
             this.markEdited();
-            PrivilegeIOServer.instance().savePrivilegedGroupsDelegated();
+            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
         }
     }
 
@@ -217,7 +215,6 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         return group;
     }
 
-    @SideOnly(Side.CLIENT)
     public static PrivilegedGroup deserializeClient(JsonObject jsonObject) {
         PrivilegedGroup group = new PrivilegedGroup(
                 jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME)).getAsString(),

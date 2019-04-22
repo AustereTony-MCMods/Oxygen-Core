@@ -8,15 +8,24 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public enum EnumInputClasses {
 
+    //Client
+
+    MC_MINECRAFT("Minecraft", "Minecraft", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
     MC_LOCALE("Minecraft", "Locale", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
     MC_GUI_PLAYER_TAB_OVERLAY("Minecraft", "GuiPlayerTabOverlay", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
+    MC_GUI_INGAME("Minecraft", "GuiIngame", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
+    MC_GUI_INGAME_FORGE("Minecraft", "GuiIngameForge", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
 
+    //Server
+
+    MC_MINECRAFT_SERVER("Minecraft", "MinecraftServer", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
     MC_PLAYER_LIST("Minecraft", "PlayerList", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES),
     MC_NET_HANDLER_PLAY_SERVER("Minecraft", "NetHandlerPlayServer", 0, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
@@ -35,17 +44,47 @@ public enum EnumInputClasses {
 
     public boolean patch(ClassNode classNode) {
         switch (this) {
+        case MC_MINECRAFT:
+            return this.pathcMCMinecraft(classNode);
         case MC_LOCALE:
             return this.pathcMCLocale(classNode);
         case MC_GUI_PLAYER_TAB_OVERLAY:
             return this.pathcMCGuiPlayerTabOverlay(classNode);
+        case MC_GUI_INGAME:
+            return this.pathcMCGuiIngame(classNode);
+        case MC_GUI_INGAME_FORGE:
+            return this.pathcMCGuiIngameForge(classNode);
 
+        case MC_MINECRAFT_SERVER:
+            return this.patchMCMinecraftServer(classNode);
         case MC_PLAYER_LIST:
             return this.patchMCPlayerList(classNode);
         case MC_NET_HANDLER_PLAY_SERVER:
             return this.patchMCNetHandlerPlayServer(classNode);
         }
         return false;
+    }
+
+    private boolean pathcMCMinecraft(ClassNode classNode) {
+        String runTickMethodName = OxygenCorePlugin.isObfuscated() ? "t" : "runTick";
+        boolean isSuccessful = false;   
+        AbstractInsnNode currentInsn;
+
+        for (MethodNode methodNode : classNode.methods) {               
+            if (methodNode.name.equals(runTickMethodName) && methodNode.desc.equals("()V")) {                         
+                Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();              
+                while (insnIterator.hasNext()) {                        
+                    currentInsn = insnIterator.next();                  
+                    if (currentInsn.getOpcode() == Opcodes.ALOAD) {    
+                        methodNode.instructions.insertBefore(currentInsn, new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onClientTick", "()V", false)); 
+                        isSuccessful = true;                        
+                        break;
+                    }
+                }    
+                break;
+            }
+        }
+        return isSuccessful;
     }
 
     private boolean pathcMCLocale(ClassNode classNode) {
@@ -118,16 +157,96 @@ public enum EnumInputClasses {
         return isSuccessful;
     }
 
+    private boolean pathcMCGuiIngame(ClassNode classNode) {
+        String renderGameOverlayMethodName = OxygenCorePlugin.isObfuscated() ? "a" : "renderGameOverlay";
+        boolean isSuccessful = false;   
+        int ifeqCount = 0;
+        AbstractInsnNode currentInsn;
+
+        for (MethodNode methodNode : classNode.methods) {               
+            if (methodNode.name.equals(renderGameOverlayMethodName) && methodNode.desc.equals("(F)V")) {                         
+                Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();              
+                while (insnIterator.hasNext()) {                        
+                    currentInsn = insnIterator.next();                  
+                    if (currentInsn.getOpcode() == Opcodes.IFEQ) {    
+                        ifeqCount++;
+                        if (ifeqCount == 11) {
+                            InsnList nodesList = new InsnList();   
+                            nodesList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "renderTabOverlay", "()Z", false));
+                            nodesList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) currentInsn).label));
+                            methodNode.instructions.insertBefore(currentInsn.getPrevious().getPrevious().getPrevious().getPrevious().getPrevious(), nodesList); 
+                            isSuccessful = true;                        
+                            break;
+                        }
+                    }
+                }    
+                break;
+            }
+        }
+        return isSuccessful;
+    }
+
+    private boolean pathcMCGuiIngameForge(ClassNode classNode) {
+        String renderPlayerListMethodName = "renderPlayerList";
+        boolean isSuccessful = false;   
+        AbstractInsnNode currentInsn;
+
+        for (MethodNode methodNode : classNode.methods) {               
+            if (methodNode.name.equals(renderPlayerListMethodName) && methodNode.desc.equals("(II)V")) {                         
+                Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();              
+                while (insnIterator.hasNext()) {                        
+                    currentInsn = insnIterator.next();                  
+                    if (currentInsn.getOpcode() == Opcodes.IFEQ) {    
+                        InsnList nodesList = new InsnList();   
+                        nodesList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "renderTabOverlay", "()Z", false));
+                        nodesList.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode) currentInsn).label));
+                        methodNode.instructions.insertBefore(currentInsn.getPrevious().getPrevious().getPrevious().getPrevious().getPrevious(), nodesList); 
+                        isSuccessful = true;                        
+                        break;
+                    }
+                }    
+                break;
+            }
+        }
+        return isSuccessful;
+    }
+
+    private boolean patchMCMinecraftServer(ClassNode classNode) {
+        String 
+        tickMethodName = OxygenCorePlugin.isObfuscated() ? "C" : "tick";       
+        boolean isSuccessful = false; 
+        AbstractInsnNode currentInsn;
+
+        for (MethodNode methodNode : classNode.methods) {       
+            if (methodNode.name.equals(tickMethodName) && methodNode.desc.equals("()V")) {                               
+                Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();                  
+                while (insnIterator.hasNext()) {                    
+                    currentInsn = insnIterator.next();                      
+                    if (currentInsn.getOpcode() == Opcodes.INVOKESTATIC) {   
+                        methodNode.instructions.insertBefore(currentInsn, new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onServerTick", "()V", false)); 
+                        isSuccessful = true;                        
+                        break;
+                    }
+                }                                       
+                break;
+            }
+        }
+        return isSuccessful;
+    }
+
     private boolean patchMCPlayerList(ClassNode classNode) {
         String 
         initializeConnectionToPlayerMethodName = "initializeConnectionToPlayer",
         playerLoggedOutMethodName = OxygenCorePlugin.isObfuscated() ? "e" : "playerLoggedOut",
+                transferPlayerToDimensionMethodName = "transferPlayerToDimension",
                 networkManagerClassName = OxygenCorePlugin.isObfuscated() ? "gw" : "net/minecraft/network/NetworkManager",
                         entityPlayerMPClassName = OxygenCorePlugin.isObfuscated() ? "oq" : "net/minecraft/entity/player/EntityPlayerMP",
+                                iTeleportaerClassName = "net/minecraftforge/common/util/ITeleporter",//forge
                                 netHandlerPlayServer = OxygenCorePlugin.isObfuscated() ? "pa" : "net/minecraft/network/NetHandlerPlayServer";                      
         boolean 
         isSuccessful0 = false,
-        isSuccessful1 = false; 
+        isSuccessful1 = false,
+        isSuccessful2 = false; 
         AbstractInsnNode currentInsn;
 
         for (MethodNode methodNode : classNode.methods) {       
@@ -140,12 +259,11 @@ public enum EnumInputClasses {
                         nodesList.add(new VarInsnNode(Opcodes.ALOAD, 2));
                         nodesList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onPlayerLogIn", "(L" + entityPlayerMPClassName + ";)V", false));
                         methodNode.instructions.insertBefore(currentInsn, nodesList); 
-                        isSuccessful0 = true;                        
+                        isSuccessful0 = true;           
                         break;
                     }
                 }                                       
-            }
-            if (methodNode.name.equals(playerLoggedOutMethodName) && methodNode.desc.equals("(L" + entityPlayerMPClassName + ";)V")) {                               
+            } else if (methodNode.name.equals(playerLoggedOutMethodName) && methodNode.desc.equals("(L" + entityPlayerMPClassName + ";)V")) {                               
                 Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();                  
                 while (insnIterator.hasNext()) {                    
                     currentInsn = insnIterator.next();                      
@@ -154,14 +272,29 @@ public enum EnumInputClasses {
                         nodesList.add(new VarInsnNode(Opcodes.ALOAD, 1));
                         nodesList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onPlayerLogOut", "(L" + entityPlayerMPClassName + ";)V", false));
                         methodNode.instructions.insertBefore(currentInsn.getPrevious(), nodesList); 
-                        isSuccessful1 = true;                        
+                        isSuccessful1 = true;                     
+                        break;
+                    }
+                }                                       
+            } else if (methodNode.name.equals(transferPlayerToDimensionMethodName) && methodNode.desc.equals("(L" + entityPlayerMPClassName + ";IL" + iTeleportaerClassName + ";)V")) {                               
+                Iterator<AbstractInsnNode> insnIterator = methodNode.instructions.iterator();                  
+                while (insnIterator.hasNext()) {                    
+                    currentInsn = insnIterator.next();                      
+                    if (currentInsn.getOpcode() == Opcodes.RETURN) {   
+                        InsnList nodesList = new InsnList();             
+                        nodesList.add(new VarInsnNode(Opcodes.ALOAD, 1));
+                        nodesList.add(new VarInsnNode(Opcodes.ILOAD, 4));
+                        nodesList.add(new VarInsnNode(Opcodes.ILOAD, 2));
+                        nodesList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, HOOKS_CLASS, "onPlayerChangedDimension", "(L" + entityPlayerMPClassName + ";II)V", false));
+                        methodNode.instructions.insertBefore(currentInsn, nodesList); 
+                        isSuccessful2 = true;                        
                         break;
                     }
                 }                                       
                 break;
             }
         }
-        return isSuccessful0 && isSuccessful1;
+        return isSuccessful0 && isSuccessful1 && isSuccessful2;
     }
 
     private boolean patchMCNetHandlerPlayServer(ClassNode classNode) {

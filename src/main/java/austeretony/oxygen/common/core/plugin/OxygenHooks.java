@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import austeretony.oxygen.client.OxygenLoaderClient;
+import austeretony.oxygen.client.ListenersRegistryClient;
 import austeretony.oxygen.common.ListenersRegistryServer;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
@@ -27,8 +27,8 @@ public class OxygenHooks {
 
     //Hook to <net.minecraft.client.resources.Locale> class to <loadLocaleDataFiles()> method.
     public static void loadCustomLocalization(List<String> languageList, Map<String, String> properties) {
-        if (OxygenConfig.ENABLE_CUSTOM_LOCALIZATION.getBooleanValue())
-            OxygenLoaderClient.loadCustomLocalization(languageList, properties);
+        //TODO Fix locaization files first
+        //OxygenLoaderClient.loadLocalization(languageList, properties);
     }
 
     //Hook to <net.minecraft.client.gui.GuiPlayerTabOverlay> class to <renderPlayerlist()> method.
@@ -51,6 +51,21 @@ public class OxygenHooks {
     //Hook to <net.minecraft.server.management.PlayerList> class to <playerLoggedOut()> method.
     public static void onPlayerLogOut(EntityPlayerMP playerMP) {
         ListenersRegistryServer.instance().notifyPlayerLogOutListeners(playerMP);
+    }
+
+    //Hook to <net.minecraft.server.management.PlayerList> class to <transferPlayerToDimension()> method.
+    public static void onPlayerChangedDimension(EntityPlayerMP playerMP, int fromDim, int toDim) {
+        ListenersRegistryServer.instance().notifyPlayerChangedDimensionListeners(playerMP, fromDim, toDim);
+    }
+
+    //Hook to <net.minecraft.client.Minecraft> class to <runTick()> method.
+    public static void onClientTick() {
+        ListenersRegistryClient.instance().notifyClientTickListeners();
+    }
+
+    //Hook to <net.minecraft.server.MinecraftServer> class to <tick()> method.
+    public static void onServerTick() {
+        ListenersRegistryServer.instance().notifyServerTickListeners();
     }
 
     //Hook to <net.minecraft.network.NetHandlerPlayServer> class to <processChatMessage()> method.
@@ -88,5 +103,11 @@ public class OxygenHooks {
             if (!recieverData.haveFriendListEntryForUUID(senderUUID) || !recieverData.getFriendListEntryByUUID(senderUUID).ignored)
                 recieverMP.connection.sendPacket(new SPacketChat(formatted, ChatType.CHAT));
         }
+    }
+
+    //Hook to <net.minecraft.client.gui.GuiIngame> class to <renderGameOverlay()> method.
+    //Hook to <net.minecraftforge.client.GuiIngameForge> class to <renderPlayerList()> method.
+    public static boolean renderTabOverlay() {
+        return !OxygenConfig.REPLACE_TAB_OVERLAY.getBooleanValue();
     }
 }

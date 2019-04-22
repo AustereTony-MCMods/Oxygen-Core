@@ -7,6 +7,8 @@ import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.ProxyPacket;
+import austeretony.oxygen.common.network.client.CPCommand;
+import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.network.client.CPSyncValidFriendEntriesIds;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
@@ -33,11 +35,26 @@ public class SPRequest extends ProxyPacket {
         UUID playerUUID = CommonReference.uuid(playerMP);
         this.request = EnumRequest.values()[buffer.readByte()];
         switch (this.request) {
+        case SYNC_PRIVILEGED_GROUP:
+            OxygenMain.network().sendTo(new CPSyncGroup(), playerMP);
+            break;
         case OPEN_FRIENDS_LIST:
             if (!OxygenHelperServer.getPlayerData(playerUUID).isSyncing()) {
                 OxygenHelperServer.getPlayerData(playerUUID).setSyncing(true);
-                OxygenManagerServer.instance().syncSharedPlayersData(playerMP, OxygenMain.STATUS_DATA_ID);
+                OxygenManagerServer.instance().syncSharedPlayersData(playerMP, OxygenHelperServer.getSharedDataIdentifiersForScreen(OxygenMain.FRIEND_LIST_SCREEN_ID));
                 OxygenMain.network().sendTo(new CPSyncValidFriendEntriesIds(), playerMP);
+            }
+            break;
+        case OPEN_PLAYERS_LIST:
+            if (!OxygenHelperServer.getPlayerData(playerUUID).isSyncing()) {
+                OxygenManagerServer.instance().syncSharedPlayersData(playerMP, OxygenHelperServer.getSharedDataIdentifiersForScreen(OxygenMain.PLAYER_LIST_SCREEN_ID));
+                OxygenMain.network().sendTo(new CPCommand(CPCommand.EnumCommand.OPEN_PLAYERS_LIST), playerMP);
+            }
+            break;
+        case OPEN_INTERACT_PLAYER_MENU:
+            if (!OxygenHelperServer.getPlayerData(playerUUID).isSyncing()) {
+                OxygenManagerServer.instance().syncSharedPlayersData(playerMP, OxygenHelperServer.getSharedDataIdentifiersForScreen(OxygenMain.INTERACTION_SCREEN_ID));
+                OxygenMain.network().sendTo(new CPCommand(CPCommand.EnumCommand.OPEN_INTERACT_PLAYER_MENU), playerMP);
             }
             break;
         }
@@ -45,6 +62,9 @@ public class SPRequest extends ProxyPacket {
 
     public enum EnumRequest {
 
-        OPEN_FRIENDS_LIST
+        SYNC_PRIVILEGED_GROUP,
+        OPEN_FRIENDS_LIST,
+        OPEN_PLAYERS_LIST,
+        OPEN_INTERACT_PLAYER_MENU;
     }
 }

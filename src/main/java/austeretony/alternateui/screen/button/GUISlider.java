@@ -50,11 +50,9 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
             if (this.isTextureEnabled()) {
                 this.mc.getTextureManager().bindTexture(this.getTexture());      
                 GlStateManager.enableBlend(); 
-                this.drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
+                drawCustomSizedTexturedRect((this.getWidth() - this.getTextureWidth()) / 2, (this.getHeight() - this.getTextureHeight()) / 2, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
                 GlStateManager.disableBlend(); 
             }  
-            if (this.isDynamicBackgroundEnabled())
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getEnabledBackgroundColor());
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();            
             GlStateManager.translate(this.getSlidebarX(), this.getSlidebarY(), 0.0F);
@@ -66,18 +64,16 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
                     u += this.getSlidebarWidth() * 2;
                 else
                     u += this.getSlidebarWidth();
-                this.drawCustomSizedTexturedRect(ZERO, ZERO, u, this.getSlidebarTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
+                drawCustomSizedTexturedRect(0, 0, u, this.getSlidebarTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());
             }
-            if (this.isSlidebarBackgroundEnabled()) {
-                int color;
-                if (!this.isEnabled())
-                    color = this.getDisabledColor();
-                else if (this.isHovered())
-                    color = this.getHoveredColor();
-                else
-                    color = this.getEnabledColor();
-                this.drawRect(ZERO, ZERO, this.getSlidebarWidth(), this.getSlidebarHeight(), color);
-            }
+            int color;
+            if (!this.isEnabled())
+                color = this.getDisabledBackgroundColor();
+            else if (this.isHovered())
+                color = this.getHoveredBackgroundColor();
+            else
+                color = this.getEnabledBackgroundColor();
+            drawRect(0, 0, this.getSlidebarWidth(), this.getSlidebarHeight(), color);
             GlStateManager.popMatrix();
         }
     }       
@@ -93,9 +89,9 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
         if (this.isHovered() && mouseButton == 0) {
             this.setDragged(true);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
-            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())
-                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
             return true;
         }
         return false;

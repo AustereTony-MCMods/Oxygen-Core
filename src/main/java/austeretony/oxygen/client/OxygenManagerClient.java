@@ -1,20 +1,22 @@
 package austeretony.oxygen.client;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.client.gui.playerlist.PlayerListGUIScreen;
+import austeretony.oxygen.common.ImmutablePlayerData;
 import austeretony.oxygen.common.api.IOxygenTask;
+import austeretony.oxygen.common.api.OxygenGUIHelper;
+import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
+import austeretony.oxygen.common.network.server.SPRequest;
 import austeretony.oxygen.common.notification.NotificationManagerClient;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
+import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 
 public class OxygenManagerClient {
 
@@ -32,30 +34,39 @@ public class OxygenManagerClient {
 
     private final OxygenLoaderClient loader;
 
-    private final PrivilegeManagerClient privilegeManagerClient;
+    private final PrivilegeManagerClient privilegeManager;
+
+    private final PrivilegeLoaderClient privilegeLoader;
 
     private final NotificationManagerClient notificationsManager;
 
     private final FriendListManagerClient friendListManager;
 
+    private final SharedDataManagerClient sharedDataManager;
+
+    private final InteractionManagerClient interactionManager;
+
+    private final OxygenGUIManager guiManager;
+
     private final OxygenPlayerData playerData;
-
-    private final Map<UUID, SharedPlayerData> sharedPayersData = new ConcurrentHashMap<UUID, SharedPlayerData>();
-
-    private final Set<UUID> onlinePlayers = new HashSet<UUID>();
 
     private OxygenManagerClient() {
         this.loader = new OxygenLoaderClient(this);
-        this.privilegeManagerClient = new PrivilegeManagerClient(this);
+        this.privilegeManager = new PrivilegeManagerClient(this);
+        this.privilegeLoader = new PrivilegeLoaderClient(this);
         this.notificationsManager = new NotificationManagerClient(this);
         this.friendListManager = new FriendListManagerClient(this);
+        this.sharedDataManager = new SharedDataManagerClient(this);
+        this.interactionManager = new InteractionManagerClient(this);
+        this.guiManager = new OxygenGUIManager(this);
         this.playerData = new OxygenPlayerData();
-        this.createOxygenClientThreads();      
     }
 
     public static void create() {
-        OxygenMain.OXYGEN_LOGGER.info("Created Oxygen client manager.");
-        instance = new OxygenManagerClient();
+        if (instance == null) {
+            OxygenMain.OXYGEN_LOGGER.info("Created Oxygen client manager.");
+            instance = new OxygenManagerClient();
+        }
     }
 
     public static OxygenManagerClient instance() {
@@ -67,7 +78,11 @@ public class OxygenManagerClient {
     }
 
     public PrivilegeManagerClient getPrivilegeManager() {
-        return this.privilegeManagerClient;
+        return this.privilegeManager;
+    }
+
+    public PrivilegeLoaderClient getPrivilegeLoader() {
+        return this.privilegeLoader;
     }
 
     public NotificationManagerClient getNotificationsManager() {
@@ -76,6 +91,18 @@ public class OxygenManagerClient {
 
     public FriendListManagerClient getFriendListManager() {
         return this.friendListManager;
+    }
+
+    public SharedDataManagerClient getSharedDataManager() {
+        return this.sharedDataManager;
+    }
+
+    public InteractionManagerClient getInteractionManager() {
+        return this.interactionManager;
+    }
+
+    public OxygenGUIManager getGUIManager() {
+        return this.guiManager;
     }
 
     public void createOxygenClientThreads() {
@@ -91,8 +118,10 @@ public class OxygenManagerClient {
     }
 
     public void init() {
+        this.notificationsManager.getNotifications().clear();
+        this.sharedDataManager.reset();
         this.playerData.setPlayerUUID(this.playerUUID);
-        this.privilegeManagerClient.initIO();
+        this.privilegeLoader.loadPrivilegeDataDelegated();
         this.loader.loadPlayerDataDelegated();
     }
 
@@ -161,27 +190,51 @@ public class OxygenManagerClient {
         return this.playerUUID;
     }
 
-    public Collection<SharedPlayerData> getSharedPlayersData() {
-        return this.sharedPayersData.values();
+    public Collection<ImmutablePlayerData> getImmutablePlayersData() {
+        return this.sharedDataManager.getPlayersImmutableData();
     }
 
-    public Set<UUID> getSharedPlayersDataUUIDs() {
-        return this.sharedPayersData.keySet();
+    public Collection<SharedPlayerData> getSharedPlayersData() {
+        return this.sharedDataManager.getPlayersSharedData();
+    }
+
+    public ImmutablePlayerData getImmutablePlayerData(UUID playerUUID) {
+        return this.sharedDataManager.getImmutableData(playerUUID);
     }
 
     public SharedPlayerData getSharedPlayerData(UUID playerUUID) {
-        return this.sharedPayersData.get(playerUUID);
+        return this.sharedDataManager.getSharedData(playerUUID);
     }
 
-    public void addSharedPlayerData(SharedPlayerData sharedData) {
-        this.sharedPayersData.put(sharedData.getPlayerUUID(), sharedData);
-    }
-
-    public Set<UUID> getOnlinePlayers() {
-        return this.onlinePlayers;
+    public SharedPlayerData getSharedPlayerData(int index) {
+        return this.sharedDataManager.getSharedData(index);
     }
 
     public boolean isPlayerOnline(UUID playerUUID) {
-        return this.onlinePlayers.contains(playerUUID);
+        return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
+    }
+
+    public void openPlayersListSynced() {
+        OxygenGUIHelper.needSync(OxygenMain.PLAYER_LIST_SCREEN_ID);
+        OxygenMain.network().sendToServer(new SPRequest(SPRequest.EnumRequest.OPEN_PLAYERS_LIST));
+    }
+
+    public void openPlayersListDelegated() {
+        ClientReference.getMinecraft().addScheduledTask(new Runnable() {
+
+            @Override
+            public void run() {
+                openPlayersList();
+            }
+        });
+    }
+
+    private void openPlayersList() {
+        ClientReference.displayGuiScreen(new PlayerListGUIScreen());
+    }
+
+    public void reset() {
+        this.playerData.resetData();
+        this.notificationsManager.getNotifications().clear();
     }
 }

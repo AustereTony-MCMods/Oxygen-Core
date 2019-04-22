@@ -1,13 +1,13 @@
 package austeretony.oxygen.common.network.server;
 
-import java.util.UUID;
-
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.network.client.CPCommand;
 import austeretony.oxygen.common.network.client.CPSyncFriendListEntries;
+import austeretony.oxygen.common.network.client.CPSyncFriendsActivity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
@@ -37,7 +37,7 @@ public class SPSendAbsentFriendListEntriesIds extends ProxyPacket {
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
         EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        UUID playerUUID = CommonReference.uuid(playerMP);
+        OxygenPlayerData playerData = OxygenHelperServer.getPlayerData(CommonReference.uuid(playerMP));
         int amount = buffer.readShort();
         if (amount > 0) {
             long[] needSync = new long[amount];
@@ -46,7 +46,11 @@ public class SPSendAbsentFriendListEntriesIds extends ProxyPacket {
                 needSync[index++] = buffer.readLong();
             OxygenMain.network().sendTo(new CPSyncFriendListEntries(needSync), playerMP);
         }
+        if (playerData.needSyncFriendsActivity()) {
+            OxygenMain.network().sendTo(new CPSyncFriendsActivity(playerData), playerMP);
+            playerData.setNeedSyncFriendsActivity(false);
+        }
         OxygenMain.network().sendTo(new CPCommand(CPCommand.EnumCommand.OPEN_FRIENDS_LIST), playerMP);
-        OxygenHelperServer.getPlayerData(playerUUID).setSyncing(false);
+        playerData.setSyncing(false);
     }
 }

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.google.gson.JsonObject;
 
@@ -16,7 +16,7 @@ import austeretony.oxygen.common.util.OxygenUtils;
 
 public class ConfigLoader {
 
-    public static final Queue<IConfigHolder> CONFIG_HOLDERS = new ConcurrentLinkedQueue<IConfigHolder>();
+    public static final Set<IConfigHolder> CONFIG_HOLDERS = new LinkedHashSet<IConfigHolder>();
 
     public static void addConfig(IConfigHolder config) {
         CONFIG_HOLDERS.add(config);

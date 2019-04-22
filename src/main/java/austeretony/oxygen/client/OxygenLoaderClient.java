@@ -82,27 +82,25 @@ public class OxygenLoaderClient {
         }
     }
 
-    public static void loadCustomLocalization(List<String> languageList, Map<String, String> properties) {
-        if (OxygenConfig.ENABLE_CUSTOM_LOCALIZATION.getBooleanValue()) {
-            String localizationFolder = CommonReference.getGameFolder() + "/config/oxygen/localization/localization.json";
-            Path localizationPath = Paths.get(localizationFolder);      
-            if (Files.exists(localizationPath)) {
-                try {       
-                    loadLocalization(JsonUtils.getExternalJsonData(localizationFolder).getAsJsonObject(), languageList, properties);
-                } catch (IOException exception) {       
-                    exception.printStackTrace();
-                    return;
-                }
-            } else {
-                try {               
-                    Files.createDirectories(localizationPath.getParent());
-                    JsonObject loclization = JsonUtils.getInternalJsonData("assets/oxygen/localization.json").getAsJsonObject();
-                    JsonUtils.createExternalJsonFile(localizationFolder, loclization);    
-                    loadLocalization(loclization, languageList, properties);
-                } catch (IOException exception) {               
-                    exception.printStackTrace();
-                }   
+    public static void loadLocalization(List<String> languageList, Map<String, String> properties) {
+        String localizationFolder = CommonReference.getGameFolder() + "/config/oxygen/localization/localization.json";
+        Path localizationPath = Paths.get(localizationFolder);      
+        if (Files.exists(localizationPath)) {
+            try {       
+                loadLocalization(JsonUtils.getExternalJsonData(localizationFolder).getAsJsonObject(), languageList, properties);
+            } catch (IOException exception) {       
+                exception.printStackTrace();
+                return;
             }
+        } else {
+            try {               
+                Files.createDirectories(localizationPath.getParent());
+                JsonObject loclization = JsonUtils.getInternalJsonData("assets/oxygen/localization.json").getAsJsonObject();
+                JsonUtils.createExternalJsonFile(localizationFolder, loclization);    
+                loadLocalization(loclization, languageList, properties);
+            } catch (IOException exception) {               
+                exception.printStackTrace();
+            }   
         }
     }
 

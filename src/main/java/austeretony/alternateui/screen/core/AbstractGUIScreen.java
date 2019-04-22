@@ -125,33 +125,20 @@ public abstract class AbstractGUIScreen extends GuiScreen {
             GlStateManager.disableDepth();      
             GlStateManager.enableLighting(); 
             RenderHelper.enableGUIStandardItemLighting();	        	        
-            this.yPrevMouse = mouseY;
-        }              
+        }      
+        this.yPrevMouse = mouseY;
     }
 
-    public void handlePanelSlidebar(GUIButtonPanel buttonPanel, int mouseY) {   	
+    public void handlePanelSlidebar(GUIButtonPanel buttonPanel, int mouseY) {  
         int slidebarOffset;        
         float sliderActiveHeight, currentPosition;   	
-        if (buttonPanel.getScroller().getSlider().isDragged()) {          						
+        if (buttonPanel.getScroller().getSlider().isDragged()) {   
             slidebarOffset = mouseY - buttonPanel.getScroller().getSlider().getSlidebarY() - this.guiTop;				
             sliderActiveHeight = buttonPanel.getScroller().getSlider().getHeight() - buttonPanel.getScroller().getSlider().getSlidebarHeight();				
             currentPosition = mouseY - slidebarOffset - this.yPrevMouse + mouseY - this.guiTop;				        				
             buttonPanel.getScroller().setPosition((int) ((float) buttonPanel.getScroller().getMaxPosition() * ((currentPosition - buttonPanel.getScroller().getSlider().getY()) / sliderActiveHeight)));       									
             buttonPanel.getScroller().getSlider().handleSlidebarViaCursor((int) (sliderActiveHeight * (currentPosition / sliderActiveHeight)));				
             this.scrollButtonPanel(buttonPanel);    				
-        }
-    }
-
-    public void handleDropDownListSlidebar(GUIDropDownList dropDownList, int mouseY) {  	
-        int slidebarOffset;       
-        float sliderActiveHeight, currentPosition;   	
-        if (dropDownList.getScroller().getSlider().isDragged()) {          						
-            slidebarOffset = mouseY - dropDownList.getScroller().getSlider().getSlidebarY() - this.guiTop;				
-            sliderActiveHeight = dropDownList.getScroller().getSlider().getHeight() - dropDownList.getScroller().getSlider().getSlidebarHeight();				
-            currentPosition = mouseY - slidebarOffset - this.yPrevMouse + mouseY - this.guiTop;				        				
-            dropDownList.getScroller().setPosition((int) ((float) dropDownList.getScroller().getMaxPosition() * ((currentPosition - dropDownList.getScroller().getSlider().getY()) / sliderActiveHeight)));       									
-            dropDownList.getScroller().getSlider().handleSlidebarViaCursor((int) (sliderActiveHeight * (currentPosition / sliderActiveHeight)));			
-            this.scrollDropDownList(dropDownList);    				
         }
     }
 
@@ -241,9 +228,8 @@ public abstract class AbstractGUIScreen extends GuiScreen {
                     buttonCopy = button;                                                                                                                                           
                     k = size;                                           
                     buttonCopy.setY(panel.getY() + k * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getMaxElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())));         
-                    if (size < panel.getVisibleElementsAmount()) {                           
+                    if (size < panel.getVisibleElementsAmount())                          
                         panel.visibleButtons.add(buttonCopy);    
-                    }
                     panel.searchButtons.add(buttonCopy);
                 }
             }

@@ -77,6 +77,8 @@ public class GUIBaseElement<T extends GUIBaseElement> {
         return this.cancelDraggedLogic;
     }
 
+    public void init() {}
+    
     /**
      * Вызывается каждый тик.
      * 

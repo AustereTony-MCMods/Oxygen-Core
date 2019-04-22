@@ -19,7 +19,9 @@ import java.util.UUID;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
+import austeretony.oxygen.common.main.FriendListEntry;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenPlayerData;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class OxygenLoaderServer {
@@ -87,7 +89,7 @@ public class OxygenLoaderServer {
             @Override
             public void execute() {
                 loadPlayerData(playerUUID);
-                manager.createSharedData(playerUUID, playerMP);
+                manager.getSharedDataManager().createPlayerSharedDataEntrySynced(playerMP);
             }     
         });
     }
@@ -104,6 +106,31 @@ public class OxygenLoaderServer {
                 exception.printStackTrace();
             }
         }
+    }
+
+    public void informFriendsLastActivityDelegated(UUID playerUUID) {
+        OxygenHelperServer.addIOTask(new IOxygenTask() {
+
+            @Override
+            public void execute() {
+                OxygenPlayerData 
+                playerData = manager.getPlayerData(playerUUID),
+                friendData;
+                playerData.updateLastActivityTime();               
+                for (FriendListEntry entry : playerData.getFriendListEntries()) {
+                    if (!entry.ignored) {                       
+                        if (!manager.playerDataExist(entry.playerUUID)) {
+                            manager.createPlayerData(entry.playerUUID);
+                            loadPlayerData(entry.playerUUID);
+                        } 
+                        friendData = manager.getPlayerData(entry.playerUUID);                      
+                        friendData.getFriendListEntryByUUID(playerUUID).setLastActivityTime(playerData.getLastActivityTime());
+                        friendData.setNeedSyncFriendsActivity(true);
+                        savePlayerDataDelegated(entry.playerUUID);
+                    }                        
+                }
+            }     
+        });
     }
 
     public void savePlayerDataDelegated(UUID playerUUID) {

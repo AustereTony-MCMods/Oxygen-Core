@@ -18,11 +18,11 @@ public class NotificationManagerClient {
 
     private final Map<Long, IOxygenNotification> notifications = new ConcurrentHashMap<Long, IOxygenNotification>();
 
-    private final Map<Integer, ResourceLocation> icons = new HashMap<Integer, ResourceLocation>();
+    private final Map<Integer, ResourceLocation> icons = new HashMap<Integer, ResourceLocation>(5);
 
     private long latestNotificationId;
 
-    private boolean notificationsExist, notificationsOverlayInitialized;
+    private boolean notificationsExist, processRequestOverlay;
 
     public NotificationManagerClient(OxygenManagerClient manager) {
         this.manager = manager;
@@ -60,7 +60,7 @@ public class NotificationManagerClient {
         this.notifications.put(notification.getId(), notification);
         if (notification.getType() == EnumNotifications.REQUEST) {
             this.latestNotificationId = notification.getId();
-            this.notificationsOverlayInitialized = false;
+            this.processRequestOverlay = false;
         }
         this.notificationsExist = true;
     }
@@ -81,12 +81,12 @@ public class NotificationManagerClient {
         this.latestNotificationId = 0L;
     }
 
-    public void initNotificationsOverlay() {
-        this.notificationsOverlayInitialized = true;
+    public void processRequestOverlay() {
+        this.processRequestOverlay = true;
     }
 
-    public boolean isNotificationsOverlayInitialized() {
-        return this.notificationsOverlayInitialized;
+    public boolean isRequestOverlayProcessing() {
+        return this.processRequestOverlay;
     }
 
     public void processNotifications() {

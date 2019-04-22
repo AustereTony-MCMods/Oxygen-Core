@@ -3,8 +3,10 @@ package austeretony.oxygen.common;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import austeretony.oxygen.common.core.api.listeners.server.IPlayerChangedDimensionListener;
 import austeretony.oxygen.common.core.api.listeners.server.IPlayerLogInListener;
 import austeretony.oxygen.common.core.api.listeners.server.IPlayerLogOutListener;
+import austeretony.oxygen.common.core.api.listeners.server.IServerTickListener;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ListenersRegistryServer {
@@ -14,6 +16,10 @@ public class ListenersRegistryServer {
     private Set<IPlayerLogInListener> logInListeners;
 
     private Set<IPlayerLogOutListener> logOutListeners;
+
+    private Set<IPlayerChangedDimensionListener> changedDimensionListeners;
+
+    private Set<IServerTickListener> serverTickListeners;
 
     private ListenersRegistryServer() {}
 
@@ -47,5 +53,29 @@ public class ListenersRegistryServer {
         if (this.logOutListeners != null)
             for (IPlayerLogOutListener listener : this.logOutListeners)
                 listener.onPlayerLogOut(playerMP);
+    }
+
+    public void addPlayerChangedDimensionListener(IPlayerChangedDimensionListener listener) {
+        if (this.changedDimensionListeners == null)
+            this.changedDimensionListeners = new LinkedHashSet<IPlayerChangedDimensionListener>(3);
+        this.changedDimensionListeners.add(listener);
+    }
+
+    public void notifyPlayerChangedDimensionListeners(EntityPlayerMP playerMP, int fromDim, int toDim) {
+        if (this.changedDimensionListeners != null)
+            for (IPlayerChangedDimensionListener listener : this.changedDimensionListeners)
+                listener.onPlayerChangedDimension(playerMP, fromDim, toDim);
+    }
+
+    public void addServerTickListener(IServerTickListener listener) {
+        if (this.serverTickListeners == null)
+            this.serverTickListeners = new LinkedHashSet<IServerTickListener>(3);
+        this.serverTickListeners.add(listener);
+    }
+
+    public void notifyServerTickListeners() {
+        if (this.serverTickListeners != null)
+            for (IServerTickListener listener : this.serverTickListeners)
+                listener.onServerTick();
     }
 }

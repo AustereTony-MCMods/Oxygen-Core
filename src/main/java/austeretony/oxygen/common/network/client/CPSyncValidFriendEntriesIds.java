@@ -2,6 +2,7 @@ package austeretony.oxygen.common.network.client;
 
 import java.util.Set;
 
+import austeretony.oxygen.common.api.OxygenGUIHelper;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
@@ -41,11 +42,13 @@ public class CPSyncValidFriendEntriesIds extends ProxyPacket {
                 needSync[i++] = entryId;    
             else
                 validEntries[j++] = OxygenHelperClient.getPlayerData().getFriendListEntry(entryId);
-        OxygenHelperClient.getPlayerData().getFriendListEntries().clear();
+        OxygenHelperClient.getPlayerData().clearFriendListEntries();
         for (FriendListEntry validEntry : validEntries) {
             if (validEntry == null) break;
             OxygenHelperClient.getPlayerData().addFriendListEntry(validEntry);
         }
+        if (i > 0)
+            OxygenGUIHelper.needSync(OxygenMain.FRIEND_LIST_SCREEN_ID);
         OxygenMain.network().sendToServer(new SPSendAbsentFriendListEntriesIds(needSync, i));
     }
 }

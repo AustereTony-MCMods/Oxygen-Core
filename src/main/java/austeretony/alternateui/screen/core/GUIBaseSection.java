@@ -16,8 +16,8 @@ public class GUIBaseSection extends AbstractGUISection {
     }
 
     @Override
-    protected void init() {}
+    public void init() {}
 
     @Override
-    public void handleElementClick(AbstractGUISection section, GUIBaseElement element) {}
+    public void handleElementClick(AbstractGUISection section, GUIBaseElement element, int mouseButton) {}
 }

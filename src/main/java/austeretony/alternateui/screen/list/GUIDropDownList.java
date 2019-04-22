@@ -63,6 +63,7 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
             dropDownElement.setScale(this.getScale());
             dropDownElement.setTextAlignment(this.getTextAlignment(), this.getTextOffset());    		
             this.elementsBuffer.add(dropDownElement);
+            dropDownElement.init();
         }    	    	
         return this;
     }
@@ -111,9 +112,9 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
                     if (this.shouldResetScrollerOnClosing()) 		    		
                         this.reset();		    	
                     this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), element);   		    	
-                    this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element);    							
+                    this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element, mouseButton);    							
                     if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())				
-                        this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element);    				
+                        this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element, mouseButton);    				
                     return true;
                 }
             }

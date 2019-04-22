@@ -6,7 +6,7 @@ import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
-import austeretony.oxygen.common.main.EnumChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
@@ -105,8 +105,8 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
                 }
                 PrivilegeProviderServer.addGroup(group, true);
                 if (sender instanceof EntityPlayerMP) {
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_GROUP_CREATE.ordinal(), groupName);
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(),
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_GROUP_CREATE.ordinal(), groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(),
                             groupName, 
                             group.getTitle(), 
                             group.getPrefix(), 
@@ -134,7 +134,7 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
             case REMOVE:
                 PrivilegeProviderServer.removeGroup(CommandPrivilege.getPrivilegedGroupByName(groupName).getName());
                 if (sender instanceof EntityPlayerMP)
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_GROUP_REMOVE.ordinal(), groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_GROUP_REMOVE.ordinal(), groupName);
                 else
                     server.sendMessage(new TextComponentString(String.format("Removed group <%s>.", groupName)));
                 break;

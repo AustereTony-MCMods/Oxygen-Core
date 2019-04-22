@@ -15,9 +15,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  */
 public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T> {
 
-    public final static int 
-    ZERO = 0,
-    FONT_HEIGHT = 9;
+    public final static int FONT_HEIGHT = 9;
 
     private boolean isDebugMode, isVisible, isStatBackgroundEnabled, isDynBackgroundEnabled, isTextShadowEnabled, hasSimpleTooltip, hasAdvancedTooltip, hasDisplayText;
 
@@ -59,10 +57,10 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             if (this.isDebugMode())  		
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getDebugColor());	     	
+                drawRect(0, 0, this.getWidth(), this.getHeight(), this.getDebugColor());	     	
             if (this.isStaticBackgroundEnabled())     		                
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
-            if (this.isDynamicBackgroundEnabled()) {    
+                drawRect(0, 0, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
+            else if (this.isDynamicBackgroundEnabled()) {    
                 int color;        		
                 if (!this.isEnabled())              	
                     color = this.getDisabledBackgroundColor();
@@ -70,14 +68,14 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
                     color = this.getHoveredBackgroundColor();
                 else               	
                     color = this.getEnabledBackgroundColor();   		                
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), color);
+                drawRect(0, 0, this.getWidth(), this.getHeight(), color);
             } 
             if (this.hasDisplayText()) {   
                 int textOffset = this.getTextAlignment() == EnumGUIAlignment.CENTER ? 
-                        (this.getWidth() - (int) ((float) this.width(this.getDisplayText()) * this.getTextScale())) / 2 + this.getTextOffset() : (this.getTextAlignment() == EnumGUIAlignment.LEFT ? 
-                                0 + this.getTextOffset() : this.getWidth() - (int) ((float) this.width(this.getDisplayText()) * this.getTextScale()) - this.getTextOffset()); 
+                        (this.getWidth() - this.textWidth(this.getDisplayText(), this.getTextScale())) / 2 + this.getTextOffset() : (this.getTextAlignment() == EnumGUIAlignment.LEFT ? 
+                                0 + this.getTextOffset() : this.getWidth() - this.textWidth(this.getDisplayText(), this.getTextScale()) - this.getTextOffset()); 
                         GlStateManager.pushMatrix();           
-                        GlStateManager.translate(textOffset, ((float) this.getHeight() - ((float) FONT_HEIGHT * this.getTextScale())) / 2, 0.0F);            
+                        GlStateManager.translate(textOffset, (this.getHeight() - this.textHeight(this.getTextScale())) / 2, 0.0F);            
                         GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);  
                         int color;       		
                         if (!this.isEnabled())               	
@@ -86,7 +84,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
                             color = this.getHoveredTextColor();
                         else               	
                             color = this.getEnabledTextColor();                                           
-                        this.mc.fontRenderer.drawString(this.getDisplayText(), ZERO, ZERO, color, this.isTextShadowEnabled());
+                        this.mc.fontRenderer.drawString(this.getDisplayText(), 0, 0, color, this.isTextShadowEnabled());
                         GlStateManager.popMatrix();
             }    
             GlStateManager.popMatrix();
@@ -102,7 +100,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
                 GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11, 0.0F);           
                 GlStateManager.scale(this.tooltipScaleFactor, this.tooltipScaleFactor, 0.0F);    
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                this.drawRect(ZERO, ZERO, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
+                drawRect(0, 0, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
                 this.mc.fontRenderer.drawString(this.tooltipText, 2, 2, this.tooltipTextColor);               
                 GlStateManager.popMatrix();
             } else if (this.hasAdvancedTooltip()) 
@@ -202,7 +200,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
 
     public T initSimpleTooltip(String text) {  
         this.tooltipText = text;
-        this.tooltipWidth = this.width(text) + 4;
+        this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
         this.hasSimpleTooltip = true;
         return (T) this;
     }
@@ -210,7 +208,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     public T initSimpleTooltip(String text, float scale) {  
         this.tooltipText = text;
         this.tooltipScaleFactor = scale;
-        this.tooltipWidth = this.width(text) + 4;
+        this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
         this.hasSimpleTooltip = true;
         return (T) this;
     }
@@ -218,7 +216,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     public T initSimpleTooltip(String text, int textColorHex, int backgroundColorHex, float scale) {    
         this.tooltipText = text;
         this.tooltipScaleFactor = scale;
-        this.tooltipWidth = this.width(text) + 4;
+        this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
         this.tooltipTextColor = textColorHex;
         this.tooltipBackgroundColor = backgroundColorHex;
         this.hasSimpleTooltip = true;
@@ -453,19 +451,12 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         return (T) this;
     }
 
-    /**
-     * Возвращает длину переданной строки.
-     * 
-     * @param text
-     * 
-     * @return длина строки в пикселях
-     */
-    public int width(String text) {
-        return this.mc.fontRenderer.getStringWidth(text);
+    public int textWidth(String text, float scaleFactor) {
+        return (int) ((float) this.mc.fontRenderer.getStringWidth(text) * scaleFactor);
     }
 
-    public int width(String text, float scaleFactor) {
-        return (int) ((float) this.mc.fontRenderer.getStringWidth(text) * scaleFactor);
+    public int textHeight(float scaleFactor) {
+        return (int) ((float) FONT_HEIGHT * scaleFactor);
     }
 
     /**
@@ -498,52 +489,127 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
             yStart = yEnd;
             yEnd = j1;
         }
-        float f3 = (float) (color >> 24 & 255) / 255.0F;
-        float f = (float) (color >> 16 & 255) / 255.0F;
-        float f1 = (float) (color >> 8 & 255) / 255.0F;
-        float f2 = (float) (color & 255) / 255.0F;      
+
+        float 
+        alpha = (float) (color >> 24 & 255) / 255.0F,
+        red = (float) (color >> 16 & 255) / 255.0F,
+        green = (float) (color >> 8 & 255) / 255.0F,
+        blue = (float) (color & 255) / 255.0F;      
+
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(f, f1, f2, f3);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos((double) xStart, (double) yEnd, 0.0D).endVertex();
-        bufferbuilder.pos((double) xEnd, (double) yEnd, 0.0D).endVertex();
-        bufferbuilder.pos((double) xEnd, (double) yStart, 0.0D).endVertex();
-        bufferbuilder.pos((double) xStart, (double) yStart, 0.0D).endVertex();
+        GlStateManager.color(red, green, blue, alpha);
+
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferBuilder.pos((double) xStart, (double) yEnd, 0.0D).endVertex();
+        bufferBuilder.pos((double) xEnd, (double) yEnd, 0.0D).endVertex();
+        bufferBuilder.pos((double) xEnd, (double) yStart, 0.0D).endVertex();
+        bufferBuilder.pos((double) xStart, (double) yStart, 0.0D).endVertex();
         tessellator.draw();
+
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
 
     public static void drawGradientRect(int xStart, int yStart, int xEnd, int yEnd, int colorDec1, int colorDec2) {   	
-        float f = (float) (colorDec1 >> 24 & 255) / 255.0F;
-        float f1 = (float) (colorDec1 >> 16 & 255) / 255.0F;
-        float f2 = (float) (colorDec1 >> 8 & 255) / 255.0F;
-        float f3 = (float) (colorDec1 & 255) / 255.0F;
-        float f4 = (float) (colorDec2 >> 24 & 255) / 255.0F;
-        float f5 = (float) (colorDec2 >> 16 & 255) / 255.0F;
-        float f6 = (float) (colorDec2 >> 8 & 255) / 255.0F;
-        float f7 = (float) (colorDec2 & 255) / 255.0F;       
+        float 
+        alpha1 = (float) (colorDec1 >> 24 & 255) / 255.0F,
+        red1 = (float) (colorDec1 >> 16 & 255) / 255.0F,
+        green1 = (float) (colorDec1 >> 8 & 255) / 255.0F,
+        blue1 = (float) (colorDec1 & 255) / 255.0F,
+        alpha2 = (float) (colorDec2 >> 24 & 255) / 255.0F,
+        red2 = (float) (colorDec2 >> 16 & 255) / 255.0F,
+        green2 = (float) (colorDec2 >> 8 & 255) / 255.0F,
+        blue2 = (float) (colorDec2 & 255) / 255.0F;   
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(7425);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos((double) xStart, (double) yEnd, 0.0D).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.pos((double) xEnd, (double) yEnd, 0.0D).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.pos((double) xEnd, (double) yStart, 0.0D).color(f5, f6, f7, f4).endVertex();
-        bufferbuilder.pos((double) xStart, (double) yStart, 0.0D).color(f5, f6, f7, f4).endVertex();
+        GlStateManager.shadeModel(7425);  
+
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferBuilder.pos((double) xStart, (double) yEnd, 0.0D).color(red1, green1, blue1, alpha1).endVertex();
+        bufferBuilder.pos((double) xEnd, (double) yEnd, 0.0D).color(red1, green1, blue1, alpha1).endVertex();
+        bufferBuilder.pos((double) xEnd, (double) yStart, 0.0D).color(red2, green2, blue2, alpha2).endVertex();
+        bufferBuilder.pos((double) xStart, (double) yStart, 0.0D).color(red2, green2, blue2, alpha2).endVertex();
         tessellator.draw();
+
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
     } 
+
+    public static void drawCircle(int x, int y, int steps, int radius, int color) {
+        float 
+        green = (float) (color >> 8 & 255) / 255.0F,
+        red = (float) (color >> 16 & 255) / 255.0F,
+        alpha = (float) (color >> 24 & 255) / 255.0F,
+        blue = (float) (color & 255) / 255.0F;
+
+        double angle;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(red, green, blue, alpha);  
+
+        bufferBuilder.begin(6, DefaultVertexFormats.POSITION);
+        bufferBuilder.pos((double) x, (double) y, 0.0D).endVertex();
+        for (double i = 0.0D; i <= (double) steps; i++)  {
+            angle = (Math.PI * 2.0D * i / (double) steps) + Math.toRadians(180.0D);
+            bufferBuilder.pos((double) x + Math.sin(angle) * (double) radius, (double) y + Math.cos(angle) * (double) radius, 0.0D).endVertex();
+        }
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
+
+    public static void drawCircle(int x, int y, int steps, int innerRadius, int outerRadius, int color) {
+        float 
+        green = (float) (color >> 8 & 255) / 255.0F,
+        red = (float) (color >> 16 & 255) / 255.0F,
+        alpha = (float) (color >> 24 & 255) / 255.0F,
+        blue = (float) (color & 255) / 255.0F;
+
+        double 
+        doublePI = Math.PI * 2.0D, 
+        angle1, 
+        angle2;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(red, green, blue, alpha);  
+
+        bufferBuilder.begin(7, DefaultVertexFormats.POSITION);
+        for (double i = 0.0D; i < (double) steps; i++) {
+            angle1 = ((doublePI) / (double) steps);
+            angle2 = i * angle1 + doublePI * 2.0D - doublePI / 2.0D;
+            bufferBuilder.pos((double) x + Math.sin(angle2) * outerRadius, (double) y + Math.cos(angle2) * outerRadius, 0.0D).endVertex();
+            bufferBuilder.pos((double) x + Math.sin(angle2 + angle1) * outerRadius, (double) y + Math.cos(angle2 + angle1) * outerRadius, 0.0D).endVertex();
+            bufferBuilder.pos((double) x + Math.sin(angle2 + angle1) * innerRadius, (double) y + Math.cos(angle2 + angle1) * innerRadius, 0.0D).endVertex();
+            bufferBuilder.pos((double) x + Math.sin(angle2) * innerRadius, (double) y + Math.cos(angle2) * innerRadius, 0.0D).endVertex();
+        }
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
 }
 

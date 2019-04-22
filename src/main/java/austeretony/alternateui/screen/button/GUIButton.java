@@ -36,9 +36,9 @@ public class GUIButton extends GUIAdvancedElement<GUIButton> {
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);   	
         if (flag) {    		
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);	    	
-            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);						
+            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);						
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())			
-                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
+                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
         }			    	
         return flag;
     }

@@ -2,8 +2,10 @@ package austeretony.oxygen.common.network.client;
 
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.OxygenManagerServer;
+import austeretony.oxygen.common.api.OxygenGUIHelper;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.FriendListEntry;
+import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.network.ProxyPacket;
 import net.minecraft.network.INetHandler;
@@ -32,5 +34,6 @@ public class CPSyncFriendListEntries extends ProxyPacket {
         int amount = buffer.readShort();
         for (int i = 0; i < amount; i++)
             OxygenManagerClient.instance().getPlayerData().addFriendListEntry(FriendListEntry.read(buffer));
+        OxygenGUIHelper.dataRecieved(OxygenMain.FRIEND_LIST_SCREEN_ID);
     }
 }

@@ -46,7 +46,8 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
     /**
      * Вызывается один раз при первом открытии всплывающего окна. Используется для добавления неизменяемых элементов.
      */
-    protected abstract void init();
+    @Override
+    public abstract void init();
 
     /**
      * Вызывается непосредственно перед открытием.
@@ -91,7 +92,7 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
     }
 
     public void drawDefaultBackground() {
-        this.drawRect( - this.screen.guiLeft, - this.screen.guiTop, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
+        drawRect( - this.screen.guiLeft, - this.screen.guiTop, this.mc.displayWidth, this.mc.displayHeight, this.getDefaultBackgroundColor());
     }
 
     @Override
@@ -168,8 +169,9 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
      * 
      * @param section раздел, к которому относится элемент
      * @param element элемент, который был активирован
+     * @param mouseButton 
      */
-    public abstract void handleElementClick(AbstractGUISection section, GUIBaseElement element);
+    public abstract void handleElementClick(AbstractGUISection section, GUIBaseElement element, int mouseButton);
 
     public boolean isDefaultBackgroundEnabled() {
         return this.enableDefaultBackground;

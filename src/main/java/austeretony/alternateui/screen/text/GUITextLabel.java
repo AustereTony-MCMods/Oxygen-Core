@@ -27,19 +27,19 @@ public class GUITextLabel extends GUISimpleElement<GUITextLabel> {
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);                                	
             if (this.isDebugMode())  		
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getDebugColor());	     	
+                this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getDebugColor());	     	
             if (this.isStaticBackgroundEnabled())     		                
-                this.drawRect(ZERO, ZERO, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
+                this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getStaticBackgroundColor());
             if (this.hasDisplayText()) {   
                 GlStateManager.pushMatrix();            
-                GlStateManager.translate(this.getTextOffset(), ((float) this.getHeight() - ((float) FONT_HEIGHT * this.getTextScale())) / 2, 0.0F);            
+                GlStateManager.translate(this.getTextOffset(), (this.getHeight() - this.textHeight(this.getTextScale())) / 2, 0.0F);            
                 GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);  
                 int color;       		
                 if (!this.isEnabled())               	
                     color = this.getDisabledTextColor();
                 else              	
                     color = this.getEnabledTextColor();                                             
-                this.mc.fontRenderer.drawString(this.getDisplayText(), ZERO, ZERO, color, this.isTextShadowEnabled());
+                this.mc.fontRenderer.drawString(this.getDisplayText(), 0, 0, color, this.isTextShadowEnabled());
                 GlStateManager.popMatrix();
             }    
             GlStateManager.popMatrix();
@@ -56,7 +56,7 @@ public class GUITextLabel extends GUISimpleElement<GUITextLabel> {
     @Override
     public GUITextLabel setDisplayText(String displayText) {   	
         super.setDisplayText(displayText);    	
-        this.setSize(this.width(displayText), FONT_HEIGHT);    	
+        this.setSize(this.textWidth(displayText, this.getTextScale()), FONT_HEIGHT);    	
         return this;
     }
 }

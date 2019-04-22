@@ -1,17 +1,19 @@
 package austeretony.oxygen.common;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.oxygen.common.api.IOxygenTask;
+import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
+import austeretony.oxygen.common.main.EnumOxygenChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenPrivileges;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
@@ -23,6 +25,8 @@ import austeretony.oxygen.common.notification.EnumNotifications;
 import austeretony.oxygen.common.notification.EnumRequestReply;
 import austeretony.oxygen.common.notification.IOxygenNotification;
 import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
+import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
+import austeretony.oxygen.common.privilege.io.PrivilegeLoaderServer;
 import austeretony.oxygen.common.process.ITemporaryProcess;
 import austeretony.oxygen.common.telemetry.TelemetryManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,28 +42,38 @@ public class OxygenManagerServer {
 
     private final TelemetryManager telemetryManager;
 
-    private final PrivilegeManagerServer privilegeManagerServer;
+    private final PrivilegeManagerServer privilegeManager;
+
+    private final PrivilegeLoaderServer privilegeLoader;
 
     private final FriendListManagerServer friendListManager;
 
-    private final Map<UUID, SharedPlayerData> sharedPlayersData = new ConcurrentHashMap<UUID, SharedPlayerData>();
+    private final SharedDataManagerServer sharedDataManager;
 
     private final Map<UUID, OxygenPlayerData> playersData = new ConcurrentHashMap<UUID, OxygenPlayerData>();
 
     private final Map<Long, ITemporaryProcess> worldTemporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>();
+
+    private final Map<Integer, int[]> dataIdentifiersRegistry = new HashMap<Integer, int[]>(10);
+
+    public static final int MAX_IDENTIFIERS_PER_SCREEN = 10;
 
     private boolean processesExist;
 
     private OxygenManagerServer() {
         this.loader = new OxygenLoaderServer(this);
         this.telemetryManager = new TelemetryManager(this);
-        this.privilegeManagerServer = new PrivilegeManagerServer(this);
+        this.privilegeManager = new PrivilegeManagerServer(this);
+        this.privilegeLoader = new PrivilegeLoaderServer(this);
         this.friendListManager = new FriendListManagerServer(this);
+        this.sharedDataManager = new SharedDataManagerServer(this);
     }
 
     public static void create() {
-        OxygenMain.OXYGEN_LOGGER.info("Created Oxygen server manager.");
-        instance = new OxygenManagerServer();
+        if (instance == null) {
+            OxygenMain.OXYGEN_LOGGER.info("Created Oxygen server manager.");
+            instance = new OxygenManagerServer();
+        }
     }
 
     public static OxygenManagerServer instance() {
@@ -75,11 +89,19 @@ public class OxygenManagerServer {
     }
 
     public PrivilegeManagerServer getPrivilegeManager() {
-        return this.privilegeManagerServer;
+        return this.privilegeManager;
+    }
+
+    public PrivilegeLoaderServer getPrivilegeLoader() {
+        return this.privilegeLoader;
     }
 
     public FriendListManagerServer getFriendListManager() {
         return this.friendListManager;
+    }
+
+    public SharedDataManagerServer getSharedDataManager() {
+        return this.sharedDataManager;
     }
 
     public void createOxygenServerThreads() {
@@ -119,27 +141,19 @@ public class OxygenManagerServer {
     }
 
     public Collection<SharedPlayerData> getSharedPlayersData() {
-        return this.sharedPlayersData.values();
-    }
-
-    public Set<UUID> getSharedPlayersUUIDs() {
-        return this.sharedPlayersData.keySet();
+        return this.sharedDataManager.getPlayersSharedData();
     }
 
     public boolean isOnline(UUID playerUUID) {
-        return this.getSharedPlayersUUIDs().contains(playerUUID);
+        return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
     }
 
-    public void addSharedPlayerData(SharedPlayerData playerData) {
-        this.sharedPlayersData.put(playerData.getPlayerUUID(), playerData);
-    }
-
-    public void removeSharedPlayerData(UUID playerUUID) {
-        this.sharedPlayersData.remove(playerUUID);
+    public ImmutablePlayerData getImmutablePlayerData(UUID playerUUID) {
+        return this.sharedDataManager.getImmutableData(playerUUID);
     }
 
     public SharedPlayerData getSharedPlayerData(UUID playerUUID) {
-        return this.sharedPlayersData.get(playerUUID);
+        return this.sharedDataManager.getSharedData(playerUUID);
     }
 
     public Collection<OxygenPlayerData> getPlayersData() {
@@ -158,12 +172,16 @@ public class OxygenManagerServer {
         this.playersData.remove(playerUUID);
     }
 
+    public boolean playerDataExist(UUID playerUUID) {
+        return this.playersData.containsKey(playerUUID);
+    }
+
     public OxygenPlayerData getPlayerData(UUID playerUUID) {
         return this.playersData.get(playerUUID);
     }
 
-    public void syncSharedPlayersData(EntityPlayer player, int... identifiers) {
-        OxygenMain.network().sendTo(new CPSyncSharedPlayersData(CommonReference.isOpped(player), identifiers), (EntityPlayerMP) player);
+    public void syncSharedPlayersData(EntityPlayerMP playerMP, int... identifiers) {
+        OxygenMain.network().sendTo(new CPSyncSharedPlayersData(identifiers), playerMP);
     }
 
     public void addWorldProcess(ITemporaryProcess process) {
@@ -178,6 +196,18 @@ public class OxygenManagerServer {
         if (notification.getType() == EnumNotifications.REQUEST)
             this.playersData.get(CommonReference.uuid(player)).addProcess(notification);
         OxygenMain.network().sendTo(new CPSyncNotification(notification), (EntityPlayerMP) player);
+    }
+
+    public void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification) {
+        UUID senderUUID = CommonReference.uuid(sender);
+        OxygenPlayerData senderData = this.getPlayerData(senderUUID);
+        if (!senderData.isRequesting() 
+                && (this.getPlayerData(CommonReference.uuid(target)).getStatus() != OxygenPlayerData.EnumStatus.OFFLINE || PrivilegeProviderServer.getPrivilegeValue(senderUUID, EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false))) {
+            this.addNotification(target, notification);
+            senderData.setRequesting(true);
+            OxygenHelperServer.sendMessage(sender, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.REQUEST_SENT.ordinal());
+        } else
+            OxygenHelperServer.sendMessage(sender, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.REQUEST_RESET.ordinal());
     }
 
     public void processPlayers() {
@@ -216,41 +246,60 @@ public class OxygenManagerServer {
 
     //TODO onPlayerLoggedIn()
     public void onPlayerLoggedIn(EntityPlayerMP playerMP) {
-        UUID playerUUID = CommonReference.uuid(playerMP);
-        this.createPlayerData(playerUUID);
-        this.loader.loadPlayerDataDelegated(playerUUID, playerMP);
         if (OxygenConfig.SYNC_CONFIGS.getBooleanValue())
-            OxygenMain.network().sendTo(new CPSyncConfigs(), (EntityPlayerMP) playerMP);
-        OxygenMain.network().sendTo(new CPSyncMainData(), (EntityPlayerMP) playerMP);
-        this.syncSharedPlayersData(playerMP, OxygenMain.STATUS_DATA_ID);
-    }
-
-    public void createSharedData(UUID playerUUID, EntityPlayer player) {
-        SharedPlayerData sharedData = new SharedPlayerData(playerUUID, CommonReference.username(player));
-        sharedData.setDimension(player.dimension);
-
-        ByteBuffer byteBuff;
-
-        //Status 
-        byteBuff = ByteBuffer.allocate(1);
-        byteBuff.put((byte) this.getPlayerData(playerUUID).getStatus().ordinal());
-        sharedData.addData(OxygenMain.STATUS_DATA_ID, byteBuff);
-
-        this.addSharedPlayerData(sharedData);
+            OxygenMain.network().sendTo(new CPSyncConfigs(), playerMP);
+        OxygenMain.network().sendTo(new CPSyncMainData(), playerMP);
+        UUID playerUUID = CommonReference.uuid(playerMP);
+        if (!this.playerDataExist(playerUUID)) {
+            this.createPlayerData(playerUUID);
+            this.getPlayerData(playerUUID).setSyncing(true);
+            this.loader.loadPlayerDataDelegated(playerUUID, playerMP);
+        } else {
+            this.getPlayerData(playerUUID).setSyncing(true);
+            this.sharedDataManager.createPlayerSharedDataEntrySynced(playerMP);
+        }
     }
 
     //TODO onPlayerLoggedOut()
     public void onPlayerLoggedOut(EntityPlayerMP playerMP) {
         UUID playerUUID = CommonReference.uuid(playerMP);
-        this.removeSharedPlayerData(playerUUID);
+        this.getPlayerData(playerUUID).setSyncing(false);
+        this.sharedDataManager.removePlyerSharedDataEntrySynced(playerUUID);
+        this.loader.informFriendsLastActivityDelegated(playerUUID);
     }
 
     public void onPlayerChangedDimension(EntityPlayer player, int prevDimension, int currDimension) {
         UUID playerUUID = CommonReference.uuid(player);
-        this.getSharedPlayerData(playerUUID).setDimension(currDimension);
+        this.sharedDataManager.updateDimensionData(playerUUID, currDimension);
     }
 
     public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long id) {
         this.getPlayerData(CommonReference.uuid(player)).processRequestReply(player, reply, id);
+    }
+
+    public void registerSharedDataIdentifierForScreen(int screenId, int dataIdentifier) {
+        if (!this.dataIdentifiersRegistry.containsKey(screenId)) {
+            int[] ids = new int[MAX_IDENTIFIERS_PER_SCREEN];
+            ids[0] = dataIdentifier;
+            this.dataIdentifiersRegistry.put(screenId, ids);
+        } else {
+            int[] ids = this.dataIdentifiersRegistry.get(screenId);
+            for (int i = 0; i < MAX_IDENTIFIERS_PER_SCREEN; i++) {
+                if (ids[i] == 0) {
+                    ids[i] = dataIdentifier;
+                    break;
+                }
+            }
+            this.dataIdentifiersRegistry.put(screenId, ids);
+        }
+    }
+
+    public int[] getSharedDataIdentifiersForScreen(int screenId) {
+        return this.dataIdentifiersRegistry.get(screenId);
+    }
+
+    public void reset() {
+        this.playersData.clear();
+        this.worldTemporaryProcesses.clear();
     }
 }

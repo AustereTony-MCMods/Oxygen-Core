@@ -5,7 +5,6 @@ import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
-import austeretony.oxygen.common.privilege.io.PrivilegeIOClient;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
 
@@ -21,6 +20,6 @@ public class CPSyncGroup extends ProxyPacket {
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
         OxygenManagerClient.instance().getPrivilegeManager().setPrivelegedGroup(PrivilegedGroup.read(buffer));
-        PrivilegeIOClient.instance().savePrivilegedGroupDelegated();
+        OxygenManagerClient.instance().getPrivilegeLoader().savePrivilegedGroupDelegated();
     }
 }

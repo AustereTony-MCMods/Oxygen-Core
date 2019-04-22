@@ -6,7 +6,7 @@ import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
-import austeretony.oxygen.common.main.EnumChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.api.Privilege;
@@ -73,14 +73,14 @@ public class PrivilegeArgumentExecutor extends AbstractArgumentExecutor {
                 Privilege privilege = new Privilege(privilegeName, value);
                 group.addPrivilege(privilege, save);
                 if (sender instanceof EntityPlayerMP)
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_PRIVILEGE_ADD.ordinal(), privilegeName, String.valueOf(value), groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_PRIVILEGE_ADD.ordinal(), privilegeName, String.valueOf(value), groupName);
                 else
                     server.sendMessage(new TextComponentString(String.format("Added privilege <%s> with value <%s> to group <%s>.", privilegeName, String.valueOf(value), groupName)));
                 break;
             case REMOVE:
                 group.removePrivilege(privilegeName, save);
                 if (sender instanceof EntityPlayerMP)
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumChatMessages.COMMAND_PRIVILEGE_PRIVILEGE_REMOVE.ordinal(), privilegeName, groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_PRIVILEGE_REMOVE.ordinal(), privilegeName, groupName);
                 else
                     server.sendMessage(new TextComponentString(String.format("Removed privilege <%s> from group <%s>.", privilegeName, groupName)));
                 break;
