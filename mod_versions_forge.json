@@ -1,10 +1,10 @@
 {
   "homepage": "https://minecraft.curseforge.com/projects/oxygen-core",
   "1.12.2": {
-    "0.4.0": "Major improvements. Remove old oxygen folder before game start!"
+    "0.4.1": "Major improvements. Remove old oxygen folder before game start!"
   },
   "promos": {
-    "1.12.2-latest": "0.4.0",
-    "1.12.2-recommended": "0.4.0"
+    "1.12.2-latest": "0.4.1",
+    "1.12.2-recommended": "0.4.1"
   }
 }

@@ -1,3 +1,10 @@
+0.4.1
++Major API improvements.
++Added option to disable Server Tab Overlay.
++Added option to disable Oxygen player list (advanced version of server tab overlay). 
++Player list remapped to "U" key.
++Added sound effects for GUIs.
+
 0.4.0a
 +Added privileges:
  - 'oxygen:preventIgnore' - prevent 'ignore' option for players,
