@@ -2,8 +2,8 @@ package austeretony.oxygen.common.network.client;
 
 import java.util.UUID;
 
-import austeretony.oxygen.client.ListenersRegistryClient;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.event.OxygenClientInitEvent;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
@@ -12,6 +12,7 @@ import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.MinecraftForge;
 
 public class CPSyncMainData extends ProxyPacket {
 
@@ -35,6 +36,6 @@ public class CPSyncMainData extends ProxyPacket {
         OxygenManagerClient.instance().setMaxPlayers(buffer.readShort());
         OxygenManagerClient.instance().init();
         OxygenMain.OXYGEN_LOGGER.info("Client initialized.");
-        ListenersRegistryClient.instance().notifyClientInitListeners();
+        MinecraftForge.EVENT_BUS.post(new OxygenClientInitEvent());
     }
 }

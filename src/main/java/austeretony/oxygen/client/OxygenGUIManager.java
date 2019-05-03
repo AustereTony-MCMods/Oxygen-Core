@@ -1,6 +1,7 @@
 package austeretony.oxygen.client;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,14 +12,16 @@ public class OxygenGUIManager {
 
     private final OxygenManagerClient manager;
 
-    //all of this used to insure displayed data in GUIs is actual (synchronized before showing)
+    //used to insure displayed data in GUIs is actual (synchronized before display)
     private final Map<Integer, Boolean>
     needSync = new ConcurrentHashMap<Integer, Boolean>(10),//GUIs which rely on some server data
     initializedGUIs = new ConcurrentHashMap<Integer, Boolean>(10),//fully initialized GUIs
     recievedData = new ConcurrentHashMap<Integer, Boolean>(10);//GUIs data synchronized for
 
-    //a way for other modules to add their own context actions for menus relying on their screenIds.
+    //a way for other modules to add their own context actions for any menus (screenId is used)
     private final Map<Integer, ContextActionsContainer> contextActionsRegistry = new HashMap<Integer, ContextActionsContainer>(10);
+
+    private final Set<Integer> sharedDataListeners = new HashSet<Integer>(10);
 
     public OxygenGUIManager(OxygenManagerClient manager) {
         this.manager = manager;
@@ -68,6 +71,8 @@ public class OxygenGUIManager {
     }
 
     public void registerContextAction(int screenId, AbstractContextAction action) {
+        if (!this.contextActionsRegistry.containsKey(screenId))
+            this.registerScreenId(screenId);
         ContextActionsContainer container = this.contextActionsRegistry.get(screenId);
         container.addAction(action);
         this.contextActionsRegistry.put(screenId, container);
@@ -75,5 +80,14 @@ public class OxygenGUIManager {
 
     public Set<AbstractContextAction> getContextActions(int screenId) {
         return this.contextActionsRegistry.get(screenId).getActions();
+    }
+
+    public void registerSharedDataListenerScreen(int screenId) {
+        this.sharedDataListeners.add(screenId);
+    }
+
+    public void updateSharedDataListenersDataState(boolean flag) {
+        for (int screenId : this.sharedDataListeners)
+            this.recievedData.put(screenId, flag);
     }
 }

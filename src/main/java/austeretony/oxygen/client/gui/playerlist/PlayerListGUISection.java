@@ -24,6 +24,8 @@ import austeretony.alternateui.util.EnumGUIAlignment;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.client.gui.StatusGUIDropDownElement;
+import austeretony.oxygen.client.gui.playerlist.context.AddToFriendsContextAction;
+import austeretony.oxygen.client.gui.playerlist.context.IgnoreContextAction;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
@@ -31,13 +33,14 @@ import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.EnumOxygenPrivileges;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
+import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderClient;
 import net.minecraft.client.resources.I18n;
 
 public class PlayerListGUISection extends AbstractGUISection {
 
-    private PlayerListGUIScreen screen;
+    private final PlayerListGUIScreen screen;
 
     private GUIButton searchButton, refreshButton, sortDownStatusButton, sortUpStatusButton, sortDownUsernameButton, sortUpUsernameButton;
 
@@ -64,18 +67,18 @@ public class PlayerListGUISection extends AbstractGUISection {
 
     @Override
     public void init() {
-        this.addElement(new PlayersBackgroundGUIFiller(0, 0, this.getWidth(), this.getHeight()));
+        this.addElement(new PlayerListBackgroundGUIFiller(0, 0, this.getWidth(), this.getHeight()));
         this.addElement(new GUITextLabel(2, 4).setDisplayText(I18n.format("oxygen.gui.players.title"), false, GUISettings.instance().getTitleScale()));
 
-        this.addElement(this.searchButton = new GUIButton(4, 15, 7, 7).setTexture(OxygenGUITextures.SEARCH_ICONS, 7, 7).initSimpleTooltip(I18n.format("oxygen.tooltip.search"), GUISettings.instance().getTooltipScale()));         
-        this.addElement(this.refreshButton = new GUIButton(79, 14, 10, 10).setTexture(OxygenGUITextures.REFRESH_ICONS, 9, 9).initSimpleTooltip(I18n.format("oxygen.tooltip.refresh"), GUISettings.instance().getTooltipScale()));         
+        this.addElement(this.searchButton = new GUIButton(4, 15, 7, 7).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.SEARCH_ICONS, 7, 7).initSimpleTooltip(I18n.format("oxygen.tooltip.search"), GUISettings.instance().getTooltipScale()));         
+        this.addElement(this.refreshButton = new GUIButton(79, 14, 10, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.REFRESH_ICONS, 9, 9).initSimpleTooltip(I18n.format("oxygen.tooltip.refresh"), GUISettings.instance().getTooltipScale()));         
         this.addElement(this.playerNameTextLabel = new GUITextLabel(91, 15).setDisplayText(OxygenHelperClient.getSharedClientPlayerData().getUsername(), false, GUISettings.instance().getSubTextScale()));
         this.addElement(this.playersOnlineTextLabel = new GUITextLabel(0, 15).setTextScale(GUISettings.instance().getSubTextScale())); 
 
-        this.addElement(this.sortDownStatusButton = new GUIButton(7, 29, 3, 3).setTexture(OxygenGUITextures.SORT_DOWN_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
-        this.addElement(this.sortUpStatusButton = new GUIButton(7, 25, 3, 3).setTexture(OxygenGUITextures.SORT_UP_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
-        this.addElement(this.sortDownUsernameButton = new GUIButton(19, 29, 3, 3).setTexture(OxygenGUITextures.SORT_DOWN_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
-        this.addElement(this.sortUpUsernameButton = new GUIButton(19, 25, 3, 3).setTexture(OxygenGUITextures.SORT_UP_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
+        this.addElement(this.sortDownStatusButton = new GUIButton(7, 29, 3, 3).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.SORT_DOWN_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
+        this.addElement(this.sortUpStatusButton = new GUIButton(7, 25, 3, 3).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.SORT_UP_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
+        this.addElement(this.sortDownUsernameButton = new GUIButton(19, 29, 3, 3).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.SORT_DOWN_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
+        this.addElement(this.sortUpUsernameButton = new GUIButton(19, 25, 3, 3).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.SORT_UP_ICONS, 3, 3).initSimpleTooltip(I18n.format("oxygen.tooltip.sort"), GUISettings.instance().getTooltipScale())); 
         this.addElement(new GUITextLabel(24, 25).setDisplayText(I18n.format("oxygen.gui.friends.username")).setTextScale(GUISettings.instance().getTextScale())); 
         this.addElement(new GUITextLabel(110, 25).setDisplayText(I18n.format("oxygen.gui.friends.dimension")).setTextScale(GUISettings.instance().getTextScale())); 
 
@@ -90,6 +93,8 @@ public class PlayerListGUISection extends AbstractGUISection {
         scroller.initSlider(slider);   
 
         GUIContextMenu menu = new GUIContextMenu(GUISettings.instance().getContextMenuWidth(), 10).setScale(GUISettings.instance().getContextMenuScale()).setTextScale(GUISettings.instance().getTextScale()).setTextAlignment(EnumGUIAlignment.LEFT, 2);
+        menu.setOpenSound(OxygenSoundEffects.CONTEXT_OPEN);
+        menu.setCloseSound(OxygenSoundEffects.CONTEXT_CLOSE);
         this.playersPanel.initContextMenu(menu);
         menu.enableDynamicBackground(GUISettings.instance().getEnabledContextActionColor(), GUISettings.instance().getDisabledContextActionColor(), GUISettings.instance().getHoveredContextActionColor());
         menu.setTextDynamicColor(GUISettings.instance().getEnabledTextColor(), GUISettings.instance().getDisabledTextColor(), GUISettings.instance().getHoveredTextColor());
@@ -107,11 +112,13 @@ public class PlayerListGUISection extends AbstractGUISection {
         this.currentStatus = OxygenHelperClient.getClientPlayerStatus();
         int statusOffset = this.playerNameTextLabel.getX() + this.textWidth(this.playerNameTextLabel.getDisplayText(), GUISettings.instance().getSubTextScale());
         this.addElement(this.statusImageLabel = new GUIImageLabel(statusOffset + 4, 17).setTexture(OxygenGUITextures.STATUS_ICONS, 3, 3, this.currentStatus.ordinal() * 3, 0, 12, 3));   
-        this.statusDropDownList = new GUIDropDownList(statusOffset + 10, 16, GUISettings.instance().getDropDownListWidth(), 10).setScale(GUISettings.instance().getDropDownListScale()).setDisplayText(this.currentStatus.getLocalizedName()).setTextScale(GUISettings.instance().getTextScale()).setTextAlignment(EnumGUIAlignment.LEFT, 1);
+        this.statusDropDownList = new GUIDropDownList(statusOffset + 10, 16, GUISettings.instance().getDropDownListWidth(), 10).setScale(GUISettings.instance().getDropDownListScale()).setDisplayText(this.currentStatus.localizedName()).setTextScale(GUISettings.instance().getTextScale()).setTextAlignment(EnumGUIAlignment.LEFT, 1);
+        this.statusDropDownList.setOpenSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN);
+        this.statusDropDownList.setCloseSound(OxygenSoundEffects.CONTEXT_CLOSE);
         StatusGUIDropDownElement profileElement;
         for (OxygenPlayerData.EnumStatus status : OxygenPlayerData.EnumStatus.values()) {
             profileElement = new StatusGUIDropDownElement(status);
-            profileElement.setDisplayText(status.getLocalizedName());
+            profileElement.setDisplayText(status.localizedName());
             profileElement.enableDynamicBackground(GUISettings.instance().getEnabledContextActionColor(), GUISettings.instance().getDisabledContextActionColor(), GUISettings.instance().getHoveredContextActionColor());
             profileElement.setTextDynamicColor(GUISettings.instance().getEnabledTextColor(), GUISettings.instance().getDisabledTextColor(), GUISettings.instance().getHoveredTextColor());
             this.statusDropDownList.addElement(profileElement);

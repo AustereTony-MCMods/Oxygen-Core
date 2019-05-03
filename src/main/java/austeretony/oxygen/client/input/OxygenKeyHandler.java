@@ -22,10 +22,10 @@ public class OxygenKeyHandler {
         NOTIFICATIONS_MENU.register("key.oxygen.notifications", Keyboard.KEY_N, OxygenMain.NAME);
         ACCEPT.register("key.oxygen.accept", Keyboard.KEY_R, OxygenMain.NAME);
         REJECT.register("key.oxygen.reject", Keyboard.KEY_X, OxygenMain.NAME);
-        if (OxygenConfig.ENABLE_FRIENDS_LIST.getBooleanValue())
+        if (OxygenConfig.ENABLE_FRIEND_LIST.getBooleanValue())
             FRIENDS_LIST.register("key.oxygen.friends", Keyboard.KEY_O, OxygenMain.NAME);
-        if (OxygenConfig.REPLACE_TAB_OVERLAY.getBooleanValue())
-            PLAYERS_LIST.register("key.oxygen.playersOnline", Keyboard.KEY_TAB, OxygenMain.NAME);
+        if (OxygenConfig.ENABLE_PLAYER_LIST.getBooleanValue())
+            PLAYERS_LIST.register("key.oxygen.playersOnline", Keyboard.KEY_U, OxygenMain.NAME);
         INTERACT_WITH_PLAYER.register("key.oxygen.iteractWithPlayer", Keyboard.KEY_F, OxygenMain.NAME);
     }
 

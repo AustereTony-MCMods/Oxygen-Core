@@ -4,16 +4,16 @@ import java.util.Collection;
 import java.util.UUID;
 
 import austeretony.oxygen.client.gui.playerlist.PlayerListGUIScreen;
-import austeretony.oxygen.common.ImmutablePlayerData;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
+import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
-import austeretony.oxygen.common.network.server.SPRequest;
+import austeretony.oxygen.common.network.server.SPOxygenRequest;
 import austeretony.oxygen.common.notification.NotificationManagerClient;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
@@ -122,7 +122,7 @@ public class OxygenManagerClient {
         this.sharedDataManager.reset();
         this.playerData.setPlayerUUID(this.playerUUID);
         this.privilegeLoader.loadPrivilegeDataDelegated();
-        this.loader.loadPlayerDataDelegated();
+        OxygenHelperClient.loadPlayerDataDelegated(this.playerData);
     }
 
     public OxygenThread getIOClientThread() {
@@ -190,16 +190,8 @@ public class OxygenManagerClient {
         return this.playerUUID;
     }
 
-    public Collection<ImmutablePlayerData> getImmutablePlayersData() {
-        return this.sharedDataManager.getPlayersImmutableData();
-    }
-
     public Collection<SharedPlayerData> getSharedPlayersData() {
         return this.sharedDataManager.getPlayersSharedData();
-    }
-
-    public ImmutablePlayerData getImmutablePlayerData(UUID playerUUID) {
-        return this.sharedDataManager.getImmutableData(playerUUID);
     }
 
     public SharedPlayerData getSharedPlayerData(UUID playerUUID) {
@@ -210,13 +202,25 @@ public class OxygenManagerClient {
         return this.sharedDataManager.getSharedData(index);
     }
 
+    public boolean observedSharedDataExist(UUID playerUUID) {
+        return this.sharedDataManager.observedSharedDataExist(playerUUID);
+    }
+
+    public SharedPlayerData getObservedSharedData(UUID playerUUID) {
+        return this.sharedDataManager.getObservedSharedData(playerUUID);
+    }
+
+    public boolean isPlayerOnline(int index) {
+        return this.sharedDataManager.getOnlinePlayersIndexes().contains(index);
+    }
+
     public boolean isPlayerOnline(UUID playerUUID) {
         return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
     }
 
     public void openPlayersListSynced() {
         OxygenGUIHelper.needSync(OxygenMain.PLAYER_LIST_SCREEN_ID);
-        OxygenMain.network().sendToServer(new SPRequest(SPRequest.EnumRequest.OPEN_PLAYERS_LIST));
+        OxygenMain.network().sendToServer(new SPOxygenRequest(SPOxygenRequest.EnumRequest.OPEN_PLAYERS_LIST));
     }
 
     public void openPlayersListDelegated() {
@@ -236,5 +240,6 @@ public class OxygenManagerClient {
     public void reset() {
         this.playerData.resetData();
         this.notificationsManager.getNotifications().clear();
+        this.sharedDataManager.reset();
     }
 }

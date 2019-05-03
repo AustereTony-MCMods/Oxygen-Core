@@ -16,8 +16,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import austeretony.oxygen.common.api.IOxygenTask;
+import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.util.JsonUtils;
@@ -30,42 +30,41 @@ public class OxygenLoaderClient {
         this.manager = manager;
     }
 
-    public void loadPlayerDataDelegated() {
+    public void loadPlayerDataDelegated(IPersistentData persistentData) {
         OxygenHelperClient.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
-                loadPlayerData();
+                loadPlayerData(persistentData);
             }     
         });
     }
 
-    public void loadPlayerData() {
-        String folder = OxygenHelperClient.getDataFolder() + "/client/players/" + OxygenHelperClient.getPlayerUUID() + "/oxygen/profile.dat";
+    public void loadPlayerData(IPersistentData persistentData) {
+        String folder = OxygenHelperClient.getDataFolder() + "/client/players/" + OxygenHelperClient.getPlayerUUID() + "/" + persistentData.getPath();
         Path path = Paths.get(folder);
         if (Files.exists(path)) {
             try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(folder))) {    
-                this.manager.getPlayerData().read(bis);
-                OxygenMain.OXYGEN_LOGGER.info("Player client data loaded.");
+                persistentData.read(bis);
             } catch (IOException exception) {
-                OxygenMain.OXYGEN_LOGGER.error("Player client data loading failed.");
+                OxygenMain.OXYGEN_LOGGER.error("Client player data <{}> loading failed for <{}>.", persistentData.getName(), persistentData.getModId());
                 exception.printStackTrace();
             }
         }
     }
 
-    public void savePlayerDataDelegated() {
+    public void savePlayerDataDelegated(IPersistentData persistentData) {
         OxygenHelperClient.addIOTask(new IOxygenTask() {
 
             @Override
             public void execute() {
-                savePlayerData();
+                savePlayerData(persistentData);
             }     
         });
     }
 
-    public void savePlayerData() {
-        String folder = OxygenHelperClient.getDataFolder() + "/client/players/" + OxygenHelperClient.getPlayerUUID() + "/oxygen/profile.dat";
+    public void savePlayerData(IPersistentData persistentData) {
+        String folder = OxygenHelperClient.getDataFolder() + "/client/players/" + OxygenHelperClient.getPlayerUUID() + "/" + persistentData.getPath();
         Path path = Paths.get(folder);
         if (!Files.exists(path)) {
             try {
@@ -75,9 +74,60 @@ public class OxygenLoaderClient {
             }
         }
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(folder))) {   
-            this.manager.getPlayerData().write(bos);
+            persistentData.write(bos);
         } catch (IOException exception) {
-            OxygenMain.OXYGEN_LOGGER.error("Player client data saving failed.");
+            OxygenMain.OXYGEN_LOGGER.error("Client player data <{}> saving failed for <{}>.", persistentData.getName(), persistentData.getModId());
+            exception.printStackTrace();
+        }
+    }
+
+    public void loadWorldDataDelegated(IPersistentData persistentData) {
+        OxygenHelperClient.addIOTask(new IOxygenTask() {
+
+            @Override
+            public void execute() {
+                loadWorldData(persistentData);
+            }     
+        });
+    }
+
+    public void loadWorldData(IPersistentData persistentData) {
+        String folder = OxygenHelperClient.getDataFolder() + "/client/world/" + persistentData.getPath();
+        Path path = Paths.get(folder);
+        if (Files.exists(path)) {
+            try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(folder))) {    
+                persistentData.read(bis);
+            } catch (IOException exception) {
+                OxygenMain.OXYGEN_LOGGER.error("Client wolrd data <{}> loading failed for <{}>.", persistentData.getName(), persistentData.getModId());
+                exception.printStackTrace();
+            }
+        }
+    }
+
+    public void saveWorldDataDelegated(IPersistentData persistentData) {
+        OxygenHelperClient.addIOTask(new IOxygenTask() {
+
+            @Override
+            public void execute() {
+                saveWorldData(persistentData);
+            }     
+        });
+    }
+
+    public void saveWorldData(IPersistentData persistentData) {
+        String folder = OxygenHelperClient.getDataFolder() + "/client/world/" + persistentData.getPath();
+        Path path = Paths.get(folder);
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path.getParent());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(folder))) {   
+            persistentData.write(bos);
+        } catch (IOException exception) {
+            OxygenMain.OXYGEN_LOGGER.error("Client world data <{}> saving failed for <{}>.", persistentData.getName(), persistentData.getModId());
             exception.printStackTrace();
         }
     }

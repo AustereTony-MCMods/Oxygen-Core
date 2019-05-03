@@ -53,11 +53,11 @@ oxygen.friends.lastActivity.day=Activity %s day ago
 oxygen.friends.lastActivity.days=Activity %s days ago
 oxygen.friends.lastActivity.noData=Activity: no data
 
-oxygen.request.friendRequest=Player %s sent you friend request.
+oxygen.request.friendRequest=%s sent you friend request.
 
 oxygen.status.online=Online
 oxygen.status.away=Away
-oxygen.status.notDisturb=Not disturb
+oxygen.status.not_disturb=Not disturb
 oxygen.status.offline=Offline
 
 oxygen.tooltip.online=Online

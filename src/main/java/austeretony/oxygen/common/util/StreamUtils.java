@@ -20,6 +20,10 @@ public class StreamUtils {
         os.write(value);
     }
 
+    public static void write(byte[] bytes, OutputStream os) throws IOException {
+        os.write(bytes);
+    }
+
     public static void write(short value, OutputStream os) throws IOException {
         os.write(Shorts.toByteArray(value));
     }
@@ -56,6 +60,10 @@ public class StreamUtils {
 
     public static byte readByte(InputStream is) throws IOException {
         return (byte) is.read();
+    }
+
+    public static void readBytes(byte[] bytes, InputStream is) throws IOException {
+        is.read(bytes);
     }
 
     public static short readShort(InputStream is) throws IOException {

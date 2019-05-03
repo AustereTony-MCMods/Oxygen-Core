@@ -5,8 +5,7 @@ import java.io.IOException;
 import com.google.common.collect.HashBiMap;
 
 import austeretony.oxygen.common.api.IOxygenTask;
-import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.api.OxygenHelperServer;
+import austeretony.oxygen.common.delegate.OxygenThread;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.ProxyPacket;
 import io.netty.buffer.Unpooled;
@@ -27,7 +26,9 @@ public class OxygenNetwork {
 
     public final FMLEventChannel channel;
 
-    private HashBiMap<Integer, Class<? extends ProxyPacket>> packets = HashBiMap.<Integer, Class<? extends ProxyPacket>>create();
+    private final OxygenThread networkThread;
+
+    private final HashBiMap<Integer, Class<? extends ProxyPacket>> packets = HashBiMap.<Integer, Class<? extends ProxyPacket>>create();
 
     private int id;
 
@@ -35,6 +36,8 @@ public class OxygenNetwork {
         this.channelName = channelName;
         this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName);
         this.channel.register(this);
+        this.networkThread = new OxygenThread(channelName + " network");
+        this.networkThread.start();
     }
 
     public static OxygenNetwork createNetworkHandler(String channelName) {
@@ -47,7 +50,7 @@ public class OxygenNetwork {
 
     @SubscribeEvent
     public void onClientPacketRecieve(FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException {
-        OxygenHelperClient.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -63,7 +66,7 @@ public class OxygenNetwork {
 
     @SubscribeEvent
     public void onServerPacketRecieve(FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -95,7 +98,7 @@ public class OxygenNetwork {
     }
 
     public void sendToServer(ProxyPacket packet) {
-        OxygenHelperClient.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -105,7 +108,7 @@ public class OxygenNetwork {
     }
 
     public void sendTo(ProxyPacket packet, EntityPlayerMP player) {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -115,7 +118,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAll(ProxyPacket packet) {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -125,7 +128,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllAround(ProxyPacket packet, TargetPoint point) {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -135,7 +138,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllTracking(ProxyPacket packet, Entity entity) {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {
@@ -145,7 +148,7 @@ public class OxygenNetwork {
     }
 
     public void sendToAllTracking(ProxyPacket packet, TargetPoint point) {
-        OxygenHelperServer.addNetworkTask(new IOxygenTask() {
+        this.networkThread.addTask(new IOxygenTask() {
 
             @Override
             public void execute() {

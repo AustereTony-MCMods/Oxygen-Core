@@ -5,6 +5,8 @@ import java.util.List;
 
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
+import austeretony.alternateui.util.GUISoundEffect;
+import net.minecraft.util.SoundEvent;
 
 /**
  * Context menu for GUI elements.
@@ -18,6 +20,8 @@ public class GUIContextMenu extends GUISimpleElement<GUIContextMenu> {
     private int actionBoxWidth, actionBoxHeight;
 
     private GUIBaseElement currentElement;
+
+    private GUISoundEffect openSound, closeSound;
 
     public GUIContextMenu(int buttonWidth, int buttonHeight) {   
         this.actionBoxWidth = buttonWidth;
@@ -90,6 +94,8 @@ public class GUIContextMenu extends GUISimpleElement<GUIContextMenu> {
         }
         this.setDragged(true);
         this.enableFull();
+        if (this.openSound != null)  
+            this.mc.player.playSound(this.openSound.sound, this.openSound.volume, this.openSound.pitch);
     }
 
     public void close() {   
@@ -97,5 +103,27 @@ public class GUIContextMenu extends GUISimpleElement<GUIContextMenu> {
         this.disableFull();
         for (GUIContextActionWrapper action : this.actions)              
             action.disableFull();
+        if (this.closeSound != null)  
+            this.mc.player.playSound(this.closeSound.sound, this.closeSound.volume, this.closeSound.pitch);
+    }
+
+    public GUIContextMenu setOpenSound(GUISoundEffect sound) {
+        this.openSound = sound;
+        return this;
+    }
+
+    public GUIContextMenu setOpenSound(SoundEvent sound) {
+        this.openSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        return this;
+    }
+
+    public GUIContextMenu setCloseSound(GUISoundEffect sound) {
+        this.closeSound = sound;
+        return this;
+    }
+
+    public GUIContextMenu setCloseSound(SoundEvent sound) {
+        this.closeSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        return this;
     }
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.notification.EnumRequestReply;
 import austeretony.oxygen.common.notification.IOxygenNotification;
 import austeretony.oxygen.common.process.ITemporaryProcess;
@@ -17,13 +18,11 @@ import austeretony.oxygen.common.util.StreamUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class OxygenPlayerData {
+public class OxygenPlayerData implements IPersistentData {
 
     private UUID playerUUID;
 
     private EnumStatus status;
-
-    private boolean processesExist;
 
     private final Map<Long, ITemporaryProcess> temporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>();
 
@@ -34,11 +33,7 @@ public class OxygenPlayerData {
 
     private int friendsAmount, ignoredAmount, currency;
 
-    private long lastActivityTime;
-
-    private boolean requesting, requested, syncFriendsActivity;
-
-    private volatile boolean syncing;
+    private volatile boolean syncing, requesting, requested, processesExist;
 
     public OxygenPlayerData() {
         this.status = EnumStatus.ONLINE;
@@ -101,7 +96,7 @@ public class OxygenPlayerData {
         }
     }
 
-    public void process() {
+    public void runProcesses() {
         if (this.processesExist) {
             Iterator<ITemporaryProcess> iterator = this.temporaryProcesses.values().iterator();
             while (iterator.hasNext()) {
@@ -198,22 +193,6 @@ public class OxygenPlayerData {
         return this.currency -= value;
     }
 
-    public boolean needSyncFriendsActivity() {
-        return this.syncFriendsActivity;
-    }
-
-    public void setNeedSyncFriendsActivity(boolean flag) {
-        this.syncFriendsActivity = flag;
-    }
-
-    public long getLastActivityTime() {
-        return this.lastActivityTime;
-    }
-
-    public void updateLastActivityTime() {
-        this.lastActivityTime = System.currentTimeMillis();
-    }
-
     public boolean isSyncing() {
         return this.syncing;
     }
@@ -238,23 +217,40 @@ public class OxygenPlayerData {
         this.requested = flag;
     }
 
+    @Override
+    public String getName() {
+        return "oxygen player data";
+    }
+
+    @Override
+    public String getModId() {
+        return OxygenMain.MODID;
+    }
+
+    @Override
+    public String getPath() {
+        return "oxygen/profile.dat";
+    }
+
+    @Override
     public void write(BufferedOutputStream bos) throws IOException {
         StreamUtils.write(this.playerUUID, bos);
         StreamUtils.write(this.currency, bos);
         StreamUtils.write((byte) this.status.ordinal(), bos);
-        StreamUtils.write(this.lastActivityTime, bos);
         StreamUtils.write((short) this.friendList.size(), bos);
         for (FriendListEntry listEntry : this.friendList.values()) 
             listEntry.write(bos);
     }
 
+    @Override
     public void read(BufferedInputStream bis) throws IOException {
         this.playerUUID = StreamUtils.readUUID(bis);
         this.currency = StreamUtils.readInt(bis);
         this.status = EnumStatus.values()[StreamUtils.readByte(bis)];
-        this.lastActivityTime = StreamUtils.readLong(bis);
-        int amount = StreamUtils.readShort(bis);
-        for (int i = 0; i < amount; i++)
+        int 
+        amount = StreamUtils.readShort(bis),
+        i = 0;
+        for (; i < amount; i++)
             this.addFriendListEntry(FriendListEntry.read(bis));
     }
 
@@ -265,19 +261,13 @@ public class OxygenPlayerData {
 
     public enum EnumStatus {
 
-        ONLINE("oxygen.status.online"),
-        AWAY("oxygen.status.away"),
-        NOT_DISTURB("oxygen.status.notDisturb"),
-        OFFLINE("oxygen.status.offline");
+        ONLINE,
+        AWAY,
+        NOT_DISTURB,
+        OFFLINE;
 
-        public final String key;
-
-        EnumStatus(String key) {
-            this.key = key;
-        }       
-
-        public String getLocalizedName() {
-            return I18n.format(this.key);
+        public String localizedName() {
+            return I18n.format("oxygen.status." + this.toString().toLowerCase());
         }
     }
 }

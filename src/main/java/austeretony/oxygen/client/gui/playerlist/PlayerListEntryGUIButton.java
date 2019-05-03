@@ -15,7 +15,7 @@ public class PlayerListEntryGUIButton extends PlayerGUIButton {
 
     private int statusIconU, pingIconV;
 
-    private boolean initialized, hasNote;
+    private boolean initialized;
 
     public PlayerListEntryGUIButton(SharedPlayerData sharedData) {
         super(sharedData.getPlayerUUID());

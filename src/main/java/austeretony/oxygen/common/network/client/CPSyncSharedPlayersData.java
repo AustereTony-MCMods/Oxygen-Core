@@ -4,8 +4,6 @@ import java.util.Collection;
 
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.OxygenManagerServer;
-import austeretony.oxygen.common.api.OxygenGUIHelper;
-import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.network.ProxyPacket;
 import net.minecraft.network.INetHandler;
@@ -53,7 +51,7 @@ public class CPSyncSharedPlayersData extends ProxyPacket {
             index = buffer.readShort();
             OxygenManagerClient.instance().getSharedPlayerData(index).read(buffer, this.ids);
         }
-        OxygenGUIHelper.dataRecieved(OxygenMain.PLAYER_LIST_SCREEN_ID);
-        OxygenGUIHelper.dataRecieved(OxygenMain.INTERACTION_SCREEN_ID);
+
+        OxygenManagerClient.instance().getGUIManager().updateSharedDataListenersDataState(true);
     }
 }

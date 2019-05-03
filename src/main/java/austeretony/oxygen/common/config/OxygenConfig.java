@@ -15,9 +15,10 @@ public class OxygenConfig extends AbstractConfigHolder {
     ENABLE_TELEMETRY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_telemetry"),
     ENABLE_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_privileges"),
     ENABLE_CURRENCY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_currency"),
-    REPLACE_TAB_OVERLAY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "replace_tab_overlay"),
+    DISABLE_TAB_OVERLAY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "disable_tab_overlay"),
+    ENABLE_PLAYER_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_player_list"),
 
-    ENABLE_FRIENDS_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "friends", "enable_friends"),
+    ENABLE_FRIEND_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "friends", "enable_friend_list"),
     FRIEND_REQUEST_EXPIRE_TIME = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "friend_request_expire_time_seconds"),
     MAX_FRIENDS = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "max_friends"),
     MAX_IGNORED = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "max_ignored");
@@ -49,9 +50,10 @@ public class OxygenConfig extends AbstractConfigHolder {
         values.add(ENABLE_TELEMETRY);
         values.add(ENABLE_PRIVILEGES);
         values.add(ENABLE_CURRENCY);
-        values.add(REPLACE_TAB_OVERLAY);
+        values.add(DISABLE_TAB_OVERLAY);
+        values.add(ENABLE_PLAYER_LIST);
 
-        values.add(ENABLE_FRIENDS_LIST);
+        values.add(ENABLE_FRIEND_LIST);
         values.add(FRIEND_REQUEST_EXPIRE_TIME);
         values.add(MAX_FRIENDS);
         values.add(MAX_IGNORED);

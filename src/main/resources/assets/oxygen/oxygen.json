@@ -6,10 +6,11 @@
     "enable_telemetry": false,
     "enable_privileges": true,
     "enable_currency": false,
-    "replace_tab_overlay": true
+    "disable_tab_overlay": false,
+    "enable_player_list": true
   },
   "friends": {
-    "enable_friends": true,
+    "enable_friend_list": true,
     "friend_request_expire_time_seconds": 30,
     "max_friends": 20,
     "max_ignored": 20

@@ -6,8 +6,9 @@ import java.util.Set;
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.contextmenu.GUIContextMenu;
 import austeretony.alternateui.screen.text.GUITextField;
-import austeretony.alternateui.util.GUISound;
+import austeretony.alternateui.util.GUISoundEffect;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.SoundEvent;
 
 /**
  * Класс-основа элементов ГПИ.
@@ -34,7 +35,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
 
     private GUIContextMenu contextMenu;
 
-    private GUISound sound;
+    protected GUISoundEffect soundEffect;
 
     private Set<GUIBaseElement> boundElements;
 
@@ -78,7 +79,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
     }
 
     public void init() {}
-    
+
     /**
      * Вызывается каждый тик.
      * 
@@ -134,12 +135,9 @@ public class GUIBaseElement<T extends GUIBaseElement> {
                 this.lastClickTimeMillis = Minecraft.getSystemTime();
         } else  		
             flag = true;	
-        //TODO Fix sounds
-        /*if (flag) {   		
-    		if (this.hasSound()) {   			
-    			this.mc.thePlayer.playSound(this.getSound().soundEvent, this.getSound().volume, this.getSound().pitch);
-    		}
-    	}*/   	    	
+        if (this.isHovered() && flag) 		
+            if (this.hasSound())  
+                this.mc.player.playSound(this.soundEffect.sound, this.soundEffect.volume, this.soundEffect.pitch);
         return this.isHovered() && flag;
     }
 
@@ -462,8 +460,8 @@ public class GUIBaseElement<T extends GUIBaseElement> {
         return this.hasSound;
     }
 
-    public GUISound getSound() {   	
-        return this.sound;
+    public GUISoundEffect getSound() {   	
+        return this.soundEffect;
     }
 
     /**
@@ -473,9 +471,15 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      * 
      * @return вызывающий объект
      */
-    public T setSound(GUISound sound) {  	
-        this.sound = sound;   	
+    public T setSound(GUISoundEffect sound) {  	
+        this.soundEffect = sound;   	
         this.hasSound = true;   	
+        return (T) this;
+    }
+
+    public T setSound(SoundEvent sound) {       
+        this.soundEffect = new GUISoundEffect(sound, 1.0F, 1.0F);       
+        this.hasSound = true;           
         return (T) this;
     }
 

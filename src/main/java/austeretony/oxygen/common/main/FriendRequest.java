@@ -2,7 +2,6 @@ package austeretony.oxygen.common.main;
 
 import java.util.UUID;
 
-import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.api.notification.AbstractNotification;
 import austeretony.oxygen.common.config.OxygenConfig;
@@ -14,13 +13,12 @@ public class FriendRequest extends AbstractNotification {
 
     public final int index;
 
-    public final UUID senderUUID, targetUUID;
+    public final UUID senderUUID;
 
     public final String senderUsername;
 
-    public FriendRequest(int index, UUID targetUUID, UUID senderUUID, String senderUsername) {
+    public FriendRequest(int index, UUID senderUUID, String senderUsername) {
         this.index = index;
-        this.targetUUID = targetUUID;
         this.senderUUID = senderUUID;
         this.senderUsername = senderUsername;
     }
@@ -52,16 +50,23 @@ public class FriendRequest extends AbstractNotification {
 
     @Override
     public void accepted(EntityPlayer player) {
-        OxygenPlayerData senderData = OxygenManagerServer.instance().getPlayerData(this.senderUUID);
+        UUID targetUUID = CommonReference.uuid(player);
+        OxygenPlayerData 
+        senderData = OxygenHelperServer.getPlayerData(this.senderUUID),
+        targetData = OxygenHelperServer.getPlayerData(targetUUID);
 
-        OxygenManagerServer.instance().getPlayerData(this.targetUUID).addFriendListEntry(new FriendListEntry(this.senderUUID, this.senderUsername, false).createId());
-        senderData.addFriendListEntry(new FriendListEntry(this.targetUUID, CommonReference.username(player), false).createId());
+        targetData.addFriendListEntry(new FriendListEntry(this.senderUUID, false).createId()); 
+        senderData.addFriendListEntry(new FriendListEntry(targetUUID, false).createId());
 
-        OxygenManagerServer.instance().getLoader().savePlayerDataDelegated(this.senderUUID);
-        OxygenManagerServer.instance().getLoader().savePlayerDataDelegated(this.targetUUID);
+        OxygenHelperServer.addObservedPlayer(this.senderUUID, targetUUID, false);
+        OxygenHelperServer.addObservedPlayer(targetUUID, this.senderUUID, true);
+
+        OxygenHelperServer.savePlayerDataDelegated(this.senderUUID, senderData);
+        OxygenHelperServer.savePlayerDataDelegated(targetUUID, targetData);
 
         if (OxygenHelperServer.isOnline(this.senderUUID))
             OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_ACCEPTED_SENDER.ordinal());
+
         OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_ACCEPTED_TARGET.ordinal());
 
         senderData.setRequesting(false);
@@ -73,11 +78,11 @@ public class FriendRequest extends AbstractNotification {
             OxygenHelperServer.sendMessage(CommonReference.playerByUUID(this.senderUUID), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_REJECTED_SENDER.ordinal());
         OxygenHelperServer.sendMessage(player, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.FRIEND_REQUEST_REJECTED_TARGET.ordinal());
 
-        OxygenManagerServer.instance().getPlayerData(this.senderUUID).setRequesting(false);
+        OxygenHelperServer.setRequesting(this.senderUUID, false);
     }
 
     @Override
     public void expired() {
-        OxygenManagerServer.instance().getPlayerData(this.senderUUID).setRequesting(false);
+        OxygenHelperServer.setRequesting(this.senderUUID, false);
     }
 }

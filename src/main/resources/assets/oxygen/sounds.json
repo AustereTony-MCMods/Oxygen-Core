@@ -1,0 +1,34 @@
+{
+  "button_click": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:button_click"
+      }
+    ]
+  },
+  "context_open": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:context_open"
+      }
+    ]
+  },
+  "context_close": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:context_close"
+      }
+    ]
+  },
+  "drop_down_list_open": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:drop_down_list_open"
+      }
+    ]
+  }
+}

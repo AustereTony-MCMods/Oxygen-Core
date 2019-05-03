@@ -7,17 +7,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import austeretony.oxygen.client.ListenersRegistryClient;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.event.OxygenEventsClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
-import austeretony.oxygen.client.gui.interaction.AddFriendInteractionExecutor;
-import austeretony.oxygen.client.gui.interaction.AddIgnoredActionExecutor;
-import austeretony.oxygen.client.gui.overlay.InteractionOverlay;
-import austeretony.oxygen.client.gui.overlay.RequestsOverlay;
+import austeretony.oxygen.client.gui.interaction.executors.AddFriendInteractionExecutor;
+import austeretony.oxygen.client.gui.interaction.executors.AddIgnoredActionExecutor;
+import austeretony.oxygen.client.gui.overlay.InteractionGUIOverlay;
+import austeretony.oxygen.client.gui.overlay.RequestGUIOverlay;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
-import austeretony.oxygen.client.listener.OxygenListenerClient;
-import austeretony.oxygen.common.ListenersRegistryServer;
 import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
@@ -29,24 +27,25 @@ import austeretony.oxygen.common.config.ConfigLoader;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.core.api.CommonReference;
-import austeretony.oxygen.common.listener.OxygenListenerServer;
+import austeretony.oxygen.common.event.OxygenEventsServer;
 import austeretony.oxygen.common.network.client.CPAddSharedDataEntry;
-import austeretony.oxygen.common.network.client.CPCommand;
+import austeretony.oxygen.common.network.client.CPCacheObservedData;
+import austeretony.oxygen.common.network.client.CPOxygenCommand;
 import austeretony.oxygen.common.network.client.CPRemoveSharedDataEntry;
 import austeretony.oxygen.common.network.client.CPShowMessage;
 import austeretony.oxygen.common.network.client.CPSyncConfigs;
 import austeretony.oxygen.common.network.client.CPSyncFriendListEntries;
-import austeretony.oxygen.common.network.client.CPSyncFriendsActivity;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.network.client.CPSyncMainData;
 import austeretony.oxygen.common.network.client.CPSyncNotification;
+import austeretony.oxygen.common.network.client.CPSyncObservedPlayersData;
 import austeretony.oxygen.common.network.client.CPSyncPlayersImmutableData;
 import austeretony.oxygen.common.network.client.CPSyncSharedPlayersData;
 import austeretony.oxygen.common.network.client.CPSyncValidFriendEntriesIds;
 import austeretony.oxygen.common.network.server.SPChangeStatus;
 import austeretony.oxygen.common.network.server.SPEditFriendListEntryNote;
 import austeretony.oxygen.common.network.server.SPManageFriendList;
-import austeretony.oxygen.common.network.server.SPRequest;
+import austeretony.oxygen.common.network.server.SPOxygenRequest;
 import austeretony.oxygen.common.network.server.SPRequestReply;
 import austeretony.oxygen.common.network.server.SPSendAbsentFriendListEntriesIds;
 import austeretony.oxygen.common.privilege.api.Privilege;
@@ -75,10 +74,10 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen", 
     NAME = "Oxygen", 
-    VERSION = "0.4.0", 
+    VERSION = "0.4.1", 
     VERSION_CUSTOM = VERSION + ":alpha:0",
     GAME_VERSION = "1.12.2",
-    VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/versions_forge.json";
+    VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
 
     public static final Logger 
     OXYGEN_LOGGER = LogManager.getLogger(NAME),
@@ -106,9 +105,6 @@ public class OxygenMain {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        ListenersRegistryServer.create();//some Forge events replacers, probably will be useful with other mod loaders
-        ListenersRegistryClient.create();
-
         OxygenHelperServer.registerConfig(new OxygenConfig());
         OxygenHelperServer.registerConfig(new OxygenTelemetryConfig());
         OxygenHelperServer.registerConfig(new OxygenPrivilegeConfig());
@@ -126,14 +122,11 @@ public class OxygenMain {
         OxygenManagerServer.create();//server manager
         OxygenManagerServer.instance().createOxygenServerThreads();
 
+        CommonReference.registerEvent(new OxygenSoundEffects());
+        CommonReference.registerEvent(new OxygenEventsServer());
+
         if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
             OxygenManagerServer.instance().getTelemetryManager().startTelemetryThreads();
-
-        OxygenListenerServer listenerServer = new OxygenListenerServer();
-        OxygenHelperServer.registerPlayerLogInListener(listenerServer);
-        OxygenHelperServer.registerPlayerLogOutListener(listenerServer);
-        OxygenHelperServer.registerPlayerChangedDimensionListener(listenerServer);
-        OxygenHelperServer.registerServerTickListener(listenerServer);
 
         OxygenHelperServer.registerSharedDataIdentifierForScreen(PLAYER_LIST_SCREEN_ID, STATUS_DATA_ID);
         OxygenHelperServer.registerSharedDataIdentifierForScreen(PLAYER_LIST_SCREEN_ID, DIMENSION_DATA_ID);
@@ -141,15 +134,16 @@ public class OxygenMain {
         OxygenHelperServer.registerSharedDataIdentifierForScreen(FRIEND_LIST_SCREEN_ID, DIMENSION_DATA_ID);
         OxygenHelperServer.registerSharedDataIdentifierForScreen(INTERACTION_SCREEN_ID, STATUS_DATA_ID);
 
-        if (event.getSide() == Side.CLIENT) {
-            ClientReference.registerCommand(new CommandOxygenClient("oxygenc"));
-
-            CommonReference.registerEvent(new OxygenKeyHandler());
-            CommonReference.registerEvent(new InteractionOverlay());
-            CommonReference.registerEvent(new RequestsOverlay());           
-
+        if (event.getSide() == Side.CLIENT) {      
             OxygenManagerClient.create();//client manager
             OxygenManagerClient.instance().createOxygenClientThreads();
+
+            ClientReference.registerCommand(new CommandOxygenClient("oxygenc"));
+
+            CommonReference.registerEvent(new OxygenEventsClient());
+            CommonReference.registerEvent(new OxygenKeyHandler());
+            CommonReference.registerEvent(new InteractionGUIOverlay());
+            CommonReference.registerEvent(new RequestGUIOverlay());     
 
             OxygenHelperClient.registerSharedDataBuffer(STATUS_DATA_ID, Byte.BYTES);
             OxygenHelperClient.registerSharedDataBuffer(DIMENSION_DATA_ID, Integer.BYTES);
@@ -159,18 +153,17 @@ public class OxygenMain {
             OxygenGUIHelper.registerScreenId(IGNORE_LIST_SCREEN_ID);
             OxygenGUIHelper.registerScreenId(INTERACTION_SCREEN_ID);
 
+            OxygenGUIHelper.registerSharedDataListenerScreen(PLAYER_LIST_SCREEN_ID);
+            OxygenGUIHelper.registerSharedDataListenerScreen(INTERACTION_SCREEN_ID);
+
             OxygenHelperClient.registerInteractionMenuAction(new AddFriendInteractionExecutor());
             OxygenHelperClient.registerInteractionMenuAction(new AddIgnoredActionExecutor());
-
-            OxygenListenerClient listenerClient = new OxygenListenerClient();
-            OxygenHelperClient.registerChatMessageInfoListener(listenerClient);
-            OxygenHelperClient.registerClientTickListener(listenerClient);
 
             OxygenHelperClient.registerNotificationIcon(SIMPLE_NOTIFICATION_ID, OxygenGUITextures.SIMPLE_NOTIFICATION_ICON);
             OxygenHelperClient.registerNotificationIcon(ALERT_NOTIFICATION_ID, OxygenGUITextures.ALERT_NOTIFICATION_ICON);
             OxygenHelperClient.registerNotificationIcon(FRIEND_REQUEST_ID, OxygenGUITextures.REQUEST_ICON);
 
-            if (OxygenConfig.REPLACE_TAB_OVERLAY.getBooleanValue()) {
+            if (OxygenConfig.DISABLE_TAB_OVERLAY.getBooleanValue()) {
                 ClientReference.getMinecraft().gameSettings.keyBindPlayerList.setKeyCode(0);
                 ClientReference.getMinecraft().gameSettings.keyBindings = ArrayUtils.remove(ClientReference.getMinecraft().gameSettings.keyBindings, 12); 
             }
@@ -192,6 +185,8 @@ public class OxygenMain {
         OxygenManagerServer.instance().getPrivilegeLoader().loadPrivilegeDataDelegated();
         if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue())
             CommonReference.registerCommand(event, new CommandPrivilege("privilege"));
+
+        OxygenHelperServer.loadWorldDataDelegated(OxygenManagerServer.instance().getSharedDataManager());
 
         this.addDefaultPrivilegesDelegated();
     }
@@ -215,7 +210,8 @@ public class OxygenMain {
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
         if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
-            TelemetryIO.instance().forceSave();           
+            TelemetryIO.instance().forceSave();   
+        OxygenHelperServer.saveWorldDataDelegated(OxygenManagerServer.instance().getSharedDataManager());
     }
 
     public static OxygenNetwork network() {
@@ -225,7 +221,7 @@ public class OxygenMain {
     private void initNetwork() {
         network = OxygenHelperServer.createNetworkHandler(MODID + ":core");
 
-        network.registerPacket(CPCommand.class);
+        network.registerPacket(CPOxygenCommand.class);
         network.registerPacket(CPSyncConfigs.class);
         network.registerPacket(CPSyncMainData.class);
         network.registerPacket(CPSyncGroup.class);
@@ -234,12 +230,13 @@ public class OxygenMain {
         network.registerPacket(CPSyncNotification.class);
         network.registerPacket(CPSyncValidFriendEntriesIds.class);
         network.registerPacket(CPSyncFriendListEntries.class);
-        network.registerPacket(CPSyncFriendsActivity.class);
         network.registerPacket(CPSyncPlayersImmutableData.class);
         network.registerPacket(CPRemoveSharedDataEntry.class);
         network.registerPacket(CPAddSharedDataEntry.class);
+        network.registerPacket(CPSyncObservedPlayersData.class);
+        network.registerPacket(CPCacheObservedData.class);
 
-        network.registerPacket(SPRequest.class);
+        network.registerPacket(SPOxygenRequest.class);
         network.registerPacket(SPRequestReply.class);
         network.registerPacket(SPChangeStatus.class);
         network.registerPacket(SPSendAbsentFriendListEntriesIds.class);

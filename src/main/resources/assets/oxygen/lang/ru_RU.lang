@@ -53,11 +53,11 @@ oxygen.friends.lastActivity.day=Активность %s день назад
 oxygen.friends.lastActivity.days=Активность %s дней назад
 oxygen.friends.lastActivity.noData=Активность: нет данных
 
-oxygen.request.friendRequest=Игрок %s отправил вам запрос в друзья.
+oxygen.request.friendRequest=%s отправил вам запрос в друзья.
 
 oxygen.status.online=В сети
 oxygen.status.away=Нет на месте
-oxygen.status.notDisturb=Не беспокоить
+oxygen.status.not_disturb=Не беспокоить
 oxygen.status.offline=Не в сети
 
 oxygen.tooltip.online=В сети

@@ -7,7 +7,7 @@ import austeretony.oxygen.client.gui.interaction.InteractionGUIScreen;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.network.server.SPRequest;
+import austeretony.oxygen.common.network.server.SPOxygenRequest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -36,7 +36,7 @@ public class InteractionManagerClient {
         Entity target = ClientReference.getMinecraft().pointedEntity;
         if (target != null && target instanceof EntityPlayer) {
             OxygenGUIHelper.needSync(OxygenMain.INTERACTION_SCREEN_ID);
-            OxygenMain.network().sendToServer(new SPRequest(SPRequest.EnumRequest.OPEN_INTERACT_PLAYER_MENU));
+            OxygenMain.network().sendToServer(new SPOxygenRequest(SPOxygenRequest.EnumRequest.OPEN_INTERACT_PLAYER_MENU));
         }
     }
 

@@ -7,7 +7,9 @@ import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.common.api.EnumDimensions;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.FriendListEntry;
+import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
+import austeretony.oxygen.common.main.SharedPlayerData;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
@@ -26,16 +28,18 @@ public class FriendListEntryGUIButton extends PlayerGUIButton {
     public FriendListEntryGUIButton(FriendListEntry listEntry, OxygenPlayerData.EnumStatus status) {
         super(listEntry.playerUUID);
         this.listEntry = listEntry;
-        this.dimension = EnumDimensions.getLocalizedNameFromId(
-                status == OxygenPlayerData.EnumStatus.ONLINE ? OxygenHelperClient.getPlayerDimension(listEntry.playerUUID) : listEntry.getDimension());
-        this.setDisplayText(listEntry.username);//need for search mechanic
-        this.statusIconU = status.ordinal() * 3;
-        this.hasNote = !listEntry.getNote().isEmpty();
-        if (status == OxygenPlayerData.EnumStatus.OFFLINE) {
-            if (listEntry.getLastActivityTime() > 0L) {
+        SharedPlayerData sharedData;
+        if (status != OxygenPlayerData.EnumStatus.OFFLINE) {
+            this.setDisplayText(OxygenHelperClient.getSharedPlayerData(listEntry.playerUUID).getUsername());//need for search mechanic
+            this.dimension = EnumDimensions.getLocalizedNameFromId(OxygenHelperClient.getPlayerDimension(listEntry.playerUUID));
+        } else {
+            sharedData = OxygenHelperClient.getObservedSharedData(listEntry.playerUUID);
+            this.setDisplayText(sharedData.getUsername());//need for search mechanic
+            this.dimension = EnumDimensions.getLocalizedNameFromId(sharedData.getData(OxygenMain.DIMENSION_DATA_ID).getInt(0));
+            if (sharedData.getLastActivityTime() > 0L) {
                 int mode = 0;
                 long 
-                diff = System.currentTimeMillis() - listEntry.getLastActivityTime(),
+                diff = System.currentTimeMillis() - sharedData.getLastActivityTime(),
                 hours = diff / 86_400_000L,
                 days;
                 if (hours >= 24L)
@@ -47,7 +51,7 @@ public class FriendListEntryGUIButton extends PlayerGUIButton {
                         this.lastActivity = I18n.format("oxygen.friends.lastActivity.hours", hours);
                 } else {
                     days = hours / 24L;
-                    if (days == 1L || days == 21L || days == 31L)//TODO It is lame, but i have no time to write more convenient algorithm
+                    if (days == 1L || days == 21L || days == 31L)//need something better
                         this.lastActivity = I18n.format("oxygen.friends.lastActivity.day", days);
                     else               
                         this.lastActivity = I18n.format("oxygen.friends.lastActivity.days", days);
@@ -55,6 +59,8 @@ public class FriendListEntryGUIButton extends PlayerGUIButton {
             } else
                 this.lastActivity = I18n.format("oxygen.friends.lastActivity.noData");
         }
+        this.statusIconU = status.ordinal() * 3;
+        this.hasNote = !listEntry.getNote().isEmpty();
     }
 
     @Override

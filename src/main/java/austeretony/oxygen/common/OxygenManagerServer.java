@@ -58,7 +58,7 @@ public class OxygenManagerServer {
 
     public static final int MAX_IDENTIFIERS_PER_SCREEN = 10;
 
-    private boolean processesExist;
+    private volatile boolean worldProcessesExist;
 
     private OxygenManagerServer() {
         this.loader = new OxygenLoaderServer(this);
@@ -144,6 +144,10 @@ public class OxygenManagerServer {
         return this.sharedDataManager.getPlayersSharedData();
     }
 
+    public boolean isOnline(int index) {
+        return this.sharedDataManager.getOnlinePlayersIndexes().contains(index);
+    }
+
     public boolean isOnline(UUID playerUUID) {
         return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
     }
@@ -152,8 +156,16 @@ public class OxygenManagerServer {
         return this.sharedDataManager.getImmutableData(playerUUID);
     }
 
+    public SharedPlayerData getSharedPlayerData(int index) {
+        return this.sharedDataManager.getSharedData(index);
+    }
+
     public SharedPlayerData getSharedPlayerData(UUID playerUUID) {
         return this.sharedDataManager.getSharedData(playerUUID);
+    }
+
+    public SharedPlayerData getPersistentSharedData(UUID playerUUID) {
+        return this.sharedDataManager.getPersistentSharedData(playerUUID);
     }
 
     public Collection<OxygenPlayerData> getPlayersData() {
@@ -184,88 +196,92 @@ public class OxygenManagerServer {
         OxygenMain.network().sendTo(new CPSyncSharedPlayersData(identifiers), playerMP);
     }
 
-    public void addWorldProcess(ITemporaryProcess process) {
-        this.worldTemporaryProcesses.put(process.getId(), process);
-    }
-
-    public void addPlayerProcess(EntityPlayer player, ITemporaryProcess process) {
-        this.playersData.get(CommonReference.uuid(player)).addProcess(process);
-    }
-
     public void addNotification(EntityPlayer player, IOxygenNotification notification) {
         if (notification.getType() == EnumNotifications.REQUEST)
             this.playersData.get(CommonReference.uuid(player)).addProcess(notification);
         OxygenMain.network().sendTo(new CPSyncNotification(notification), (EntityPlayerMP) player);
     }
 
-    public void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification) {
-        UUID senderUUID = CommonReference.uuid(sender);
-        OxygenPlayerData senderData = this.getPlayerData(senderUUID);
+    public void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification, boolean setRequesting) {
+        UUID 
+        senderUUID = CommonReference.uuid(sender),
+        targetUUID = CommonReference.uuid(target);
+        OxygenPlayerData 
+        senderData = this.getPlayerData(senderUUID),
+        targetData = this.getPlayerData(targetUUID);
         if (!senderData.isRequesting() 
-                && (this.getPlayerData(CommonReference.uuid(target)).getStatus() != OxygenPlayerData.EnumStatus.OFFLINE || PrivilegeProviderServer.getPrivilegeValue(senderUUID, EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false))) {
+                && (targetData.getStatus() != OxygenPlayerData.EnumStatus.OFFLINE || PrivilegeProviderServer.getPrivilegeValue(senderUUID, EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false))
+                && (!targetData.haveFriendListEntryForUUID(senderUUID) || (targetData.haveFriendListEntryForUUID(senderUUID) && !targetData.getFriendListEntryByUUID(senderUUID).ignored))) {
             this.addNotification(target, notification);
-            senderData.setRequesting(true);
+            if (setRequesting)
+                senderData.setRequesting(true);
             OxygenHelperServer.sendMessage(sender, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.REQUEST_SENT.ordinal());
         } else
             OxygenHelperServer.sendMessage(sender, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.REQUEST_RESET.ordinal());
     }
 
-    public void processPlayers() {
-        for (OxygenPlayerData profile : this.playersData.values())
-            profile.process();
+    public void addPlayerProcess(EntityPlayer player, ITemporaryProcess process) {
+        this.playersData.get(CommonReference.uuid(player)).addProcess(process);
     }
 
-    public Collection<ITemporaryProcess> getProcesses() {
+    public void runPlayersProcesses() {
+        for (OxygenPlayerData profile : this.playersData.values())
+            profile.runProcesses();
+    }
+
+    public Collection<ITemporaryProcess> getWorldProcesses() {
         return this.worldTemporaryProcesses.values();
     }
 
-    public void addProcess(ITemporaryProcess process) {
+    public void addWorldProcess(ITemporaryProcess process) {
         this.worldTemporaryProcesses.put(process.getId(), process);
-        this.processesExist = true;
+        this.worldProcessesExist = true;
     }
 
-    public boolean haveProcess(long processId) {
+    public boolean worldProcessExist(long processId) {
         return this.worldTemporaryProcesses.containsKey(processId);
     }
 
-    public ITemporaryProcess getProcess(long processId) {
+    public ITemporaryProcess getWorldProcess(long processId) {
         return this.worldTemporaryProcesses.get(processId);
     }
 
-    public void processWorld() {
-        if (this.processesExist) {
+    public void runWorldProcesses() {
+        if (this.worldProcessesExist) {
             Iterator<ITemporaryProcess> iterator = this.worldTemporaryProcesses.values().iterator();
             while (iterator.hasNext()) {
                 if (iterator.next().isExpired()) {
                     iterator.remove();
-                    this.processesExist = this.worldTemporaryProcesses.size() > 0;
+                    this.worldProcessesExist = this.worldTemporaryProcesses.size() > 0;
                 }
             }
         }
     }
 
     //TODO onPlayerLoggedIn()
-    public void onPlayerLoggedIn(EntityPlayerMP playerMP) {
+    public void onPlayerLoggedIn(EntityPlayer player) {
         if (OxygenConfig.SYNC_CONFIGS.getBooleanValue())
-            OxygenMain.network().sendTo(new CPSyncConfigs(), playerMP);
-        OxygenMain.network().sendTo(new CPSyncMainData(), playerMP);
-        UUID playerUUID = CommonReference.uuid(playerMP);
+            OxygenMain.network().sendTo(new CPSyncConfigs(), (EntityPlayerMP) player);
+        OxygenMain.network().sendTo(new CPSyncMainData(), (EntityPlayerMP) player);
+        UUID playerUUID = CommonReference.uuid(player);
         if (!this.playerDataExist(playerUUID)) {
             this.createPlayerData(playerUUID);
-            this.getPlayerData(playerUUID).setSyncing(true);
-            this.loader.loadPlayerDataDelegated(playerUUID, playerMP);
+            OxygenHelperServer.setSyncing(playerUUID, true);
+            this.loader.loadPlayerDataCreateSharedEntryDelegated(playerUUID, this.getPlayerData(playerUUID), player);
         } else {
-            this.getPlayerData(playerUUID).setSyncing(true);
-            this.sharedDataManager.createPlayerSharedDataEntrySynced(playerMP);
+            OxygenHelperServer.setSyncing(playerUUID, true);
+            this.sharedDataManager.createPlayerSharedDataEntrySynced(player);
         }
     }
 
     //TODO onPlayerLoggedOut()
-    public void onPlayerLoggedOut(EntityPlayerMP playerMP) {
-        UUID playerUUID = CommonReference.uuid(playerMP);
-        this.getPlayerData(playerUUID).setSyncing(false);
-        this.sharedDataManager.removePlyerSharedDataEntrySynced(playerUUID);
-        this.loader.informFriendsLastActivityDelegated(playerUUID);
+    public void onPlayerLoggedOut(EntityPlayer player) {
+        UUID playerUUID = CommonReference.uuid(player);
+        OxygenPlayerData playerData = this.getPlayerData(playerUUID);
+        playerData.setRequesting(false);
+        playerData.setRequested(false);
+        //this.removePlayerData(playerUUID);//remove or not?
+        this.sharedDataManager.removePlayerSharedDataEntrySynced(playerUUID);
     }
 
     public void onPlayerChangedDimension(EntityPlayer player, int prevDimension, int currDimension) {
@@ -301,5 +317,6 @@ public class OxygenManagerServer {
     public void reset() {
         this.playersData.clear();
         this.worldTemporaryProcesses.clear();
+        this.sharedDataManager.reset();
     }
 }

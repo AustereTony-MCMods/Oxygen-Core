@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import austeretony.alternateui.screen.core.GUISimpleElement;
+import austeretony.alternateui.util.GUISoundEffect;
+import net.minecraft.util.SoundEvent;
 
 /**
  * Выпадающий список для ГПИ.
@@ -23,6 +25,8 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
     private boolean resetScroller, hasChoosenElement;
 
     private int actionBoxWidth, actionBoxHeight;
+
+    private GUISoundEffect openSound, closeSound;
 
     public GUIDropDownList(int xPosition, int yPosition, int buttonWidth, int buttonHeight) {   	
         this.setPosition(xPosition, yPosition);
@@ -114,11 +118,16 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
                     this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), element);   		    	
                     this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element, mouseButton);    							
                     if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())				
-                        this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element, mouseButton);    				
+                        this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), element, mouseButton);
+                    if (this.closeSound != null)  
+                        this.mc.player.playSound(this.closeSound.sound, this.closeSound.volume, this.closeSound.pitch);
                     return true;
                 }
             }
         }    	
+        if (flag && mouseButton == 0 && !this.isDragged())
+            if (this.openSound != null)  
+                this.mc.player.playSound(this.openSound.sound, this.openSound.volume, this.openSound.pitch);
         this.setDragged(flag && mouseButton == 0);    	
         if (this.shouldResetScrollerOnClosing()) 		
             this.reset();
@@ -182,6 +191,26 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
      */
     public GUIDropDownList resetScrollerOnClosing() {    	
         this.resetScroller = true;    	
+        return this;
+    }
+
+    public GUIDropDownList setOpenSound(GUISoundEffect sound) {
+        this.openSound = sound;
+        return this;
+    }
+
+    public GUIDropDownList setOpenSound(SoundEvent sound) {
+        this.openSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        return this;
+    }
+
+    public GUIDropDownList setCloseSound(GUISoundEffect sound) {
+        this.closeSound = sound;
+        return this;
+    }
+
+    public GUIDropDownList setCloseSound(SoundEvent sound) {
+        this.closeSound = new GUISoundEffect(sound, 1.0F, 1.0F);
         return this;
     }
 }

@@ -1,17 +1,12 @@
 package austeretony.oxygen.common.api;
 
+import java.util.Set;
 import java.util.UUID;
 
-import austeretony.oxygen.common.ImmutablePlayerData;
-import austeretony.oxygen.common.ListenersRegistryServer;
 import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.network.OxygenNetwork;
 import austeretony.oxygen.common.config.ConfigLoader;
 import austeretony.oxygen.common.config.IConfigHolder;
-import austeretony.oxygen.common.core.api.listeners.server.IPlayerChangedDimensionListener;
-import austeretony.oxygen.common.core.api.listeners.server.IPlayerLogInListener;
-import austeretony.oxygen.common.core.api.listeners.server.IPlayerLogOutListener;
-import austeretony.oxygen.common.core.api.listeners.server.IServerTickListener;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
@@ -67,16 +62,56 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getPlayerData(playerUUID).getStatus() == OxygenPlayerData.EnumStatus.OFFLINE;
     }
 
-    public static ImmutablePlayerData getImmutablePlayerData(UUID playerUUID) {
-        return OxygenManagerServer.instance().getImmutablePlayerData(playerUUID);
+    public static int getPlayerIndex(UUID playerUUID) {
+        return OxygenManagerServer.instance().getImmutablePlayerData(playerUUID).getIndex();
+    }
+
+    public static SharedPlayerData getSharedPlayerData(int index) {
+        return OxygenManagerServer.instance().getSharedPlayerData(index);
     }
 
     public static SharedPlayerData getSharedPlayerData(UUID playerUUID) {
         return OxygenManagerServer.instance().getSharedPlayerData(playerUUID);
     }
 
+    public static SharedPlayerData getPersistentSharedData(UUID playerUUID) {
+        return OxygenManagerServer.instance().getPersistentSharedData(playerUUID);
+    }
+
     public static void syncSharedPlayersData(EntityPlayerMP playerMP, int... identifiers) {
         OxygenManagerServer.instance().syncSharedPlayersData(playerMP, identifiers);
+    }
+
+    public static void syncObservedPlayersData(EntityPlayerMP playerMP) {
+        OxygenManagerServer.instance().getSharedDataManager().syncObservedPlayersData(playerMP);
+    }
+
+    public static void cacheObservedPlayersDataOnClient(EntityPlayerMP playerMP, UUID... observed) {
+        OxygenManagerServer.instance().getSharedDataManager().cacheObservedPlayersDataOnClient(playerMP, observed);
+    }
+
+    public static boolean haveObservedPlayers(UUID observerUUID) {
+        return OxygenManagerServer.instance().getSharedDataManager().haveObservedPlayers(observerUUID);
+    }
+
+    public static Set<UUID> getObservedPlayers(UUID observerUUID) {
+        return OxygenManagerServer.instance().getSharedDataManager().getObservedPlayers(observerUUID);
+    }
+
+    public static void addObservedPlayer(UUID observerUUID, UUID observedUUID, boolean save) {
+        OxygenManagerServer.instance().getSharedDataManager().addObservedPlayer(observerUUID, observedUUID, save);
+    }
+
+    public static void removeObservedPlayer(UUID observerUUID, UUID observedUUID, boolean save) {
+        OxygenManagerServer.instance().getSharedDataManager().removeObservedPlayer(observerUUID, observedUUID, save);
+    }
+
+    public static void saveObservedPlayersData() {
+        OxygenManagerServer.instance().getSharedDataManager().saveObservedPlayersData();
+    }
+
+    public static boolean isOnline(int index) {
+        return OxygenManagerServer.instance().isOnline(index);
     }
 
     public static boolean isOnline(UUID playerUUID) {
@@ -99,8 +134,8 @@ public class OxygenHelperServer {
         OxygenManagerServer.instance().addNotification(player, notification);
     }
 
-    public static void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification) {
-        OxygenManagerServer.instance().sendRequest(sender, target, notification);
+    public static void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification, boolean setRequesting) {
+        OxygenManagerServer.instance().sendRequest(sender, target, notification, setRequesting);
     }
 
     public static boolean isSyncing(UUID playerUUID) {
@@ -128,8 +163,8 @@ public class OxygenHelperServer {
     }
 
     public static boolean isIgnored(UUID requestedUUID, UUID requestingUUID) {
-        OxygenPlayerData playerData = OxygenManagerServer.instance().getPlayerData(requestedUUID);
-        if (!playerData.haveFriendListEntryForUUID(requestingUUID) || !playerData.getFriendListEntryByUUID(requestingUUID).ignored)
+        OxygenPlayerData playerData = getPlayerData(requestedUUID);
+        if (!playerData.haveFriendListEntryForUUID(requestingUUID) || (playerData.haveFriendListEntryForUUID(requestingUUID) && !playerData.getFriendListEntryByUUID(requestingUUID).ignored))
             return false;
         return true;
     }
@@ -142,19 +177,35 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getSharedDataIdentifiersForScreen(screenId);
     }
 
-    public static void registerPlayerLogInListener(IPlayerLogInListener listener) {
-        ListenersRegistryServer.instance().addPlayerLogInListener(listener);
+    public static void loadPlayerDataDelegated(UUID playerUUID, IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().loadPlayerDataDelegated(playerUUID, persistentData);
     }
 
-    public static void registerPlayerLogOutListener(IPlayerLogOutListener listener) {
-        ListenersRegistryServer.instance().addPlayerLogOutListener(listener);
+    public static void loadPlayerData(UUID playerUUID, IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().loadPlayerData(playerUUID, persistentData);
     }
 
-    public static void registerPlayerChangedDimensionListener(IPlayerChangedDimensionListener listener) {
-        ListenersRegistryServer.instance().addPlayerChangedDimensionListener(listener);
+    public static void savePlayerDataDelegated(UUID playerUUID, IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().savePlayerDataDelegated(playerUUID, persistentData);
     }
 
-    public static void registerServerTickListener(IServerTickListener listener) {
-        ListenersRegistryServer.instance().addServerTickListener(listener);
+    public static void savePlayerData(UUID playerUUID, IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().savePlayerData(playerUUID, persistentData);
+    }
+
+    public static void loadWorldDataDelegated(IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().loadWorldDataDelegated(persistentData);
+    }
+
+    public static void loadWorldData(IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().loadWorldData(persistentData);
+    }
+
+    public static void saveWorldDataDelegated(IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().saveWorldDataDelegated(persistentData);
+    }
+
+    public static void saveWorldData(IPersistentData persistentData) {
+        OxygenManagerServer.instance().getLoader().saveWorldData(persistentData);
     }
 }

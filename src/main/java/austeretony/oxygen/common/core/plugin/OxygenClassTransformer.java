@@ -15,8 +15,6 @@ public class OxygenClassTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         switch (transformedName) {    
-        case "net.minecraft.client.Minecraft":                    
-            return patch(basicClass, EnumInputClasses.MC_MINECRAFT);
         case "net.minecraft.client.resources.Locale":                    
             return patch(basicClass, EnumInputClasses.MC_LOCALE);
         case "net.minecraft.client.gui.GuiPlayerTabOverlay":                    
@@ -26,10 +24,6 @@ public class OxygenClassTransformer implements IClassTransformer {
         case "net.minecraftforge.client.GuiIngameForge":                    
             return patch(basicClass, EnumInputClasses.MC_GUI_INGAME_FORGE);
 
-        case "net.minecraft.server.MinecraftServer":                    
-            return patch(basicClass, EnumInputClasses.MC_MINECRAFT_SERVER);
-        case "net.minecraft.server.management.PlayerList":                    
-            return patch(basicClass, EnumInputClasses.MC_PLAYER_LIST);
         case "net.minecraft.network.NetHandlerPlayServer":                    
             return patch(basicClass, EnumInputClasses.MC_NET_HANDLER_PLAY_SERVER);
         }

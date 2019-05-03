@@ -20,7 +20,7 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
     public GUITextBoxLabel(int xPosition, int yPosition, int width, int height) {		
         this.setPosition(xPosition, yPosition);
         this.setSize(width, height);	       
-        this.lineDistance = 2;       
+        this.lineDistance = 6;       
         this.enableFull();
     }
 
@@ -32,9 +32,14 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);     	
             if (this.isDynamicBackgroundEnabled())                       
                 this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getEnabledColor());         
-            if (!this.lines.isEmpty())       		
+            if (!this.lines.isEmpty()) {      	
+                GlStateManager.pushMatrix();            
+                GlStateManager.translate(this.getTextOffset(), 0.0F, 0.0F);            
+                GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);  
                 for (String line : this.lines)       		
-                    this.mc.fontRenderer.drawString(line, 0, (8 + this.getLineDistance()) * this.lines.indexOf(line), this.getEnabledTextColor(), this.isTextShadowEnabled());      	
+                    this.mc.fontRenderer.drawString(line, 0.0F, (this.textHeight(this.getTextScale()) + this.getLineDistance()) * this.lines.indexOf(line), this.getEnabledTextColor(), this.isTextShadowEnabled());   
+                GlStateManager.popMatrix();
+            }
             GlStateManager.popMatrix();
         }
     }

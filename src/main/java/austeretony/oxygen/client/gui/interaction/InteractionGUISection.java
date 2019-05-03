@@ -11,11 +11,13 @@ import austeretony.oxygen.client.IInteractionExecutor;
 import austeretony.oxygen.client.InteractionManagerClient;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
+import austeretony.oxygen.client.gui.interaction.executors.CloseScreenInteractionExecutor;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
 import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenSoundEffects;
 import net.minecraft.client.resources.I18n;
 
 public class InteractionGUISection extends AbstractGUISection {
@@ -62,7 +64,7 @@ public class InteractionGUISection extends AbstractGUISection {
         for (IInteractionExecutor action : OxygenManagerClient.instance().getInteractionManager().getActions()) {
             x = xStart + (int) (radius * Math.cos(Math.toRadians(angleStart + counter * angle)));
             y = yStart + (int) (radius * Math.sin(Math.toRadians(angleStart + counter * angle)));
-            this.addElement(button = new InteractionGUIButton(x, y, 16, 16, action).setTexture(action.getIcon(), 16, 16).setEnabled(action.isValid(this.screen.getPlayerUUID())));
+            this.addElement(button = new InteractionGUIButton(x, y, 16, 16, action).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(action.getIcon(), 16, 16).setEnabled(action.isValid(this.screen.getPlayerUUID())));
             this.buttons.add(button);
             counter++;
         }
@@ -79,7 +81,7 @@ public class InteractionGUISection extends AbstractGUISection {
         //last action - close screen
         x = xStart + (int) (radius * Math.cos(Math.toRadians(angleStart + counter * angle)));
         y = yStart + (int) (radius * Math.sin(Math.toRadians(angleStart + counter * angle)));
-        this.addElement(button = new InteractionGUIButton(x + 1, y, 16, 16, new CloseScreenInteractionExecutor()).setTexture(OxygenGUITextures.CROSS_ICONS, 16, 16));
+        this.addElement(button = new InteractionGUIButton(x + 1, y, 16, 16, new CloseScreenInteractionExecutor()).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.CROSS_ICONS, 16, 16));
         this.buttons.add(button);
     }
 

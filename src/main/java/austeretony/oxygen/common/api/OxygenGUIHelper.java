@@ -54,4 +54,8 @@ public class OxygenGUIHelper {
     public static Set<AbstractContextAction> getContextActions(int screenId) {
         return OxygenManagerClient.instance().getGUIManager().getContextActions(screenId);
     }
+
+    public static void registerSharedDataListenerScreen(int screenId) {
+        OxygenManagerClient.instance().getGUIManager().registerSharedDataListenerScreen(screenId);
+    }
 }

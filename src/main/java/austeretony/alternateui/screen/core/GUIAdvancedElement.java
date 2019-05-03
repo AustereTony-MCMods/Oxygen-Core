@@ -223,8 +223,9 @@ public class GUIAdvancedElement<T extends GUISimpleElement> extends GUISimpleEle
     }
 
     public static void drawCustomSizedTexturedRect(int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight) {  	
-        float f = 1.0F / (float) textureWidth;
-        float f1 = 1.0F / (float) textureHeight;        
+        float 
+		f = 1.0F / (float) textureWidth,
+        f1 = 1.0F / (float) textureHeight;        
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);    

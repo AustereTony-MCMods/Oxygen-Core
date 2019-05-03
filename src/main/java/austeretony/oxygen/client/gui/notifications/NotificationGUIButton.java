@@ -7,6 +7,7 @@ import austeretony.alternateui.screen.button.GUIButton;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.common.core.api.ClientReference;
+import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.notification.EnumNotifications;
 import austeretony.oxygen.common.notification.IOxygenNotification;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,8 +35,8 @@ public class NotificationGUIButton extends GUIButton {
     @Override
     public void init() {
         this.processDescription(I18n.format(this.notification.getDescription(), (Object[]) this.notification.getArguments()));
-        this.acceptButton = new GUIButton(this.getWidth() - 22, 6, 6, 6).setTexture(OxygenGUITextures.CHECK_ICONS, 6, 6).initScreen(this.getScreen());
-        this.rejectButton = new GUIButton(this.getWidth() - 10, 6, 6, 6).setTexture(OxygenGUITextures.CROSS_ICONS, 6, 6).initScreen(this.getScreen());
+        this.acceptButton = new GUIButton(this.getWidth() - 22, 6, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.CHECK_ICONS, 6, 6).initScreen(this.getScreen());
+        this.rejectButton = new GUIButton(this.getWidth() - 10, 6, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK).setTexture(OxygenGUITextures.CROSS_ICONS, 6, 6).initScreen(this.getScreen());
         if (notification.getType() == EnumNotifications.NOTICE)
             this.rejectButton.disableFull();
     }

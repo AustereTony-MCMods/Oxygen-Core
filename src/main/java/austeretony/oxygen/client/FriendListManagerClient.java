@@ -3,6 +3,7 @@ package austeretony.oxygen.client;
 import java.util.UUID;
 
 import austeretony.oxygen.client.gui.friendlist.FriendListGUIScreen;
+import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.FriendListEntry;
 import austeretony.oxygen.common.main.OxygenMain;
@@ -10,7 +11,7 @@ import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.network.server.SPChangeStatus;
 import austeretony.oxygen.common.network.server.SPEditFriendListEntryNote;
 import austeretony.oxygen.common.network.server.SPManageFriendList;
-import austeretony.oxygen.common.network.server.SPRequest;
+import austeretony.oxygen.common.network.server.SPOxygenRequest;
 
 public class FriendListManagerClient {
 
@@ -21,7 +22,7 @@ public class FriendListManagerClient {
     }
 
     public void openFriendsListSynced() {
-        OxygenMain.network().sendToServer(new SPRequest(SPRequest.EnumRequest.OPEN_FRIENDS_LIST));
+        OxygenMain.network().sendToServer(new SPOxygenRequest(SPOxygenRequest.EnumRequest.OPEN_FRIENDS_LIST));
     }
 
     public void openFriendsListDelegated() {
@@ -54,24 +55,24 @@ public class FriendListManagerClient {
     public void removeFriendSynced(UUID playerUUID) {
         this.manager.getPlayerData().removeFriendListEntry(playerUUID);
         OxygenMain.network().sendToServer(new SPManageFriendList(SPManageFriendList.EnumAction.REMOVE_FRIEND, playerUUID));
-        this.manager.getLoader().savePlayerDataDelegated();
+        OxygenHelperClient.savePlayerDataDelegated(this.manager.getPlayerData());
     }
 
     public void editFriendListEntryNoteSynced(UUID playerUUID, String note) {
         this.manager.getPlayerData().getFriendListEntryByUUID(playerUUID).setNote(note);
         OxygenMain.network().sendToServer(new SPEditFriendListEntryNote(playerUUID, note));
-        this.manager.getLoader().savePlayerDataDelegated();
+        OxygenHelperClient.savePlayerDataDelegated(this.manager.getPlayerData());
     }
 
-    public void addToIgnoredSynced(UUID playerUUID, String username) {
-        this.manager.getPlayerData().addFriendListEntry(new FriendListEntry(playerUUID, username, true).createId());
+    public void addToIgnoredSynced(UUID playerUUID) {
+        this.manager.getPlayerData().addFriendListEntry(new FriendListEntry(playerUUID, true).createId());
         OxygenMain.network().sendToServer(new SPManageFriendList(SPManageFriendList.EnumAction.ADD_IGNORED, playerUUID));
-        this.manager.getLoader().savePlayerDataDelegated();
+        OxygenHelperClient.savePlayerDataDelegated(this.manager.getPlayerData());
     }
 
     public void removeIgnoredSynced(UUID playerUUID) {
         this.manager.getPlayerData().removeFriendListEntry(playerUUID);
         OxygenMain.network().sendToServer(new SPManageFriendList(SPManageFriendList.EnumAction.REMOVE_IGNORED, playerUUID));
-        this.manager.getLoader().savePlayerDataDelegated();
+        OxygenHelperClient.savePlayerDataDelegated(this.manager.getPlayerData());
     }
 }

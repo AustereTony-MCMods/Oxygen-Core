@@ -18,19 +18,12 @@ public class FriendListEntry {
 
     public final UUID playerUUID;
 
-    public final String username;
-
     private String note;
 
     public final boolean ignored;
 
-    private int dimension;
-
-    private long lastActivityTime;
-
-    public FriendListEntry(UUID playerUUID, String username, boolean ignored) {
+    public FriendListEntry(UUID playerUUID, boolean ignored) {
         this.playerUUID = playerUUID;
-        this.username = username;
         this.ignored = ignored;
         this.note = "";
     }
@@ -48,14 +41,6 @@ public class FriendListEntry {
         this.id = id;
     }
 
-    public int getDimension() {
-        return this.dimension;
-    }
-
-    public void setDimension(int id) {
-        this.dimension = id;
-    }
-
     public String getNote() {
         return this.note;
     }
@@ -64,48 +49,30 @@ public class FriendListEntry {
         this.note = note;
     }
 
-    public long getLastActivityTime() {
-        return this.lastActivityTime;
-    }
-
-    public void setLastActivityTime(long value) {
-        this.lastActivityTime = value;
-    }
-
     public void write(BufferedOutputStream bos) throws IOException {
         StreamUtils.write(this.playerUUID, bos);
-        StreamUtils.write(this.username, bos);
         StreamUtils.write(this.ignored, bos);
         StreamUtils.write(this.id, bos);
-        StreamUtils.write(this.dimension, bos);
-        StreamUtils.write(this.lastActivityTime, bos);
         StreamUtils.write(this.note, bos);
     }
 
     public static FriendListEntry read(BufferedInputStream bis) throws IOException {
-        FriendListEntry friend = new FriendListEntry(StreamUtils.readUUID(bis), StreamUtils.readString(bis), StreamUtils.readBoolean(bis));
+        FriendListEntry friend = new FriendListEntry(StreamUtils.readUUID(bis), StreamUtils.readBoolean(bis));
         friend.setId(StreamUtils.readLong(bis));
-        friend.setDimension(StreamUtils.readInt(bis));
-        friend.setLastActivityTime(StreamUtils.readLong(bis));
         friend.setNote(StreamUtils.readString(bis));
         return friend;
     }
 
     public void write(PacketBuffer buffer) {
         PacketBufferUtils.writeUUID(this.playerUUID, buffer);
-        PacketBufferUtils.writeString(this.username, buffer);
         buffer.writeBoolean(this.ignored);
         buffer.writeLong(this.id);
-        buffer.writeInt(this.dimension);
-        buffer.writeLong(this.lastActivityTime);
         PacketBufferUtils.writeString(this.note, buffer);
     }
 
     public static FriendListEntry read(PacketBuffer buffer) {
-        FriendListEntry friend = new FriendListEntry(PacketBufferUtils.readUUID(buffer), PacketBufferUtils.readString(buffer), buffer.readBoolean());
+        FriendListEntry friend = new FriendListEntry(PacketBufferUtils.readUUID(buffer), buffer.readBoolean());
         friend.setId(buffer.readLong());
-        friend.setDimension(buffer.readInt());
-        friend.setLastActivityTime(buffer.readLong());
         friend.setNote(PacketBufferUtils.readString(buffer));
         return friend;
     }
