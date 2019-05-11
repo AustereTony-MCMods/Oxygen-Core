@@ -10,11 +10,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class OxygenEventsClient {
 
     @SubscribeEvent
-    public void onClientInit(OxygenClientInitEvent event) {
-        OxygenManagerClient.instance().reset();
-    }
-
-    @SubscribeEvent
     public void onChatMessage(OxygenChatMessageEvent event) {
         if (event.modIndex == OxygenMain.OXYGEN_MOD_INDEX)
             EnumOxygenChatMessages.values()[event.messageIndex].show(event.args);

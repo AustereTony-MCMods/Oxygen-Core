@@ -42,7 +42,7 @@ public class RequestGUIOverlay {
     private void draw() {
         if (OxygenManagerClient.instance().getNotificationsManager() == null) return;
         if (OxygenManagerClient.instance().getNotificationsManager().latestRequestIdExist()) {
-            if (!OxygenManagerClient.instance().getNotificationsManager().isRequestOverlayProcessing()) {
+            if (!OxygenManagerClient.instance().getNotificationsManager().isRequestOverlayUpdated()) {
                 this.notification = OxygenManagerClient.instance().getNotificationsManager().getLatestRequest();
                 this.overlay.setAlignment(EnumGUIAlignment.CENTER, - 90, 30);
                 this.requestTextLabel.setDisplayText(I18n.format(this.notification.getDescription(), (Object[]) this.notification.getArguments()), true);
@@ -52,7 +52,7 @@ public class RequestGUIOverlay {
                 this.rejectKeyTextLabel.setDisplayText("[" + OxygenKeyHandler.REJECT.getKeyBinding().getDisplayName() + "]", true);
                 this.rejectTextLabel.setX(this.requestTextLabel.textWidth(this.rejectKeyTextLabel.getDisplayText(), 1.0F) + 2);
                 this.rejectTextLabel.setDisplayText(I18n.format(OxygenKeyHandler.REJECT.getKeyBinding().getKeyDescription()), true);
-                OxygenManagerClient.instance().getNotificationsManager().processRequestOverlay();
+                OxygenManagerClient.instance().getNotificationsManager().requestOverlayUpdated();
             }
             this.elapsedTimeTextLabel.setDisplayText("(" + this.notification.getCounter() / 20 + ")", true);
             this.overlay.draw();

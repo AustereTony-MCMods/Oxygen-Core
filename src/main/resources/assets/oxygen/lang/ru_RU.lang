@@ -18,17 +18,20 @@ oxygen.gui.downloadCallback.request=Загрузить с сервера?
 oxygen.gui.editNoteCallback=Редактирование Заметки
 oxygen.gui.confirmButton=Принять
 oxygen.gui.cancelButton=Отмена
+oxygen.gui.closeButton=Закрыть
 oxygen.gui.addButton=Добавить
 oxygen.gui.playerFound=Игрок найден
 oxygen.gui.playerNotFound=Игрок не найден
 
 oxygen.gui.notifications.title=Уведомления
+oxygen.gui.notifications.hideOverlay=Убрать Оверлэй
 oxygen.gui.notifications.empty=У вас нет активных уведомлений.
 
 oxygen.gui.friends.title=Друзья
 oxygen.gui.ignored.title=Игнорируемые
 oxygen.gui.friends.username=Ник
 oxygen.gui.friends.dimension=Измерение
+oxygen.gui.friends.autoAccept=Принимать Заявки
 oxygen.gui.friends.addFriendCallback=Добавить 
 oxygen.gui.friends.addFriendCallback.request=Отправить игроку запрос в друзья.
 oxygen.gui.friends.removeFriendCallback=Удалить
@@ -57,7 +60,7 @@ oxygen.request.friendRequest=%s отправил вам запрос в друз
 
 oxygen.status.online=В сети
 oxygen.status.away=Нет на месте
-oxygen.status.not_disturb=Не беспокоить
+oxygen.status.not_disturb=Не Беспокоить
 oxygen.status.offline=Не в сети
 
 oxygen.tooltip.online=В сети

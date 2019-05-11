@@ -155,4 +155,28 @@ public class OxygenHelperClient {
     public static void saveWorldData(IPersistentData persistentData) {
         OxygenManagerClient.instance().getLoader().saveWorldData(persistentData);
     }
+
+    public static void registerClientSetting(int settingId) {
+        OxygenManagerClient.instance().getSettingsManager().register(settingId);
+    }
+
+    public static void setClientSetting(int settingId, int value) {
+        OxygenManagerClient.instance().getSettingsManager().set(settingId, value);
+    }
+
+    public static void setClientSetting(int settingId, boolean value) {
+        OxygenManagerClient.instance().getSettingsManager().set(settingId, value);
+    }
+
+    public static int getClientSettingInt(int settingId) {
+        return OxygenManagerClient.instance().getSettingsManager().getAsInt(settingId);
+    }
+
+    public static boolean getClientSettingBoolean(int settingId) {
+        return OxygenManagerClient.instance().getSettingsManager().getAsBoolean(settingId);
+    }
+
+    public static void saveClientSettings() {
+        OxygenManagerClient.instance().getSettingsManager().save();
+    }
 }

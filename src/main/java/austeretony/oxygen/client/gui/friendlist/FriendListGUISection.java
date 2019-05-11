@@ -9,6 +9,7 @@ import java.util.Set;
 
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.button.GUIButton;
+import austeretony.alternateui.screen.button.GUICheckBoxButton;
 import austeretony.alternateui.screen.button.GUISlider;
 import austeretony.alternateui.screen.callback.AbstractGUICallback;
 import austeretony.alternateui.screen.contextmenu.AbstractContextAction;
@@ -52,9 +53,11 @@ public class FriendListGUISection extends AbstractGUISection {
     private GUIButton ignoredPageButton, downloadButton, searchButton, refreshButton, addFriendButton, 
     sortDownStatusButton, sortUpStatusButton, sortDownUsernameButton, sortUpUsernameButton;
 
+    private GUICheckBoxButton autoAcceptButton;
+
     private FriendListEntryGUIButton currentEntry;
 
-    private GUITextLabel friendsOnlineTextLabel, friendsAmountTextLabel, playerNameTextLabel;
+    private GUITextLabel friendsOnlineTextLabel, friendsAmountTextLabel, playerNameTextLabel, autoAcceptTextLabel;
 
     private GUITextField searchField;
 
@@ -126,6 +129,11 @@ public class FriendListGUISection extends AbstractGUISection {
                 .setDisplayText(I18n.format("oxygen.gui.addButton"), true, GUISettings.instance().getButtonTextScale()));     
         this.lockAddButton();
         this.addElement(this.friendsAmountTextLabel = new GUITextLabel(0, this.getHeight() - 10).setTextScale(GUISettings.instance().getSubTextScale())); 
+
+        this.addElement(this.autoAcceptButton = new GUICheckBoxButton(48, this.getHeight() - 9, 6).setSound(OxygenSoundEffects.BUTTON_CLICK)
+                .enableDynamicBackground(GUISettings.instance().getEnabledButtonColor(), GUISettings.instance().getDisabledButtonColor(), GUISettings.instance().getHoveredButtonColor()));
+        this.addElement(this.autoAcceptTextLabel = new GUITextLabel(56, this.getHeight() - 10).setDisplayText(I18n.format("oxygen.gui.friends.autoAccept"), false, GUISettings.instance().getSubTextScale()));
+        this.autoAcceptButton.setToggled(OxygenHelperClient.getClientSettingBoolean(OxygenMain.FRIEND_REQUESTS_AUTO_ACCEPT_SETTING));
 
         //Protection
         if (!OxygenGUIHelper.isNeedSync(OxygenMain.FRIEND_LIST_SCREEN_ID) || OxygenGUIHelper.isDataRecieved(OxygenMain.FRIEND_LIST_SCREEN_ID))
@@ -285,6 +293,14 @@ public class FriendListGUISection extends AbstractGUISection {
             FriendListEntryGUIButton entry = (FriendListEntryGUIButton) element;
             if (entry != this.currentEntry)
                 this.currentEntry = entry;
+        } else if (element == this.autoAcceptButton) {
+            if (this.autoAcceptButton.isToggled()) {
+                OxygenHelperClient.setClientSetting(OxygenMain.FRIEND_REQUESTS_AUTO_ACCEPT_SETTING, true);
+                OxygenHelperClient.saveClientSettings();
+            } else {
+                OxygenHelperClient.setClientSetting(OxygenMain.FRIEND_REQUESTS_AUTO_ACCEPT_SETTING, false);
+                OxygenHelperClient.saveClientSettings();
+            }
         }
     }
 

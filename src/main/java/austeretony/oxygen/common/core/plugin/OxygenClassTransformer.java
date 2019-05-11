@@ -15,8 +15,6 @@ public class OxygenClassTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         switch (transformedName) {    
-        case "net.minecraft.client.resources.Locale":                    
-            return patch(basicClass, EnumInputClasses.MC_LOCALE);
         case "net.minecraft.client.gui.GuiPlayerTabOverlay":                    
             return patch(basicClass, EnumInputClasses.MC_GUI_PLAYER_TAB_OVERLAY);
         case "net.minecraft.client.gui.GuiIngame":                    

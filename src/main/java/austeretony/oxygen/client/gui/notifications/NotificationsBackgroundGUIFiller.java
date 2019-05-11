@@ -25,8 +25,9 @@ public class NotificationsBackgroundGUIFiller extends BackgroundGUIFiller {
             } else {
                 drawRect(- 1, - 1, this.getWidth() + 1, this.getHeight() + 1, GUISettings.instance().getBaseGUIBackgroundColor());//main background
                 drawRect(0, 0, this.getWidth(), 13, GUISettings.instance().getAdditionalGUIBackgroundColor());//title background
-                drawRect(0, 14, this.getWidth() - 3, this.getHeight(), GUISettings.instance().getPanelGUIBackgroundColor());//panel background
-                drawRect(this.getWidth() - 2, 14, this.getWidth(), this.getHeight(), GUISettings.instance().getAdditionalGUIBackgroundColor());//slider background
+                drawRect(0, 14, this.getWidth(), 24, GUISettings.instance().getAdditionalGUIBackgroundColor());//title background
+                drawRect(0, 25, this.getWidth() - 3, this.getHeight(), GUISettings.instance().getPanelGUIBackgroundColor());//panel background
+                drawRect(this.getWidth() - 2, 25, this.getWidth(), this.getHeight(), GUISettings.instance().getAdditionalGUIBackgroundColor());//slider background
             }
             GlStateManager.popMatrix();            
         }

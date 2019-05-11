@@ -2,12 +2,12 @@
   "main": {
     "sync_configs": true,
     "sync_privileges": true,
-    "enable_custom_localization": false,
     "enable_telemetry": false,
     "enable_privileges": true,
     "enable_currency": false,
     "disable_tab_overlay": false,
-    "enable_player_list": true
+    "enable_player_list": true,
+    "enable_players_interaction": true
   },
   "friends": {
     "enable_friend_list": true,

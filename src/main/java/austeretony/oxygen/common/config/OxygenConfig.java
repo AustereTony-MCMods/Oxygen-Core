@@ -17,6 +17,7 @@ public class OxygenConfig extends AbstractConfigHolder {
     ENABLE_CURRENCY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_currency"),
     DISABLE_TAB_OVERLAY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "disable_tab_overlay"),
     ENABLE_PLAYER_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_player_list"),
+    ENABLE_PLAYERS_INTERACTION = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_players_interaction"),
 
     ENABLE_FRIEND_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "friends", "enable_friend_list"),
     FRIEND_REQUEST_EXPIRE_TIME = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "friend_request_expire_time_seconds"),
@@ -52,6 +53,7 @@ public class OxygenConfig extends AbstractConfigHolder {
         values.add(ENABLE_CURRENCY);
         values.add(DISABLE_TAB_OVERLAY);
         values.add(ENABLE_PLAYER_LIST);
+        values.add(ENABLE_PLAYERS_INTERACTION);
 
         values.add(ENABLE_FRIEND_LIST);
         values.add(FRIEND_REQUEST_EXPIRE_TIME);

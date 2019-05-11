@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class OxygenSoundEffects {
 
     public static final SoundEvent 
+    REQUEST_RECIEVED,
     BUTTON_CLICK,
     CONTEXT_OPEN,
     CONTEXT_CLOSE,
@@ -16,7 +17,10 @@ public class OxygenSoundEffects {
     //TODO need sound effects for GUIs opening, closing and changing sections
 
     static {
-        ResourceLocation location = new ResourceLocation(OxygenMain.MODID, "button_click");
+        ResourceLocation 
+        location = new ResourceLocation(OxygenMain.MODID, "request_recieved");
+        REQUEST_RECIEVED = new SoundEvent(location).setRegistryName(location);
+        location = new ResourceLocation(OxygenMain.MODID, "button_click");
         BUTTON_CLICK = new SoundEvent(location).setRegistryName(location);
         location = new ResourceLocation(OxygenMain.MODID, "context_open");
         CONTEXT_OPEN = new SoundEvent(location).setRegistryName(location);       
@@ -28,8 +32,8 @@ public class OxygenSoundEffects {
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
-
         event.getRegistry().registerAll(
+                REQUEST_RECIEVED,
                 BUTTON_CLICK,
                 CONTEXT_OPEN,
                 CONTEXT_CLOSE,

@@ -8,19 +8,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.util.JsonUtils;
 
 public class OxygenLoaderClient {
 
@@ -129,44 +121,6 @@ public class OxygenLoaderClient {
         } catch (IOException exception) {
             OxygenMain.OXYGEN_LOGGER.error("Client world data <{}> saving failed for <{}>.", persistentData.getName(), persistentData.getModId());
             exception.printStackTrace();
-        }
-    }
-
-    public static void loadLocalization(List<String> languageList, Map<String, String> properties) {
-        String localizationFolder = CommonReference.getGameFolder() + "/config/oxygen/localization/localization.json";
-        Path localizationPath = Paths.get(localizationFolder);      
-        if (Files.exists(localizationPath)) {
-            try {       
-                loadLocalization(JsonUtils.getExternalJsonData(localizationFolder).getAsJsonObject(), languageList, properties);
-            } catch (IOException exception) {       
-                exception.printStackTrace();
-                return;
-            }
-        } else {
-            try {               
-                Files.createDirectories(localizationPath.getParent());
-                JsonObject loclization = JsonUtils.getInternalJsonData("assets/oxygen/localization.json").getAsJsonObject();
-                JsonUtils.createExternalJsonFile(localizationFolder, loclization);    
-                loadLocalization(loclization, languageList, properties);
-            } catch (IOException exception) {               
-                exception.printStackTrace();
-            }   
-        }
-    }
-
-    private static void loadLocalization(JsonObject localizationFile, List<String> languageList, Map<String, String> properties) {
-        OxygenMain.OXYGEN_LOGGER.info("Searching for custom localization...");
-        for (String lang : languageList) {
-            JsonElement entriesElement = localizationFile.get(lang.toLowerCase());
-            if (entriesElement != null) {
-                OxygenMain.OXYGEN_LOGGER.info("Loading custom <{}> localization...", lang);
-                JsonObject localizationObject = entriesElement.getAsJsonObject();
-                Set<Map.Entry<String, JsonElement>> entrySet = localizationObject.entrySet();
-                for (Map.Entry<String, JsonElement> entry : entrySet)
-                    properties.put(entry.getKey(), entry.getValue().getAsJsonObject().getAsString());
-            } else {
-                OxygenMain.OXYGEN_LOGGER.error("Custom localization for <{}> undefined!", lang);
-            }
         }
     }
 }

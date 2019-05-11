@@ -14,9 +14,9 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
     private int innerBoxSize;
 
     private int 
-    enabledInnerBoxColor = 0xFF707070,
+    enabledInnerBoxColor = 0xFF303030,
     disabledInnerBoxColor = 0xFF202020,
-    hoveredInnerBoxColor = 0xFF404040;
+    hoveredInnerBoxColor = 0xFF858585;
 
     /**
      * Конструктор для создания автономной кнопки (вне панели).
@@ -53,13 +53,13 @@ public class GUICheckBoxButton extends GUIAdvancedElement<GUICheckBoxButton> {
             if (this.isDynamicBackgroundEnabled()) {
                 int backgroundColor, innerBoxColor;
                 if (!this.isEnabled()) {
-                    backgroundColor = this.getDisabledColor();
+                    backgroundColor = this.getDisabledBackgroundColor();
                     innerBoxColor = this.getDisabledInnerBoxColor();
                 } else if (this.isHovered() || this.isToggled()) {
-                    backgroundColor = this.getHoveredColor();
+                    backgroundColor = this.getHoveredBackgroundColor();
                     innerBoxColor = this.getHoveredInnerBoxColor();
                 } else {
-                    backgroundColor = this.getEnabledColor();
+                    backgroundColor = this.getEnabledBackgroundColor();
                     innerBoxColor = this.getEnabledInnerBoxColor();
                 }     		
                 drawRect(0, 0, this.getWidth(), this.getHeight(), backgroundColor);

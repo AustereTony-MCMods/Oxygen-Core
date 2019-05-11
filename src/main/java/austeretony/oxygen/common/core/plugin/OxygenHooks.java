@@ -2,7 +2,6 @@ package austeretony.oxygen.common.core.plugin;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import austeretony.oxygen.common.api.OxygenHelperClient;
@@ -22,12 +21,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeHooks;
 
 public class OxygenHooks {
-
-    //Hook to <net.minecraft.client.resources.Locale> class to <loadLocaleDataFiles()> method.
-    public static void loadCustomLocalization(List<String> languageList, Map<String, String> properties) {
-        //TODO Fix locaization files first
-        //OxygenLoaderClient.loadLocalization(languageList, properties);
-    }
 
     //Hook to <net.minecraft.client.gui.GuiPlayerTabOverlay> class to <renderPlayerlist()> method.
     public static void verifyPlayersList(List<NetworkPlayerInfo> infoList) {

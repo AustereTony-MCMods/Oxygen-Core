@@ -14,7 +14,6 @@ import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.network.server.SPOxygenRequest;
-import austeretony.oxygen.common.notification.NotificationManagerClient;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 
@@ -48,6 +47,8 @@ public class OxygenManagerClient {
 
     private final OxygenGUIManager guiManager;
 
+    private final ClientSettingsManager clientSettings;
+
     private final OxygenPlayerData playerData;
 
     private OxygenManagerClient() {
@@ -59,6 +60,7 @@ public class OxygenManagerClient {
         this.sharedDataManager = new SharedDataManagerClient(this);
         this.interactionManager = new InteractionManagerClient(this);
         this.guiManager = new OxygenGUIManager(this);
+        this.clientSettings = new ClientSettingsManager(this);
         this.playerData = new OxygenPlayerData();
     }
 
@@ -105,6 +107,10 @@ public class OxygenManagerClient {
         return this.guiManager;
     }
 
+    public ClientSettingsManager getSettingsManager() {
+        return this.clientSettings;
+    }
+
     public void createOxygenClientThreads() {
         this.ioThreadClient = new OxygenThread("Oxygen IO Client");
         this.routineThreadClient = new OxygenThread("Oxygen Routine Client");
@@ -118,11 +124,11 @@ public class OxygenManagerClient {
     }
 
     public void init() {
-        this.notificationsManager.getNotifications().clear();
-        this.sharedDataManager.reset();
+        this.reset();
         this.playerData.setPlayerUUID(this.playerUUID);
         this.privilegeLoader.loadPrivilegeDataDelegated();
         OxygenHelperClient.loadPlayerDataDelegated(this.playerData);
+        this.clientSettings.load();
     }
 
     public OxygenThread getIOClientThread() {

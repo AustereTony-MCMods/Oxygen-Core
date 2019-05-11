@@ -18,17 +18,20 @@ oxygen.gui.downloadCallback.request=Download from server?
 oxygen.gui.editNoteCallback=Edit Note
 oxygen.gui.confirmButton=Confirm
 oxygen.gui.cancelButton=Cancel
+oxygen.gui.closeButton=Close
 oxygen.gui.addButton=Add
 oxygen.gui.playerFound=Player found
 oxygen.gui.playerNotFound=Player not found
 
 oxygen.gui.notifications.title=Notifications
+oxygen.gui.notifications.hideOverlay=Hide Overlay
 oxygen.gui.notifications.empty=You have no active notifications.
 
 oxygen.gui.friends.title=Friends
 oxygen.gui.ignored.title=Ignored
 oxygen.gui.friends.username=Username
 oxygen.gui.friends.dimension=Dimension
+oxygen.gui.friends.autoAccept=Accept Requests
 oxygen.gui.friends.addFriendCallback=Add
 oxygen.gui.friends.addFriendCallback.request=Send friend request to player.
 oxygen.gui.friends.removeFriendCallback=Remove
@@ -57,7 +60,7 @@ oxygen.request.friendRequest=%s sent you friend request.
 
 oxygen.status.online=Online
 oxygen.status.away=Away
-oxygen.status.not_disturb=Not disturb
+oxygen.status.not_disturb=Not Disturb
 oxygen.status.offline=Offline
 
 oxygen.tooltip.online=Online

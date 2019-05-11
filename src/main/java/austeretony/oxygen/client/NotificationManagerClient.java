@@ -1,16 +1,22 @@
-package austeretony.oxygen.common.notification;
+package austeretony.oxygen.client;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.event.OxygenNotificationRecievedEvent;
 import austeretony.oxygen.client.gui.notifications.NotificationsGUIScreen;
+import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.network.server.SPRequestReply;
+import austeretony.oxygen.common.notification.EnumNotifications;
+import austeretony.oxygen.common.notification.EnumRequestReply;
+import austeretony.oxygen.common.notification.IOxygenNotification;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 public class NotificationManagerClient {
 
@@ -22,7 +28,7 @@ public class NotificationManagerClient {
 
     private long latestNotificationId;
 
-    private boolean notificationsExist, processRequestOverlay;
+    private boolean notificationsExist, requestOverlayUpdated;
 
     public NotificationManagerClient(OxygenManagerClient manager) {
         this.manager = manager;
@@ -59,10 +65,17 @@ public class NotificationManagerClient {
     public void addNotification(IOxygenNotification notification) {
         this.notifications.put(notification.getId(), notification);
         if (notification.getType() == EnumNotifications.REQUEST) {
-            this.latestNotificationId = notification.getId();
-            this.processRequestOverlay = false;
+            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECIEVED, 1.0F, 1.0F);//request recieved sound effect
+            if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING)) {
+                this.latestNotificationId = notification.getId();
+                this.requestOverlayUpdated = false;
+            }
         }
         this.notificationsExist = true;
+        MinecraftForge.EVENT_BUS.post(new OxygenNotificationRecievedEvent(notification));//custom forge event   
+        if (notification.getIndex() == OxygenMain.FRIEND_REQUEST_ID 
+                && OxygenHelperClient.getClientSettingBoolean(OxygenMain.FRIEND_REQUESTS_AUTO_ACCEPT_SETTING))
+            notification.accepted(null);
     }
 
     public boolean latestRequestIdExist() {
@@ -81,12 +94,12 @@ public class NotificationManagerClient {
         this.latestNotificationId = 0L;
     }
 
-    public void processRequestOverlay() {
-        this.processRequestOverlay = true;
+    public void requestOverlayUpdated() {
+        this.requestOverlayUpdated = true;
     }
 
-    public boolean isRequestOverlayProcessing() {
-        return this.processRequestOverlay;
+    public boolean isRequestOverlayUpdated() {
+        return this.requestOverlayUpdated;
     }
 
     public void processNotifications() {

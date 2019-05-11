@@ -1,4 +1,12 @@
 {
+  "request_recieved": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:request_recieved"
+      }
+    ]
+  },
   "button_click": { 
     "category": "player", 
     "sounds": [

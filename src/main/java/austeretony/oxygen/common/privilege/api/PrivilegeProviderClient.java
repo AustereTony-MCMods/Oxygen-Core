@@ -11,14 +11,20 @@ public class PrivilegeProviderClient {
     }
 
     public static boolean getPrivilegeValue(String privilegeName, boolean defaultValue) {
-        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup().hasPrivilege(privilegeName))
+        IPrivilegedGroup group;
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() 
+                && (group = OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup()) != null
+                && group.hasPrivilege(privilegeName))
             return true;
         return defaultValue;
     }
 
     public static int getPrivilegeValue(String privilegeName, int defaultValue) {
-        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup().hasPrivilege(privilegeName))
-            return OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup().getPrivilege(privilegeName).getValue();
+        IPrivilegedGroup group;
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() 
+                && (group = OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup()) != null
+                && group.hasPrivilege(privilegeName))
+            return group.getPrivilege(privilegeName).getValue();
         return defaultValue;
     }
 }

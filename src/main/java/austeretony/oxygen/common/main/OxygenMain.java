@@ -74,7 +74,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen", 
     NAME = "Oxygen", 
-    VERSION = "0.4.1", 
+    VERSION = "0.5.0", 
     VERSION_CUSTOM = VERSION + ":alpha:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -99,7 +99,10 @@ public class OxygenMain {
     PLAYER_LIST_SCREEN_ID = 1,
     FRIEND_LIST_SCREEN_ID = 2,
     IGNORE_LIST_SCREEN_ID = 3,
-    INTERACTION_SCREEN_ID = 4;
+    INTERACTION_SCREEN_ID = 4,
+
+    HIDE_REQUESTS_OVERLAY_SETTING = 1,
+    FRIEND_REQUESTS_AUTO_ACCEPT_SETTING = 2;
 
     public static final DateFormat SIMPLE_ID_DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmssSSS");
 
@@ -162,6 +165,9 @@ public class OxygenMain {
             OxygenHelperClient.registerNotificationIcon(SIMPLE_NOTIFICATION_ID, OxygenGUITextures.SIMPLE_NOTIFICATION_ICON);
             OxygenHelperClient.registerNotificationIcon(ALERT_NOTIFICATION_ID, OxygenGUITextures.ALERT_NOTIFICATION_ICON);
             OxygenHelperClient.registerNotificationIcon(FRIEND_REQUEST_ID, OxygenGUITextures.REQUEST_ICON);
+
+            OxygenHelperClient.registerClientSetting(HIDE_REQUESTS_OVERLAY_SETTING);
+            OxygenHelperClient.registerClientSetting(FRIEND_REQUESTS_AUTO_ACCEPT_SETTING);
 
             if (OxygenConfig.DISABLE_TAB_OVERLAY.getBooleanValue()) {
                 ClientReference.getMinecraft().gameSettings.keyBindPlayerList.setKeyCode(0);
