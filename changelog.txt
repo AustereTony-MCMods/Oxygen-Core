@@ -1,3 +1,8 @@
+0.5.0
++Added sound effect on notification recieve.
++Added option to hide requests overlay (checkbox button in notifications menu).
++Added option to accept all incoming friend requests (checkbox button in friendlist menu).
+
 0.4.1
 +Major API improvements.
 +Added option to disable Server Tab Overlay.
