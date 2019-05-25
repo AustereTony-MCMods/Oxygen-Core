@@ -1,9 +1,16 @@
-0.5.0
+0.6.0a
++Improvements to privileges system.
++Support for containers.
+
+0.5.1a
++Fixed crash on unmodified client connection attempt to server.
+
+0.5.0a
 +Added sound effect on notification recieve.
 +Added option to hide requests overlay (checkbox button in notifications menu).
 +Added option to accept all incoming friend requests (checkbox button in friendlist menu).
 
-0.4.1
+0.4.1a
 +Major API improvements.
 +Added option to disable Server Tab Overlay.
 +Added option to disable Oxygen player list (advanced version of server tab overlay). 
