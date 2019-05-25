@@ -27,7 +27,7 @@ public class RemoveIgnoredGUICallback extends AbstractGUICallback {
     public RemoveIgnoredGUICallback(FriendListGUIScreen screen, IgnoreListGUISection section, int width, int height) {
         super(screen, section, width, height);
         this.screen = screen;
-        this.section = section;
+        this.section = section; 
     }
 
     @Override
@@ -38,8 +38,8 @@ public class RemoveIgnoredGUICallback extends AbstractGUICallback {
         this.addElement(new GUITextLabel(2, 2).setDisplayText(I18n.format("oxygen.gui.ignored.removeIgnoredCallback"), true, GUISettings.instance().getTitleScale()));
         this.addElement(this.requestLabel = new GUITextBoxLabel(2, 16, 160, 20));     
 
-        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
-        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
     }
 
     @Override

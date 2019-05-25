@@ -1,10 +1,13 @@
 package austeretony.alternateui.screen.core;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.lwjgl.input.Mouse;
 
+import austeretony.alternateui.container.framework.GUISlotsFramework;
 import austeretony.alternateui.screen.callback.AbstractGUICallback;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -18,9 +21,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
 
     private final Set<GUIBaseElement> elements = new LinkedHashSet<GUIBaseElement>();
 
-    //TODO CONTAINERS
     /** Массив объектов GUISlotsFramework, инкапсулирующих слоты контейнера. */
-    //public final List<GUISlotsFramework> slotsFrameworksList = new ArrayList<GUISlotsFramework>();
+    private final List<GUISlotsFramework> slotsFrameworksList = new ArrayList<GUISlotsFramework>(2);
 
     private GUIBaseElement hoveredElement;
 
@@ -81,11 +83,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
                 if (element.isHovered())	        		
                     this.hoveredElement = element;   
             }	    	        
-            //TODO CONTAINERS
-            /*for (GUISlotsFramework framework : this.getSlotsFrameworksList()) {    		    		
-
-				framework.mouseOver(mouseX, mouseY);
-			}*/
+            for (GUISlotsFramework framework : this.getSlotsFrameworks())	    	
+                framework.mouseOver(mouseX, mouseY);
         }
     }
 
@@ -93,11 +92,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     public void draw(int mouseX, int mouseY) {		
         for (GUIBaseElement element : this.getElements())                  
             element.draw(mouseX, mouseY);		      
-        //TODO CONTAINERS
-        /*for (GUISlotsFramework framework : this.getSlotsFrameworksList()) {    		    		
-
-			framework.draw(mouseX, mouseY);
-		}*/
+        for (GUISlotsFramework framework : this.getSlotsFrameworks())        		
+            framework.draw(mouseX, mouseY);
     }
 
     @Override
@@ -105,11 +101,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
         if (!this.hasCurrentCallback()) {			
             for (GUIBaseElement element : this.getElements())                
                 element.drawTooltip(mouseX, mouseY);	        
-            //TODO CONTAINERS
-            /*for (GUISlotsFramework framework : this.getSlotsFrameworksList()) {    		    		
-
-				framework.drawTooltip(mouseX, mouseY);
-			}*/
+            for (GUISlotsFramework framework : this.getSlotsFrameworks())    		    		
+                framework.drawTooltip(mouseX, mouseY);
         }
     }
 
@@ -220,13 +213,10 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
         return this;
     }
 
-    //TODO CONTAINERS
-    /*public List<GUISlotsFramework> getSlotsFrameworksList() {
+    public List<GUISlotsFramework> getSlotsFrameworks() {
+        return this.slotsFrameworksList;
+    }
 
-    	return this.slotsFrameworksList;
-    }*/
-
-    //TODO CONTAINERS
     /**
      * Используется для добавления фреймворка слотов в раздел. Фреймворк нельзя инициализировать повторно.
      * 
@@ -234,17 +224,13 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
      * 
      * @return GUIAbstractSection
      */
-    /*public final GUIAbstractSection addSlotsFramework(GUISlotsFramework framework) {
-
-    	if (!this.slotsFrameworksList.contains(framework)) {
-
-    		framework.initScreen(this.getScreen());
-
-    		this.slotsFrameworksList.add(framework);
-    	}
-
-    	return this;
-    }*/
+    public final AbstractGUISection addSlotsFramework(GUISlotsFramework framework) {
+        if (!this.slotsFrameworksList.contains(framework)) {
+            framework.initScreen(this.getScreen());
+            this.slotsFrameworksList.add(framework);
+        }
+        return this;
+    }
 
     /**
      * Возвращает последний элемент на который был наведён курсор.

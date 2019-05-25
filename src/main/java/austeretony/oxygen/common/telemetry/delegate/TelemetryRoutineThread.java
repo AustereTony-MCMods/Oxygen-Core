@@ -1,8 +1,8 @@
 package austeretony.oxygen.common.telemetry.delegate;
 
 import austeretony.oxygen.common.OxygenManagerServer;
+import austeretony.oxygen.common.telemetry.TimeCounter;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
-import austeretony.oxygen.common.util.TimeCounter;
 
 public class TelemetryRoutineThread extends Thread {
 

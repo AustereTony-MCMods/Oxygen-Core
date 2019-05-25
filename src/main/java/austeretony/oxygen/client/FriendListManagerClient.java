@@ -2,9 +2,9 @@ package austeretony.oxygen.client;
 
 import java.util.UUID;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.friendlist.FriendListGUIScreen;
-import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.FriendListEntry;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
@@ -39,7 +39,7 @@ public class FriendListManagerClient {
         ClientReference.displayGuiScreen(new FriendListGUIScreen());
     }
 
-    public void changeStatusSynced(OxygenPlayerData.EnumStatus status) {
+    public void changeStatusSynced(OxygenPlayerData.EnumActivityStatus status) {
         OxygenMain.network().sendToServer(new SPChangeStatus(status));
     }
 

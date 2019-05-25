@@ -21,9 +21,10 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected final int maxStringLength;
 
-    protected boolean resetTypedText, hasCustomCursor;
+    protected boolean resetTypedText, hasCustomCursor, numberFieldMode;
 
-    protected int lineScrollOffset, cursorCounter, cursorPosition, selectionEnd;
+    protected int lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, 
+    maxNumber = - 1;
 
     /**
      * Текстовое поле.
@@ -41,6 +42,23 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         this.enableFull();
     }
 
+    public GUITextField enableNumberFieldMode() {
+        this.numberFieldMode = true;
+        return this;
+    }
+
+    public GUITextField enableNumberFieldMode(int maxNumber) {
+        this.numberFieldMode = true;
+        this.maxNumber = maxNumber;
+        return this;
+    }
+
+    public int getTypedNumber() {
+        if (!this.numberFieldMode || this.typedText.isEmpty())
+            return 0;
+        return Integer.parseInt(this.typedText);
+    }
+
     @Override
     public void updateCursorCounter() {    	
         this.cursorCounter++;
@@ -50,12 +68,13 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         return this.typedText;
     }
 
-    public void setText(String text) {   	
+    public GUITextField setText(String text) {   	
         if (text.length() > this.maxStringLength)       	
             this.typedText = text.substring(0, this.maxStringLength);    
         else
             this.typedText = text;
         this.setCursorPositionEnd();
+        return this;
     }
 
     public void reset() {
@@ -70,7 +89,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     public void writeText(String text) {    	
         String s1 = "";
-        String s2 = ChatAllowedCharacters.filterAllowedCharacters(text);      
+        String s2 = this.numberFieldMode ? this.filterAllowedCharacters(text) : ChatAllowedCharacters.filterAllowedCharacters(text);      
         int 
         i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd,
                 j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition,
@@ -89,6 +108,29 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             s1 = s1 + this.typedText.substring(j);
         this.typedText = s1;       
         this.moveCursorBy(i - this.selectionEnd + l);
+    }
+
+    private boolean isAllowedCharacter(char character) {
+        return character == '0' 
+                || character == '1' 
+                || character == '2' 
+                || character == '3' 
+                || character == '4' 
+                || character == '5' 
+                || character == '6' 
+                || character == '7' 
+                || character == '8' 
+                || character == '9';
+    }
+
+    private String filterAllowedCharacters(String input) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char c : input.toCharArray())
+            if (this.isAllowedCharacter(c) && !this.typedText.startsWith("0"))
+                stringBuilder.append(c);
+        String typed = this.typedText + stringBuilder.toString();
+        int value = typed.isEmpty() ? 0 : Integer.parseInt(typed);
+        return (this.maxNumber == - 1 || value <= this.maxNumber) ? stringBuilder.toString() : "";
     }
 
     private void deleteWords(int index) {   	

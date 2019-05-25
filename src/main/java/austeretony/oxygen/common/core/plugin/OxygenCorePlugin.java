@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.Name;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
-@Name("Oxygen Core")
+@Name("Oxygen Core Plugin")
 @MCVersion("1.12.2")
 @TransformerExclusions({"austeretony.oxygen.common.core"})
 public class OxygenCorePlugin implements IFMLLoadingPlugin {

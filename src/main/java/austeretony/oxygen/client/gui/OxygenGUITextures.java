@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 public class OxygenGUITextures {
 
     public static final ResourceLocation 
+    GOLD_COIN_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/gold_coin_icon.png"),
     SIMPLE_NOTIFICATION_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/simple_notification_icon.png"),
     ALERT_NOTIFICATION_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/alert_notification_icon.png"),
     REQUEST_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/request_icon.png"),

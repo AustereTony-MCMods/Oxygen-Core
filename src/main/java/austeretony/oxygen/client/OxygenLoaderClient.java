@@ -9,9 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.IPersistentData;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 
 public class OxygenLoaderClient {

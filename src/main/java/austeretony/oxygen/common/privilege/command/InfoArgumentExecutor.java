@@ -65,7 +65,6 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                     if (sender instanceof EntityPlayerMP)
                         OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(), 
                                 groupName, 
-                                group.getTitle(), 
                                 group.getPrefix(), 
                                 group.getSuffix(), 
                                 OxygenUtils.formattingCode(group.getUsernameColor()), 
@@ -73,9 +72,8 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                                 OxygenUtils.formattingCode(group.getPrefixColor()), 
                                 OxygenUtils.formattingCode(group.getChatColor()));
                     else
-                        server.sendMessage(new TextComponentString(String.format("Group: %s - title: %s, prefix %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.", 
+                        server.sendMessage(new TextComponentString(String.format("Group: %s - prefix %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.", 
                                 groupName, 
-                                group.getTitle(), 
                                 group.getPrefix(), 
                                 group.getSuffix(),
                                 OxygenUtils.formattingCode(group.getUsernameColor()), 

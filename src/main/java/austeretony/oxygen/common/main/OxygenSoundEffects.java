@@ -1,5 +1,8 @@
 package austeretony.oxygen.common.main;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -7,37 +10,51 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class OxygenSoundEffects {
 
-    public static final SoundEvent 
-    REQUEST_RECIEVED,
-    BUTTON_CLICK,
-    CONTEXT_OPEN,
-    CONTEXT_CLOSE,
-    DROP_DOWN_LIST_OPEN;
+    private static final Map<Integer, SoundEventContainer> REGISTRY = new HashMap<Integer, SoundEventContainer>();
 
-    //TODO need sound effects for GUIs opening, closing and changing sections
-
-    static {
-        ResourceLocation 
-        location = new ResourceLocation(OxygenMain.MODID, "request_recieved");
-        REQUEST_RECIEVED = new SoundEvent(location).setRegistryName(location);
-        location = new ResourceLocation(OxygenMain.MODID, "button_click");
-        BUTTON_CLICK = new SoundEvent(location).setRegistryName(location);
-        location = new ResourceLocation(OxygenMain.MODID, "context_open");
-        CONTEXT_OPEN = new SoundEvent(location).setRegistryName(location);       
-        location = new ResourceLocation(OxygenMain.MODID, "context_close");
-        CONTEXT_CLOSE = new SoundEvent(location).setRegistryName(location);
-        location = new ResourceLocation(OxygenMain.MODID, "drop_down_list_open");
-        DROP_DOWN_LIST_OPEN = new SoundEvent(location).setRegistryName(location);
-    }
+    public static final SoundEventContainer 
+    INVENTORY = new SoundEventContainer(OxygenMain.MODID, "inventory"),
+    SELL = new SoundEventContainer(OxygenMain.MODID, "sell"),
+    REQUEST_RECIEVED = new SoundEventContainer(OxygenMain.MODID, "request_recieved"),
+    BUTTON_CLICK = new SoundEventContainer(OxygenMain.MODID, "button_click"),
+    CONTEXT_OPEN = new SoundEventContainer(OxygenMain.MODID, "context_open"),
+    CONTEXT_CLOSE = new SoundEventContainer(OxygenMain.MODID, "context_close"),
+    DROP_DOWN_LIST_OPEN = new SoundEventContainer(OxygenMain.MODID, "drop_down_list_open");
 
     @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+    public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().registerAll(
-                REQUEST_RECIEVED,
-                BUTTON_CLICK,
-                CONTEXT_OPEN,
-                CONTEXT_CLOSE,
-                DROP_DOWN_LIST_OPEN
+                INVENTORY.soundEvent,
+                SELL.soundEvent,
+                REQUEST_RECIEVED.soundEvent,
+                BUTTON_CLICK.soundEvent,
+                CONTEXT_OPEN.soundEvent,
+                CONTEXT_CLOSE.soundEvent,
+                DROP_DOWN_LIST_OPEN.soundEvent
                 );
+    }
+
+    public static SoundEvent getSoundEvent(int id) {
+        return REGISTRY.get(id).soundEvent;
+    }
+
+    public static class SoundEventContainer {
+
+        public final SoundEvent soundEvent;
+
+        public final int id;
+
+        private static int count;
+
+        public SoundEventContainer(String modId, String name) {
+            ResourceLocation location = new ResourceLocation(modId, name);
+            this.soundEvent = new SoundEvent(location).setRegistryName(location);
+            this.id = createId();
+            REGISTRY.put(this.id, this);
+        }
+
+        public static int createId() {
+            return count++;
+        }
     }
 }

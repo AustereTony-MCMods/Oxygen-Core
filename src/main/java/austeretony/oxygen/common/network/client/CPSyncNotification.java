@@ -3,7 +3,7 @@ package austeretony.oxygen.common.network.client;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.notification.EnumNotifications;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 import austeretony.oxygen.common.notification.NotificationClient;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;
@@ -11,11 +11,11 @@ import net.minecraft.network.PacketBuffer;
 
 public class CPSyncNotification extends ProxyPacket {
 
-    private IOxygenNotification notification;
+    private INotification notification;
 
     public CPSyncNotification() {}
 
-    public CPSyncNotification(IOxygenNotification notification) {
+    public CPSyncNotification(INotification notification) {
         this.notification = notification;
     }
 

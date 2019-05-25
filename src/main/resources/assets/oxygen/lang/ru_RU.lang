@@ -5,6 +5,8 @@ key.oxygen.friends=Список Друзей
 key.oxygen.playersOnline=Список Игроков
 key.oxygen.iteractWithPlayer=Взаимодействие
 
+oxygen.currency.gold=Золото
+
 oxygen.gui.interaction.close=Закрыть
 oxygen.gui.interaction.addFriend=Добавить в Друзья
 oxygen.gui.interaction.ignore=Игнорировать
@@ -71,7 +73,7 @@ oxygen.tooltip.sort=Сортировать
 oxygen.gui.friends.tooltip.friends=Друзья
 oxygen.gui.friends.tooltip.ignored=Игнорируемые
 
-oxygen.message.command.privilege.info.groupInfo=Группа: %s - титул: %s, префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет 
+oxygen.message.command.privilege.info.groupInfo=Группа: %s - префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет 
 суффикса: %s, цвет чата: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Привелегии группы <%s>:
 oxygen.message.command.privilege.info.groupsList=Группы:
@@ -82,6 +84,10 @@ oxygen.message.command.privilege.group.remove=Группа <%s> удалена.
 oxygen.message.command.privilege.privilege.add=Привелегия <%s> со значением <%s> добавлена для группы <%s>.
 oxygen.message.command.privilege.privilege.remove=Привелегия <%s> удалена для группы <%s>.
 oxygen.message.command.privilege.promote=Игрок %s добавлен в группу %s.
+
+oxygen.message.command.oxygens.currency.info=Запас валюты игрока <%s> под индексом <%s> составляет <%s>.
+oxygen.message.command.oxygens.currency.add=Игрок <%s> получил <%s> единиц валюты с индексом <%s>.
+oxygen.message.command.oxygens.currency.remove=Игрок <%s> отерял <%s> единиц валюты с индексом <%s>.
 
 oxygen.message.statusChanged=Статус изменен на %s.
 oxygen.message.requestSent=Запрос отправлен.

@@ -3,9 +3,9 @@ package austeretony.oxygen.common.main;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.UUID;
 
+import austeretony.oxygen.common.util.OxygenUtils;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import austeretony.oxygen.common.util.StreamUtils;
 import net.minecraft.network.PacketBuffer;
@@ -33,7 +33,7 @@ public class FriendListEntry {
     }
 
     public FriendListEntry createId() {
-        this.id = Long.parseLong(OxygenMain.SIMPLE_ID_DATE_FORMAT.format(new Date()));
+        this.id = OxygenUtils.createDataStampedId();
         return this;
     }
 

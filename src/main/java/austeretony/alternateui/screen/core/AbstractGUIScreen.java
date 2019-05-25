@@ -13,7 +13,9 @@ import austeretony.alternateui.screen.panel.GUIButtonPanel;
 import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.item.ItemStack;
 
 /**
  * Модернизированный GuiScreen. Должен быть унаследован вашим ГПИ простого интерфейса.
@@ -22,10 +24,7 @@ import net.minecraft.client.renderer.RenderHelper;
  */
 public abstract class AbstractGUIScreen extends GuiScreen {
 
-    public int 
-    xSize = 176,
-    ySize = 166,
-    guiLeft, guiTop;
+    public int xSize, ySize, guiLeft, guiTop;
 
     /** Рабочее пространство */
     private GUIWorkspace workspace;
@@ -106,28 +105,32 @@ public abstract class AbstractGUIScreen extends GuiScreen {
             RenderHelper.disableStandardItemLighting();        	
             section.mouseOver(mouseX - this.guiLeft, mouseY - this.guiTop);	        	        
             section.draw(mouseX - this.guiLeft, mouseY - this.guiTop);	        	    	        
-            this.drawForegroundLayer(mouseX, mouseY, partialTicks);        	
+            this.drawForegroundLayer(mouseX, mouseY, partialTicks);    
+
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            this.drawSlots(mouseX, mouseY);
+
             GlStateManager.disableLighting();     
-            GlStateManager.enableDepth();         	
+            GlStateManager.disableDepth();              
             section.drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop);       
-            GlStateManager.disableDepth();      
             GlStateManager.enableLighting();      			
             GlStateManager.popMatrix();
-            GlStateManager.disableLighting();     
-            GlStateManager.enableDepth();  
+            GlStateManager.disableLighting();           
             section.drawContextMenu(mouseX, mouseY);
             if (section.hasCurrentCallback()) {
                 section.getCurrentCallback().mouseOver(mouseX, mouseY);
                 section.drawCallback(mouseX, mouseY);                      
                 section.drawCallbackTooltip(mouseX, mouseY);  
                 section.drawCallbackContextMenu(mouseX, mouseY);
-            }
-            GlStateManager.disableDepth();      
+            } 
             GlStateManager.enableLighting(); 
             RenderHelper.enableGUIStandardItemLighting();	        	        
         }      
         this.yPrevMouse = mouseY;
     }
+
+    protected void drawSlots(int mouseX, int mouseY) {}
 
     public void handlePanelSlidebar(GUIButtonPanel buttonPanel, int mouseY) {  
         int slidebarOffset;        
@@ -255,16 +258,21 @@ public abstract class AbstractGUIScreen extends GuiScreen {
      * Закрывает ГПИ.
      */
     public void close() {
-        this.mc.displayGuiScreen(null);
-        this.mc.setIngameFocus();
+        this.mc.displayGuiScreen((GuiScreen)null);
+        if (this.mc.currentScreen == null) 
+            this.mc.setIngameFocus();
     }
 
     @Override
     public void onGuiClosed() {
         GUIBaseElement.resetDragged();
     }
+    
+    public void drawToolTip(ItemStack stack, int x, int y) {
+        this.renderToolTip(stack, x, y);
+    }
 
-    /**
+    /** 
      * Возвращает длину переданной строки.
      * 
      * @param text

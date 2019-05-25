@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.IPersistentData;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.util.StreamUtils;
 
@@ -15,7 +15,7 @@ public class ClientSettingsManager implements IPersistentData {
 
     private final OxygenManagerClient manager;
 
-    private final Map<Integer, Integer> settings = new HashMap<Integer, Integer>();
+    private final Map<Integer, Integer> settings = new HashMap<Integer, Integer>(10);
 
     public ClientSettingsManager(OxygenManagerClient manager) {
         this.manager = manager;

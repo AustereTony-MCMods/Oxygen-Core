@@ -1,4 +1,4 @@
-package austeretony.oxygen.common.core.api;
+package austeretony.oxygen.client.core.api;
 
 import java.util.UUID;
 
@@ -6,11 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -26,6 +28,14 @@ public class ClientReference {
 
     public static Minecraft getMinecraft() {
         return Minecraft.getMinecraft();
+    }
+
+    public static GameSettings getGameSettings() {
+        return getMinecraft().gameSettings;
+    }
+
+    public static World getClientWorld() {
+        return getMinecraft().world;
     }
 
     public static EntityPlayer getClientPlayer() {

@@ -31,7 +31,6 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
         params.add(new ArgumentParameter(CommandPrivilege.ACTION_EDIT));
         params.add(new ArgumentParameter(CommandPrivilege.ACTION_REMOVE));
         params.add(new ArgumentParameter(CommandPrivilege.PARAMETER_GROUP, true));
-        params.add(new ArgumentParameter(CommandPrivilege.PARAMETER_TITLE, true));
         params.add(new ArgumentParameter(CommandPrivilege.PARAMETER_PREFIX, true));
         params.add(new ArgumentParameter(CommandPrivilege.PARAMETER_SUFFIX, true));
         params.add(new ArgumentParameter(CommandPrivilege.PARAMETER_USERNAME_COLOR, true));
@@ -45,7 +44,6 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
         EnumAction action = null;
         String 
         groupName = null, 
-        title = null,
         prefix = null, 
         suffix = null,
         nameColor = null,
@@ -61,8 +59,6 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
                 action = EnumAction.REMOVE;
             if (param.getBaseName().equals(CommandPrivilege.PARAMETER_GROUP))
                 groupName = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_TITLE))
-                title = param.getValue();
             if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PREFIX))
                 prefix = param.getValue();
             if (param.getBaseName().equals(CommandPrivilege.PARAMETER_SUFFIX))
@@ -80,8 +76,6 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
             switch (action) {
             case CREATE:
                 PrivilegedGroup group = new PrivilegedGroup(groupName);
-                if (title != null)
-                    group.setTitle(title);
                 if (prefix != null)
                     group.setPrefix(prefix);
                 if (suffix != null)
@@ -108,7 +102,6 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
                     OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_GROUP_CREATE.ordinal(), groupName);
                     OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(),
                             groupName, 
-                            group.getTitle(), 
                             group.getPrefix(), 
                             group.getSuffix(), 
                             OxygenUtils.formattingCode(group.getUsernameColor()), 
@@ -117,9 +110,8 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
                             OxygenUtils.formattingCode(group.getChatColor()));
                 } else {
                     server.sendMessage(new TextComponentString(String.format("Created group <%s>.", groupName)));
-                    server.sendMessage(new TextComponentString(String.format("Group: %s - title: %s, prefix %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.", 
+                    server.sendMessage(new TextComponentString(String.format("Group: %s - prefix %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.", 
                             groupName, 
-                            group.getTitle(), 
                             group.getPrefix(), 
                             group.getSuffix(),
                             OxygenUtils.formattingCode(group.getUsernameColor()), 

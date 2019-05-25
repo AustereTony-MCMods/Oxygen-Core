@@ -13,8 +13,6 @@ public interface IPrivilegedGroup {
 
     String getName();
 
-    String getTitle();
-
     String getPrefix();
 
     String getSuffix();

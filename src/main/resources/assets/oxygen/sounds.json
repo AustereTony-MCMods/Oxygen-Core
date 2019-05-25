@@ -1,4 +1,20 @@
 {
+  "inventory": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:inventory"
+      }
+    ]
+  },
+  "sell": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen:sell"
+      }
+    ]
+  },
   "request_recieved": { 
     "category": "player", 
     "sounds": [

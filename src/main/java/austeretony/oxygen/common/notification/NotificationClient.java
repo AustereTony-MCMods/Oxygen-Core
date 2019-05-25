@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class NotificationClient implements IOxygenNotification, Comparable<NotificationClient> {
+public class NotificationClient implements INotification, Comparable<NotificationClient> {
 
     private final EnumNotifications type;
 

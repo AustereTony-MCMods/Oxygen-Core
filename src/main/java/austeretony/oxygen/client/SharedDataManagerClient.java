@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.ImmutablePlayerData;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.SharedPlayerData;
 

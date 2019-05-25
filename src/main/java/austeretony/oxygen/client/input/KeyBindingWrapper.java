@@ -1,6 +1,6 @@
 package austeretony.oxygen.client.input;
 
-import austeretony.oxygen.common.core.api.ClientReference;
+import austeretony.oxygen.client.core.api.ClientReference;
 import net.minecraft.client.settings.KeyBinding;
 
 public class KeyBindingWrapper {

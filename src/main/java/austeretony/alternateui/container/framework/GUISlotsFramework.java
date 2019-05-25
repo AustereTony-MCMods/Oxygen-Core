@@ -1,11 +1,14 @@
 package austeretony.alternateui.container.framework;
 
+import java.util.Iterator;
 import java.util.List;
 
 import austeretony.alternateui.container.core.AbstractGUIContainer;
 import austeretony.alternateui.screen.core.GUISimpleElement;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
  * Объект-каркас для работы со слотами ГПИ контейнера.
@@ -16,7 +19,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
 
     public final GUIEnumPosition slotsPosition;
 
-    public final IInventory inventory;
+    public final Container container;
 
     public final int firstSlotIndex, lastSlotIndex, rows, columns, visibleSlots;
 
@@ -27,7 +30,9 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
     /** Объект, содержащий элементы ГПИ, связанные со слотами */
     public final GUIContainerSlots slots;
 
-    private int slotBottomLayerColor = 0x64000000;
+    private int 
+    slotBottomLayerColor = 0x30000000,
+    slotHighlightingColor = 0x30FFFFFF;
 
     /**
      * Основа для настройки ГПИ. Позволяет использовать новые элементы, а 
@@ -45,10 +50,10 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
      * @param rows кол-во отображаемых слотов по горизонтали.
      * @param columns кол-во слотов отображаемых по вертикали.
      */
-    public GUISlotsFramework(GUIEnumPosition slotsPosition, IInventory inventory, int firstSlotIndex, int lastSlotIndex, int rows, int columns) {
+    public GUISlotsFramework(GUIEnumPosition slotsPosition, Container container, int firstSlotIndex, int lastSlotIndex, int rows, int columns) {
         this.slots = new GUIContainerSlots(this);
         this.slotsPosition = slotsPosition;	
-        this.inventory = inventory;
+        this.container = container;
         this.firstSlotIndex = firstSlotIndex;
         this.lastSlotIndex = lastSlotIndex;
         this.rows = rows;
@@ -60,6 +65,75 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
         this.enableFull();
     }
 
+    /**
+     * Метод для обновления содержимого фреймворка слотов. Должен быть вызван при инициализации ГПИ
+     * для созданного фреймворка после его регистрации. Вторым аргументом принимает сортировщик
+     * GUIAbstractSorter.
+     * 
+     * @param framework фреймворк, требующий обновления
+     * @param sorter сортировщик
+     */
+    public void updateFramework(AbstractGUISorter sorter) {
+        int i, k, size;
+        Slot slot, slotCopy;
+        Item itemInSlot;
+        this.slots.visibleSlots.clear();
+        this.slots.visibleSlotsIndexes.clear();
+        this.slots.slotsBuffer.clear();
+        this.slots.indexesBuffer.clear();
+        this.slots.searchSlots.clear();
+        this.slots.searchIndexes.clear();
+        this.slots.items.clear();
+        this.slots.setCurrentSorter(sorter);
+        if (this.slots.hasScroller() && this.slots.getScroller().hasSlider())
+            this.slots.getScroller().getSlider().reset();
+        for (i = this.firstSlotIndex; i <= this.lastSlotIndex; i++) {
+            if (i < this.container.inventorySlots.size()) {
+                slot = (Slot) this.container.inventorySlots.get(i);   
+                slotCopy = this.copySlot(slot);  
+                size = this.slots.visibleSlots.size();                     
+                if (sorter.isSlotValid(slotCopy)) {   
+                    if (slotCopy.getHasStack())
+                        this.slots.items.put(size, slotCopy.getStack());
+                    if (this.slotsPosition == GUIEnumPosition.CUSTOM) {        
+                        k = size / this.columns;
+                        slotCopy.xPos = this.getX() + size * (this.getSlotWidth() + this.getSlotDistanceHorizontal()) - k * ((this.getSlotWidth() + this.getSlotDistanceHorizontal()) * this.columns);
+                        slotCopy.yPos = this.getY() + k * (this.getSlotHeight() + this.getSlotDistanceVertical()) - (size / this.visibleSlots) * (this.rows * (this.getSlotHeight() + this.getSlotDistanceVertical()));
+                    }
+                    this.slots.visibleSlots.add(slotCopy);
+                    this.slots.visibleSlotsIndexes.add(i);  
+                    this.slots.slotsBuffer.add(slotCopy);
+                    this.slots.indexesBuffer.add(i);                                           
+                }
+            }
+        }
+        if (sorter.shouldAddEmptySlotsAfter()) {
+            i = this.firstSlotIndex;
+            for (i = this.firstSlotIndex; i <= this.lastSlotIndex; i++) {
+                if (i < this.container.inventorySlots.size()) {
+                    slot = (Slot) this.container.inventorySlots.get(i);   
+                    slotCopy = this.copySlot(slot);  
+                    if (!slotCopy.getHasStack()) {
+                        size = this.slots.visibleSlots.size();
+                        if (this.slotsPosition == GUIEnumPosition.CUSTOM) {
+                            k = size / this.columns;
+                            slotCopy.xPos = this.getX() + size * (this.getSlotWidth() + this.getSlotDistanceHorizontal()) - k * ((this.getSlotWidth() + this.getSlotDistanceHorizontal()) * this.columns);
+                            slotCopy.yPos = this.getY() + k * (this.getSlotHeight() + this.getSlotDistanceVertical()) - (size / this.visibleSlots) * (this.rows * (this.getSlotHeight() + this.getSlotDistanceVertical()));
+                        }
+                        this.slots.visibleSlots.add(slotCopy);
+                        this.slots.visibleSlotsIndexes.add(i);  
+                        this.slots.slotsBuffer.add(slotCopy);
+                        this.slots.indexesBuffer.add(i); 
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateFramework() {
+        this.updateFramework(GUIContainerSlots.BASE_SORTER);
+    }
+
     @Override
     public void mouseOver(int mouseX, int mouseY) {  	       	
         this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight());		
@@ -67,11 +141,20 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
             if ((this.slots.hasSearchField() && !this.slots.getSearchField().isDragged()) || !this.slots.hasSearchField()) {
                 this.slots.getScroller().getSlider().mouseOver(mouseX, mouseY);
                 this.slots.getScroller().getSlider().mouseClicked(mouseX, mouseY, 0);
-                //((AbstractGUIContainer) this.screen).handleFrameworkSlidebar(this, mouseY);//TODO FIX
+                ((AbstractGUIContainer) this.screen).handleFrameworkSlidebar(this, mouseY);//TODO FIX
             }       
         }	     
         if (this.slots.hasSearchField())
             this.slots.getSearchField().mouseOver(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (this.isEnabled() 
+                && mouseButton == 0)
+            if (this.slots.hasSearchField())     
+                this.slots.getSearchField().mouseClicked(mouseX, mouseY, 1);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -86,6 +169,67 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
 
     @Override
     public void drawTooltip(int mouseX, int mouseY) {}
+
+    @Override
+    public boolean keyTyped(char typedChar, int keyCode) {
+        if (this.isEnabled()) {
+            if (this.slots.hasSearchField()) {               
+                if (this.slots.getSearchField().keyTyped(typedChar, keyCode)) {
+                    if (this.slots.getSearchField().getTypedText().toLowerCase().length() > 0)
+                        this.updateSearchResult(this);
+                    else
+                        this.updateFramework(this.slots.getCurrentSorter());
+                    if (this.slots.hasScroller() 
+                            && this.slots.getScroller().hasSlider())
+                        this.slots.getScroller().getSlider().reset();
+                }
+            }
+        }
+        return super.keyTyped(typedChar, keyCode);
+    }
+
+    protected void updateSearchResult(GUISlotsFramework framework) {
+        int slotIndex, size, k;
+        Slot slotCopy;
+        ItemStack itemStack;
+        String itemName;
+        String typedText = framework.slots.getSearchField().getTypedText().toLowerCase();
+        Iterator itemsIterator = framework.slots.items.keySet().iterator();
+        framework.slots.visibleSlots.clear();
+        framework.slots.visibleSlotsIndexes.clear();   
+        framework.slots.searchSlots.clear();
+        framework.slots.searchIndexes.clear();   
+        while (itemsIterator.hasNext()) {
+            slotIndex = (Integer) itemsIterator.next();
+            itemStack = framework.slots.items.get(slotIndex);
+            if (itemStack != null) {
+                itemName = itemStack.getDisplayName().toLowerCase();
+                if (itemName.startsWith(typedText) || itemName.contains(" " + typedText)) {
+                    size = framework.slots.searchSlots.size();
+                    slotCopy = this.copySlot(framework.slots.slotsBuffer.get(slotIndex));
+                    if (framework.slotsPosition == GUIEnumPosition.CUSTOM) {
+                        k = size / framework.columns;
+                        slotCopy.xPos = framework.getX() + size * (framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) - k * ((framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) * framework.columns);
+                        slotCopy.yPos = framework.getY() + k * (framework.getSlotHeight() + framework.getSlotDistanceVertical()) - (size / framework.visibleSlots) * (framework.rows * (framework.getSlotHeight() + framework.getSlotDistanceVertical()));
+                    }
+                    framework.slots.visibleSlots.add(slotCopy);
+                    framework.slots.visibleSlotsIndexes.add(framework.slots.indexesBuffer.get(slotIndex));  
+                    framework.slots.searchSlots.add(slotCopy);
+                    framework.slots.searchIndexes.add(framework.slots.indexesBuffer.get(slotIndex));  
+                }
+            }
+        }
+    }
+
+    protected final Slot copySlot(Slot slot) {
+        return new Slot(slot.inventory, slot.getSlotIndex(), slot.xPos, slot.yPos);     
+    }
+
+    @Override
+    public void update() {
+        if (this.slots.hasSearchField())
+            this.slots.getSearchField().updateCursorCounter();
+    }
 
     public GUIContainerSlots getSlots() {
         return this.slots;
@@ -156,6 +300,20 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
      */
     public GUISlotsFramework setSlotBottomLayerColor(int colorHex) {
         this.slotBottomLayerColor = colorHex;
+        return this;
+    }
+
+    public int getSlotHighlightingColor() {
+        return this.slotHighlightingColor;
+    }
+
+    /**
+     * Установка цвета подсветки слота при наведении курсора
+     * 
+     * @param colorHex
+     */
+    public GUISlotsFramework setSlotHighlightingColor(int colorHex) {
+        this.slotHighlightingColor = colorHex;
         return this;
     }
 

@@ -1,4 +1,4 @@
-package austeretony.oxygen.common.privilege.api;
+package austeretony.oxygen.client.privilege.api;
 
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.config.OxygenConfig;
@@ -15,7 +15,7 @@ public class PrivilegeProviderClient {
         if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() 
                 && (group = OxygenManagerClient.instance().getPrivilegeManager().getPrivilegedGroup()) != null
                 && group.hasPrivilege(privilegeName))
-            return true;
+            return group.getPrivilege(privilegeName).getValue() == 1 ? true : false;
         return defaultValue;
     }
 

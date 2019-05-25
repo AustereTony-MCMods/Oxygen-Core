@@ -23,7 +23,7 @@ public class OxygenTelemetryConfig extends AbstractConfigHolder {
 
     @Override
     public String getVersion() {
-        return OxygenMain.VERSION_CUSTOM;
+        return OxygenMain.VERSION_EXTENDED;
     }
 
     @Override

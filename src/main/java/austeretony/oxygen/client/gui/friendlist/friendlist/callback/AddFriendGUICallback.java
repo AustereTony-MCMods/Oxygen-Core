@@ -12,15 +12,15 @@ import austeretony.alternateui.screen.image.GUIImageLabel;
 import austeretony.alternateui.screen.text.GUITextField;
 import austeretony.alternateui.screen.text.GUITextLabel;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.gui.friendlist.FriendListGUIScreen;
 import austeretony.oxygen.client.gui.friendlist.FriendListGUISection;
 import austeretony.oxygen.client.gui.settings.GUISettings;
-import austeretony.oxygen.common.api.OxygenHelperClient;
+import austeretony.oxygen.client.privilege.api.PrivilegeProviderClient;
 import austeretony.oxygen.common.main.EnumOxygenPrivileges;
 import austeretony.oxygen.common.main.OxygenPlayerData;
-import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
-import austeretony.oxygen.common.privilege.api.PrivilegeProviderClient;
+import austeretony.oxygen.common.main.SharedPlayerData;
 import net.minecraft.client.resources.I18n;
 
 public class AddFriendGUICallback extends AbstractGUICallback {
@@ -48,11 +48,11 @@ public class AddFriendGUICallback extends AbstractGUICallback {
     }
 
     @Override
-    public void init() {
+    public void init() {        
         for (SharedPlayerData sharedData : OxygenHelperClient.getSharedPlayersData())
             if (OxygenHelperClient.isOnline(sharedData.getPlayerUUID())
                     && !OxygenHelperClient.getPlayerData().haveFriendListEntryForUUID(sharedData.getPlayerUUID())
-                    && (OxygenHelperClient.getPlayerStatus(sharedData) != OxygenPlayerData.EnumStatus.OFFLINE || PrivilegeProviderClient.getPrivilegeValue(EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false)))
+                    && (OxygenHelperClient.getPlayerStatus(sharedData) != OxygenPlayerData.EnumActivityStatus.OFFLINE || PrivilegeProviderClient.getPrivilegeValue(EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false)))
                 this.players.put(sharedData.getUsername(), sharedData.getPlayerUUID());
         this.players.remove(OxygenHelperClient.getSharedClientPlayerData().getUsername());
 
@@ -65,8 +65,8 @@ public class AddFriendGUICallback extends AbstractGUICallback {
         this.addElement(this.usernameField = new GUITextField(2, 35, 187, 24).setScale(0.7F).enableDynamicBackground().cancelDraggedElementLogic());       
         this.addElement(this.playerStatusLabel = new GUITextLabel(2, 43).setTextScale(GUISettings.instance().getSubTextScale()).disableFull());    
 
-        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
-        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
 
         this.confirmButton.disable();
     }

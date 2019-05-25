@@ -24,6 +24,11 @@ public class Privilege implements IPrivilege {
         this.value = value;
     }
 
+    public Privilege(String name, boolean flag) {
+        this(name);
+        this.value = flag ? 1 : 0;
+    }
+
     @Override
     public String getName() {
         return this.name;

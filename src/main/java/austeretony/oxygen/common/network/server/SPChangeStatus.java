@@ -8,11 +8,11 @@ import net.minecraft.network.PacketBuffer;
 
 public class SPChangeStatus extends ProxyPacket {
 
-    private OxygenPlayerData.EnumStatus status;
+    private OxygenPlayerData.EnumActivityStatus status;
 
     public SPChangeStatus() {}
 
-    public SPChangeStatus(OxygenPlayerData.EnumStatus status) {
+    public SPChangeStatus(OxygenPlayerData.EnumActivityStatus status) {
         this.status = status;
     }
 
@@ -23,6 +23,6 @@ public class SPChangeStatus extends ProxyPacket {
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        OxygenManagerServer.instance().getFriendListManager().changeStatus(getEntityPlayerMP(netHandler), OxygenPlayerData.EnumStatus.values()[buffer.readByte()]);
+        OxygenManagerServer.instance().getFriendListManager().changeStatus(getEntityPlayerMP(netHandler), OxygenPlayerData.EnumActivityStatus.values()[buffer.readByte()]);
     }
 }

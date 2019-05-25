@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.main;
 
-import austeretony.oxygen.common.core.api.ClientReference;
+import austeretony.oxygen.client.core.api.ClientReference;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -17,6 +17,9 @@ public enum EnumOxygenChatMessages {
     COMMAND_PRIVILEGE_PRIVILEGE_ADD,
     COMMAND_PRIVILEGE_PRIVILEGE_REMOVE,
     COMMAND_PRIVILEGE_PROMOTE,
+    COMMAND_OXYGENS_CURRENCY_INFO,
+    COMMAND_OXYGENS_CURRENCY_ADD,
+    COMMAND_OXYGENS_CURRENCY_REMOVE,
     REQUEST_SENT,
     REQUEST_RESET,
     FRIEND_REQUEST_ACCEPTED_SENDER,
@@ -34,7 +37,7 @@ public enum EnumOxygenChatMessages {
             ClientReference.showMessage(new TextComponentString(args[0]));
             break;
         case COMMAND_PRIVILEGE_INFO_GROUP_INFO:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.privilege.info.groupInfo", args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]));
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.privilege.info.groupInfo", args[0], args[1], args[2], args[3], args[4], args[5], args[6]));
             break;
         case COMMAND_PRIVILEGE_INFO_GROUP_PRIVILEGES:
             ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.privilege.info.groupPrivileges", args[0]));
@@ -62,6 +65,15 @@ public enum EnumOxygenChatMessages {
             break;
         case COMMAND_PRIVILEGE_PROMOTE:
             ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.privilege.promote", args[0], args[1]));
+            break;
+        case COMMAND_OXYGENS_CURRENCY_INFO:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.oxygens.currency.info", args[0], args[1], args[2]));
+            break;
+        case COMMAND_OXYGENS_CURRENCY_ADD:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.oxygens.currency.add", args[0], args[1], args[2]));
+            break;        
+        case COMMAND_OXYGENS_CURRENCY_REMOVE:
+            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.command.oxygens.currency.remove", args[0], args[1], args[2]));
             break;
         case REQUEST_SENT:
             ClientReference.showMessage(new TextComponentTranslation("oxygen.message.requestSent"));

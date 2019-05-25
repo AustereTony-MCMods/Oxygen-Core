@@ -15,7 +15,7 @@ public abstract class AbstractOxygenCommand extends CommandBase implements IOxyg
 
     public final String commandName;
 
-    public final Set<IArgumentExecutor> executors = new HashSet<IArgumentExecutor>();
+    public final Set<IArgumentExecutor> executors = new HashSet<IArgumentExecutor>(3);
 
     public AbstractOxygenCommand(String commandName) {
         this.commandName = commandName;

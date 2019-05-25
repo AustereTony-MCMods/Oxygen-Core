@@ -1,19 +1,39 @@
 package austeretony.oxygen.common.util;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.common.config.IConfigHolder;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.text.TextFormatting;
 
 public class OxygenUtils {
+
+    public static final DateFormat SIMPLE_ID_DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmssSSS");
+
+    private static final Set<String> OUTDATED_DATA = new HashSet<String>();
+
+    public static long createDataStampedId() {
+        return Long.parseLong(SIMPLE_ID_DATE_FORMAT.format(new Date()));
+    }
+
+    public static void removePreviousData(String modId, boolean flag) {
+        if (flag)               
+            OUTDATED_DATA.add(modId);
+    }
 
     public static String keyFromEnum(Enum enumKey) {
         return enumKey.toString().toLowerCase();
@@ -32,7 +52,15 @@ public class OxygenUtils {
             JsonObject externalConfigOld, externalConfigNew, externalGroupNew;
             externalConfigOld = JsonUtils.getExternalJsonData(externalConfigFolder).getAsJsonObject();   
             JsonElement versionElement = externalConfigOld.get("version");
-            if (versionElement == null || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
+            boolean outdated = isOutdated(versionElement.getAsString(), configHolder.getVersion());
+            if (versionElement == null || outdated) {
+                if (outdated) {
+                    File oxygenFolder = new File(CommonReference.getGameFolder() + "/oxygen");
+                    if (oxygenFolder.exists()) {
+                        OxygenMain.OXYGEN_LOGGER.info("Removing outdated Oxygen data...");
+                        removeOutdatedData(oxygenFolder);
+                    }
+                }
                 OxygenMain.OXYGEN_LOGGER.info("Updating <{}> config file...", configHolder.getModId());
                 externalConfigNew = new JsonObject();
                 externalConfigNew.add("version", new JsonPrimitive(configHolder.getVersion()));
@@ -109,10 +137,23 @@ public class OxygenUtils {
             if (revDiff < 0)
                 return false;
             return false;
-        } catch (Exception exception) {
+        } catch (Exception exception) { 
             OxygenMain.OXYGEN_LOGGER.error("Versions comparison failed!");               
             exception.printStackTrace();
         }
         return true;
+    }
+
+    public static void removeOutdatedData(File folder) {
+        File[] folderEntries = folder.listFiles();
+        for (File entry : folderEntries)  {
+            if (entry.isDirectory()) {
+                if (OUTDATED_DATA.contains(entry.getName()))    
+                    for (File file : entry.listFiles())
+                        file.delete();                    
+                removeOutdatedData(entry);
+                continue;
+            }
+        }
     }
 }

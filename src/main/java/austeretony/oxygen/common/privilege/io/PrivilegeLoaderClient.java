@@ -10,8 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.IOxygenTask;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
@@ -85,7 +85,6 @@ public class PrivilegeLoaderClient {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID), new JsonPrimitive(group.getId()));
             jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(group.getName()));
-            jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.TITLE), new JsonPrimitive(group.getTitle()));
             JsonArray privilegesArray = new JsonArray();
             for (IPrivilege privilege : group.getPrivileges())
                 privilegesArray.add(privilege.serialize());

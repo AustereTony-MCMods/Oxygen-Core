@@ -6,7 +6,7 @@ import austeretony.alternateui.util.EnumGUIAlignment;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -19,7 +19,7 @@ public class RequestGUIOverlay {
 
     private final GUITextLabel requestTextLabel, elapsedTimeTextLabel, acceptKeyTextLabel, acceptTextLabel, rejectKeyTextLabel, rejectTextLabel;
 
-    private IOxygenNotification notification;
+    private INotification notification;
 
     public RequestGUIOverlay() {
         this.overlay = new GUIOverlay(GUISettings.instance().getOverlayScale());

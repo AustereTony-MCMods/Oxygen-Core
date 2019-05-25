@@ -192,7 +192,7 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
     public GUIDropDownList resetScrollerOnClosing() {    	
         this.resetScroller = true;    	
         return this;
-    }
+    }   
 
     public GUIDropDownList setOpenSound(GUISoundEffect sound) {
         this.openSound = sound;
@@ -200,7 +200,7 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
     }
 
     public GUIDropDownList setOpenSound(SoundEvent sound) {
-        this.openSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        this.openSound = new GUISoundEffect(sound, 0.5F, 1.0F);
         return this;
     }
 
@@ -210,7 +210,7 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
     }
 
     public GUIDropDownList setCloseSound(SoundEvent sound) {
-        this.closeSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        this.closeSound = new GUISoundEffect(sound, 0.5F, 1.0F);
         return this;
     }
 }

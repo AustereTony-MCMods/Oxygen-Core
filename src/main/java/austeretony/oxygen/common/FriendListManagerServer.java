@@ -22,7 +22,7 @@ public class FriendListManagerServer {
         this.manager = manager;
     }
 
-    public void changeStatus(EntityPlayerMP playerMP, OxygenPlayerData.EnumStatus status) {
+    public void changeStatus(EntityPlayerMP playerMP, OxygenPlayerData.EnumActivityStatus status) {
         UUID playerUUID = CommonReference.uuid(playerMP);
         OxygenPlayerData playerData = this.manager.getPlayerData(playerUUID);
         if (status != playerData.getStatus()) {

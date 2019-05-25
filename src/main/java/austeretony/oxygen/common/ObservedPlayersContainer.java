@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.util.StreamUtils;
 
 public class ObservedPlayersContainer {
@@ -18,7 +17,7 @@ public class ObservedPlayersContainer {
     public Set<UUID> getObservedPlayers() {
         return this.observed.keySet();
     }
-
+    
     public boolean isEmpty() {
         return this.observed.isEmpty();
     }
@@ -27,23 +26,17 @@ public class ObservedPlayersContainer {
         if (this.observed.containsKey(playerUUID)) {
             int count = this.observed.get(playerUUID) + 1;
             this.observed.put(playerUUID, count);
-            OxygenMain.OXYGEN_LOGGER.info("Adding observed player <{}> - {} time.", playerUUID, count);//debug
-        } else {
+        } else
             this.observed.put(playerUUID, 1);
-            OxygenMain.OXYGEN_LOGGER.info("Adding observed player <{}> - first time.", playerUUID);//debug
-        }
     }
 
     public void removeObservedPlayer(UUID playerUUID) {
         if (this.observed.containsKey(playerUUID)) {
             int count = this.observed.get(playerUUID) - 1;
-            if (count > 0) {
+            if (count > 0)
                 this.observed.put(playerUUID, count);
-                OxygenMain.OXYGEN_LOGGER.info("Removing observed player <{}>, {} entries left.", playerUUID, count);//debug
-            } else {
+            else
                 this.observed.remove(playerUUID);
-                OxygenMain.OXYGEN_LOGGER.info("Removing observed player <{}>, no entries left.", playerUUID);//debug
-            }
         }
     }
 

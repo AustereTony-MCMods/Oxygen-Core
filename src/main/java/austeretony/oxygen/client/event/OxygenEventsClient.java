@@ -1,6 +1,7 @@
 package austeretony.oxygen.client.event;
 
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.event.OxygenChatMessageEvent;
 import austeretony.oxygen.common.main.EnumOxygenChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,7 +18,7 @@ public class OxygenEventsClient {
 
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && OxygenManagerClient.instance().getNotificationsManager() != null)
-            OxygenManagerClient.instance().getNotificationsManager().processNotifications();
+        if (event.phase == TickEvent.Phase.START)
+            OxygenManagerClient.instance().runPersistentProcesses();
     }
 }

@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.api.OxygenHelperServer;
+import austeretony.oxygen.common.api.event.OxygenPlayerLoadedEvent;
 import austeretony.oxygen.common.core.api.CommonReference;
-import austeretony.oxygen.common.event.OxygenPlayerLoadedEvent;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
@@ -100,9 +100,9 @@ public class SharedDataManagerServer implements IPersistentData {
             OxygenMain.network().sendTo(new CPRemoveSharedDataEntry(sharedData.getIndex()), playerMP);
     }
 
-    public void updateStatusData(UUID playerUUID, OxygenPlayerData.EnumStatus status) {
+    public void updateStatusData(UUID playerUUID, OxygenPlayerData.EnumActivityStatus status) {
         this.sharedData.get(this.immutableData.get(playerUUID).getIndex()).getData(OxygenMain.STATUS_DATA_ID).put(0, (byte) status.ordinal());
-        if (status == OxygenPlayerData.EnumStatus.OFFLINE)
+        if (status == OxygenPlayerData.EnumActivityStatus.OFFLINE)
             this.persistent.put(playerUUID, this.sharedData.get(this.immutableData.get(playerUUID).getIndex()));
     }
 

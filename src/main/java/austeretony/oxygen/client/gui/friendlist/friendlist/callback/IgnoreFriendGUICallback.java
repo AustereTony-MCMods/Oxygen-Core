@@ -8,10 +8,10 @@ import austeretony.alternateui.screen.image.GUIImageLabel;
 import austeretony.alternateui.screen.text.GUITextBoxLabel;
 import austeretony.alternateui.screen.text.GUITextLabel;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.gui.friendlist.FriendListGUIScreen;
 import austeretony.oxygen.client.gui.friendlist.FriendListGUISection;
 import austeretony.oxygen.client.gui.settings.GUISettings;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
 import net.minecraft.client.resources.I18n;
 
@@ -23,7 +23,7 @@ public class IgnoreFriendGUICallback extends AbstractGUICallback {
 
     private GUITextBoxLabel requestLabel;
 
-    private GUIButton confirmButton, cancelButton;
+    private GUIButton confirmButton, cancelButton;      
 
     public IgnoreFriendGUICallback(FriendListGUIScreen screen, FriendListGUISection section, int width, int height) {
         super(screen, section, width, height);
@@ -39,8 +39,8 @@ public class IgnoreFriendGUICallback extends AbstractGUICallback {
         this.addElement(new GUITextLabel(2, 2).setDisplayText(I18n.format("oxygen.gui.friends.ignoreCallback"), true, GUISettings.instance().getTitleScale()));
         this.addElement(this.requestLabel = new GUITextBoxLabel(2, 16, 160, 20));     
 
-        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
-        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
     }
 
     @Override

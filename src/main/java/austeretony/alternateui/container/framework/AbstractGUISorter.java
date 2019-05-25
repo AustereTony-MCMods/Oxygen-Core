@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
  * 
  * @author AustereTony
  */
-public abstract class GUIAbstractSorter {
+public abstract class AbstractGUISorter {
 
     /**
      * Возвращаемое значение определяет будет ли слот отображаться в ГПИ.

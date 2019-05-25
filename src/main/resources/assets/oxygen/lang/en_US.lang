@@ -5,6 +5,8 @@ key.oxygen.friends=Friends List
 key.oxygen.playersOnline=Players List
 key.oxygen.iteractWithPlayer=Interact
 
+oxygen.currency.gold=Gold
+
 oxygen.gui.interaction.close=Close
 oxygen.gui.interaction.addFriend=Add to Friends
 oxygen.gui.interaction.ignore=Ignore
@@ -71,7 +73,7 @@ oxygen.tooltip.sort=Sort
 oxygen.gui.friends.tooltip.friends=Friends
 oxygen.gui.friends.tooltip.ignored=Ignored
 
-oxygen.message.command.privilege.info.groupInfo=Group: %s - title: %s, prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix 
+oxygen.message.command.privilege.info.groupInfo=Group: %s - prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix 
 color: %s, chat color: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Group <%s> privileges:
 oxygen.message.command.privilege.info.groupsList=Groups:
@@ -82,6 +84,10 @@ oxygen.message.command.privilege.group.remove=Removed group <%s>.
 oxygen.message.command.privilege.privilege.add=Added privilege <%s> with value <%s> to group <%s>.
 oxygen.message.command.privilege.privilege.remove=Removed privilege <%s> from group <%s>.
 oxygen.message.command.privilege.promote=Player <%s> promoted to group <%s>.
+
+oxygen.message.command.oxygens.currency.info=Player <%s> currency with index <%s> amount is <%s>.
+oxygen.message.command.oxygens.currency.add=Player <%s> recieved <%s> currency units with index <%s>.
+oxygen.message.command.oxygens.currency.remove=Player <%s> lost <%s> currency units with index <%s>.
 
 oxygen.message.statusChanged=Status changed to %s.
 oxygen.message.requestSent=Request sent.
@@ -97,9 +103,9 @@ oxygen.message.addedToIgnored=Player added to ignored players list.
 oxygen.message.noteEdited=Note edited.
 oxygen.message.ignoredRemoved=Player removed from ignore list.
 
-oxygen.command.exception.playerNotFound=Player <%s> not found.
-oxygen.command.exception.groupNotFound=Group <%s? not found.
-oxygen.command.exception.privilegeNotFound=Privilege <%s> not found.
+oxygen.command.exception.playerNotFound=Player %s not found.
+oxygen.command.exception.groupNotFound=Group %s not found.
+oxygen.command.exception.privilegeNotFound=Privilege %s not found.
 
 oxygen.command.exception.wrongArg=Wrong argument: %s.
 oxygen.command.exception.noParams=No parameters provided.

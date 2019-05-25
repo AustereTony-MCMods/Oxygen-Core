@@ -14,7 +14,7 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
 
     private ItemStack itemStack;
 
-    private boolean hasItemStack, isStackOverlayEnabled;
+    private boolean hasItemStack, isStackOverlayEnabled, isStackTooltipEnabled;
 
     public GUIImageLabel(int xPosition, int yPosition) {		
         this.setPosition(xPosition, yPosition);		
@@ -52,28 +52,26 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
                 drawCustomSizedTexturedRect(0, 0, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());       	
                 GlStateManager.disableBlend();      
             }        	
-            if (this.hasItemStack()) {            	
+            if (this.hasItemStack) {            	
                 RenderHelper.enableGUIStandardItemLighting();        
                 RenderHelper.enableStandardItemLighting();	   	        
-                this.itemRender.renderItemAndEffectIntoGUI(this.getItemStack(), 0, 0);                
-                if (this.isStackOverlayEnabled())               	
-                    this.itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.getItemStack(), 0, 0, null);
+                this.itemRender.renderItemAndEffectIntoGUI(this.itemStack, 0, 0);                
+                if (this.isStackOverlayEnabled)               	
+                    this.itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.itemStack, 0, 0, null);
             }        	
             GlStateManager.popMatrix();
         }
     }
-
-    public boolean hasItemStack() {  	
-        return this.hasItemStack;
+    
+    @Override
+    public void drawTooltip(int mouseX, int mouseY) {   
+        if (this.hasItemStack && this.isStackTooltipEnabled)                
+            this.screen.drawToolTip(this.itemStack, mouseX, mouseY);
     }
-
-    public ItemStack getItemStack() {	
-        return this.itemStack;
-    }
-
+    
     public GUIImageLabel setItemStack(ItemStack itemStack) {		
         this.itemStack = itemStack;
-        this.hasItemStack = true;		
+        this.hasItemStack = true;		     
         return this;
     }
 
@@ -81,13 +79,14 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
         this.hasItemStack = false;		
         this.itemStack = null;
     }
-
-    public boolean isStackOverlayEnabled() {    	
-        return this.isStackOverlayEnabled;
-    }
-
+    
     public GUIImageLabel enableStackOverlay() {   	
         this.isStackOverlayEnabled = true;		
         return this;
     }
+    
+    public GUIImageLabel enableStackTooltip() {     
+        this.isStackTooltipEnabled = true;              
+        return this;
+    } 
 }

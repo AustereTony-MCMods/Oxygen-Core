@@ -20,7 +20,7 @@ public class PrivilegeManagerServer {
 
     private final Map<UUID, String> players = new ConcurrentHashMap<UUID, String>();
 
-    private final Map<String, IPrivilegedGroup> groups = new ConcurrentHashMap<String, IPrivilegedGroup>();
+    private final Map<String, IPrivilegedGroup> groups = new ConcurrentHashMap<String, IPrivilegedGroup>(5);
 
     public PrivilegeManagerServer(OxygenManagerServer manager) {
         this.manager = manager;

@@ -13,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 /**
  * Класс-основа элементов ГПИ.
  * 
- * @author AustereTony
+ * @author AustereTony  
  */
 public class GUIBaseElement<T extends GUIBaseElement> {
 
@@ -478,7 +478,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
     }
 
     public T setSound(SoundEvent sound) {       
-        this.soundEffect = new GUISoundEffect(sound, 1.0F, 1.0F);       
+        this.soundEffect = new GUISoundEffect(sound, 0.5F, 1.0F);       
         this.hasSound = true;           
         return (T) this;
     }

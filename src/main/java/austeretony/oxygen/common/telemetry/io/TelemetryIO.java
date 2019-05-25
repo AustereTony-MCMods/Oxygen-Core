@@ -22,12 +22,12 @@ import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.telemetry.ILogType;
 import austeretony.oxygen.common.telemetry.LogFiles;
+import austeretony.oxygen.common.telemetry.TimeCounter;
 import austeretony.oxygen.common.telemetry.api.ILog;
 import austeretony.oxygen.common.telemetry.api.LogType;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
 import austeretony.oxygen.common.util.JsonUtils;
 import austeretony.oxygen.common.util.StreamUtils;
-import austeretony.oxygen.common.util.TimeCounter;
 
 public class TelemetryIO {
 

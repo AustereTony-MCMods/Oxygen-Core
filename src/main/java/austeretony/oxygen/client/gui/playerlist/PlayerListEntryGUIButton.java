@@ -1,10 +1,10 @@
 package austeretony.oxygen.client.gui.playerlist;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.client.gui.PlayerGUIButton;
 import austeretony.oxygen.common.api.EnumDimensions;
-import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;

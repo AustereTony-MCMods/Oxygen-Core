@@ -16,7 +16,7 @@ import austeretony.oxygen.common.util.OxygenUtils;
 
 public class ConfigLoader {
 
-    public static final Set<IConfigHolder> CONFIG_HOLDERS = new LinkedHashSet<IConfigHolder>();
+    public static final Set<IConfigHolder> CONFIG_HOLDERS = new LinkedHashSet<IConfigHolder>(7);
 
     public static void addConfig(IConfigHolder config) {
         CONFIG_HOLDERS.add(config);

@@ -2,10 +2,10 @@ package austeretony.oxygen.common.command;
 
 import java.util.Set;
 
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
-import austeretony.oxygen.common.core.api.ClientReference;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;

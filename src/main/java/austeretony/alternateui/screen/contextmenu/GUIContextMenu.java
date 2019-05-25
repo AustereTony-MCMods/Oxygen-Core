@@ -123,7 +123,7 @@ public class GUIContextMenu extends GUISimpleElement<GUIContextMenu> {
     }
 
     public GUIContextMenu setCloseSound(SoundEvent sound) {
-        this.closeSound = new GUISoundEffect(sound, 1.0F, 1.0F);
+        this.closeSound = new GUISoundEffect(sound, 0.5F, 1.0F);
         return this;
     }
 }

@@ -5,8 +5,8 @@ import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUIWorkspace;
 import austeretony.alternateui.util.EnumGUIAlignment;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.ResourceLocation;
 

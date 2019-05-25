@@ -2,13 +2,13 @@ package austeretony.oxygen.common;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
+import austeretony.oxygen.common.api.event.OxygenPlayerUnloadedEvent;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
@@ -23,14 +23,14 @@ import austeretony.oxygen.common.network.client.CPSyncNotification;
 import austeretony.oxygen.common.network.client.CPSyncSharedPlayersData;
 import austeretony.oxygen.common.notification.EnumNotifications;
 import austeretony.oxygen.common.notification.EnumRequestReply;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 import austeretony.oxygen.common.privilege.PrivilegeManagerServer;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderServer;
-import austeretony.oxygen.common.process.ITemporaryProcess;
 import austeretony.oxygen.common.telemetry.TelemetryManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 
 public class OxygenManagerServer {
 
@@ -50,15 +50,15 @@ public class OxygenManagerServer {
 
     private final SharedDataManagerServer sharedDataManager;
 
-    private final Map<UUID, OxygenPlayerData> playersData = new ConcurrentHashMap<UUID, OxygenPlayerData>();
+    private final ProcessesManagerServer processesManager;
 
-    private final Map<Long, ITemporaryProcess> worldTemporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>();
+    private final SoundEventsManagerServer soundEventsManager;
+
+    private final Map<UUID, OxygenPlayerData> playersData = new ConcurrentHashMap<UUID, OxygenPlayerData>();
 
     private final Map<Integer, int[]> dataIdentifiersRegistry = new HashMap<Integer, int[]>(10);
 
     public static final int MAX_IDENTIFIERS_PER_SCREEN = 10;
-
-    private volatile boolean worldProcessesExist;
 
     private OxygenManagerServer() {
         this.loader = new OxygenLoaderServer(this);
@@ -67,6 +67,8 @@ public class OxygenManagerServer {
         this.privilegeLoader = new PrivilegeLoaderServer(this);
         this.friendListManager = new FriendListManagerServer(this);
         this.sharedDataManager = new SharedDataManagerServer(this);
+        this.processesManager = new ProcessesManagerServer(this);
+        this.soundEventsManager = new SoundEventsManagerServer(this);
     }
 
     public static void create() {
@@ -102,6 +104,14 @@ public class OxygenManagerServer {
 
     public SharedDataManagerServer getSharedDataManager() {
         return this.sharedDataManager;
+    }
+
+    public ProcessesManagerServer getProcessesManager() {
+        return this.processesManager;
+    }
+
+    public SoundEventsManagerServer getSoundEventsManager() {
+        return this.soundEventsManager;
     }
 
     public void createOxygenServerThreads() {
@@ -196,13 +206,13 @@ public class OxygenManagerServer {
         OxygenMain.network().sendTo(new CPSyncSharedPlayersData(identifiers), playerMP);
     }
 
-    public void addNotification(EntityPlayer player, IOxygenNotification notification) {
+    public void addNotification(EntityPlayer player, INotification notification) {
         if (notification.getType() == EnumNotifications.REQUEST)
-            this.playersData.get(CommonReference.uuid(player)).addProcess(notification);
+            this.playersData.get(CommonReference.uuid(player)).addTemporaryProcess(notification);
         OxygenMain.network().sendTo(new CPSyncNotification(notification), (EntityPlayerMP) player);
     }
 
-    public void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification, boolean setRequesting) {
+    public void sendRequest(EntityPlayer sender, EntityPlayer target, INotification notification, boolean setRequesting) {
         UUID 
         senderUUID = CommonReference.uuid(sender),
         targetUUID = CommonReference.uuid(target);
@@ -210,7 +220,7 @@ public class OxygenManagerServer {
         senderData = this.getPlayerData(senderUUID),
         targetData = this.getPlayerData(targetUUID);
         if (!senderData.isRequesting() 
-                && (targetData.getStatus() != OxygenPlayerData.EnumStatus.OFFLINE || PrivilegeProviderServer.getPrivilegeValue(senderUUID, EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false))
+                && (targetData.getStatus() != OxygenPlayerData.EnumActivityStatus.OFFLINE || PrivilegeProviderServer.getPrivilegeValue(senderUUID, EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false))
                 && (!targetData.haveFriendListEntryForUUID(senderUUID) || (targetData.haveFriendListEntryForUUID(senderUUID) && !targetData.getFriendListEntryByUUID(senderUUID).ignored))) {
             this.addNotification(target, notification);
             if (setRequesting)
@@ -220,50 +230,12 @@ public class OxygenManagerServer {
             OxygenHelperServer.sendMessage(sender, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.REQUEST_RESET.ordinal());
     }
 
-    public void addPlayerProcess(EntityPlayer player, ITemporaryProcess process) {
-        this.playersData.get(CommonReference.uuid(player)).addProcess(process);
-    }
-
-    public void runPlayersProcesses() {
-        for (OxygenPlayerData profile : this.playersData.values())
-            profile.runProcesses();
-    }
-
-    public Collection<ITemporaryProcess> getWorldProcesses() {
-        return this.worldTemporaryProcesses.values();
-    }
-
-    public void addWorldProcess(ITemporaryProcess process) {
-        this.worldTemporaryProcesses.put(process.getId(), process);
-        this.worldProcessesExist = true;
-    }
-
-    public boolean worldProcessExist(long processId) {
-        return this.worldTemporaryProcesses.containsKey(processId);
-    }
-
-    public ITemporaryProcess getWorldProcess(long processId) {
-        return this.worldTemporaryProcesses.get(processId);
-    }
-
-    public void runWorldProcesses() {
-        if (this.worldProcessesExist) {
-            Iterator<ITemporaryProcess> iterator = this.worldTemporaryProcesses.values().iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().isExpired()) {
-                    iterator.remove();
-                    this.worldProcessesExist = this.worldTemporaryProcesses.size() > 0;
-                }
-            }
-        }
-    }
-
     //TODO onPlayerLoggedIn()
     public void onPlayerLoggedIn(EntityPlayer player) {
+        UUID playerUUID = CommonReference.uuid(player);
         if (OxygenConfig.SYNC_CONFIGS.getBooleanValue())
             OxygenMain.network().sendTo(new CPSyncConfigs(), (EntityPlayerMP) player);
-        OxygenMain.network().sendTo(new CPSyncMainData(), (EntityPlayerMP) player);
-        UUID playerUUID = CommonReference.uuid(player);
+        OxygenMain.network().sendTo(new CPSyncMainData(playerUUID), (EntityPlayerMP) player);
         if (!this.playerDataExist(playerUUID)) {
             this.createPlayerData(playerUUID);
             OxygenHelperServer.setSyncing(playerUUID, true);
@@ -271,17 +243,22 @@ public class OxygenManagerServer {
         } else {
             OxygenHelperServer.setSyncing(playerUUID, true);
             this.sharedDataManager.createPlayerSharedDataEntrySynced(player);
+            OxygenStatWatcherManagerServer.instance().initStatWatcher(player, playerUUID);
         }
     }
 
     //TODO onPlayerLoggedOut()
     public void onPlayerLoggedOut(EntityPlayer player) {
         UUID playerUUID = CommonReference.uuid(player);
-        OxygenPlayerData playerData = this.getPlayerData(playerUUID);
-        playerData.setRequesting(false);
-        playerData.setRequested(false);
-        //this.removePlayerData(playerUUID);//remove or not?
-        this.sharedDataManager.removePlayerSharedDataEntrySynced(playerUUID);
+        if (this.playerDataExist(playerUUID)) {
+            OxygenPlayerData playerData = this.getPlayerData(playerUUID);
+            playerData.setRequesting(false);
+            playerData.setRequested(false);
+
+            MinecraftForge.EVENT_BUS.post(new OxygenPlayerUnloadedEvent(player));
+
+            this.sharedDataManager.removePlayerSharedDataEntrySynced(playerUUID);
+        }
     }
 
     public void onPlayerChangedDimension(EntityPlayer player, int prevDimension, int currDimension) {
@@ -316,7 +293,7 @@ public class OxygenManagerServer {
 
     public void reset() {
         this.playersData.clear();
-        this.worldTemporaryProcesses.clear();
+        this.processesManager.reset();
         this.sharedDataManager.reset();
     }
 }

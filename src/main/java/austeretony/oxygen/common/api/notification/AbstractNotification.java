@@ -1,8 +1,8 @@
 package austeretony.oxygen.common.api.notification;
 
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 
-public abstract class AbstractNotification implements IOxygenNotification, Comparable<AbstractNotification> {
+public abstract class AbstractNotification implements INotification, Comparable<AbstractNotification> {
 
     private final long id;
 

@@ -1,4 +1,4 @@
-package austeretony.oxygen.common.util;
+package austeretony.oxygen.common.telemetry;
 
 public class TimeCounter {
 

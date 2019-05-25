@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
  * 
  * @author AustereTony
  */
-public class GUIBaseSorter extends GUIAbstractSorter {
+public class GUIBaseSorter extends AbstractGUISorter {
 
     @Override
     public boolean isSlotValid(Slot slot) {

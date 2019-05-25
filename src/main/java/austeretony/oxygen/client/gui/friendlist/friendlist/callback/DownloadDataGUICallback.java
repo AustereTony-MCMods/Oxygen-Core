@@ -18,7 +18,7 @@ public class DownloadDataGUICallback extends AbstractGUICallback {
     private final FriendListGUIScreen screen;
 
     private final FriendListGUISection section;
-
+    
     private GUIButton confirmButton, cancelButton;
 
     public DownloadDataGUICallback(FriendListGUIScreen screen, FriendListGUISection section, int width, int height) {
@@ -35,8 +35,8 @@ public class DownloadDataGUICallback extends AbstractGUICallback {
         this.addElement(new GUITextLabel(2, 2).setDisplayText(I18n.format("oxygen.gui.downloadCallback"), true, GUISettings.instance().getTitleScale()));
         this.addElement(new GUITextLabel(2, 16).setDisplayText(I18n.format("oxygen.gui.downloadCallback.request"), true, GUISettings.instance().getTextScale()));        
 
-        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
-        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
     }
 
     @Override

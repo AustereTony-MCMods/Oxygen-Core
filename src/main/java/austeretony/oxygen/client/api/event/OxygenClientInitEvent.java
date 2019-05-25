@@ -1,4 +1,4 @@
-package austeretony.oxygen.client.event;
+package austeretony.oxygen.client.api.event;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
 

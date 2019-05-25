@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import austeretony.oxygen.common.api.OxygenHelperClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;

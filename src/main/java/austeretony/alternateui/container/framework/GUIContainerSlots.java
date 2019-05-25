@@ -36,9 +36,9 @@ public class GUIContainerSlots {
     private boolean hasScroller, hasSearchField, hasContextMenu, hasSlotRenderer;
 
     /** Сортировщик слотов без фильтрации. Позволяет загрузить содержимое в его действительном виде. */
-    public static final GUIAbstractSorter BASE_SORTER = new GUIBaseSorter();
+    public static final AbstractGUISorter BASE_SORTER = new GUIBaseSorter();
 
-    private GUIAbstractSorter currentSorter;
+    private AbstractGUISorter currentSorter;
 
     private GUIScroller scroller;
 
@@ -63,11 +63,11 @@ public class GUIContainerSlots {
         return SLOT_SIZE;
     }
 
-    public void setCurrentSorter(GUIAbstractSorter sorter) {
+    public void setCurrentSorter(AbstractGUISorter sorter) {
         this.currentSorter = sorter;
     }
 
-    public GUIAbstractSorter getCurrentSorter() {
+    public AbstractGUISorter getCurrentSorter() {
         return this.currentSorter;
     }
 

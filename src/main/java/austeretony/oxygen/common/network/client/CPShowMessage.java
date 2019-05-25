@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.network.client;
 
-import austeretony.oxygen.client.event.OxygenChatMessageEvent;
+import austeretony.oxygen.client.api.event.OxygenChatMessageEvent;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;

@@ -10,7 +10,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class OxygenClassTransformer implements IClassTransformer {
 
-    public static final Logger CORE_LOGGER = LogManager.getLogger("Oxygen Core");
+    public static final Logger CORE_LOGGER = LogManager.getLogger("Oxygen Core Plugin");
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {

@@ -87,8 +87,9 @@ public class OxygenLoaderServer {
 
             @Override
             public void execute() {
-                loadPlayerData(playerUUID, persistentData);
+                loadPlayerData(playerUUID, persistentData);              
                 manager.getSharedDataManager().createPlayerSharedDataEntrySynced(player);
+                OxygenStatWatcherManagerServer.instance().initStatWatcher(player, playerUUID);
             }     
         });
     }

@@ -3,9 +3,9 @@ package austeretony.oxygen.client;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.interaction.InteractionGUIScreen;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
-import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.server.SPOxygenRequest;
 import net.minecraft.entity.Entity;

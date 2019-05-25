@@ -29,7 +29,6 @@ public class CommandPrivilege extends AbstractOxygenCommand {
     PARAMETER_PRIVILEGE = "privilege",
     PARAMETER_GROUP = "group",
     PARAMETER_PLAYER = "player",
-    PARAMETER_TITLE = "title",
     PARAMETER_PREFIX = "prefix",
     PARAMETER_SUFFIX = "suffix",
     PARAMETER_USERNAME_COLOR = "username-color",

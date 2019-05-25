@@ -1,11 +1,11 @@
 package austeretony.oxygen.client.gui.friendlist;
 
 import austeretony.alternateui.screen.image.GUIImageLabel;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.client.gui.PlayerGUIButton;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.common.api.EnumDimensions;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.FriendListEntry;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
@@ -25,11 +25,11 @@ public class FriendListEntryGUIButton extends PlayerGUIButton {
 
     private boolean hasNote;
 
-    public FriendListEntryGUIButton(FriendListEntry listEntry, OxygenPlayerData.EnumStatus status) {
+    public FriendListEntryGUIButton(FriendListEntry listEntry, OxygenPlayerData.EnumActivityStatus status) {
         super(listEntry.playerUUID);
         this.listEntry = listEntry;
         SharedPlayerData sharedData;
-        if (status != OxygenPlayerData.EnumStatus.OFFLINE) {
+        if (status != OxygenPlayerData.EnumActivityStatus.OFFLINE) {
             this.setDisplayText(OxygenHelperClient.getSharedPlayerData(listEntry.playerUUID).getUsername());//need for search mechanic
             this.dimension = EnumDimensions.getLocalizedNameFromId(OxygenHelperClient.getPlayerDimension(listEntry.playerUUID));
         } else {

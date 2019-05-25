@@ -1,13 +1,16 @@
-package austeretony.oxygen.common.api;
+package austeretony.oxygen.client.api;
 
 import java.util.Collection;
 import java.util.UUID;
 
 import austeretony.oxygen.client.IInteractionExecutor;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.common.api.IOxygenTask;
+import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
+import austeretony.oxygen.common.process.IPersistentProcess;
 import net.minecraft.util.ResourceLocation;
 
 public class OxygenHelperClient {
@@ -40,6 +43,10 @@ public class OxygenHelperClient {
         OxygenManagerClient.instance().addNetworkTask(task);
     }
 
+    public static void addPersistentProcess(IPersistentProcess process) {
+        OxygenManagerClient.instance().addPersistentProcess(process);
+    }
+
     public static OxygenPlayerData getPlayerData() {
         return OxygenManagerClient.instance().getPlayerData();
     }
@@ -56,24 +63,24 @@ public class OxygenHelperClient {
         return OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getData(OxygenMain.DIMENSION_DATA_ID).getInt(0);
     }
 
-    public static OxygenPlayerData.EnumStatus getPlayerStatus(SharedPlayerData sharedData) {
-        return OxygenPlayerData.EnumStatus.values()[sharedData.getData(OxygenMain.STATUS_DATA_ID).get(0)];
+    public static OxygenPlayerData.EnumActivityStatus getPlayerStatus(SharedPlayerData sharedData) {
+        return OxygenPlayerData.EnumActivityStatus.values()[sharedData.getData(OxygenMain.STATUS_DATA_ID).get(0)];
     }
 
-    public static OxygenPlayerData.EnumStatus getClientPlayerStatus() {
-        return OxygenPlayerData.EnumStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(getPlayerUUID()).getData(OxygenMain.STATUS_DATA_ID).get(0)];
+    public static OxygenPlayerData.EnumActivityStatus getClientPlayerStatus() {
+        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(getPlayerUUID()).getData(OxygenMain.STATUS_DATA_ID).get(0)];
     }
 
-    public static OxygenPlayerData.EnumStatus getPlayerStatus(UUID playerUUID) {
-        return OxygenPlayerData.EnumStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getData(OxygenMain.STATUS_DATA_ID).get(0)];
+    public static OxygenPlayerData.EnumActivityStatus getPlayerStatus(UUID playerUUID) {
+        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getData(OxygenMain.STATUS_DATA_ID).get(0)];
     }
 
     public static boolean isOfflineStatus(UUID playerUUID) {
-        return OxygenPlayerData.EnumStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getData(OxygenMain.STATUS_DATA_ID).get(0)] == OxygenPlayerData.EnumStatus.OFFLINE;
+        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getData(OxygenMain.STATUS_DATA_ID).get(0)] == OxygenPlayerData.EnumActivityStatus.OFFLINE;
     }
 
     public static boolean isOfflineStatus(SharedPlayerData sharedData) {
-        return OxygenPlayerData.EnumStatus.values()[sharedData.getData(OxygenMain.STATUS_DATA_ID).get(0)] == OxygenPlayerData.EnumStatus.OFFLINE;
+        return OxygenPlayerData.EnumActivityStatus.values()[sharedData.getData(OxygenMain.STATUS_DATA_ID).get(0)] == OxygenPlayerData.EnumActivityStatus.OFFLINE;
     }
 
     public static int getClientPlayerIndex() {

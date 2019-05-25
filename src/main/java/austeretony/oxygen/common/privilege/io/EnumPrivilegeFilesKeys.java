@@ -4,7 +4,6 @@ public enum EnumPrivilegeFilesKeys {
 
     ID,
     NAME,
-    TITLE,
     PREFIX,
     SUFFIX,
     USERNAME_COLOR,

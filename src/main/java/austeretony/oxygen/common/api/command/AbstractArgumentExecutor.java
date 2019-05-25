@@ -25,7 +25,7 @@ public abstract class AbstractArgumentExecutor implements IArgumentExecutor {
     public AbstractArgumentExecutor(String argument, boolean hasParams) {
         this(argument);
         if (hasParams) 
-            this.params = new HashSet<IArgumentParameter>();
+            this.params = new HashSet<IArgumentParameter>(10);
         this.getParams(this.params);
     }
 

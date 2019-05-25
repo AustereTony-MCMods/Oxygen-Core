@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import austeretony.oxygen.client.IInteractionExecutor;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import net.minecraft.util.ResourceLocation;
 
 public class AddFriendInteractionExecutor implements IInteractionExecutor {

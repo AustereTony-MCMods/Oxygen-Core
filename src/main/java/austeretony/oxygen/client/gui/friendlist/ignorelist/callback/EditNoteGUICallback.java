@@ -19,7 +19,7 @@ public class EditNoteGUICallback extends AbstractGUICallback {
 
     private final FriendListGUIScreen screen;
 
-    private final IgnoreListGUISection section;
+    private final IgnoreListGUISection section; 
 
     private GUITextField noteField;
 
@@ -40,8 +40,8 @@ public class EditNoteGUICallback extends AbstractGUICallback {
         this.addElement(new GUITextLabel(2, 16).setDisplayText(I18n.format("oxygen.gui.note"), false, GUISettings.instance().getSubTextScale()));  
         this.addElement(this.noteField = new GUITextField(2, 25, 187, FriendListEntry.MAX_NOTE_LENGTH).setScale(0.7F).enableDynamicBackground().cancelDraggedElementLogic());       
 
-        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
-        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.confirmButton = new GUIButton(15, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.confirmButton"), true, GUISettings.instance().getButtonTextScale()));
+        this.addElement(this.cancelButton = new GUIButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).enableDynamicBackground().setDisplayText(I18n.format("oxygen.gui.cancelButton"), true, GUISettings.instance().getButtonTextScale()));
 
         this.confirmButton.disable();
     }

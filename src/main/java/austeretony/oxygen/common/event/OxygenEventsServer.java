@@ -27,9 +27,7 @@ public class OxygenEventsServer {
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            OxygenManagerServer.instance().runWorldProcesses();
-            OxygenManagerServer.instance().runPlayersProcesses();
-        }
+        if (event.phase == TickEvent.Phase.START)
+            OxygenManagerServer.instance().getProcessesManager().runProcesses();
     }
 }

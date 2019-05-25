@@ -65,14 +65,20 @@ public class PrivilegeProviderServer {
     }
 
     public static boolean getPrivilegeValue(UUID playerUUID, String privilegeName, boolean defaultValue) {
-        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && OxygenManagerServer.instance().getPrivilegeManager().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
-            return true;
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue()) { 
+            IPrivilegedGroup group = OxygenManagerServer.instance().getPrivilegeManager().getPlayerPrivilegedGroup(playerUUID);
+            if (group.hasPrivilege(privilegeName))
+                return group.getPrivilege(privilegeName).getValue() == 1 ? true : false;
+        }
         return defaultValue;
     }
 
     public static int getPrivilegeValue(UUID playerUUID, String privilegeName, int defaultValue) {
-        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() && OxygenManagerServer.instance().getPrivilegeManager().getPlayerPrivilegedGroup(playerUUID).hasPrivilege(privilegeName))
-            return OxygenManagerServer.instance().getPrivilegeManager().getPlayerPrivilegedGroup(playerUUID).getPrivilege(privilegeName).getValue();
+        if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue()) { 
+            IPrivilegedGroup group = OxygenManagerServer.instance().getPrivilegeManager().getPlayerPrivilegedGroup(playerUUID);
+            if (group.hasPrivilege(privilegeName))
+                return group.getPrivilege(privilegeName).getValue();
+        }
         return defaultValue;
     }
 

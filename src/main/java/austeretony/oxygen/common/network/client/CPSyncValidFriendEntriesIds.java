@@ -2,8 +2,8 @@ package austeretony.oxygen.common.network.client;
 
 import java.util.Set;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenGUIHelper;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.FriendListEntry;

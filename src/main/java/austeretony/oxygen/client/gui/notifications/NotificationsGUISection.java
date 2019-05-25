@@ -13,12 +13,12 @@ import austeretony.alternateui.screen.panel.GUIButtonPanel;
 import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
 import austeretony.alternateui.screen.text.GUITextLabel;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.gui.settings.GUISettings;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
-import austeretony.oxygen.common.api.OxygenHelperClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 import net.minecraft.client.resources.I18n;
 
 public class NotificationsGUISection extends AbstractGUISection {
@@ -41,7 +41,7 @@ public class NotificationsGUISection extends AbstractGUISection {
         this.addElement(new GUITextLabel(2, 4).setDisplayText(I18n.format("oxygen.gui.notifications.title"), false, GUISettings.instance().getTitleScale()));
         String baseNoticeStr = I18n.format("oxygen.gui.notifications.empty");
 
-        this.addElement(this.hideOverlayButton = new GUICheckBoxButton(2, 16, 6).setSound(OxygenSoundEffects.BUTTON_CLICK)
+        this.addElement(this.hideOverlayButton = new GUICheckBoxButton(2, 16, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent    )
                 .enableDynamicBackground(GUISettings.instance().getEnabledButtonColor(), GUISettings.instance().getDisabledButtonColor(), GUISettings.instance().getHoveredButtonColor()));
         this.addElement(this.hideOverlayTextLabel = new GUITextLabel(10, 15).setDisplayText(I18n.format("oxygen.gui.notifications.hideOverlay"), false, GUISettings.instance().getSubTextScale()));
         this.hideOverlayButton.setToggled(OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING));
@@ -57,10 +57,10 @@ public class NotificationsGUISection extends AbstractGUISection {
     }
 
     public void updateNotifications() {
-        Set<IOxygenNotification> ordered = new TreeSet<IOxygenNotification>(OxygenManagerClient.instance().getNotificationsManager().getNotifications().values());
+        Set<INotification> ordered = new TreeSet<INotification>(OxygenManagerClient.instance().getNotificationsManager().getNotifications().values());
         NotificationGUIButton button;
         this.notificationsPanel.reset();
-        for (IOxygenNotification notification : ordered) {
+        for (INotification notification : ordered) {
             button = new NotificationGUIButton(notification);
             button.enableDynamicBackground(GUISettings.instance().getEnabledElementColor(), GUISettings.instance().getDisabledElementColor(), GUISettings.instance().getHoveredElementColor());
             button.setTextDynamicColor(GUISettings.instance().getEnabledTextColor(), GUISettings.instance().getDisabledTextColor(), GUISettings.instance().getHoveredTextColor());

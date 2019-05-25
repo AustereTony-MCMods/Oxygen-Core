@@ -3,7 +3,7 @@ package austeretony.oxygen.common.notification;
 import austeretony.oxygen.common.process.ITemporaryProcess;
 import net.minecraft.entity.player.EntityPlayer;
 
-public interface IOxygenNotification extends ITemporaryProcess {
+public interface INotification extends ITemporaryProcess {
 
     EnumNotifications getType();
 

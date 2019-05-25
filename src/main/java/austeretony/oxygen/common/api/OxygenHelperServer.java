@@ -11,7 +11,8 @@ import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.network.client.CPShowMessage;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
+import austeretony.oxygen.common.process.IPersistentProcess;
 import austeretony.oxygen.common.process.ITemporaryProcess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,16 +55,20 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getPlayerData(playerUUID);
     }
 
-    public static OxygenPlayerData.EnumStatus getPlayerStatus(UUID playerUUID) {
+    public static OxygenPlayerData.EnumActivityStatus getPlayerStatus(UUID playerUUID) {
         return OxygenManagerServer.instance().getPlayerData(playerUUID).getStatus();
     }
 
     public static boolean isOfflineStatus(UUID playerUUID) {
-        return OxygenManagerServer.instance().getPlayerData(playerUUID).getStatus() == OxygenPlayerData.EnumStatus.OFFLINE;
+        return OxygenManagerServer.instance().getPlayerData(playerUUID).getStatus() == OxygenPlayerData.EnumActivityStatus.OFFLINE;
     }
 
     public static int getPlayerIndex(UUID playerUUID) {
         return OxygenManagerServer.instance().getImmutablePlayerData(playerUUID).getIndex();
+    }
+
+    public static UUID getPlayerUUID(int index) {
+        return getSharedPlayerData(index).getPlayerUUID();
     }
 
     public static SharedPlayerData getSharedPlayerData(int index) {
@@ -122,19 +127,23 @@ public class OxygenHelperServer {
         OxygenMain.network().sendTo(new CPShowMessage(mod, message, args), (EntityPlayerMP) player);
     }
 
-    public static void addWorldProcess(ITemporaryProcess process) {
-        OxygenManagerServer.instance().addWorldProcess(process);
+    public static void addPersistentProcess(IPersistentProcess process) {
+        OxygenManagerServer.instance().getProcessesManager().addPersistentProcess(process);
     }
 
-    public static void addPlayerProcess(EntityPlayer player, ITemporaryProcess process) {
-        OxygenManagerServer.instance().addPlayerProcess(player, process);
+    public static void addGlobalTemporaryProcess(ITemporaryProcess process) {
+        OxygenManagerServer.instance().getProcessesManager().addGlobalTemporaryProcess(process);
     }
 
-    public static void addNotification(EntityPlayer player, IOxygenNotification notification) {
+    public static void addPlayerTemporaryProcess(EntityPlayer player, ITemporaryProcess process) {
+        OxygenManagerServer.instance().getProcessesManager().addPlayerTemporaryProcess(player, process);
+    }
+
+    public static void addNotification(EntityPlayer player, INotification notification) {
         OxygenManagerServer.instance().addNotification(player, notification);
     }
 
-    public static void sendRequest(EntityPlayer sender, EntityPlayer target, IOxygenNotification notification, boolean setRequesting) {
+    public static void sendRequest(EntityPlayer sender, EntityPlayer target, INotification notification, boolean setRequesting) {
         OxygenManagerServer.instance().sendRequest(sender, target, notification, setRequesting);
     }
 

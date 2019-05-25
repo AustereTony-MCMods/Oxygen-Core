@@ -5,16 +5,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.client.event.OxygenNotificationRecievedEvent;
+import austeretony.oxygen.client.api.OxygenHelperClient;
+import austeretony.oxygen.client.api.event.OxygenNotificationRecievedEvent;
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.notifications.NotificationsGUIScreen;
-import austeretony.oxygen.common.api.OxygenHelperClient;
-import austeretony.oxygen.common.core.api.ClientReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.network.server.SPRequestReply;
 import austeretony.oxygen.common.notification.EnumNotifications;
 import austeretony.oxygen.common.notification.EnumRequestReply;
-import austeretony.oxygen.common.notification.IOxygenNotification;
+import austeretony.oxygen.common.notification.INotification;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -22,7 +22,7 @@ public class NotificationManagerClient {
 
     private final OxygenManagerClient manager;
 
-    private final Map<Long, IOxygenNotification> notifications = new ConcurrentHashMap<Long, IOxygenNotification>();
+    private final Map<Long, INotification> notifications = new ConcurrentHashMap<Long, INotification>(5);
 
     private final Map<Integer, ResourceLocation> icons = new HashMap<Integer, ResourceLocation>(5);
 
@@ -32,6 +32,7 @@ public class NotificationManagerClient {
 
     public NotificationManagerClient(OxygenManagerClient manager) {
         this.manager = manager;
+        this.manager.addPersistentProcess(new NotificationsProcess());
     }
 
     public void openNotificationsMenu() {
@@ -54,18 +55,18 @@ public class NotificationManagerClient {
         this.icons.put(index, textureLocation);
     }
 
-    public Map<Long, IOxygenNotification> getNotifications() {
+    public Map<Long, INotification> getNotifications() {
         return this.notifications;
     }
 
-    public IOxygenNotification getNotification(long id) {
+    public INotification getNotification(long id) {
         return this.notifications.get(id);
     }
 
-    public void addNotification(IOxygenNotification notification) {
+    public void addNotification(INotification notification) {
         this.notifications.put(notification.getId(), notification);
         if (notification.getType() == EnumNotifications.REQUEST) {
-            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECIEVED, 1.0F, 1.0F);//request recieved sound effect
+            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECIEVED.soundEvent, 1.0F, 1.0F);//request recieved sound effect
             if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING)) {
                 this.latestNotificationId = notification.getId();
                 this.requestOverlayUpdated = false;
@@ -86,7 +87,7 @@ public class NotificationManagerClient {
         return this.latestNotificationId;
     }
 
-    public IOxygenNotification getLatestRequest() {
+    public INotification getLatestRequest() {
         return this.notifications.get(this.latestNotificationId);
     }
 
@@ -104,8 +105,8 @@ public class NotificationManagerClient {
 
     public void processNotifications() {
         if (this.notificationsExist) {
-            Iterator<IOxygenNotification> iterator = this.notifications.values().iterator();
-            IOxygenNotification notification;
+            Iterator<INotification> iterator = this.notifications.values().iterator();
+            INotification notification;
             while (iterator.hasNext()) {
                 notification = iterator.next();
                 if (notification.isExpired()) {
