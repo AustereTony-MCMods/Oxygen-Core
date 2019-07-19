@@ -1,3 +1,14 @@
+0.7.0a
++API cleanup. Friends list/ignore list, players list and interaction menu now separated 
+from core and available as independent modules.
+
+0.6.2a
++Improved chat processing for privileged groups and ignored players.
++Fixed tooltips for friendlist entries notes and last activity time notes.
+
+0.6.1a
++Hotfix for crash caused by damaged config.
+
 0.6.0a
 +Improvements to privileges system.
 +Support for containers.

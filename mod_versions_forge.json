@@ -1,10 +1,10 @@
 {
   "homepage": "https://minecraft.curseforge.com/projects/oxygen-core",
   "1.12.2": {
-    "0.6.0": "Improvements for API."
+    "0.7.0": "API cleanup. Recommended to remove configs and oxygen folder."
   },
   "promos": {
-    "1.12.2-latest": "0.6.0",
-    "1.12.2-recommended": "0.6.0"
+    "1.12.2-latest": "0.7.0",
+    "1.12.2-recommended": "0.7.0"
   }
 }
