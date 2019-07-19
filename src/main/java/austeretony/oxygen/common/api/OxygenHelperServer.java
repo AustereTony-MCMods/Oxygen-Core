@@ -3,6 +3,7 @@ package austeretony.oxygen.common.api;
 import java.util.Set;
 import java.util.UUID;
 
+import austeretony.oxygen.common.OxygenLoaderServer;
 import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.network.OxygenNetwork;
 import austeretony.oxygen.common.config.ConfigLoader;
@@ -14,10 +15,13 @@ import austeretony.oxygen.common.network.client.CPShowMessage;
 import austeretony.oxygen.common.notification.INotification;
 import austeretony.oxygen.common.process.IPersistentProcess;
 import austeretony.oxygen.common.process.ITemporaryProcess;
+import austeretony.oxygen.common.request.IRequestValidator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class OxygenHelperServer {
+
+    //*** initialization - start
 
     public static void registerConfig(IConfigHolder configHolder) {
         ConfigLoader.addConfig(configHolder);
@@ -26,6 +30,28 @@ public class OxygenHelperServer {
     public static OxygenNetwork createNetworkHandler(String channelName) {
         return OxygenNetwork.createNetworkHandler(channelName);
     }
+
+    public static void addPersistentServiceProcess(IPersistentProcess process) {
+        OxygenManagerServer.instance().getProcessesManager().addPersistentServiceProcess(process);
+    }
+
+    public static void registerSharedDataValue(int id, int size) {
+        OxygenManagerServer.instance().getSharedDataManager().registerSharedDataValue(id, size);
+    }
+
+    public static void registerSharedDataIdentifierForScreen(int screenId, int dataIdentifier) {
+        OxygenManagerServer.instance().registerSharedDataIdentifierForScreen(screenId, dataIdentifier);
+    }
+
+    public static int[] getSharedDataIdentifiersForScreen(int screenId) {
+        return OxygenManagerServer.instance().getSharedDataIdentifiersForScreen(screenId);
+    }
+
+    public static void registerRequestValidator(IRequestValidator validator) {
+        OxygenManagerServer.instance().registerRequestValidator(validator);
+    }
+
+    //*** initialization - end
 
     public static long getWorldId() {
         return OxygenManagerServer.instance().getLoader().getWorldId();
@@ -127,10 +153,6 @@ public class OxygenHelperServer {
         OxygenMain.network().sendTo(new CPShowMessage(mod, message, args), (EntityPlayerMP) player);
     }
 
-    public static void addPersistentProcess(IPersistentProcess process) {
-        OxygenManagerServer.instance().getProcessesManager().addPersistentProcess(process);
-    }
-
     public static void addGlobalTemporaryProcess(ITemporaryProcess process) {
         OxygenManagerServer.instance().getProcessesManager().addGlobalTemporaryProcess(process);
     }
@@ -171,50 +193,19 @@ public class OxygenHelperServer {
         OxygenManagerServer.instance().getPlayerData(playerUUID).setRequested(flag);
     }
 
-    public static boolean isIgnored(UUID requestedUUID, UUID requestingUUID) {
-        OxygenPlayerData playerData = getPlayerData(requestedUUID);
-        if (!playerData.haveFriendListEntryForUUID(requestingUUID) || (playerData.haveFriendListEntryForUUID(requestingUUID) && !playerData.getFriendListEntryByUUID(requestingUUID).ignored))
-            return false;
-        return true;
+    public static void loadPersistentDataDelegated(IPersistentData persistentData) {
+        OxygenLoaderServer.loadPersistentDataDelegated(persistentData);
     }
 
-    public static void registerSharedDataIdentifierForScreen(int screenId, int dataIdentifier) {
-        OxygenManagerServer.instance().registerSharedDataIdentifierForScreen(screenId, dataIdentifier);
+    public static void loadPersistentData(IPersistentData persistentData) {
+        OxygenLoaderServer.loadPersistentData(persistentData);
     }
 
-    public static int[] getSharedDataIdentifiersForScreen(int screenId) {
-        return OxygenManagerServer.instance().getSharedDataIdentifiersForScreen(screenId);
+    public static void savePersistentDataDelegated(IPersistentData persistentData) {
+        OxygenLoaderServer.savePersistentDataDelegated(persistentData);
     }
 
-    public static void loadPlayerDataDelegated(UUID playerUUID, IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().loadPlayerDataDelegated(playerUUID, persistentData);
-    }
-
-    public static void loadPlayerData(UUID playerUUID, IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().loadPlayerData(playerUUID, persistentData);
-    }
-
-    public static void savePlayerDataDelegated(UUID playerUUID, IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().savePlayerDataDelegated(playerUUID, persistentData);
-    }
-
-    public static void savePlayerData(UUID playerUUID, IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().savePlayerData(playerUUID, persistentData);
-    }
-
-    public static void loadWorldDataDelegated(IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().loadWorldDataDelegated(persistentData);
-    }
-
-    public static void loadWorldData(IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().loadWorldData(persistentData);
-    }
-
-    public static void saveWorldDataDelegated(IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().saveWorldDataDelegated(persistentData);
-    }
-
-    public static void saveWorldData(IPersistentData persistentData) {
-        OxygenManagerServer.instance().getLoader().saveWorldData(persistentData);
+    public static void savePersistentData(IPersistentData persistentData) {
+        OxygenLoaderServer.savePersistentData(persistentData);
     }
 }

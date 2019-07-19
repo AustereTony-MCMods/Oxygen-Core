@@ -1,6 +1,7 @@
 package austeretony.oxygen.common.network.client;
 
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.SoundEventHelperClient;
 import austeretony.oxygen.common.network.ProxyPacket;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
@@ -22,6 +23,6 @@ public class CPPlaySoundEvent extends ProxyPacket {
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        OxygenManagerClient.instance().getSoundEventsManager().playSoundAtClient(buffer.readByte());
+        SoundEventHelperClient.playSoundClient(buffer.readByte());
     }
 }

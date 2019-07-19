@@ -1,32 +1,32 @@
 package austeretony.oxygen.client;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.ImmutablePlayerData;
+import austeretony.oxygen.common.SharedDataManagerServer.SharedDataRegistryEntry;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.SharedPlayerData;
 
 public class SharedDataManagerClient {
 
-    private final OxygenManagerClient manager;
-
     private final Map<UUID, SharedPlayerData> observed = new ConcurrentHashMap<UUID, SharedPlayerData>();
+
+    private final Map<String, UUID> usernames = new HashMap<String, UUID>();
 
     private final Map<UUID, ImmutablePlayerData> immutableData = new ConcurrentHashMap<UUID, ImmutablePlayerData>();
 
     private final Map<Integer, SharedPlayerData> sharedData = new ConcurrentHashMap<Integer, SharedPlayerData>();
 
-    private final Map<Integer, Integer> sharedDataRegistry = new HashMap<Integer, Integer>();
+    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
 
-    public SharedDataManagerClient(OxygenManagerClient manager) {
-        this.manager = manager;
+    public void registerSharedDataValue(int id, int size) {
+        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
     }
 
     public void addPlayerSharedDataEntry(ImmutablePlayerData immutableData) {
@@ -36,14 +36,14 @@ public class SharedDataManagerClient {
         sharedData.setUsername(immutableData.username);
         sharedData.setIndex(immutableData.getIndex());
 
-        for (Map.Entry<Integer, Integer> entry : this.sharedDataRegistry.entrySet()) 
-            sharedData.addData(entry.getKey(), ByteBuffer.allocate(entry.getValue()));
+        for (SharedDataRegistryEntry entry : this.sharedDataRegistry)
+            sharedData.createDataBuffer(entry.id, entry.size);
 
         this.sharedData.put(immutableData.getIndex(), sharedData);
     }
 
     public void removePlyerSharedDataEntry(int index) {
-        this.cacheObservedData(index);//TODO This probably not necessary for every player
+        this.cacheObservedData(index);
         this.immutableData.remove(this.sharedData.remove(index).getPlayerUUID());  
     }
 
@@ -75,8 +75,12 @@ public class SharedDataManagerClient {
         return this.sharedData.get(this.immutableData.get(playerUUID).getIndex());
     }
 
-    public void registerSharedDataBuffer(int dataId, int capacity) {
-        this.sharedDataRegistry.put(dataId, capacity);
+    public boolean knownUsername(String username) {
+        return this.usernames.containsKey(username);
+    }
+
+    public UUID getUUIDByUsername(String username) {
+        return this.usernames.get(username);
     }
 
     public boolean observedSharedDataExist(UUID playerUUID) {
@@ -84,11 +88,12 @@ public class SharedDataManagerClient {
     }
 
     public SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        return OxygenHelperClient.isOnline(playerUUID) ? this.sharedData.get(this.immutableData.get(playerUUID).getIndex()) : this.observed.get(playerUUID);
+        return this.immutableData.keySet().contains(playerUUID) ? this.sharedData.get(this.immutableData.get(playerUUID).getIndex()) : this.observed.get(playerUUID);
     }
 
     public void addObservedSharedData(SharedPlayerData sharedData) {
         this.observed.put(sharedData.getPlayerUUID(), sharedData);
+        this.usernames.put(sharedData.getUsername(), sharedData.getPlayerUUID());
         OxygenMain.OXYGEN_LOGGER.info("Cached player <{} / {}> shared (observed) data.", sharedData.getUsername(), sharedData.getPlayerUUID());//TODO debug
     }
 
@@ -103,6 +108,7 @@ public class SharedDataManagerClient {
 
     public void reset() {
         this.observed.clear();
+        this.usernames.clear();
         this.immutableData.clear();
         this.sharedData.clear();
     }

@@ -41,7 +41,7 @@ public class PrivilegeProviderServer {
     }
 
     public static void promotePlayer(EntityPlayer player, String groupName) {
-        promotePlayer(CommonReference.uuid(player), groupName);
+        promotePlayer(CommonReference.getPersistentUUID(player), groupName);
     }
 
     public static void resetPlayerGroup(UUID playerUUID) {
@@ -49,7 +49,7 @@ public class PrivilegeProviderServer {
     }
 
     public static void resetPlayerGroup(EntityPlayer player) {
-        promotePlayer(CommonReference.uuid(player), PrivilegedGroup.DEFAULT_GROUP.getName());
+        promotePlayer(CommonReference.getPersistentUUID(player), PrivilegedGroup.DEFAULT_GROUP.getName());
     }
 
     public static void addPrivilege(String groupName, IPrivilege privilege, boolean save) {

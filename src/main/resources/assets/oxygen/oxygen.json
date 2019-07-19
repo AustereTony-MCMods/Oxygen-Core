@@ -4,15 +4,8 @@
     "sync_privileges": true,
     "enable_telemetry": false,
     "enable_privileges": true,
-    "enable_currency": false,
-    "disable_tab_overlay": false,
-    "enable_player_list": true,
-    "enable_players_interaction": true
-  },
-  "friends": {
-    "enable_friend_list": true,
-    "friend_request_expire_time_seconds": 30,
-    "max_friends": 20,
-    "max_ignored": 20
+    "enable_formatted_chat": false,
+    "enable_currency": true,
+    "interact_with_rmb": false
   }
 }

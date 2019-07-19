@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.util.JsonUtils;
+import austeretony.oxygen.util.JsonUtils;
 
 public class GUISettingsLoader {
 
@@ -56,7 +56,7 @@ public class GUISettingsLoader {
     private void loadData(JsonObject file) {
         String currentProfileName = file.get(EnumSettingKeys.SETTINGS_PROFILE.key).getAsString();
         for (JsonElement element : file.get(EnumSettingKeys.PROFILES.key).getAsJsonArray())
-            this.settings.addProfile(SettingsProfile.deserialize(element.getAsJsonObject()));
+            this.settings.addProfile(GUISettingsProfile.deserialize(element.getAsJsonObject()));
         this.settings.setCurrentProfile(this.settings.getProfile(currentProfileName));
         OxygenMain.OXYGEN_LOGGER.info("GUI settings loaded. Set profile to: {}.", currentProfileName);
     }

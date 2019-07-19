@@ -2,7 +2,7 @@ package austeretony.oxygen.common;
 
 import java.util.UUID;
 
-import austeretony.oxygen.common.util.PacketBufferUtils;
+import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 
 public class ImmutablePlayerData {
@@ -30,10 +30,10 @@ public class ImmutablePlayerData {
     public void write(PacketBuffer buffer) {
         PacketBufferUtils.writeUUID(this.playerUUID, buffer);
         PacketBufferUtils.writeString(this.username, buffer);
-        buffer.writeShort(this.index);
+        buffer.writeInt(this.index);
     }
 
     public static ImmutablePlayerData read(PacketBuffer buffer) {
-        return new ImmutablePlayerData(PacketBufferUtils.readUUID(buffer), PacketBufferUtils.readString(buffer)).setIndex(buffer.readShort());
+        return new ImmutablePlayerData(PacketBufferUtils.readUUID(buffer), PacketBufferUtils.readString(buffer)).setIndex(buffer.readInt());
     }
 }

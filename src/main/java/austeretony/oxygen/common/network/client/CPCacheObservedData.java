@@ -19,13 +19,13 @@ public class CPCacheObservedData extends ProxyPacket {
     public void write(PacketBuffer buffer, INetHandler netHandler) {
         buffer.writeByte(this.indexes.length);
         for (int index : this.indexes)
-            buffer.writeShort(index);
+            buffer.writeInt(index);
     }
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
         int amount = buffer.readByte();
         for (int i = 0; i < amount; i++)
-            OxygenManagerClient.instance().getSharedDataManager().cacheObservedData(buffer.readShort());
+            OxygenManagerClient.instance().getSharedDataManager().cacheObservedData(buffer.readInt());
     }
 }

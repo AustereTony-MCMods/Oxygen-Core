@@ -42,7 +42,6 @@
         "overlay": 0.8
       },
       "other": {
-        "use_textures": false,
         "texture_offset_x": 0,
         "texture_offset_y": 0,
         "drop_down_list_width": 55,

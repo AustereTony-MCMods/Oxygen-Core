@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import austeretony.oxygen.common.config.IConfigValue;
-import austeretony.oxygen.common.util.PacketBufferUtils;
+import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 
 public class ConfigValue implements IConfigValue {

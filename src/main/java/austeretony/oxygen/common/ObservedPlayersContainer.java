@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.common.util.StreamUtils;
+import austeretony.oxygen.util.StreamUtils;
 
 public class ObservedPlayersContainer {
 

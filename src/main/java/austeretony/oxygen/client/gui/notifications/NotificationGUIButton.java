@@ -8,7 +8,7 @@ import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
-import austeretony.oxygen.common.notification.EnumNotifications;
+import austeretony.oxygen.common.notification.EnumNotification;
 import austeretony.oxygen.common.notification.INotification;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -31,13 +31,13 @@ public class NotificationGUIButton extends GUIButton {
         this.notification = notification;
         this.hasIcon = (this.icon = OxygenManagerClient.instance().getNotificationsManager().getIcon(notification.getIndex())) != null;
     }
-    
+
     @Override
     public void init() {
         this.processDescription(I18n.format(this.notification.getDescription(), (Object[]) this.notification.getArguments()));
-        this.acceptButton = new GUIButton(this.getWidth() - 22, 6, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CHECK_ICONS, 6, 6).initScreen(this.getScreen());
-        this.rejectButton = new GUIButton(this.getWidth() - 10, 6, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CROSS_ICONS, 6, 6).initScreen(this.getScreen());
-        if (notification.getType() == EnumNotifications.NOTICE)
+        this.acceptButton = new GUIButton(this.getWidth() - 20, 7, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CHECK_ICONS, 6, 6).initScreen(this.getScreen());
+        this.rejectButton = new GUIButton(this.getWidth() - 12, 7, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CROSS_ICONS, 6, 6).initScreen(this.getScreen());
+        if (notification.getType() == EnumNotification.NOTICE)
             this.rejectButton.disableFull();
     }
 
@@ -60,19 +60,24 @@ public class NotificationGUIButton extends GUIButton {
             drawRect(0, 0, this.getWidth(), this.getHeight(), color);
             textY = (this.getHeight() - this.textHeight(this.getTextScale())) / 2;
             GlStateManager.pushMatrix();           
-            GlStateManager.translate(24.0F, textY, 0.0F); 
+            GlStateManager.translate(20.0F, textY + 1, 0.0F); 
             GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);     
             if (this.description.size() == 1) 
                 this.mc.fontRenderer.drawString(this.description.get(0), 0, 0, textColor, true); 
             else
                 for (String line : this.description)                  
-                    this.mc.fontRenderer.drawString(line, 0, 10 * this.description.indexOf(line), textColor, true); 
-            if (this.notification.getType() == EnumNotifications.REQUEST)
-                this.mc.fontRenderer.drawString("(" + String.valueOf(this.notification.getCounter() / 20) + ")", 250, 0, textColor, true); 
+                    this.mc.fontRenderer.drawString(line, 0, 10 * this.description.indexOf(line) - 5, textColor, true);
             GlStateManager.popMatrix();
+            if (this.notification.getType() == EnumNotification.REQUEST) {
+                GlStateManager.pushMatrix();           
+                GlStateManager.translate(this.getWidth() - 36.0F, textY + 1, 0.0F); 
+                GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);     
+                this.mc.fontRenderer.drawString("(" + String.valueOf(this.notification.getCounter() / 20) + ")", 0, 0, textColor, true); 
+                GlStateManager.popMatrix();
+            }
             if (this.hasIcon) {
                 this.mc.getTextureManager().bindTexture(this.icon);
-                drawCustomSizedTexturedRect(4, 3, 0, 0, 10, 10, 10, 10);
+                drawCustomSizedTexturedRect(5, 5, 0, 0, 10, 10, 10, 10);
             }
             this.acceptButton.draw(mouseX, mouseY);
             this.rejectButton.draw(mouseX, mouseY);
@@ -86,16 +91,16 @@ public class NotificationGUIButton extends GUIButton {
         String[] words = description.split("[ ]");        
         if (words.length > 0) {                 
             for (int i = 0; i < words.length; i++) {            
-                if (this.textWidth(stringBuilder.toString() + words[i], this.getTextScale()) <= this.getWidth() - 20)                          
+                if (this.textWidth(stringBuilder.toString() + words[i], this.getTextScale()) <= this.getWidth() - 50)                          
                     stringBuilder.append(words[i]).append(" ");
                 else {                          
-                    if (this.description.size() * 10 <= 16)                                      
+                    if (this.description.size() * 10 <= 20)                                      
                         this.description.add(stringBuilder.toString());                       
                     stringBuilder = new StringBuilder();                                
                     stringBuilder.append(words[i]).append(" ");
                 }                       
                 if (i == words.length - 1)                              
-                    if (this.description.size() * 10 <= 16)                            
+                    if (this.description.size() * 10 <= 20)                            
                         this.description.add(stringBuilder.toString());
             }
         }       

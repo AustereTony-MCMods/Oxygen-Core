@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 
 import austeretony.oxygen.common.api.config.ConfigValue;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.util.JsonUtils;
-import austeretony.oxygen.common.util.OxygenUtils;
+import austeretony.oxygen.util.JsonUtils;
+import austeretony.oxygen.util.OxygenUtils;
 
 public class ConfigLoader {
 

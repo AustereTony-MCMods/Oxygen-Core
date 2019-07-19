@@ -7,10 +7,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.alternateui.screen.contextmenu.AbstractContextAction;
+import austeretony.oxygen.util.LinkedHashSetWrapper;
 
 public class OxygenGUIManager {
-
-    private final OxygenManagerClient manager;
 
     //used to insure displayed data in GUIs is actual (synchronized before display)
     private final Map<Integer, Boolean>
@@ -19,19 +18,16 @@ public class OxygenGUIManager {
     recievedData = new ConcurrentHashMap<Integer, Boolean>(10);//GUIs data synchronized for
 
     //a way for other modules to add their own context actions for any menus (screenId is used)
-    private final Map<Integer, ContextActionsContainer> contextActionsRegistry = new HashMap<Integer, ContextActionsContainer>(10);
+    private final Map<Integer, LinkedHashSetWrapper<AbstractContextAction>> contextActionsRegistry = new HashMap<Integer, LinkedHashSetWrapper<AbstractContextAction>>(10);
 
     private final Set<Integer> sharedDataListeners = new HashSet<Integer>(10);
-
-    public OxygenGUIManager(OxygenManagerClient manager) {
-        this.manager = manager;
-    }
 
     public void registerScreenId(int screenId) {
         this.needSync.put(screenId, false);
         this.initializedGUIs.put(screenId, false);
         this.recievedData.put(screenId, false);
-        this.contextActionsRegistry.put(screenId, new ContextActionsContainer());
+        if (!this.contextActionsRegistry.containsKey(screenId))
+            this.contextActionsRegistry.put(screenId, new LinkedHashSetWrapper<AbstractContextAction>());
     }
 
     public boolean isNeedSync(int screenId) {
@@ -73,13 +69,11 @@ public class OxygenGUIManager {
     public void registerContextAction(int screenId, AbstractContextAction action) {
         if (!this.contextActionsRegistry.containsKey(screenId))
             this.registerScreenId(screenId);
-        ContextActionsContainer container = this.contextActionsRegistry.get(screenId);
-        container.addAction(action);
-        this.contextActionsRegistry.put(screenId, container);
+        this.contextActionsRegistry.get(screenId).add(action);
     }
 
     public Set<AbstractContextAction> getContextActions(int screenId) {
-        return this.contextActionsRegistry.get(screenId).getActions();
+        return this.contextActionsRegistry.get(screenId).set;
     }
 
     public void registerSharedDataListenerScreen(int screenId) {

@@ -97,7 +97,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
             if (this.hasSimpleTooltip()) {   
                 int width = (int) ((float) this.tooltipWidth * this.tooltipScaleFactor);
                 GlStateManager.pushMatrix();           
-                GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11, 0.0F);           
+                GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11.0F, 0.0F);           
                 GlStateManager.scale(this.tooltipScaleFactor, this.tooltipScaleFactor, 0.0F);    
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 drawRect(0, 0, this.tooltipWidth, 11, this.tooltipBackgroundColor);               

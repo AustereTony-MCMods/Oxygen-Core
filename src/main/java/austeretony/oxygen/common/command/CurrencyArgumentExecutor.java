@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import austeretony.oxygen.common.api.OxygenHelperServer;
-import austeretony.oxygen.common.api.StatWatcherHelperServer;
+import austeretony.oxygen.common.api.WatcherHelperServer;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.core.api.CommonReference;
@@ -62,7 +62,7 @@ public class CurrencyArgumentExecutor extends AbstractArgumentExecutor {
                 index = Integer.parseInt(currrencyIndexStr);
 
             EntityPlayerMP targetMP = getPlayerByUsername(server, username);
-            UUID targetUUID = CommonReference.uuid(targetMP);
+            UUID targetUUID = CommonReference.getPersistentUUID(targetMP);
             OxygenPlayerData targetData;
 
             switch (action) {
@@ -101,8 +101,8 @@ public class CurrencyArgumentExecutor extends AbstractArgumentExecutor {
                                 amount,
                                 index))); 
                     }
-                    StatWatcherHelperServer.setValue(targetUUID, OxygenMain.CURRENCY_GOLD_STAT_ID, targetData.getCurrency(index));
-                    OxygenHelperServer.savePlayerDataDelegated(targetUUID, targetData);
+                    WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_GOLD_ID, targetData.getCurrency(index));
+                    OxygenHelperServer.savePersistentDataDelegated(targetData);
                 }
                 break;
             case REMOVE:
@@ -125,8 +125,8 @@ public class CurrencyArgumentExecutor extends AbstractArgumentExecutor {
                                 amount,
                                 index))); 
                     }
-                    StatWatcherHelperServer.setValue(targetUUID, OxygenMain.CURRENCY_GOLD_STAT_ID, targetData.getCurrency(index));
-                    OxygenHelperServer.savePlayerDataDelegated(targetUUID, targetData);
+                    WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_GOLD_ID, targetData.getCurrency(index));
+                    OxygenHelperServer.savePersistentDataDelegated(targetData);
                 }
                 break;
             }

@@ -14,24 +14,18 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class ProcessesManagerServer {
 
-    private final OxygenManagerServer manager;
-
     private final Map<Long, ITemporaryProcess> globalTemporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>();
 
-    private final Set<IPersistentProcess> persistentProcesses = new HashSet<IPersistentProcess>(5);
+    private final Set<IPersistentProcess> serviceProcesses = new HashSet<IPersistentProcess>(5);
 
     private volatile boolean globalTemporaryProcessesExist;
 
-    public ProcessesManagerServer(OxygenManagerServer manager) {
-        this.manager = manager;
+    public void addPersistentServiceProcess(IPersistentProcess process) {
+        this.serviceProcesses.add(process);
     }
 
-    public void addPersistentProcess(IPersistentProcess process) {
-        this.persistentProcesses.add(process);
-    }
-
-    private void runPersistentProcesses() {
-        for (IPersistentProcess process : this.persistentProcesses)
+    private void runServiceProcesses() {
+        for (IPersistentProcess process : this.serviceProcesses)
             process.run();
     }
 
@@ -61,16 +55,16 @@ public class ProcessesManagerServer {
     }
 
     public void addPlayerTemporaryProcess(EntityPlayer player, ITemporaryProcess process) {
-        this.manager.getPlayerData(CommonReference.uuid(player)).addTemporaryProcess(process);
+        OxygenManagerServer.instance().getPlayerData(CommonReference.getPersistentUUID(player)).addTemporaryProcess(process);
     }
 
     private void runPlayersTemporaryProcesses() {
-        for (OxygenPlayerData profile : this.manager.getPlayersData())
+        for (OxygenPlayerData profile : OxygenManagerServer.instance().getPlayersData())
             profile.runTemporaryProcesses();
     }
 
     public void runProcesses() {
-        this.runPersistentProcesses();
+        this.runServiceProcesses();
         this.runGlobalTemporaryProcesses();
         this.runPlayersTemporaryProcesses();
     }

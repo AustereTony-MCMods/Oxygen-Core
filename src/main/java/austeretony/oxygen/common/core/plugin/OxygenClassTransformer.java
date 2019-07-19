@@ -16,19 +16,12 @@ public class OxygenClassTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         switch (transformedName) {    
         case "net.minecraft.client.gui.GuiPlayerTabOverlay":                    
-            return patch(basicClass, EnumInputClasses.MC_GUI_PLAYER_TAB_OVERLAY);
-        case "net.minecraft.client.gui.GuiIngame":                    
-            return patch(basicClass, EnumInputClasses.MC_GUI_INGAME);
-        case "net.minecraftforge.client.GuiIngameForge":                    
-            return patch(basicClass, EnumInputClasses.MC_GUI_INGAME_FORGE);
-
-        case "net.minecraft.network.NetHandlerPlayServer":                    
-            return patch(basicClass, EnumInputClasses.MC_NET_HANDLER_PLAY_SERVER);
+            return patch(basicClass, EnumInputClass.MC_GUI_PLAYER_TAB_OVERLAY);
         }
         return basicClass;
     }
 
-    private byte[] patch(byte[] basicClass, EnumInputClasses enumInput) {
+    private byte[] patch(byte[] basicClass, EnumInputClass enumInput) {
         ClassNode classNode = new ClassNode();
         ClassReader classReader = new ClassReader(basicClass);
         classReader.accept(classNode, enumInput.readerFlags);

@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.common.privilege.IPrivilege;
-import austeretony.oxygen.common.privilege.io.EnumPrivilegeFilesKeys;
-import austeretony.oxygen.common.util.OxygenUtils;
-import austeretony.oxygen.common.util.PacketBufferUtils;
+import austeretony.oxygen.common.privilege.io.EnumPrivilegeFileKey;
+import austeretony.oxygen.util.OxygenUtils;
+import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 
 public class Privilege implements IPrivilege {
@@ -42,15 +42,15 @@ public class Privilege implements IPrivilege {
     @Override
     public JsonObject serialize() {
         JsonObject privilegeObject = new JsonObject();
-        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getName()));
-        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.VALUE), new JsonPrimitive(this.getValue()));
+        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.NAME), new JsonPrimitive(this.getName()));
+        privilegeObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.VALUE), new JsonPrimitive(this.getValue()));
         return privilegeObject;
     }
 
     public static Privilege deserialize(JsonObject jsonObject) {
         return new Privilege(
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME)).getAsString(),
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.VALUE)).getAsInt());        
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.NAME)).getAsString(),
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.VALUE)).getAsInt());        
     }
 
     @Override

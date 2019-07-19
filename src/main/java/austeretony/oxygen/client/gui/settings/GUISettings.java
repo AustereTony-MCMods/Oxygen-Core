@@ -10,9 +10,9 @@ public class GUISettings {
 
     private final GUISettingsLoader loader;
 
-    private SettingsProfile defaultProfile, currentProfile;
+    private GUISettingsProfile defaultProfile, currentProfile;
 
-    private final Map<String, SettingsProfile> profiles = new LinkedHashMap<String, SettingsProfile>(1);
+    private final Map<String, GUISettingsProfile> profiles = new LinkedHashMap<String, GUISettingsProfile>(1);
 
     private GUISettings() {
         this.loader = new GUISettingsLoader(this);
@@ -41,40 +41,32 @@ public class GUISettings {
         //TODO
     }
 
-    public SettingsProfile getDefaultProfile() {
+    public GUISettingsProfile getDefaultProfile() {
         return this.defaultProfile;
     }
 
-    public SettingsProfile getCurrentProfile() {
+    public GUISettingsProfile getCurrentProfile() {
         return this.currentProfile;
     }
 
-    public void setCurrentProfile(SettingsProfile profile) {
+    public void setCurrentProfile(GUISettingsProfile profile) {
         this.currentProfile = profile;
     }
 
-    public Collection<SettingsProfile> getProfiles() {
+    public Collection<GUISettingsProfile> getProfiles() {
         return this.profiles.values();
     }
 
-    public SettingsProfile getProfile(String name) {
+    public GUISettingsProfile getProfile(String name) {
         return this.profiles.get(name);
     }
 
-    public void addProfile(SettingsProfile profile) {
+    public void addProfile(GUISettingsProfile profile) {
         this.profiles.put(profile.name, profile);
     }
 
     public void removeProfile(String name) {
         this.profiles.remove(name);
-    }
-
-    public void setUseTextures(boolean flag) {
-        this.currentProfile.useTextures = flag;
-    }
-
-    public boolean shouldUseTextures() {
-        return this.currentProfile.useTextures;
     }
 
     public void setTextureOffsetX(int value) {

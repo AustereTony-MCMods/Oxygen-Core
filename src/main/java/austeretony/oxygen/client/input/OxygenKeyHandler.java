@@ -1,47 +1,48 @@
 package austeretony.oxygen.client.input;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.core.api.ClientReference;
+import austeretony.oxygen.client.interaction.InteractionHelperClient;
 import austeretony.oxygen.common.config.OxygenConfig;
-import austeretony.oxygen.common.main.OxygenMain;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.MouseInputEvent;
 
 public class OxygenKeyHandler {
 
-    public static final KeyBindingWrapper 
-    NOTIFICATIONS_MENU = new KeyBindingWrapper(),
-    ACCEPT = new KeyBindingWrapper(),
-    REJECT = new KeyBindingWrapper(),
-    FRIENDS_LIST = new KeyBindingWrapper(),
-    PLAYERS_LIST = new KeyBindingWrapper(),
-    INTERACT_WITH_PLAYER = new KeyBindingWrapper();
+    public static final KeyBinding 
+    NOTIFICATIONS_MENU = new KeyBinding("key.oxygen.notifications", Keyboard.KEY_N, "Oxygen"),
+    ACCEPT = new KeyBinding("key.oxygen.accept", Keyboard.KEY_R, "Oxygen"),
+    REJECT = new KeyBinding("key.oxygen.reject", Keyboard.KEY_X, "Oxygen"),
+    INTERACT = new KeyBinding("key.oxygen.interact", Keyboard.KEY_F, "Oxygen");
 
     public OxygenKeyHandler() {
-        NOTIFICATIONS_MENU.register("key.oxygen.notifications", Keyboard.KEY_N, OxygenMain.NAME);
-        ACCEPT.register("key.oxygen.accept", Keyboard.KEY_R, OxygenMain.NAME);
-        REJECT.register("key.oxygen.reject", Keyboard.KEY_X, OxygenMain.NAME);
-        if (OxygenConfig.ENABLE_FRIEND_LIST.getBooleanValue())
-            FRIENDS_LIST.register("key.oxygen.friends", Keyboard.KEY_O, OxygenMain.NAME);
-        if (OxygenConfig.ENABLE_PLAYER_LIST.getBooleanValue())
-            PLAYERS_LIST.register("key.oxygen.playersOnline", Keyboard.KEY_U, OxygenMain.NAME);
-        INTERACT_WITH_PLAYER.register("key.oxygen.iteractWithPlayer", Keyboard.KEY_F, OxygenMain.NAME);
+        ClientReference.registerKeyBinding(NOTIFICATIONS_MENU);
+        ClientReference.registerKeyBinding(ACCEPT);
+        ClientReference.registerKeyBinding(REJECT);
+        ClientReference.registerKeyBinding(INTERACT);
     }
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {        
-        if (NOTIFICATIONS_MENU.registered() && NOTIFICATIONS_MENU.getKeyBinding().isPressed())
+        if (NOTIFICATIONS_MENU.isPressed())
             OxygenManagerClient.instance().getNotificationsManager().openNotificationsMenu();
-        else if (ACCEPT.registered() && ACCEPT.getKeyBinding().isPressed())
+        else if (ACCEPT.isPressed())
             OxygenManagerClient.instance().getNotificationsManager().acceptKeyPressedSynced();
-        else if (REJECT.registered() && REJECT.getKeyBinding().isPressed())
+        else if (REJECT.isPressed())
             OxygenManagerClient.instance().getNotificationsManager().rejectKeyPressedSynced();
-        else if (FRIENDS_LIST.registered() && FRIENDS_LIST.getKeyBinding().isPressed())
-            OxygenManagerClient.instance().getFriendListManager().openFriendsListSynced();
-        else if (PLAYERS_LIST.registered() && PLAYERS_LIST.getKeyBinding().isPressed())
-            OxygenManagerClient.instance().openPlayersListSynced();
-        else if (INTERACT_WITH_PLAYER.registered() && INTERACT_WITH_PLAYER.getKeyBinding().isPressed())
-            OxygenManagerClient.instance().getInteractionManager().openPlayerInteractionMenuSynced();
+        else if (INTERACT.isPressed() && !OxygenConfig.INTERACT_WITH_RMB.getBooleanValue())
+            InteractionHelperClient.processInteraction();
+    }
+
+    @SubscribeEvent
+    public void onMouseInput(MouseInputEvent event) { 
+        if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState())
+            if (OxygenConfig.INTERACT_WITH_RMB.getBooleanValue())
+                InteractionHelperClient.processInteraction();
     }
 }

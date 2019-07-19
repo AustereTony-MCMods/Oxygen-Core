@@ -21,15 +21,7 @@ public enum EnumOxygenChatMessages {
     COMMAND_OXYGENS_CURRENCY_ADD,
     COMMAND_OXYGENS_CURRENCY_REMOVE,
     REQUEST_SENT,
-    REQUEST_RESET,
-    FRIEND_REQUEST_ACCEPTED_SENDER,
-    FRIEND_REQUEST_ACCEPTED_TARGET,
-    FRIEND_REQUEST_REJECTED_SENDER,
-    FRIEND_REQUEST_REJECTED_TARGET,
-    FRIEND_REMOVED,
-    ADDED_TO_IGNORED,
-    NOTE_EDITED,
-    IGNORED_REMOVED;
+    REQUEST_RESET;
 
     public void show(String... args) {
         switch (this) {
@@ -80,30 +72,6 @@ public enum EnumOxygenChatMessages {
             break;
         case REQUEST_RESET:
             ClientReference.showMessage(new TextComponentTranslation("oxygen.message.requestReset"));
-            break;
-        case FRIEND_REQUEST_ACCEPTED_SENDER:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.senderFriendRequestAccepted"));
-            break;
-        case FRIEND_REQUEST_ACCEPTED_TARGET:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.targetFriendRequestAccepted"));
-            break;
-        case FRIEND_REQUEST_REJECTED_SENDER:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.senderFriendRequestRejected"));
-            break;
-        case FRIEND_REQUEST_REJECTED_TARGET:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.targetFriendRequestRejected"));
-            break;
-        case FRIEND_REMOVED:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.friendRemoved"));
-            break;
-        case ADDED_TO_IGNORED:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.addedToIgnored"));
-            break;
-        case NOTE_EDITED:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.noteEdited"));
-            break;
-        case IGNORED_REMOVED:
-            ClientReference.showMessage(new TextComponentTranslation("oxygen.message.ignoredRemoved"));
             break;
         }
     }

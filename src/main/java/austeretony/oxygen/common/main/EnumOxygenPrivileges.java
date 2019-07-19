@@ -4,7 +4,6 @@ import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 
 public enum EnumOxygenPrivileges {
 
-    PREVENT_IGNORE(":preventIgnore"),
     EXPOSE_PLAYERS_OFFLINE(":exposePlayersOffline");
 
     private final String name;

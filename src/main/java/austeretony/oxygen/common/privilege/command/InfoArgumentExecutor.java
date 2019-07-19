@@ -13,7 +13,7 @@ import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
-import austeretony.oxygen.common.util.OxygenUtils;
+import austeretony.oxygen.util.OxygenUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -116,12 +116,12 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
                         OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_PLAYER_GROUP.ordinal(), 
                                 playerName, 
-                                PrivilegeProviderServer.getPlayerGroup(CommonReference.uuid(targetMP)).getName()); 
+                                PrivilegeProviderServer.getPlayerGroup(CommonReference.getPersistentUUID(targetMP)).getName()); 
 
                     } else {
                         server.sendMessage(new TextComponentString(String.format("Player %s group: %s.", 
                                 playerName, 
-                                PrivilegeProviderServer.getPlayerGroup(CommonReference.uuid(targetMP)).getName())));
+                                PrivilegeProviderServer.getPlayerGroup(CommonReference.getPersistentUUID(targetMP)).getName())));
                     }
                     break;
                 }

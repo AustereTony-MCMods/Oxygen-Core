@@ -9,13 +9,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
-import austeretony.oxygen.common.privilege.io.EnumPrivilegeFilesKeys;
-import austeretony.oxygen.common.util.OxygenUtils;
-import austeretony.oxygen.common.util.PacketBufferUtils;
+import austeretony.oxygen.common.privilege.io.EnumPrivilegeFileKey;
+import austeretony.oxygen.common.privilege.io.PrivilegeLoaderServer;
+import austeretony.oxygen.util.OxygenUtils;
+import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextFormatting;
 
@@ -137,7 +137,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         this.privileges.put(privilege.getName(), privilege);
         if (save) {
             this.markEdited();
-            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
+            PrivilegeLoaderServer.savePrivilegedGroupsDelegated();
         }
     }
 
@@ -147,7 +147,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
             this.privileges.put(privilege.getName(), privilege);
         if (save) {
             this.markEdited();
-            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
+            PrivilegeLoaderServer.savePrivilegedGroupsDelegated();
         }
     }
 
@@ -156,7 +156,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
         this.privileges.remove(privilegeName);
         if (save) {
             this.markEdited();
-            OxygenManagerServer.instance().getPrivilegeLoader().savePrivilegedGroupsDelegated();
+            PrivilegeLoaderServer.savePrivilegedGroupsDelegated();
         }
     }
 
@@ -167,32 +167,32 @@ public class PrivilegedGroup implements IPrivilegedGroup {
     @Override
     public JsonObject serialize() {
         JsonObject groupObject = new JsonObject();
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID), new JsonPrimitive(this.getId()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME), new JsonPrimitive(this.getName()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX), new JsonPrimitive(this.getPrefix()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX), new JsonPrimitive(this.getSuffix()));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.USERNAME_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getUsernameColor())));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getPrefixColor())));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getSuffixColor())));
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.CHAT_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getChatColor())));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.ID), new JsonPrimitive(this.getId()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.NAME), new JsonPrimitive(this.getName()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PREFIX), new JsonPrimitive(this.getPrefix()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.SUFFIX), new JsonPrimitive(this.getSuffix()));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.USERNAME_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getUsernameColor())));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PREFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getPrefixColor())));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.SUFFIX_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getSuffixColor())));
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.CHAT_COLOR), new JsonPrimitive(OxygenUtils.formattingCode(this.getChatColor())));
         JsonArray privilegesArray = new JsonArray();
         for (IPrivilege privilege : this.privileges.values())
             privilegesArray.add(privilege.serialize());
-        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PRIVILEGES), privilegesArray);
+        groupObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PRIVILEGES), privilegesArray);
         return groupObject;
     }
 
     public static PrivilegedGroup deserializeServer(JsonObject jsonObject) {
         PrivilegedGroup group = new PrivilegedGroup(
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME)).getAsString(),
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID)).getAsLong());
-        group.prefix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX)).getAsString();
-        group.suffix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX)).getAsString();
-        group.nicknameColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.USERNAME_COLOR)).getAsString());
-        group.prefixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PREFIX_COLOR)).getAsString());
-        group.suffixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.SUFFIX_COLOR)).getAsString());
-        group.chatColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.CHAT_COLOR)).getAsString());
-        JsonArray privilegesArray = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PRIVILEGES)).getAsJsonArray();
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.NAME)).getAsString(),
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.ID)).getAsLong());
+        group.prefix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PREFIX)).getAsString();
+        group.suffix = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.SUFFIX)).getAsString();
+        group.nicknameColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.USERNAME_COLOR)).getAsString());
+        group.prefixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PREFIX_COLOR)).getAsString());
+        group.suffixColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.SUFFIX_COLOR)).getAsString());
+        group.chatColor = OxygenUtils.formattingFromCode(jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.CHAT_COLOR)).getAsString());
+        JsonArray privilegesArray = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PRIVILEGES)).getAsJsonArray();
         Privilege privilege;
         for (JsonElement privilegesElement : privilegesArray) {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());
@@ -204,9 +204,9 @@ public class PrivilegedGroup implements IPrivilegedGroup {
 
     public static PrivilegedGroup deserializeClient(JsonObject jsonObject) {
         PrivilegedGroup group = new PrivilegedGroup(
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.NAME)).getAsString(),
-                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.ID)).getAsLong());
-        JsonArray privilegesArray = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFilesKeys.PRIVILEGES)).getAsJsonArray();
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.NAME)).getAsString(),
+                jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.ID)).getAsLong());
+        JsonArray privilegesArray = jsonObject.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PRIVILEGES)).getAsJsonArray();
         Privilege privilege;
         for (JsonElement privilegesElement : privilegesArray) {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());

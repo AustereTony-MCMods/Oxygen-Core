@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public interface INotification extends ITemporaryProcess {
 
-    EnumNotifications getType();
+    EnumNotification getType();
 
     String getDescription();
 

@@ -2,8 +2,6 @@ package austeretony.alternateui.screen.image;
 
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
 
 /**
  * Графический элемент в виде изображения (заливка, текстура или ItemStack).
@@ -11,10 +9,6 @@ import net.minecraft.item.ItemStack;
  * @author AustereTony
  */
 public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
-
-    private ItemStack itemStack;
-
-    private boolean hasItemStack, isStackOverlayEnabled, isStackTooltipEnabled;
 
     public GUIImageLabel(int xPosition, int yPosition) {		
         this.setPosition(xPosition, yPosition);		
@@ -51,42 +45,8 @@ public class GUIImageLabel extends GUIAdvancedElement<GUIImageLabel> {
                 this.mc.getTextureManager().bindTexture(this.getTexture());                         
                 drawCustomSizedTexturedRect(0, 0, this.getTextureU(), this.getTextureV(), this.getTextureWidth(), this.getTextureHeight(), this.getImageWidth(), this.getImageHeight());       	
                 GlStateManager.disableBlend();      
-            }        	
-            if (this.hasItemStack) {            	
-                RenderHelper.enableGUIStandardItemLighting();        
-                RenderHelper.enableStandardItemLighting();	   	        
-                this.itemRender.renderItemAndEffectIntoGUI(this.itemStack, 0, 0);                
-                if (this.isStackOverlayEnabled)               	
-                    this.itemRender.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.itemStack, 0, 0, null);
-            }        	
+            }        	    	
             GlStateManager.popMatrix();
         }
-    }
-    
-    @Override
-    public void drawTooltip(int mouseX, int mouseY) {   
-        if (this.hasItemStack && this.isStackTooltipEnabled)                
-            this.screen.drawToolTip(this.itemStack, mouseX, mouseY);
-    }
-    
-    public GUIImageLabel setItemStack(ItemStack itemStack) {		
-        this.itemStack = itemStack;
-        this.hasItemStack = true;		     
-        return this;
-    }
-
-    public void removeItemStack() {				
-        this.hasItemStack = false;		
-        this.itemStack = null;
-    }
-    
-    public GUIImageLabel enableStackOverlay() {   	
-        this.isStackOverlayEnabled = true;		
-        return this;
-    }
-    
-    public GUIImageLabel enableStackTooltip() {     
-        this.isStackTooltipEnabled = true;              
-        return this;
     } 
 }

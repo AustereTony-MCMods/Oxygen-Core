@@ -6,16 +6,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import austeretony.oxygen.client.api.OxygenHelperClient;
-import austeretony.oxygen.client.core.api.ClientReference;
-import austeretony.oxygen.client.gui.playerlist.PlayerListGUIScreen;
 import austeretony.oxygen.common.api.IOxygenTask;
-import austeretony.oxygen.common.api.OxygenGUIHelper;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.OxygenPlayerData;
 import austeretony.oxygen.common.main.SharedPlayerData;
-import austeretony.oxygen.common.network.server.SPOxygenRequest;
+import austeretony.oxygen.common.network.server.SPChangeStatus;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 import austeretony.oxygen.common.process.IPersistentProcess;
@@ -34,42 +31,27 @@ public class OxygenManagerClient {
 
     private OxygenThread ioThreadClient, routineThreadClient, networkThreadClient;
 
-    private final OxygenLoaderClient loader;
-
     private final PrivilegeManagerClient privilegeManager;
-
-    private final PrivilegeLoaderClient privilegeLoader;
 
     private final NotificationManagerClient notificationsManager;
 
-    private final FriendListManagerClient friendListManager;
-
     private final SharedDataManagerClient sharedDataManager;
-
-    private final InteractionManagerClient interactionManager;
-
-    private final SoundEventsManagerClient soundEventsManager;
 
     private final OxygenGUIManager guiManager;
 
     private final ClientSettingsManager clientSettings;
 
-    private final OxygenPlayerData playerData;
+    private OxygenPlayerData playerData;
 
     private final Set<IPersistentProcess> persistentProcesses = new HashSet<IPersistentProcess>(5);
 
     private OxygenManagerClient() {
-        this.loader = new OxygenLoaderClient(this);
-        this.privilegeManager = new PrivilegeManagerClient(this);
-        this.privilegeLoader = new PrivilegeLoaderClient(this);
-        this.notificationsManager = new NotificationManagerClient(this);
-        this.friendListManager = new FriendListManagerClient(this);
-        this.sharedDataManager = new SharedDataManagerClient(this);
-        this.interactionManager = new InteractionManagerClient(this);
-        this.soundEventsManager = new SoundEventsManagerClient(this);
-        this.guiManager = new OxygenGUIManager(this);
-        this.clientSettings = new ClientSettingsManager(this);
-        this.playerData = new OxygenPlayerData();
+        this.privilegeManager = new PrivilegeManagerClient();
+        this.notificationsManager = new NotificationManagerClient();
+        this.addPersistentProcess(new NotificationsProcess());
+        this.sharedDataManager = new SharedDataManagerClient();
+        this.guiManager = new OxygenGUIManager();
+        this.clientSettings = new ClientSettingsManager();
     }
 
     public static void create() {
@@ -83,36 +65,16 @@ public class OxygenManagerClient {
         return instance;
     }
 
-    public OxygenLoaderClient getLoader() {
-        return this.loader;
-    }
-
     public PrivilegeManagerClient getPrivilegeManager() {
         return this.privilegeManager;
-    }
-
-    public PrivilegeLoaderClient getPrivilegeLoader() {
-        return this.privilegeLoader;
     }
 
     public NotificationManagerClient getNotificationsManager() {
         return this.notificationsManager;
     }
 
-    public FriendListManagerClient getFriendListManager() {
-        return this.friendListManager;
-    }
-
     public SharedDataManagerClient getSharedDataManager() {
         return this.sharedDataManager;
-    }
-
-    public InteractionManagerClient getInteractionManager() {
-        return this.interactionManager;
-    }
-
-    public SoundEventsManagerClient getSoundEventsManager() {
-        return this.soundEventsManager;
     }
 
     public OxygenGUIManager getGUIManager() {
@@ -136,9 +98,9 @@ public class OxygenManagerClient {
     }
 
     public void init() {
-        this.playerData.setPlayerUUID(this.playerUUID);
-        this.privilegeLoader.loadPrivilegeDataDelegated();
-        OxygenHelperClient.loadPlayerDataDelegated(this.playerData);
+        this.playerData = new OxygenPlayerData(this.playerUUID);
+        OxygenHelperClient.loadPersistentDataDelegated(this.playerData);
+        PrivilegeLoaderClient.loadPrivilegeDataDelegated();
         this.clientSettings.load();
     }
 
@@ -235,25 +197,6 @@ public class OxygenManagerClient {
         return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
     }
 
-    public void openPlayersListSynced() {
-        OxygenGUIHelper.needSync(OxygenMain.PLAYER_LIST_SCREEN_ID);
-        OxygenMain.network().sendToServer(new SPOxygenRequest(SPOxygenRequest.EnumRequest.OPEN_PLAYERS_LIST));
-    }
-
-    public void openPlayersListDelegated() {
-        ClientReference.getMinecraft().addScheduledTask(new Runnable() {
-
-            @Override
-            public void run() {
-                openPlayersList();
-            }
-        });
-    }
-
-    private void openPlayersList() {
-        ClientReference.displayGuiScreen(new PlayerListGUIScreen());
-    }
-
     public void addPersistentProcess(IPersistentProcess process) {
         this.persistentProcesses.add(process);
     }
@@ -263,8 +206,13 @@ public class OxygenManagerClient {
             process.run();
     }
 
+    public void changeActivityStatusSynced(OxygenPlayerData.EnumActivityStatus status) {
+        OxygenMain.network().sendToServer(new SPChangeStatus(status));
+    }
+
     public void reset() {
-        this.playerData.reset();
+        if (this.playerData != null)
+            this.playerData.reset();
         this.notificationsManager.getNotifications().clear();
         this.sharedDataManager.reset();
     }

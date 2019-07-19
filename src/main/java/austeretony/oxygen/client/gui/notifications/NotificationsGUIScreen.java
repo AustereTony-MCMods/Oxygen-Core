@@ -16,7 +16,7 @@ public class NotificationsGUIScreen extends AbstractGUIScreen {
 
     @Override
     protected GUIWorkspace initWorkspace() {
-        return new GUIWorkspace(this, 217, 214).setAlignment(EnumGUIAlignment.RIGHT, - 10, 0);
+        return new GUIWorkspace(this, 180, 171).setAlignment(EnumGUIAlignment.RIGHT, - 10, 0);
     }
 
     @Override

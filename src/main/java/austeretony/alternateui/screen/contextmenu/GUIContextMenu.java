@@ -83,19 +83,21 @@ public class GUIContextMenu extends GUISimpleElement<GUIContextMenu> {
     }
 
     public void open(GUIBaseElement element, int mouseX, int mouseY) {     
-        this.setPosition(mouseX, mouseY);
-        for (GUIContextActionWrapper action : this.actions) {
-            this.currentElement = element;
-            action.setDisplayText(action.action.getName(element));
-            action.setPosition(this.getX(), this.getY() + this.actions.indexOf(action) * this.getHeight());
-            if (action.action.isValid(element))    
-                action.setEnabled(true);
-            action.setVisible(true);
+        if (!this.actions.isEmpty()) {
+            this.setPosition(mouseX, mouseY);
+            for (GUIContextActionWrapper action : this.actions) {
+                this.currentElement = element;
+                action.setDisplayText(action.action.getName(element));
+                action.setPosition(this.getX(), this.getY() + this.actions.indexOf(action) * this.getHeight());
+                if (action.action.isValid(element))    
+                    action.setEnabled(true);
+                action.setVisible(true);
+            }
+            this.setDragged(true);
+            this.enableFull();
+            if (this.openSound != null)  
+                this.mc.player.playSound(this.openSound.sound, this.openSound.volume, this.openSound.pitch);
         }
-        this.setDragged(true);
-        this.enableFull();
-        if (this.openSound != null)  
-            this.mc.player.playSound(this.openSound.sound, this.openSound.volume, this.openSound.pitch);
     }
 
     public void close() {   

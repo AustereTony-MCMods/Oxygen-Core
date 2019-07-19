@@ -1,22 +1,19 @@
-key.oxygen.notifications=Меню Уведомлений
-key.oxygen.accept=Принять
-key.oxygen.reject=Отказаться
-key.oxygen.friends=Список Друзей
-key.oxygen.playersOnline=Список Игроков
-key.oxygen.iteractWithPlayer=Взаимодействие
+key.oxygen.notifications=Открыть Меню Уведомлений
+key.oxygen.accept=Принять Запрос
+key.oxygen.reject=Оклонить Запрос
+key.oxygen.interact=Взаимодействовать
 
 oxygen.currency.gold=Золото
 
-oxygen.gui.interaction.close=Закрыть
-oxygen.gui.interaction.addFriend=Добавить в Друзья
-oxygen.gui.interaction.ignore=Игнорировать
-
 oxygen.gui.username=Ник
 oxygen.gui.name=Название
+oxygen.gui.dimension=Измерение
+oxygen.gui.status=Статус
 oxygen.gui.description=Описание
 oxygen.gui.note=Заметка
 oxygen.gui.downloadCallback=Загрузка Данных
 oxygen.gui.downloadCallback.request=Загрузить с сервера?
+oxygen.gui.settingsCallback=Настройки
 oxygen.gui.editNoteCallback=Редактирование Заметки
 oxygen.gui.confirmButton=Принять
 oxygen.gui.cancelButton=Отмена
@@ -26,37 +23,15 @@ oxygen.gui.playerFound=Игрок найден
 oxygen.gui.playerNotFound=Игрок не найден
 
 oxygen.gui.notifications.title=Уведомления
-oxygen.gui.notifications.hideOverlay=Убрать Оверлэй
+oxygen.gui.notifications.setting.hideOverlay=Убрать Оверлэй Запросов
 oxygen.gui.notifications.empty=У вас нет активных уведомлений.
 
-oxygen.gui.friends.title=Друзья
-oxygen.gui.ignored.title=Игнорируемые
-oxygen.gui.friends.username=Ник
-oxygen.gui.friends.dimension=Измерение
-oxygen.gui.friends.autoAccept=Принимать Заявки
-oxygen.gui.friends.addFriendCallback=Добавить 
-oxygen.gui.friends.addFriendCallback.request=Отправить игроку запрос в друзья.
-oxygen.gui.friends.removeFriendCallback=Удалить
-oxygen.gui.friends.removeFriendCallback.request=%s будет удалён из списка друзей.
-oxygen.gui.friends.ignoreCallback=Игнорировать
-oxygen.gui.friends.ignoreCallback.request=%s будет добавлен в игнор лист.
-oxygen.gui.ignored.addIgnoredCallback=Добавить
-oxygen.gui.ignored.addIgnoredCallback.request=Добавить игрока в игнор лист.
-oxygen.gui.ignored.removeIgnoredCallback=Удалить 
-oxygen.gui.ignored.removeIgnoredCallback.request=%s будет удалён из списка игнорируемых.
-
-oxygen.gui.players.title=Игроки
+oxygen.gui.players=Игроки
 
 oxygen.gui.action.remove=Удалить
 oxygen.gui.action.ignore=Игнорировать
 oxygen.gui.action.editNote=Редакт. Заметку
 oxygen.gui.action.addToFriends=Доб. в Друзья
-
-oxygen.friends.lastActivity.hour=Активность %s час назад
-oxygen.friends.lastActivity.hours=Активность %s часов назад
-oxygen.friends.lastActivity.day=Активность %s день назад
-oxygen.friends.lastActivity.days=Активность %s дней назад
-oxygen.friends.lastActivity.noData=Активность: нет данных
 
 oxygen.request.friendRequest=%s отправил вам запрос в друзья.
 
@@ -65,16 +40,20 @@ oxygen.status.away=Нет на месте
 oxygen.status.not_disturb=Не Беспокоить
 oxygen.status.offline=Не в сети
 
+oxygen.lastActivity.hour=Активность %s час назад
+oxygen.lastActivity.hours=Активность %s час назад
+oxygen.lastActivity.day=Активность %s день назад
+oxygen.lastActivity.days=Активность %s ней назад
+oxygen.lastActivity.noData=Нет данных
+
 oxygen.tooltip.online=В сети
 oxygen.tooltip.download=Загрузка
+oxygen.tooltip.settings=Настройки
 oxygen.tooltip.search=Поиск
 oxygen.tooltip.refresh=Обновить
 oxygen.tooltip.sort=Сортировать
-oxygen.gui.friends.tooltip.friends=Друзья
-oxygen.gui.friends.tooltip.ignored=Игнорируемые
 
-oxygen.message.command.privilege.info.groupInfo=Группа: %s - префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет 
-суффикса: %s, цвет чата: %s.
+oxygen.message.command.privilege.info.groupInfo=Группа: %s - префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет суффикса: %s, цвет чата: %s.
 oxygen.message.command.privilege.info.groupPrivileges=Привелегии группы <%s>:
 oxygen.message.command.privilege.info.groupsList=Группы:
 oxygen.message.command.privilege.info.playerGroup=Игрок %s сосотоит в группе: %s.
@@ -93,15 +72,6 @@ oxygen.message.statusChanged=Статус изменен на %s.
 oxygen.message.requestSent=Запрос отправлен.
 oxygen.message.requestReset=Запрос сброшен.
 oxygen.message.targetOffline=Игрок вне сети.
-oxygen.message.senderIgnored=Игрок вас игнорирует.
-oxygen.message.senderFriendRequestAccepted=Ваш запрос в друзья принят.
-oxygen.message.targetFriendRequestAccepted=Вы приняли запрос в друзья.
-oxygen.message.senderFriendRequestRejected=Ваш запрос в друзья отклонён.
-oxygen.message.targetFriendRequestRejected=Вы отклонили запрос в друзья.
-oxygen.message.friendRemoved=Игрок убран из списка друзей.
-oxygen.message.addedToIgnored=Игрок добавлен в игнор лист.
-oxygen.message.noteEdited=Заметка отредактирована.
-oxygen.message.ignoredRemoved=Игрок убран из списка игнорируемых.
 
 oxygen.command.exception.playerNotFound=Игрок %s не найден.
 oxygen.command.exception.groupNotFound=Группа %s не найдена.

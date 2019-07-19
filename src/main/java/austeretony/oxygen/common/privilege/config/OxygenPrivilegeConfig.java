@@ -24,7 +24,7 @@ public class OxygenPrivilegeConfig extends AbstractConfigHolder {
 
     @Override
     public String getVersion() {
-        return OxygenMain.VERSION_EXTENDED;
+        return OxygenMain.VERSION_CUSTOM;
     }
 
     @Override

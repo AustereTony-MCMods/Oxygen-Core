@@ -5,26 +5,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
+import austeretony.oxygen.common.privilege.io.PrivilegeLoaderServer;
 
 public class PrivilegeManagerServer {
-
-    private final OxygenManagerServer manager;
 
     public static final Map<String, String> PRIVILEGES_REGISTRY = new HashMap<String, String>();
 
     private final Map<UUID, String> players = new ConcurrentHashMap<UUID, String>();
 
     private final Map<String, IPrivilegedGroup> groups = new ConcurrentHashMap<String, IPrivilegedGroup>(5);
-
-    public PrivilegeManagerServer(OxygenManagerServer manager) {
-        this.manager = manager;
-    }
 
     public Map<UUID, String> getPlayers() {
         return this.players;
@@ -35,7 +29,7 @@ public class PrivilegeManagerServer {
             this.players.remove(playerUUID);
         else
             this.players.put(playerUUID, groupName);
-        this.manager.getPrivilegeLoader().savePlayerListDelegated();
+        PrivilegeLoaderServer.savePlayerListDelegated();
         if (OxygenHelperServer.isOnline(playerUUID))
             OxygenMain.network().sendTo(new CPSyncGroup(), CommonReference.playerByUUID(playerUUID));
     }
@@ -56,7 +50,7 @@ public class PrivilegeManagerServer {
         if (!this.groupExist(group.getName())) {
             this.groups.put(group.getName(), group);
             if (save)
-                this.manager.getPrivilegeLoader().savePrivilegedGroupsDelegated();
+                PrivilegeLoaderServer.savePrivilegedGroupsDelegated();
         }
     }
 
@@ -67,7 +61,7 @@ public class PrivilegeManagerServer {
 
     public void removeGroup(String groupName) {
         this.groups.remove(groupName);
-        this.manager.getPrivilegeLoader().savePrivilegedGroupsDelegated();
+        PrivilegeLoaderServer.savePrivilegedGroupsDelegated();
     }
 
     private boolean havePrivileges(UUID playerUUID) {

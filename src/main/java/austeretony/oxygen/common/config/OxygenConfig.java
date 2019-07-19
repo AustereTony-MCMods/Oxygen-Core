@@ -14,15 +14,9 @@ public class OxygenConfig extends AbstractConfigHolder {
     SYNC_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "sync_privileges"),
     ENABLE_TELEMETRY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_telemetry"),
     ENABLE_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_privileges"),
+    ENABLE_FORMATTED_CHAT = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_formatted_chat"),
     ENABLE_CURRENCY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_currency"),
-    DISABLE_TAB_OVERLAY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "disable_tab_overlay"),
-    ENABLE_PLAYER_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_player_list"),
-    ENABLE_PLAYERS_INTERACTION = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_players_interaction"),
-
-    ENABLE_FRIEND_LIST = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "friends", "enable_friend_list"),
-    FRIEND_REQUEST_EXPIRE_TIME = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "friend_request_expire_time_seconds"),
-    MAX_FRIENDS = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "max_friends"),
-    MAX_IGNORED = new ConfigValue(ConfigValue.EnumValueType.INT, "friends", "max_ignored");
+    INTERACT_WITH_RMB = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "interact_with_rmb");
 
     @Override
     public String getModId() {
@@ -31,7 +25,7 @@ public class OxygenConfig extends AbstractConfigHolder {
 
     @Override
     public String getVersion() {
-        return OxygenMain.VERSION_EXTENDED;
+        return OxygenMain.VERSION_CUSTOM;
     }
 
     @Override
@@ -50,15 +44,9 @@ public class OxygenConfig extends AbstractConfigHolder {
         values.add(SYNC_PRIVILEGES);
         values.add(ENABLE_TELEMETRY);
         values.add(ENABLE_PRIVILEGES);
+        values.add(ENABLE_FORMATTED_CHAT);
         values.add(ENABLE_CURRENCY);
-        values.add(DISABLE_TAB_OVERLAY);
-        values.add(ENABLE_PLAYER_LIST);
-        values.add(ENABLE_PLAYERS_INTERACTION);
-
-        values.add(ENABLE_FRIEND_LIST);
-        values.add(FRIEND_REQUEST_EXPIRE_TIME);
-        values.add(MAX_FRIENDS);
-        values.add(MAX_IGNORED);
+        values.add(INTERACT_WITH_RMB);
     }
 
     @Override

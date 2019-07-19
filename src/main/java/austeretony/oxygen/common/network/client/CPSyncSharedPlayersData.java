@@ -32,7 +32,7 @@ public class CPSyncSharedPlayersData extends ProxyPacket {
         Collection<SharedPlayerData> data = OxygenManagerServer.instance().getSharedPlayersData();
         buffer.writeShort(data.size());
         for (SharedPlayerData sharedData : data) {
-            buffer.writeShort(sharedData.getIndex());
+            buffer.writeInt(sharedData.getIndex());
             sharedData.write(buffer, valid, this.ids);   
         }
     }    
@@ -48,7 +48,7 @@ public class CPSyncSharedPlayersData extends ProxyPacket {
         size = buffer.readShort(),
         index;
         for (i = 0; i < size; i++) {
-            index = buffer.readShort();
+            index = buffer.readInt();
             OxygenManagerClient.instance().getSharedPlayerData(index).read(buffer, this.ids);
         }
 

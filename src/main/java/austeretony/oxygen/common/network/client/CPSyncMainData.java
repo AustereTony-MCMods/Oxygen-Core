@@ -3,13 +3,13 @@ package austeretony.oxygen.common.network.client;
 import java.util.UUID;
 
 import austeretony.oxygen.client.OxygenManagerClient;
-import austeretony.oxygen.client.OxygenStatWatcherManagerClient;
+import austeretony.oxygen.client.WatcherManagerClient;
 import austeretony.oxygen.client.api.event.OxygenClientInitEvent;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
-import austeretony.oxygen.common.util.PacketBufferUtils;
+import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +36,7 @@ public class CPSyncMainData extends ProxyPacket {
     public void read(PacketBuffer buffer, INetHandler netHandler) {
         OxygenMain.OXYGEN_LOGGER.info("Synchronized main data.");
         OxygenManagerClient.instance().reset();
-        OxygenStatWatcherManagerClient.instance().reset();
+        WatcherManagerClient.instance().reset();
         OxygenManagerClient.instance().setWorldId(buffer.readLong());
         OxygenManagerClient.instance().setGroupId(buffer.readLong());
         OxygenManagerClient.instance().setPlayerUUID(PacketBufferUtils.readUUID(buffer));

@@ -17,11 +17,11 @@ public class CPRemoveSharedDataEntry extends ProxyPacket {
 
     @Override
     public void write(PacketBuffer buffer, INetHandler netHandler) {
-        buffer.writeShort(this.index);
+        buffer.writeInt(this.index);
     }
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        OxygenManagerClient.instance().getSharedDataManager().removePlyerSharedDataEntry(buffer.readShort());
+        OxygenManagerClient.instance().getSharedDataManager().removePlyerSharedDataEntry(buffer.readInt());
     }
 }

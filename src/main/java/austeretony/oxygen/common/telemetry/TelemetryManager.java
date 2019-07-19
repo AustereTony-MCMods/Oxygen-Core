@@ -2,7 +2,6 @@ package austeretony.oxygen.common.telemetry;
 
 import java.util.Set;
 
-import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.telemetry.api.ILog;
 import austeretony.oxygen.common.telemetry.api.LogType;
@@ -12,8 +11,6 @@ import austeretony.oxygen.common.telemetry.io.TelemetryIO;
 import io.netty.util.internal.ConcurrentSet;
 
 public class TelemetryManager {
-    
-    private final OxygenManagerServer manager;
 
     private TelemetryRoutineThread routineThread;
 
@@ -23,8 +20,7 @@ public class TelemetryManager {
 
     private Set<ILogType> containers = new ConcurrentSet<ILogType>();
 
-    public TelemetryManager(OxygenManagerServer manager) {
-        this.manager = manager;
+    public TelemetryManager() {
         this.routineThread = new TelemetryRoutineThread("Telemetry Routine");
         this.ioThread = new TelemetryIOThread("Telemetry IO");
     }

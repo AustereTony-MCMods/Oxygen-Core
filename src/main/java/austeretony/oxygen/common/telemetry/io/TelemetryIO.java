@@ -26,8 +26,8 @@ import austeretony.oxygen.common.telemetry.TimeCounter;
 import austeretony.oxygen.common.telemetry.api.ILog;
 import austeretony.oxygen.common.telemetry.api.LogType;
 import austeretony.oxygen.common.telemetry.config.OxygenTelemetryConfig;
-import austeretony.oxygen.common.util.JsonUtils;
-import austeretony.oxygen.common.util.StreamUtils;
+import austeretony.oxygen.util.JsonUtils;
+import austeretony.oxygen.util.StreamUtils;
 
 public class TelemetryIO {
 
@@ -72,9 +72,9 @@ public class TelemetryIO {
                 ILogType logType;
                 for (JsonElement element : jsonArray) {
                     object = element.getAsJsonObject();
-                    logType = LogType.getType(object.get(EnumLogsDataFileKeys.TYPE.key).getAsInt());
+                    logType = LogType.getType(object.get(EnumLogFileKey.TYPE.key).getAsInt());
                     if (logType == null) continue;
-                    time = object.get(EnumLogsDataFileKeys.TIME.key).getAsLong();
+                    time = object.get(EnumLogFileKey.TIME.key).getAsLong();
                     logType.getLogFiles().createLogFile(logType.getLogFileName(), time);
                     logType.getLogFiles().createCacheFiles(logType.getCacheFileName(), OxygenTelemetryConfig.CACHE_FILES_AMOUNT.getIntValue());
                 }
@@ -89,8 +89,8 @@ public class TelemetryIO {
                 JsonObject object;
                 for (ILogType logType : LogType.getLogTypes()) {
                     object = new JsonObject();
-                    object.add(EnumLogsDataFileKeys.TYPE.key, new JsonPrimitive(logType.getId()));
-                    object.add(EnumLogsDataFileKeys.TIME.key, new JsonPrimitive(logType.getLogFiles().getLogFileTimeCreated()));
+                    object.add(EnumLogFileKey.TYPE.key, new JsonPrimitive(logType.getId()));
+                    object.add(EnumLogFileKey.TIME.key, new JsonPrimitive(logType.getLogFiles().getLogFileTimeCreated()));
                     jsonArray.add(object);
                 }
                 JsonUtils.createExternalJsonFile(folder, jsonArray);
@@ -223,8 +223,8 @@ public class TelemetryIO {
             JsonObject object;
             for (ILogType type : LogType.getLogTypes()) {
                 object = new JsonObject();
-                object.add(EnumLogsDataFileKeys.TYPE.key, new JsonPrimitive(type.getId()));
-                object.add(EnumLogsDataFileKeys.TIME.key, new JsonPrimitive(this.getLogFiles(type).getLogFileTimeCreated()));
+                object.add(EnumLogFileKey.TYPE.key, new JsonPrimitive(type.getId()));
+                object.add(EnumLogFileKey.TIME.key, new JsonPrimitive(this.getLogFiles(type).getLogFileTimeCreated()));
                 jsonArray.add(object);
             }
             JsonUtils.createExternalJsonFile(folder, jsonArray);

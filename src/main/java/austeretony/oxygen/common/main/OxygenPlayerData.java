@@ -3,23 +3,25 @@ package austeretony.oxygen.common.main;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.notification.EnumRequestReply;
 import austeretony.oxygen.common.notification.INotification;
 import austeretony.oxygen.common.process.ITemporaryProcess;
-import austeretony.oxygen.common.util.MathUtils;
-import austeretony.oxygen.common.util.StreamUtils;
-import net.minecraft.client.resources.I18n;
+import austeretony.oxygen.util.MathUtils;
+import austeretony.oxygen.util.StreamUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class OxygenPlayerData implements IPersistentData {
+
+    public static final int 
+    CURRENCY_GOLD_ID = 0,
+    CURRENCY_GOLD_INDEX = 0;
 
     private UUID playerUUID;
 
@@ -29,25 +31,15 @@ public class OxygenPlayerData implements IPersistentData {
 
     private final Map<Integer, Integer> currency = new ConcurrentHashMap<Integer, Integer>(3);
 
-    public static final int CURRENCY_GOLD_INDEX = 0;
-
-    private final Map<Long, FriendListEntry> friendList = new ConcurrentHashMap<Long, FriendListEntry>(5);
-
-    //cached in memory just for fast access
-    private final Map<UUID, Long> friendListAccess = new ConcurrentHashMap<UUID, Long>(5);
-
-    private int friendsAmount, ignoredAmount;
-
     private volatile boolean syncing, requesting, requested, temporaryProcessesExist;
 
-    public OxygenPlayerData() {
-        this.status = EnumActivityStatus.ONLINE;    
-        this.currency.put(CURRENCY_GOLD_INDEX, 0);
-    }
+    public final String dataPath;
 
     public OxygenPlayerData(UUID playerUUID) {
-        this();
+        this.status = EnumActivityStatus.ONLINE;    
+        this.currency.put(CURRENCY_GOLD_INDEX, 0);
         this.playerUUID = playerUUID;
+        this.dataPath = "players/" + this.playerUUID + "/core/player_data.dat";
     }
 
     public UUID getPlayerUUID() {
@@ -110,75 +102,6 @@ public class OxygenPlayerData implements IPersistentData {
         }
     }
 
-    public Set<Long> getFriendListEntriesIds() {
-        return this.friendList.keySet();
-    }
-
-    public Collection<FriendListEntry> getFriendListEntries() {
-        return this.friendList.values();
-    }
-
-    public void clearFriendListEntries() {
-        this.friendList.clear();
-        this.friendListAccess.clear();
-        this.friendsAmount = 0;
-        this.ignoredAmount = 0;
-    }
-
-    public int getFriendsAmount() {
-        return this.friendsAmount;
-    }
-
-    public int getIgnoredAmount() {
-        return this.ignoredAmount;
-    }
-
-    public boolean haveFriendListEntryForUUID(UUID playerUUID) {
-        return this.friendListAccess.containsKey(playerUUID);
-    }
-
-    public long getFriendListEntryIdByUUID(UUID playerUUID) {
-        return this.friendListAccess.get(playerUUID);
-    }
-
-    public FriendListEntry getFriendListEntryByUUID(UUID playerUUID) {
-        return this.friendList.get(this.friendListAccess.get(playerUUID));
-    }
-
-    public FriendListEntry getFriendListEntry(long id) {
-        return this.friendList.get(id);
-    }
-
-    public void addFriendListEntry(FriendListEntry friend) {
-        if (friend.ignored)
-            this.ignoredAmount++;
-        else
-            this.friendsAmount++;
-        this.friendList.put(friend.getId(), friend);
-        this.friendListAccess.put(friend.playerUUID, friend.getId());
-    }
-
-    public void removeFriendListEntry(long id) {
-        if (this.friendList.containsKey(id)) {
-            FriendListEntry entry = this.friendList.remove(id);
-            if (entry.ignored)
-                this.ignoredAmount--;
-            else
-                this.friendsAmount--;
-            this.friendListAccess.remove(entry.playerUUID);
-        }
-    } 
-
-    public void removeFriendListEntry(UUID playerUUID) {
-        if (this.friendListAccess.containsKey(playerUUID)) {
-            FriendListEntry entry = this.friendList.remove(this.friendListAccess.remove(playerUUID));
-            if (entry.ignored)
-                this.ignoredAmount--;
-            else
-                this.friendsAmount--;
-        }
-    } 
-
     public void registerCurrency(int index) {
         this.currency.put(index, 0);
     }
@@ -233,7 +156,7 @@ public class OxygenPlayerData implements IPersistentData {
 
     @Override
     public String getName() {
-        return "oxygen player data";
+        return "player_data";
     }
 
     @Override
@@ -243,7 +166,7 @@ public class OxygenPlayerData implements IPersistentData {
 
     @Override
     public String getPath() {
-        return "oxygen/profile.dat";
+        return this.dataPath;
     }
 
     @Override
@@ -256,10 +179,6 @@ public class OxygenPlayerData implements IPersistentData {
             StreamUtils.write(entry.getKey().byteValue(), bos);
             StreamUtils.write(entry.getValue(), bos);
         }
-
-        StreamUtils.write((short) this.friendList.size(), bos);
-        for (FriendListEntry listEntry : this.friendList.values()) 
-            listEntry.write(bos);
     }
 
     @Override
@@ -272,15 +191,10 @@ public class OxygenPlayerData implements IPersistentData {
         i;
         for (i = 0; i < amount; i++)
             this.currency.put((int) StreamUtils.readByte(bis), StreamUtils.readInt(bis));
-
-        amount = StreamUtils.readShort(bis);
-        for (i = 0; i < amount; i++)
-            this.addFriendListEntry(FriendListEntry.read(bis));
     }
 
     public void reset() {
         this.temporaryProcesses.clear();
-        this.clearFriendListEntries();
     }
 
     public enum EnumActivityStatus {
@@ -291,7 +205,7 @@ public class OxygenPlayerData implements IPersistentData {
         OFFLINE;
 
         public String localizedName() {
-            return I18n.format("oxygen.status." + this.toString().toLowerCase());
+            return ClientReference.localize("oxygen.status." + this.toString().toLowerCase());
         }
     }
 }

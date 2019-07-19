@@ -10,7 +10,7 @@ import austeretony.oxygen.common.main.EnumOxygenChatMessages;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
-import austeretony.oxygen.common.util.OxygenUtils;
+import austeretony.oxygen.util.OxygenUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

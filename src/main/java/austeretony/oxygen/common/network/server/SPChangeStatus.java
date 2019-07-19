@@ -23,6 +23,6 @@ public class SPChangeStatus extends ProxyPacket {
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        OxygenManagerServer.instance().getFriendListManager().changeStatus(getEntityPlayerMP(netHandler), OxygenPlayerData.EnumActivityStatus.values()[buffer.readByte()]);
+        OxygenManagerServer.instance().changeActivityStatus(getEntityPlayerMP(netHandler), OxygenPlayerData.EnumActivityStatus.values()[buffer.readByte()]);
     }
 }

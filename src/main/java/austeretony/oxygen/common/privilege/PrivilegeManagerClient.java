@@ -1,21 +1,12 @@
 package austeretony.oxygen.common.privilege;
 
-import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.server.SPOxygenRequest;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 
 public class PrivilegeManagerClient {
 
-    private final OxygenManagerClient manager;
-
-    private PrivilegeLoaderClient privilegeIO;
-
     private IPrivilegedGroup group;  
-
-    public PrivilegeManagerClient(OxygenManagerClient manager) {
-        this.manager = manager;
-    }
 
     public void setPrivelegedGroup(IPrivilegedGroup group) {
         this.group = group;

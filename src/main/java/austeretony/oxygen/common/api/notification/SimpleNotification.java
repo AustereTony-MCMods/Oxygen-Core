@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.api.notification;
 
-import austeretony.oxygen.common.notification.EnumNotifications;
+import austeretony.oxygen.common.notification.EnumNotification;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class SimpleNotification extends AbstractNotification {
@@ -18,8 +18,8 @@ public class SimpleNotification extends AbstractNotification {
     }
 
     @Override
-    public EnumNotifications getType() {
-        return EnumNotifications.NOTICE;
+    public EnumNotification getType() {
+        return EnumNotification.NOTICE;
     }
 
     @Override

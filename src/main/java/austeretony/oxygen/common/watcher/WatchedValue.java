@@ -12,25 +12,25 @@ public class WatchedValue {
 
     private volatile boolean needSync;
 
-    private IStatInitializer statInitializer;
+    private IValueInitializer initializer;
 
     public WatchedValue(int id, int bufferCapacity) {
         this.id = id;
         this.buffer = new byte[bufferCapacity];
     }
 
-    public WatchedValue(int id, int bufferCapacity, IStatInitializer initializer) {
+    public WatchedValue(int id, int bufferCapacity, IValueInitializer initializer) {
         this(id, bufferCapacity);
-        this.statInitializer = initializer;
+        this.initializer = initializer;
     }
 
     public WatchedValue copy() {
-        return new WatchedValue(this.id, this.buffer.length, this.statInitializer);
+        return new WatchedValue(this.id, this.buffer.length, this.initializer);
     }
 
     public void init(UUID playerUUID) {
-        if (this.statInitializer != null) 
-            this.statInitializer.init(playerUUID, this);
+        if (this.initializer != null) 
+            this.initializer.init(playerUUID, this);
     }
 
     public byte[] getBuffer() {
@@ -72,7 +72,7 @@ public class WatchedValue {
 
     public void set(long value) {
         for (int i = 7; i >= 0; i--) {
-            this.buffer[i] = (byte) (value & 0xffL);
+            this.buffer[i] = (byte) (value & 0xFFL);
             value >>= 8;
         }
         this.needSync();
