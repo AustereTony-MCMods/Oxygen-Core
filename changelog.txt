@@ -1,3 +1,10 @@
+0.7.1b
++GUI fixes:
+ - sliders now can be used for scrolling.
+ - text fields correctly calculate cursor position on click.
++Improved currency balance synchronization.
++Slightly improved notifications menu.
+
 0.7.0a
 +API cleanup. Friends list/ignore list, players list and interaction menu now separated 
 from core and available as independent modules.
