@@ -15,7 +15,7 @@ public class OxygenSoundEffects {
     public static final SoundEventContainer 
     INVENTORY = new SoundEventContainer(OxygenMain.MODID, "inventory"),
     SELL = new SoundEventContainer(OxygenMain.MODID, "sell"),
-    REQUEST_RECIEVED = new SoundEventContainer(OxygenMain.MODID, "request_recieved"),
+    REQUEST_RECEIVED = new SoundEventContainer(OxygenMain.MODID, "request_recieved"),
     BUTTON_CLICK = new SoundEventContainer(OxygenMain.MODID, "button_click"),
     CONTEXT_OPEN = new SoundEventContainer(OxygenMain.MODID, "context_open"),
     CONTEXT_CLOSE = new SoundEventContainer(OxygenMain.MODID, "context_close"),
@@ -26,7 +26,7 @@ public class OxygenSoundEffects {
         event.getRegistry().registerAll(
                 INVENTORY.soundEvent,
                 SELL.soundEvent,
-                REQUEST_RECIEVED.soundEvent,
+                REQUEST_RECEIVED.soundEvent,
                 BUTTON_CLICK.soundEvent,
                 CONTEXT_OPEN.soundEvent,
                 CONTEXT_CLOSE.soundEvent,

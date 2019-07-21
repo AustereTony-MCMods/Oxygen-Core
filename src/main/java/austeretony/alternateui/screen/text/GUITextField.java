@@ -23,8 +23,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected boolean resetTypedText, hasCustomCursor, numberFieldMode;
 
-    protected int lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, 
-    maxNumber = - 1;
+    protected int lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, maxNumber = - 1;
 
     /**
      * Текстовое поле.
@@ -171,54 +170,33 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
     }
 
     private int getWord(int index1, int index2, boolean flag) {
-
         int k = index2;
-
         boolean flag1 = index1 < 0;
-
         int l = Math.abs(index1);
-
         for (int i1 = 0; i1 < l; ++i1) {
-
             if (flag1) {
-
                 while (flag && k > 0 && this.typedText.charAt(k - 1) == 32) {
-
                     k--;
                 }
-
                 while (k > 0 && this.typedText.charAt(k - 1) != 32) {
-
                     k--;
                 }
-            }
-
-            else {
-
+            } else {
                 int j1 = this.typedText.length();
-
                 k = this.typedText.indexOf(32, k);
-
                 if (k == - 1) {
-
                     k = j1;
-                }
-
-                else {
-
+                } else {
                     while (flag && k < j1 && this.typedText.charAt(k) == 32) {
-
                         k++;
                     }
                 }
             }
         }
-
         return k;
     }
 
     protected void moveCursorBy(int offset) {
-
         this.setCursorPosition(this.selectionEnd + offset);
     }
 
@@ -239,185 +217,83 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     @Override
     public boolean keyTyped(char keyChar, int keyCode) {
-
-        if (!this.isDragged()) {
-
+        if (!this.isDragged())
             return false;
-        }
-
         else {
-
             switch (keyChar) {
-
             case 1:
-
                 this.setCursorPositionEnd();
                 this.setSelectionPos(0);
-
                 return true;
-
             case 3:
-
                 GuiScreen.setClipboardString(this.getSelectedText());
-
                 return true;
-
             case 22:
-
-                if (this.isEnabled()) {
-
+                if (this.isEnabled())
                     this.writeText(GuiScreen.getClipboardString());
-                }
-
                 return true;
-
             case 24:
-
                 GuiScreen.setClipboardString(this.getSelectedText());
-
-                if (this.isEnabled()) {
-
+                if (this.isEnabled())
                     this.writeText("");
-                }
-
                 return true;
-
             default:
-
                 switch (keyCode) {
-
                 case 14:
-
                     if (GuiScreen.isCtrlKeyDown()) {
-
-                        if (this.isEnabled()) {
-
+                        if (this.isEnabled())
                             this.deleteWords(- 1);
-                        }
-                    }
-
-                    else if (this.isEnabled()) {
-
+                    } else if (this.isEnabled())
                         this.deleteFromCursor(- 1);
-                    }
-
                     return true;
-
                 case 199:
-
-                    if (GuiScreen.isShiftKeyDown()) {
-
+                    if (GuiScreen.isShiftKeyDown())
                         this.setSelectionPos(0);
-                    }
-
-                    else {
-
+                    else
                         this.setCursorPositionZero();
-                    }
-
                     return true;
-
                 case 203:
-
                     if (GuiScreen.isShiftKeyDown()) {
-
-                        if (GuiScreen.isCtrlKeyDown()) {
-
-                            this.setSelectionPos(this.getNthWordFromPos(-1, this.getSelectionEnd()));
-                        }
-
-                        else {
-
+                        if (GuiScreen.isCtrlKeyDown())
+                            this.setSelectionPos(this.getNthWordFromPos(- 1, this.getSelectionEnd()));
+                        else
                             this.setSelectionPos(this.getSelectionEnd() - 1);
-                        }
-                    }
-
-                    else if (GuiScreen.isCtrlKeyDown()) {
-
-                        this.setCursorPosition(this.getNthWordFromCursor(-1));
-                    }
-
-                    else {
-
-                        this.moveCursorBy(-1);
-                    }
-
+                    } else if (GuiScreen.isCtrlKeyDown())
+                        this.setCursorPosition(this.getNthWordFromCursor(- 1));
+                    else
+                        this.moveCursorBy(- 1);
                     return true;
-
                 case 205:
-
                     if (GuiScreen.isShiftKeyDown()) {
-
-                        if (GuiScreen.isCtrlKeyDown()) {
-
+                        if (GuiScreen.isCtrlKeyDown())
                             this.setSelectionPos(this.getNthWordFromPos(1, this.getSelectionEnd()));
-                        }
-
-                        else {
-
+                        else
                             this.setSelectionPos(this.getSelectionEnd() + 1);
-                        }
-                    }
-
-                    else if (GuiScreen.isCtrlKeyDown()) {
-
+                    } else if (GuiScreen.isCtrlKeyDown())
                         this.setCursorPosition(this.getNthWordFromCursor(1));
-                    }
-
-                    else {
-
+                    else
                         this.moveCursorBy(1);
-                    }
-
                     return true;
-
                 case 207:
-
-                    if (GuiScreen.isShiftKeyDown()) {
-
+                    if (GuiScreen.isShiftKeyDown())
                         this.setSelectionPos(this.typedText.length());
-                    }
-
-                    else {
-
+                    else 
                         this.setCursorPositionEnd();
-                    }
-
                     return true;
-
                 case 211:
-
                     if (GuiScreen.isCtrlKeyDown()) {
-
-                        if (this.isEnabled()) {
-
+                        if (this.isEnabled())
                             this.deleteWords(1);
-                        }
-                    }
-
-                    else if (this.isEnabled()) {
-
+                    } else if (this.isEnabled())
                         this.deleteFromCursor(1);
-                    }
-
                     return true;
-
                 default:
-
                     if (ChatAllowedCharacters.isAllowedCharacter(keyChar)) {
-
-                        if (this.isEnabled()) {
-
+                        if (this.isEnabled())
                             this.writeText(Character.toString(keyChar));
-                        }
-
                         return true;
-                    }
-
-                    else {
-
+                    } else
                         return false;
-                    }
                 }
             }
         }
@@ -443,11 +319,11 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                 if (!this.isHovered() && this.shouldResetOnMisclick())
                     this.setText("");   	       
                 if (this.isDragged() && this.isHovered()) {
-                    int l = mouseX - this.getX();
+                    int l = (int) ((1.0F + this.getScale()) * (float) (mouseX - this.getX()));//why?
                     if (this.isDynamicBackgroundEnabled())
                         l -= 4;                  
                     String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), this.getWidth());
-                    this.setCursorPosition((int) ((float) this.mc.fontRenderer.trimStringToWidth(s, l).length() * (1.0F + this.getScale())) + this.lineScrollOffset);                  
+                    this.setCursorPosition(this.mc.fontRenderer.trimStringToWidth(s, l).length() + this.lineScrollOffset);
                     this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
                     this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
                     if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())
@@ -586,7 +462,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         if (this.mc.fontRenderer != null) {
             if (this.lineScrollOffset > i)
                 this.lineScrollOffset = i;
-            int j = this.getWidth();
+            int j = this.getWidth();//TODO getWidth() called
             String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), j);
             int k = s.length() + this.lineScrollOffset;
             if (index == this.lineScrollOffset)

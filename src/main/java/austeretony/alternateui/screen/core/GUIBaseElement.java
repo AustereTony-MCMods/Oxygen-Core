@@ -197,7 +197,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
      */
     public T initScroller(GUIScroller scroller) {		
         scroller.initScreen(this.getScreen());		
-        this.setScrollingParams(scroller.rowsVisible, scroller.rowsAmount);		
+        this.setScrollingParams(scroller.rowsVisible, scroller.getRowsAmount());		
         this.scroller = this.scroller == null ? scroller : this.scroller;		
         this.hasScroller = true;		
         return (T) this;

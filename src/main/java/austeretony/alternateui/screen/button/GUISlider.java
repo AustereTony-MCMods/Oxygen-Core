@@ -1,5 +1,7 @@
 package austeretony.alternateui.screen.button;
 
+import org.lwjgl.input.Mouse;
+
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,11 +36,12 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
         this.setEnabled(true);
         this.setVisible(true);
         this.enableSlidebarBackground();
+        this.cancelDraggedElementLogic();
     }
 
     public void setScroller(GUIScroller scroller) {
         this.scroller = scroller;
-        this.setSlidebarSize(this.getWidth(), (int) ((float) this.getHeight() / ((float) scroller.rowsAmount / (float) scroller.rowsVisible)) > 10 ? (int) ((float) this.getHeight() / ((float) scroller.rowsAmount / (float) scroller.rowsVisible)) : 10);
+        this.setSlidebarSize(this.getWidth(), (int) ((float) this.getHeight() / ((float) scroller.getRowsAmount() / (float) scroller.rowsVisible)) > 10 ? (int) ((float) this.getHeight() / ((float) scroller.getRowsAmount() / (float) scroller.rowsVisible)) : 10);
     }
 
     @Override
@@ -86,12 +89,8 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if (this.isHovered() && mouseButton == 0) {
+        if (Mouse.isButtonDown(0) && this.isHovered()) {
             this.setDragged(true);
-            this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
-            this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
-            if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())
-                this.screen.getWorkspace().getCurrentSection().getCurrentCallback().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
             return true;
         }
         return false;

@@ -54,8 +54,8 @@ public class GUISettingsLoader {
     }
 
     private void loadData(JsonObject file) {
-        String currentProfileName = file.get(EnumSettingKeys.SETTINGS_PROFILE.key).getAsString();
-        for (JsonElement element : file.get(EnumSettingKeys.PROFILES.key).getAsJsonArray())
+        String currentProfileName = file.get(EnumSettingsFileKey.SETTINGS_PROFILE.key).getAsString();
+        for (JsonElement element : file.get(EnumSettingsFileKey.PROFILES.key).getAsJsonArray())
             this.settings.addProfile(GUISettingsProfile.deserialize(element.getAsJsonObject()));
         this.settings.setCurrentProfile(this.settings.getProfile(currentProfileName));
         OxygenMain.OXYGEN_LOGGER.info("GUI settings loaded. Set profile to: {}.", currentProfileName);

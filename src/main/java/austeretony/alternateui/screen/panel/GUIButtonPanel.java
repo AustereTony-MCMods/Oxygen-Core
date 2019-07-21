@@ -135,8 +135,11 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
         if (this.isEnabled()) {   	
             for (GUIButton button : this.visibleButtons)
                 button.mouseOver(mouseX, mouseY);		
-            if (this.hasScroller() && this.getScroller().hasSlider())  			
-                this.getScroller().getSlider().mouseOver(mouseX, mouseY); 
+            if (this.hasScroller() && this.getScroller().hasSlider()) {
+                this.getScroller().getSlider().mouseOver(mouseX, mouseY);
+                this.getScroller().getSlider().mouseClicked(mouseX, mouseY, 0);
+                this.screen.handlePanelSlidebar(this, mouseY);    
+            }
         }    	
         this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight());
     }
@@ -149,10 +152,6 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
             for (GUIButton button : this.visibleButtons) {   		
                 if (button.mouseClicked(mouseX, mouseY, mouseButton) && this.hasContextMenu() && mouseButton == 1)
                     this.getContextMenu().open(button, mouseX, mouseY);
-            }
-            if (this.hasScroller() && this.getScroller().hasSlider()) {                         
-                this.getScroller().getSlider().mouseClicked(mouseX, mouseY, mouseButton);                               
-                this.screen.handlePanelSlidebar(this, mouseY);    
             }
         }
         return false;
@@ -180,7 +179,7 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
             if (this.isHovered() || this.getScroller().shouldIgnoreBorders()) {   			    	    			    				    					    	    			
                 if (this.getScroller().handleScroller()) {    				    	    				  	    		
                     this.screen.scrollButtonPanel(this);    				        	    			
-                    if (this.hasScroller() && this.getScroller().hasSlider())							
+                    if (this.getScroller().hasSlider())							
                         this.getScroller().getSlider().handleSlidebarViaScroller();
                 }
             }

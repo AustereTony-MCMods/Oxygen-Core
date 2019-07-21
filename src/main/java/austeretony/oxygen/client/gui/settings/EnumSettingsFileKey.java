@@ -1,6 +1,6 @@
 package austeretony.oxygen.client.gui.settings;
 
-public enum EnumSettingKeys {
+public enum EnumSettingsFileKey {
 
     SETTINGS_PROFILE("profile"),
     PROFILE_NAME("name"),
@@ -69,7 +69,7 @@ public enum EnumSettingKeys {
 
     public final String key;
 
-    EnumSettingKeys(String key) {
+    EnumSettingsFileKey(String key) {
         this.key = key;
     }
 }

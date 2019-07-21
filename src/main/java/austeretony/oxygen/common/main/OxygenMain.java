@@ -72,7 +72,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen", 
     NAME = "Oxygen Core", 
-    VERSION = "0.7.0", 
+    VERSION = "0.7.1", 
     VERSION_CUSTOM = VERSION + ":alpha:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -85,7 +85,7 @@ public class OxygenMain {
     private static OxygenNetwork network, watcherNetwork;
 
     public static final int 
-    OXYGEN_MOD_INDEX = 0,//Teleportation - 1, Groups - 2, Exchange - 3, Merchants - 4, Players List - 5, Friends List - 6, Interaction - 7
+    OXYGEN_MOD_INDEX = 0,//Teleportation - 1, Groups - 2, Exchange - 3, Merchants - 4, Players List - 5, Friends List - 6, Interaction - 7, Mail - 8
 
     SIMPLE_NOTIFICATION_ID = 0,
     ALERT_NOTIFICATION_ID = 1,
@@ -93,7 +93,7 @@ public class OxygenMain {
     ACTIVITY_STATUS_SHARED_DATA_ID = 1,
     DIMENSION_SHARED_DATA_ID = 2,
 
-    HIDE_REQUESTS_OVERLAY_SETTING = 1;
+    HIDE_REQUESTS_OVERLAY_SETTING_ID = 1;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -146,7 +146,7 @@ public class OxygenMain {
             OxygenHelperClient.registerNotificationIcon(SIMPLE_NOTIFICATION_ID, OxygenGUITextures.SIMPLE_NOTIFICATION_ICON);
             OxygenHelperClient.registerNotificationIcon(ALERT_NOTIFICATION_ID, OxygenGUITextures.ALERT_NOTIFICATION_ICON);
 
-            OxygenHelperClient.registerClientSetting(HIDE_REQUESTS_OVERLAY_SETTING);
+            OxygenHelperClient.registerClientSetting(HIDE_REQUESTS_OVERLAY_SETTING_ID);
         }
     }
 

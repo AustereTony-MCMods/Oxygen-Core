@@ -18,9 +18,9 @@ public class GUIScroller {
 
     public final GUIEnumScrollerType scrollerType;
 
-    public final int rowsAmount, rowsVisible;
+    public final int rowsVisible;
 
-    private int maxPosition, currentPosition;
+    private int maxPosition, currentPosition, rowsAmount;
 
     private boolean ignoreBorders, hasSlider, isScrollingDown, isScrollingUp;
 
@@ -44,6 +44,17 @@ public class GUIScroller {
         this.rowsVisible = rowsVisible;		
         this.maxPosition = rowsAmount - rowsVisible;		
         this.currentPosition = 0;
+    }
+
+    public void updateRowsAmount(int value) {
+        this.rowsAmount = value;
+        this.maxPosition = this.rowsAmount - this.rowsVisible;   
+        if (this.slider != null)
+            this.slider.setScroller(this);
+    }
+
+    public int getRowsAmount() {
+        return this.rowsAmount;
     }
 
     //TODO CONTAINERS
@@ -88,7 +99,6 @@ public class GUIScroller {
     }
 
     public boolean hasSlider() {
-
         return this.hasSlider;
     }
 

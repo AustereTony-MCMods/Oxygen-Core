@@ -362,129 +362,129 @@ public class GUISettingsProfile {
     public JsonObject serealize() {
         JsonObject object = new JsonObject();
 
-        object.add(EnumSettingKeys.PROFILE_NAME.key, new JsonPrimitive(this.name));
+        object.add(EnumSettingsFileKey.PROFILE_NAME.key, new JsonPrimitive(this.name));
 
         JsonObject colorSection = new JsonObject();
 
-        colorSection.add(EnumSettingKeys.BASE_BACKGROUND_COLOR.key, new JsonPrimitive(this.baseGUIBackgroundColor));
-        colorSection.add(EnumSettingKeys.ADDITIONAL_BACKGROUND_COLOR.key, new JsonPrimitive(this.additionalGUIBackgroundColor));
-        colorSection.add(EnumSettingKeys.PANEL_BACKGROUND_COLOR.key, new JsonPrimitive(this.panelGUIBackgroundColor));
+        colorSection.add(EnumSettingsFileKey.BASE_BACKGROUND_COLOR.key, new JsonPrimitive(this.baseGUIBackgroundColor));
+        colorSection.add(EnumSettingsFileKey.ADDITIONAL_BACKGROUND_COLOR.key, new JsonPrimitive(this.additionalGUIBackgroundColor));
+        colorSection.add(EnumSettingsFileKey.PANEL_BACKGROUND_COLOR.key, new JsonPrimitive(this.panelGUIBackgroundColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_BUTTON_COLOR.key, new JsonPrimitive(this.enabledButtonColor));
-        colorSection.add(EnumSettingKeys.DISABLED_BUTTON_COLOR.key, new JsonPrimitive(this.disabledButtonColor));
-        colorSection.add(EnumSettingKeys.HOVERED_BUTTON_COLOR.key, new JsonPrimitive(this.hoveredButtonColor));
+        colorSection.add(EnumSettingsFileKey.ENABLED_BUTTON_COLOR.key, new JsonPrimitive(this.enabledButtonColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_BUTTON_COLOR.key, new JsonPrimitive(this.disabledButtonColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_BUTTON_COLOR.key, new JsonPrimitive(this.hoveredButtonColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_ELEMENT_COLOR.key, new JsonPrimitive(this.enabledElementColor));
-        colorSection.add(EnumSettingKeys.DISABLED_ELEMENT_COLOR.key, new JsonPrimitive(this.disabledElementColor));
-        colorSection.add(EnumSettingKeys.HOVERED_ELEMENT_COLOR.key, new JsonPrimitive(this.hoveredElementColor));
+        colorSection.add(EnumSettingsFileKey.ENABLED_ELEMENT_COLOR.key, new JsonPrimitive(this.enabledElementColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_ELEMENT_COLOR.key, new JsonPrimitive(this.disabledElementColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_ELEMENT_COLOR.key, new JsonPrimitive(this.hoveredElementColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.enabledContextActionColor));
-        colorSection.add(EnumSettingKeys.DISABLED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.disabledContextActionColor));
-        colorSection.add(EnumSettingKeys.HOVERED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.hoveredContextActionColor));
+        colorSection.add(EnumSettingsFileKey.ENABLED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.enabledContextActionColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.disabledContextActionColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_CONTEXT_ACTION_COLOR.key, new JsonPrimitive(this.hoveredContextActionColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_SLIDER_COLOR.key, new JsonPrimitive(this.enabledSliderColor));
-        colorSection.add(EnumSettingKeys.DISABLED_SLIDER_COLOR.key, new JsonPrimitive(this.disabledSliderColor));
-        colorSection.add(EnumSettingKeys.HOVERED_SLIDER_COLOR.key, new JsonPrimitive(this.hoveredSliderColor));
+        colorSection.add(EnumSettingsFileKey.ENABLED_SLIDER_COLOR.key, new JsonPrimitive(this.enabledSliderColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_SLIDER_COLOR.key, new JsonPrimitive(this.disabledSliderColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_SLIDER_COLOR.key, new JsonPrimitive(this.hoveredSliderColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_TEXT_COLOR.key, new JsonPrimitive(this.enabledTextColor));
-        colorSection.add(EnumSettingKeys.DISABLED_TEXT_COLOR.key, new JsonPrimitive(this.disabledTextColor));
-        colorSection.add(EnumSettingKeys.HOVERED_TEXT_COLOR.key, new JsonPrimitive(this.hoveredTextColor));
+        colorSection.add(EnumSettingsFileKey.ENABLED_TEXT_COLOR.key, new JsonPrimitive(this.enabledTextColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_TEXT_COLOR.key, new JsonPrimitive(this.disabledTextColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_TEXT_COLOR.key, new JsonPrimitive(this.hoveredTextColor));
 
-        colorSection.add(EnumSettingKeys.ENABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.enabledTextColorDark));
-        colorSection.add(EnumSettingKeys.DISABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.disabledTextColorDark));
-        colorSection.add(EnumSettingKeys.HOVERED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.hoveredTextColorDark));
+        colorSection.add(EnumSettingsFileKey.ENABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.enabledTextColorDark));
+        colorSection.add(EnumSettingsFileKey.DISABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.disabledTextColorDark));
+        colorSection.add(EnumSettingsFileKey.HOVERED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.hoveredTextColorDark));
 
-        colorSection.add(EnumSettingKeys.BASE_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.baseOverlayTextColor));
-        colorSection.add(EnumSettingKeys.ADDITIONAL_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.additionalOverlayTextColor));
+        colorSection.add(EnumSettingsFileKey.BASE_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.baseOverlayTextColor));
+        colorSection.add(EnumSettingsFileKey.ADDITIONAL_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.additionalOverlayTextColor));
 
-        colorSection.add(EnumSettingKeys.TOOLTIP_BACKGROUND_COLOR.key, new JsonPrimitive(this.tooltipBackgroundColor));
-        colorSection.add(EnumSettingKeys.TOOLTIP_TEXT_COLOR.key, new JsonPrimitive(this.tooltipTextColor));
+        colorSection.add(EnumSettingsFileKey.TOOLTIP_BACKGROUND_COLOR.key, new JsonPrimitive(this.tooltipBackgroundColor));
+        colorSection.add(EnumSettingsFileKey.TOOLTIP_TEXT_COLOR.key, new JsonPrimitive(this.tooltipTextColor));
 
         JsonObject scaleSection = new JsonObject();
 
-        scaleSection.add(EnumSettingKeys.TITLE_SCALE.key, new JsonPrimitive(this.titleScale));
-        scaleSection.add(EnumSettingKeys.BUTTON_TEXT_SCALE.key, new JsonPrimitive(this.buttonTextScale));
-        scaleSection.add(EnumSettingKeys.TOOLTIP_SCALE.key, new JsonPrimitive(this.tooltipScale));
-        scaleSection.add(EnumSettingKeys.TEXT_SCALE.key, new JsonPrimitive(this.textScale));
-        scaleSection.add(EnumSettingKeys.SUB_TEXT_SCALE.key, new JsonPrimitive(this.subTextScale));
-        scaleSection.add(EnumSettingKeys.PANEL_TEXT_SCALE.key, new JsonPrimitive(this.panelTextScale));
-        scaleSection.add(EnumSettingKeys.DROP_DOWN_LIST_SCALE.key, new JsonPrimitive(this.dropDownListScale));
-        scaleSection.add(EnumSettingKeys.CONTEXT_MENU_SCALE.key, new JsonPrimitive(this.contextMenuScale));
-        scaleSection.add(EnumSettingKeys.OVERLAY_SCALE.key, new JsonPrimitive(this.overlayScale));
+        scaleSection.add(EnumSettingsFileKey.TITLE_SCALE.key, new JsonPrimitive(this.titleScale));
+        scaleSection.add(EnumSettingsFileKey.BUTTON_TEXT_SCALE.key, new JsonPrimitive(this.buttonTextScale));
+        scaleSection.add(EnumSettingsFileKey.TOOLTIP_SCALE.key, new JsonPrimitive(this.tooltipScale));
+        scaleSection.add(EnumSettingsFileKey.TEXT_SCALE.key, new JsonPrimitive(this.textScale));
+        scaleSection.add(EnumSettingsFileKey.SUB_TEXT_SCALE.key, new JsonPrimitive(this.subTextScale));
+        scaleSection.add(EnumSettingsFileKey.PANEL_TEXT_SCALE.key, new JsonPrimitive(this.panelTextScale));
+        scaleSection.add(EnumSettingsFileKey.DROP_DOWN_LIST_SCALE.key, new JsonPrimitive(this.dropDownListScale));
+        scaleSection.add(EnumSettingsFileKey.CONTEXT_MENU_SCALE.key, new JsonPrimitive(this.contextMenuScale));
+        scaleSection.add(EnumSettingsFileKey.OVERLAY_SCALE.key, new JsonPrimitive(this.overlayScale));
 
         JsonObject otherSection = new JsonObject();
 
-        otherSection.add(EnumSettingKeys.TEXTURE_OFFSET_X.key, new JsonPrimitive(this.textureOffsetX));
-        otherSection.add(EnumSettingKeys.TEXTURE_OFFSET_Y.key, new JsonPrimitive(this.textureOffsetY));
+        otherSection.add(EnumSettingsFileKey.TEXTURE_OFFSET_X.key, new JsonPrimitive(this.textureOffsetX));
+        otherSection.add(EnumSettingsFileKey.TEXTURE_OFFSET_Y.key, new JsonPrimitive(this.textureOffsetY));
 
-        otherSection.add(EnumSettingKeys.DROP_DOWN_LIST_WIDTH.key, new JsonPrimitive(this.dropDownListWidth));
-        otherSection.add(EnumSettingKeys.CONTEXT_MENU_WIDTH.key, new JsonPrimitive(this.contextMenuWidth));
+        otherSection.add(EnumSettingsFileKey.DROP_DOWN_LIST_WIDTH.key, new JsonPrimitive(this.dropDownListWidth));
+        otherSection.add(EnumSettingsFileKey.CONTEXT_MENU_WIDTH.key, new JsonPrimitive(this.contextMenuWidth));
 
-        object.add(EnumSettingKeys.COLOR_SECTION.key, colorSection);
-        object.add(EnumSettingKeys.SCALE_SECTION.key, scaleSection);
-        object.add(EnumSettingKeys.OTHER_SECTION.key, otherSection);
+        object.add(EnumSettingsFileKey.COLOR_SECTION.key, colorSection);
+        object.add(EnumSettingsFileKey.SCALE_SECTION.key, scaleSection);
+        object.add(EnumSettingsFileKey.OTHER_SECTION.key, otherSection);
 
         return object;
     }
 
     public static GUISettingsProfile deserialize(JsonObject object) {
-        GUISettingsProfile profie = new GUISettingsProfile(object.get(EnumSettingKeys.PROFILE_NAME.key).getAsString());
+        GUISettingsProfile profie = new GUISettingsProfile(object.get(EnumSettingsFileKey.PROFILE_NAME.key).getAsString());
 
-        JsonObject section = object.get(EnumSettingKeys.COLOR_SECTION.key).getAsJsonObject();
+        JsonObject section = object.get(EnumSettingsFileKey.COLOR_SECTION.key).getAsJsonObject();
 
-        profie.baseGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingKeys.BASE_BACKGROUND_COLOR.key).getAsString(), 16);
-        profie.additionalGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingKeys.ADDITIONAL_BACKGROUND_COLOR.key).getAsString(), 16);
-        profie.panelGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingKeys.PANEL_BACKGROUND_COLOR.key).getAsString(), 16);
+        profie.baseGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.BASE_BACKGROUND_COLOR.key).getAsString(), 16);
+        profie.additionalGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ADDITIONAL_BACKGROUND_COLOR.key).getAsString(), 16);
+        profie.panelGUIBackgroundColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.PANEL_BACKGROUND_COLOR.key).getAsString(), 16);
 
-        profie.enabledButtonColor = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_BUTTON_COLOR.key).getAsString(), 16);
-        profie.disabledButtonColor = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_BUTTON_COLOR.key).getAsString(), 16);
-        profie.hoveredButtonColor = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_BUTTON_COLOR.key).getAsString(), 16);
+        profie.enabledButtonColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_BUTTON_COLOR.key).getAsString(), 16);
+        profie.disabledButtonColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_BUTTON_COLOR.key).getAsString(), 16);
+        profie.hoveredButtonColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_BUTTON_COLOR.key).getAsString(), 16);
 
-        profie.enabledElementColor = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_ELEMENT_COLOR.key).getAsString(), 16);
-        profie.disabledElementColor = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_ELEMENT_COLOR.key).getAsString(), 16);
-        profie.hoveredElementColor = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_ELEMENT_COLOR.key).getAsString(), 16);
+        profie.enabledElementColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_ELEMENT_COLOR.key).getAsString(), 16);
+        profie.disabledElementColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_ELEMENT_COLOR.key).getAsString(), 16);
+        profie.hoveredElementColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_ELEMENT_COLOR.key).getAsString(), 16);
 
-        profie.enabledContextActionColor = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
-        profie.disabledContextActionColor = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
-        profie.hoveredContextActionColor = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
+        profie.enabledContextActionColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
+        profie.disabledContextActionColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
+        profie.hoveredContextActionColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_CONTEXT_ACTION_COLOR.key).getAsString(), 16);
 
-        profie.enabledSliderColor = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_SLIDER_COLOR.key).getAsString(), 16);
-        profie.disabledSliderColor = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_SLIDER_COLOR.key).getAsString(), 16);
-        profie.hoveredSliderColor = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_SLIDER_COLOR.key).getAsString(), 16);
+        profie.enabledSliderColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_SLIDER_COLOR.key).getAsString(), 16);
+        profie.disabledSliderColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_SLIDER_COLOR.key).getAsString(), 16);
+        profie.hoveredSliderColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_SLIDER_COLOR.key).getAsString(), 16);
 
-        profie.enabledTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_TEXT_COLOR.key).getAsString(), 16);
-        profie.disabledTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_TEXT_COLOR.key).getAsString(), 16);
-        profie.hoveredTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_TEXT_COLOR.key).getAsString(), 16);
+        profie.enabledTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_TEXT_COLOR.key).getAsString(), 16);
+        profie.disabledTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_TEXT_COLOR.key).getAsString(), 16);
+        profie.hoveredTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_TEXT_COLOR.key).getAsString(), 16);
 
-        profie.enabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingKeys.ENABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
-        profie.disabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingKeys.DISABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
-        profie.hoveredTextColorDark = (int) Long.parseLong(section.get(EnumSettingKeys.HOVERED_TEXT_DARK_COLOR.key).getAsString(), 16);
+        profie.enabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
+        profie.disabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
+        profie.hoveredTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_TEXT_DARK_COLOR.key).getAsString(), 16);
 
-        profie.baseOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.BASE_OVERLAY_TEXT_COLOR.key).getAsString(), 16);
-        profie.additionalOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.ADDITIONAL_OVERLAY_TEXT_COLOR.key).getAsString(), 16);
+        profie.baseOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.BASE_OVERLAY_TEXT_COLOR.key).getAsString(), 16);
+        profie.additionalOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ADDITIONAL_OVERLAY_TEXT_COLOR.key).getAsString(), 16);
 
-        profie.tooltipBackgroundColor = (int) Long.parseLong(section.get(EnumSettingKeys.TOOLTIP_BACKGROUND_COLOR.key).getAsString(), 16);
-        profie.tooltipTextColor = (int) Long.parseLong(section.get(EnumSettingKeys.TOOLTIP_TEXT_COLOR.key).getAsString(), 16);
+        profie.tooltipBackgroundColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.TOOLTIP_BACKGROUND_COLOR.key).getAsString(), 16);
+        profie.tooltipTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.TOOLTIP_TEXT_COLOR.key).getAsString(), 16);
 
-        section = object.get(EnumSettingKeys.SCALE_SECTION.key).getAsJsonObject();
+        section = object.get(EnumSettingsFileKey.SCALE_SECTION.key).getAsJsonObject();
 
-        profie.titleScale =  section.get(EnumSettingKeys.TITLE_SCALE.key).getAsFloat();
-        profie.buttonTextScale =  section.get(EnumSettingKeys.BUTTON_TEXT_SCALE.key).getAsFloat();
-        profie.tooltipScale =  section.get(EnumSettingKeys.TOOLTIP_SCALE.key).getAsFloat();
-        profie.textScale =  section.get(EnumSettingKeys.TEXT_SCALE.key).getAsFloat();
-        profie.subTextScale =  section.get(EnumSettingKeys.SUB_TEXT_SCALE.key).getAsFloat();
-        profie.panelTextScale =  section.get(EnumSettingKeys.PANEL_TEXT_SCALE.key).getAsFloat();
-        profie.dropDownListScale =  section.get(EnumSettingKeys.DROP_DOWN_LIST_SCALE.key).getAsFloat();
-        profie.contextMenuScale =  section.get(EnumSettingKeys.CONTEXT_MENU_SCALE.key).getAsFloat();
-        profie.overlayScale =  section.get(EnumSettingKeys.OVERLAY_SCALE.key).getAsFloat();
+        profie.titleScale =  section.get(EnumSettingsFileKey.TITLE_SCALE.key).getAsFloat();
+        profie.buttonTextScale =  section.get(EnumSettingsFileKey.BUTTON_TEXT_SCALE.key).getAsFloat();
+        profie.tooltipScale =  section.get(EnumSettingsFileKey.TOOLTIP_SCALE.key).getAsFloat();
+        profie.textScale =  section.get(EnumSettingsFileKey.TEXT_SCALE.key).getAsFloat();
+        profie.subTextScale =  section.get(EnumSettingsFileKey.SUB_TEXT_SCALE.key).getAsFloat();
+        profie.panelTextScale =  section.get(EnumSettingsFileKey.PANEL_TEXT_SCALE.key).getAsFloat();
+        profie.dropDownListScale =  section.get(EnumSettingsFileKey.DROP_DOWN_LIST_SCALE.key).getAsFloat();
+        profie.contextMenuScale =  section.get(EnumSettingsFileKey.CONTEXT_MENU_SCALE.key).getAsFloat();
+        profie.overlayScale =  section.get(EnumSettingsFileKey.OVERLAY_SCALE.key).getAsFloat();
 
-        section = object.get(EnumSettingKeys.OTHER_SECTION.key).getAsJsonObject();
+        section = object.get(EnumSettingsFileKey.OTHER_SECTION.key).getAsJsonObject();
 
-        profie.textureOffsetX = section.get(EnumSettingKeys.TEXTURE_OFFSET_X.key).getAsInt();
-        profie.textureOffsetY = section.get(EnumSettingKeys.TEXTURE_OFFSET_Y.key).getAsInt();
+        profie.textureOffsetX = section.get(EnumSettingsFileKey.TEXTURE_OFFSET_X.key).getAsInt();
+        profie.textureOffsetY = section.get(EnumSettingsFileKey.TEXTURE_OFFSET_Y.key).getAsInt();
 
-        profie.dropDownListWidth = section.get(EnumSettingKeys.DROP_DOWN_LIST_WIDTH.key).getAsInt();
-        profie.contextMenuWidth =  section.get(EnumSettingKeys.CONTEXT_MENU_WIDTH.key).getAsInt();
+        profie.dropDownListWidth = section.get(EnumSettingsFileKey.DROP_DOWN_LIST_WIDTH.key).getAsInt();
+        profie.contextMenuWidth =  section.get(EnumSettingsFileKey.CONTEXT_MENU_WIDTH.key).getAsInt();
 
         return profie;
     }

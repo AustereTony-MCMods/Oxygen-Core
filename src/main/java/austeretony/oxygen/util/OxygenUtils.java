@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.common.config.IConfigHolder;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.text.TextFormatting;
@@ -34,6 +35,28 @@ public class OxygenUtils {
 
     public static TextFormatting formattingFromCode(String code) {
         return TextFormatting.getValueByName(code);
+    }
+
+    public static String getLastActivityTimeLocalizedString(long millis) {
+        if (millis > 0L) {
+            long 
+            delta = System.currentTimeMillis() - millis,
+            hours = delta / 3_600_000L,
+            days;        
+            if (hours < 24L) {
+                if (hours % 10L == 1L)
+                    return ClientReference.localize("oxygen.lastActivity.hour", hours);
+                else
+                    return ClientReference.localize("oxygen.lastActivity.hours", hours);
+            } else {
+                days = hours / 24L;
+                if (days % 10L == 1L)
+                    return ClientReference.localize("oxygen.lastActivity.day", days);
+                else               
+                    return ClientReference.localize("oxygen.lastActivity.days", days);
+            }
+        } else
+            return ClientReference.localize("oxygen.lastActivity.noData");
     }
 
     public static JsonObject updateConfig(JsonObject internalConfig, String externalConfigFolder, IConfigHolder configHolder) throws IOException {

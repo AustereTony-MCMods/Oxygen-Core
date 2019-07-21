@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.ImmutablePlayerData;
 import austeretony.oxygen.common.SharedDataManagerServer.SharedDataRegistryEntry;
 import austeretony.oxygen.common.main.OxygenMain;
@@ -88,7 +89,10 @@ public class SharedDataManagerClient {
     }
 
     public SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        return this.immutableData.keySet().contains(playerUUID) ? this.sharedData.get(this.immutableData.get(playerUUID).getIndex()) : this.observed.get(playerUUID);
+        if (OxygenHelperClient.isOnline(playerUUID) 
+                && !OxygenHelperClient.isOfflineStatus(playerUUID))
+            return this.getSharedData(playerUUID);
+        return this.observed.get(playerUUID);
     }
 
     public void addObservedSharedData(SharedPlayerData sharedData) {

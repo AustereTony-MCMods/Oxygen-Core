@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
@@ -40,8 +39,6 @@ public class OxygenManagerClient {
     private final OxygenGUIManager guiManager;
 
     private final ClientSettingsManager clientSettings;
-
-    private OxygenPlayerData playerData;
 
     private final Set<IPersistentProcess> persistentProcesses = new HashSet<IPersistentProcess>(5);
 
@@ -98,8 +95,6 @@ public class OxygenManagerClient {
     }
 
     public void init() {
-        this.playerData = new OxygenPlayerData(this.playerUUID);
-        OxygenHelperClient.loadPersistentDataDelegated(this.playerData);
         PrivilegeLoaderClient.loadPrivilegeDataDelegated();
         this.clientSettings.load();
     }
@@ -126,10 +121,6 @@ public class OxygenManagerClient {
 
     public void addNetworkTask(IOxygenTask task) {
         this.networkThreadClient.addTask(task);
-    }
-
-    public OxygenPlayerData getPlayerData() {
-        return this.playerData;
     }
 
     public void setWorldId(long id) {
@@ -211,8 +202,6 @@ public class OxygenManagerClient {
     }
 
     public void reset() {
-        if (this.playerData != null)
-            this.playerData.reset();
         this.notificationsManager.getNotifications().clear();
         this.sharedDataManager.reset();
     }

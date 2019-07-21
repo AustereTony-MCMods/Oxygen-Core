@@ -63,10 +63,6 @@ public class OxygenHelperClient {
         OxygenManagerClient.instance().addPersistentProcess(process);
     }
 
-    public static OxygenPlayerData getPlayerData() {
-        return OxygenManagerClient.instance().getPlayerData();
-    }
-
     public static Collection<SharedPlayerData> getSharedPlayersData() {
         return OxygenManagerClient.instance().getSharedPlayersData();
     } 

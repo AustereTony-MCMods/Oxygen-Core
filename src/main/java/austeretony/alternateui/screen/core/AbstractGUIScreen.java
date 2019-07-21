@@ -94,7 +94,7 @@ public abstract class AbstractGUIScreen extends GuiScreen {
     //TODO drawScreen()
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {   	
-        if (this.isWorkspaceCreated()) {         	
+        if (this.isWorkspaceCreated()) {      
             this.drawDefaultBackground();       	
             this.getWorkspace().draw(mouseX, mouseY);       	
             AbstractGUISection section = this.getWorkspace().getCurrentSection();       	
@@ -125,24 +125,24 @@ public abstract class AbstractGUIScreen extends GuiScreen {
                 section.drawCallbackContextMenu(mouseX, mouseY);
             } 
             GlStateManager.enableLighting(); 
-            RenderHelper.enableGUIStandardItemLighting();	        	        
+            RenderHelper.enableGUIStandardItemLighting();
         }      
-        this.yPrevMouse = mouseY;
     }
 
     protected void drawSlots(int mouseX, int mouseY) {}
 
-    public void handlePanelSlidebar(GUIButtonPanel buttonPanel, int mouseY) {  
-        int slidebarOffset;        
-        float sliderActiveHeight, currentPosition;   	
-        if (buttonPanel.getScroller().getSlider().isDragged()) {   
-            slidebarOffset = mouseY - buttonPanel.getScroller().getSlider().getSlidebarY() - this.guiTop;				
-            sliderActiveHeight = buttonPanel.getScroller().getSlider().getHeight() - buttonPanel.getScroller().getSlider().getSlidebarHeight();				
-            currentPosition = mouseY - slidebarOffset - this.yPrevMouse + mouseY - this.guiTop;				        				
-            buttonPanel.getScroller().setPosition((int) ((float) buttonPanel.getScroller().getMaxPosition() * ((currentPosition - buttonPanel.getScroller().getSlider().getY()) / sliderActiveHeight)));       									
-            buttonPanel.getScroller().getSlider().handleSlidebarViaCursor((int) (sliderActiveHeight * (currentPosition / sliderActiveHeight)));				
-            this.scrollButtonPanel(buttonPanel);    				
+    public void handlePanelSlidebar(GUIButtonPanel buttonPanel, int mouseY) {
+        int slidebarOffset;
+        float sliderActiveHeight, currentPosition;
+        if (buttonPanel.getScroller().getSlider().isDragged()) {            
+            slidebarOffset = mouseY - buttonPanel.getScroller().getSlider().getSlidebarY() - this.guiTop;
+            sliderActiveHeight = buttonPanel.getScroller().getSlider().getHeight() - buttonPanel.getScroller().getSlider().getSlidebarHeight();
+            currentPosition = mouseY - slidebarOffset - this.yPrevMouse + mouseY - this.guiTop;
+            buttonPanel.getScroller().setPosition((int) ((float) buttonPanel.getScroller().getMaxPosition() * ((currentPosition - buttonPanel.getScroller().getSlider().getY()) / sliderActiveHeight)));                                    
+            buttonPanel.getScroller().getSlider().handleSlidebarViaCursor((int) (sliderActiveHeight * (currentPosition / sliderActiveHeight)));
+            this.scrollButtonPanel(buttonPanel);     
         }
+        this.yPrevMouse = mouseY;
     }
 
     /**
@@ -267,7 +267,7 @@ public abstract class AbstractGUIScreen extends GuiScreen {
     public void onGuiClosed() {
         GUIBaseElement.resetDragged();
     }
-    
+
     public void drawToolTip(ItemStack stack, int x, int y) {
         this.renderToolTip(stack, x, y);
     }

@@ -165,8 +165,10 @@ public class OxygenManagerServer {
         this.playersData.put(playerData.getPlayerUUID(), playerData);
     }
 
-    public void createPlayerData(UUID playerUUID) {
-        this.playersData.put(playerUUID, new OxygenPlayerData(playerUUID));
+    public OxygenPlayerData createPlayerData(UUID playerUUID) {
+        OxygenPlayerData oxygenData = new OxygenPlayerData(playerUUID);
+        this.playersData.put(playerUUID, oxygenData);
+        return oxygenData;
     }
 
     public void removePlayerData(UUID playerUUID) {
@@ -235,13 +237,9 @@ public class OxygenManagerServer {
             OxygenMain.network().sendTo(new CPSyncConfigs(), (EntityPlayerMP) player);
         OxygenMain.network().sendTo(new CPSyncMainData(playerUUID), (EntityPlayerMP) player);
         if (!this.playerDataExist(playerUUID)) {
-            this.createPlayerData(playerUUID);
-            OxygenHelperServer.setSyncing(playerUUID, true);
-            OxygenLoaderServer.loadPlayerDataCreateSharedEntryDelegated(playerUUID, this.getPlayerData(playerUUID), player);
-        } else {
-            OxygenHelperServer.setSyncing(playerUUID, true);
-            this.sharedDataManager.createPlayerSharedDataEntrySynced(player);
-            WatcherManagerServer.instance().initWatcher(player, playerUUID);
+            OxygenPlayerData oxygenData = this.createPlayerData(playerUUID);
+            oxygenData.setSyncing(true);
+            OxygenLoaderServer.loadPlayerDataCreateSharedEntryDelegated(playerUUID, oxygenData, player);
         }
     }
 
@@ -249,13 +247,10 @@ public class OxygenManagerServer {
     public void onPlayerLoggedOut(EntityPlayer player) {
         UUID playerUUID = CommonReference.getPersistentUUID(player);
         if (this.playerDataExist(playerUUID)) {
-            OxygenPlayerData playerData = this.getPlayerData(playerUUID);
-            playerData.setRequesting(false);
-            playerData.setRequested(false);
-
             MinecraftForge.EVENT_BUS.post(new OxygenPlayerUnloadedEvent(player));
 
             this.sharedDataManager.removePlayerSharedDataEntrySynced(playerUUID);
+            this.removePlayerData(playerUUID);
         }
     }
 

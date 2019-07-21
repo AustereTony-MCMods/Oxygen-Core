@@ -95,13 +95,19 @@ public class SharedDataManagerServer implements IPersistentData {
     }
 
     public void updateStatusData(UUID playerUUID, OxygenPlayerData.EnumActivityStatus status) {
-        this.sharedData.get(this.immutableData.get(playerUUID).getIndex()).setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, status.ordinal());
-        if (status == OxygenPlayerData.EnumActivityStatus.OFFLINE)
-            this.persistent.put(playerUUID, this.sharedData.get(this.immutableData.get(playerUUID).getIndex()));
+        this.getSharedData(playerUUID).setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, status.ordinal());
+        if (status == OxygenPlayerData.EnumActivityStatus.OFFLINE) {
+            SharedPlayerData sharedData = this.getSharedData(playerUUID);
+            sharedData.updateLastActivityTime();
+            this.persistent.put(playerUUID, sharedData);
+
+            for (EntityPlayerMP playerMP : CommonReference.getServer().getPlayerList().getPlayers())
+                OxygenMain.network().sendTo(new CPCacheObservedData(sharedData.getIndex()), playerMP);
+        }
     }
 
     public void updateDimensionData(UUID playerUUID, int dimension) {
-        this.sharedData.get(this.immutableData.get(playerUUID).getIndex()).setInt(OxygenMain.DIMENSION_SHARED_DATA_ID, dimension);
+        this.getSharedData(playerUUID).setInt(OxygenMain.DIMENSION_SHARED_DATA_ID, dimension);
     }
 
     public Set<Integer> getOnlinePlayersIndexes() {
@@ -129,7 +135,10 @@ public class SharedDataManagerServer implements IPersistentData {
     }
 
     public SharedPlayerData getPersistentSharedData(UUID playerUUID) {
-        return OxygenHelperServer.isOnline(playerUUID) ? this.sharedData.get(this.immutableData.get(playerUUID).getIndex()) : this.persistent.get(playerUUID);
+        if (OxygenHelperServer.isOnline(playerUUID) 
+                && !OxygenHelperServer.isOfflineStatus(playerUUID))
+            return this.getSharedData(playerUUID);
+        return this.persistent.get(playerUUID);
     }
 
     public void addObservedPlayer(UUID observer, UUID observed, boolean save) {

@@ -59,8 +59,8 @@ public class NotificationManagerClient {
     public void addNotification(INotification notification) {
         this.notifications.put(notification.getId(), notification);
         if (notification.getType() == EnumNotification.REQUEST) {
-            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECIEVED.soundEvent, 1.0F, 1.0F);//request recieved sound effect
-            if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING))
+            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECEIVED.soundEvent, 1.0F, 1.0F);//request received sound effect
+            if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING_ID))
                 this.latestNotificationId = notification.getId();
         }
         this.notificationsExist = true;
