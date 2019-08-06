@@ -1,32 +1,19 @@
 package austeretony.oxygen.common.telemetry.api;
 
-import austeretony.oxygen.common.OxygenManagerServer;
-import austeretony.oxygen.common.config.OxygenConfig;
+import java.util.Set;
+
 import austeretony.oxygen.common.telemetry.ILogType;
-import austeretony.oxygen.common.telemetry.TelemetryManager;
-import austeretony.oxygen.common.telemetry.io.TelemetryIO;
+import io.netty.util.internal.ConcurrentSet;
 
 public class TelemetryProvider {
 
+    private static final Set<ILogType> CONTAINERS = new ConcurrentSet<ILogType>();
+
     public static <T extends ILog> void registerLogType(ILogType<T> logType) {
-        if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
-            OxygenManagerServer.instance().getTelemetryManager().register(logType);
+        CONTAINERS.add(logType);
     }
 
-    public static void createLog(ILogType logType, ILog log) {
-        if (OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
-            logType.getLogContainer().addLog(log);
+    public static <T extends ILog> void createLog(ILogType<T> logType, T log) {
+        logType.getLogContainer().addLog(log);
     }      
-
-    public static long getLastLogCacheRecordTime() {
-        if (!OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
-            return - 1L;
-        return TelemetryIO.instance().getLastRecordTime();
-    }
-
-    public static long getLastLogCacheAppendTime() {
-        if (!OxygenConfig.ENABLE_TELEMETRY.getBooleanValue())
-            return - 1L;
-        return TelemetryIO.instance().getLastCacheAppendTime();
-    }
 }

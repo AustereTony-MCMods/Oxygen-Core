@@ -12,7 +12,7 @@ public interface ILogType<T extends ILog> {
 
     String getCacheFileName();
 
-    LogContainer<T> getLogContainer();
+    ILogContainer<T> getLogContainer();
 
-    LogFiles getLogFiles();
+    ILogFile getLogFile();
 }

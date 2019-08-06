@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.client.privilege.api.PrivilegeProviderClient;
-import austeretony.oxygen.common.main.EnumOxygenPrivileges;
+import austeretony.oxygen.common.main.EnumOxygenPrivilege;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
 public class OxygenHooks {
@@ -18,7 +18,7 @@ public class OxygenHooks {
         while (iterator.hasNext()) {
             playerUUID = iterator.next().getGameProfile().getId();          
             if (OxygenHelperClient.isOnline(playerUUID)//check data synced 
-                    && (OxygenHelperClient.isOfflineStatus(playerUUID) && !PrivilegeProviderClient.getPrivilegeValue(EnumOxygenPrivileges.EXPOSE_PLAYERS_OFFLINE.toString(), false)))
+                    && (OxygenHelperClient.isOfflineStatus(playerUUID) && !PrivilegeProviderClient.getPrivilegeValue(EnumOxygenPrivilege.EXPOSE_PLAYERS_OFFLINE.toString(), false)))
                 iterator.remove();
         }
     }

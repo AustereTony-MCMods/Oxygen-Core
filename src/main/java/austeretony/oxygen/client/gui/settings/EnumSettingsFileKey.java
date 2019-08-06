@@ -38,6 +38,10 @@ public enum EnumSettingsFileKey {
     ENABLED_TEXT_DARK_COLOR("enabled_text_dark"),
     DISABLED_TEXT_DARK_COLOR("disabled_text_dark"),
     HOVERED_TEXT_DARK_COLOR("hovered_text_dark"),
+    
+    ENABLED_TEXTFIELD_COLOR("enabled_textfield"),
+    DISABLED_TEXTFIELD_COLOR("disabled_textfield"),
+    HOVERED_TEXTFIELD_COLOR("hovered_textfield"),
 
     BASE_OVERLAY_TEXT_COLOR("base_overlay_text"),
     ADDITIONAL_OVERLAY_TEXT_COLOR("additional_overlay_text"),

@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.config;
 
-import java.util.Queue;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 
@@ -9,17 +9,17 @@ import net.minecraft.network.PacketBuffer;
 
 public interface IConfigHolder {
 
-    Queue<ConfigValue> values();
-    
+    List<ConfigValue> values();
+
     String getModId();
-    
+
     String getVersion();
-    
+
     String getExternalPath();
-    
+
     String getInternalPath();
 
-    void getValues(Queue<ConfigValue> values);
+    void getValues(List<ConfigValue> values);
 
     void init(JsonObject configObject);
 

@@ -2,7 +2,6 @@ package austeretony.oxygen.common.privilege;
 
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.network.server.SPOxygenRequest;
-import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 
 public class PrivilegeManagerClient {
 
@@ -10,7 +9,7 @@ public class PrivilegeManagerClient {
 
     public void setPrivelegedGroup(IPrivilegedGroup group) {
         this.group = group;
-        OxygenMain.PRIVILEGE_LOGGER.info("Group set to <{}>.", group.getName());
+        OxygenMain.OXYGEN_LOGGER.info("Privileged group set to <{}>.", group.getName());
     }
 
     public IPrivilegedGroup getPrivilegedGroup() {
@@ -19,6 +18,6 @@ public class PrivilegeManagerClient {
 
     public void requestGroupSync() {
         OxygenMain.network().sendToServer(new SPOxygenRequest(SPOxygenRequest.EnumRequest.SYNC_PRIVILEGED_GROUP));
-        OxygenMain.PRIVILEGE_LOGGER.info("Privileged group sync requested.");
+        OxygenMain.OXYGEN_LOGGER.info("Privileged group sync requested.");
     }
 }

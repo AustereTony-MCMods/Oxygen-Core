@@ -2,11 +2,11 @@ package austeretony.oxygen.client.gui;
 
 import austeretony.alternateui.screen.button.GUIButton;
 
-public class IndexedGUIButton extends GUIButton {
+public class IndexedGUIButton<T> extends GUIButton {
 
-    public final long id;
+    public final T index;
 
-    public IndexedGUIButton(long id) {
-        this.id = id;
+    public IndexedGUIButton(T index) {
+        this.index = index;
     }
 }

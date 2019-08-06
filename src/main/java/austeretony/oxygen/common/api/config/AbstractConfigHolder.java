@@ -1,7 +1,7 @@
 package austeretony.oxygen.common.api.config;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 
@@ -12,14 +12,14 @@ import net.minecraft.network.PacketBuffer;
 
 public abstract class AbstractConfigHolder implements IConfigHolder {
 
-    private final Queue<ConfigValue> values = new ConcurrentLinkedQueue<ConfigValue>();
+    private final List<ConfigValue> values = new ArrayList<ConfigValue>();
 
     public AbstractConfigHolder() {
         this.getValues(this.values);
     }
 
     @Override
-    public Queue<ConfigValue> values() {
+    public List<ConfigValue> values() {
         return this.values;
     }
 

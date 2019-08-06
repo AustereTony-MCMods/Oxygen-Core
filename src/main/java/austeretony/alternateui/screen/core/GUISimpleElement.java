@@ -1,6 +1,5 @@
 package austeretony.alternateui.screen.core;
 
-import austeretony.alternateui.screen.tooltip.AbstractGUITooltip;
 import austeretony.alternateui.util.EnumGUIAlignment;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -44,8 +43,6 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     mainScaleFactor = 1.0F,
     textScaleFactor = 1.0F,
     tooltipScaleFactor = 1.0F;
-
-    private AbstractGUITooltip advancedTooltip;
 
     protected RenderItem itemRender = AlternateUIReference.getRenderItem();
 
@@ -103,8 +100,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
                 drawRect(0, 0, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
                 this.mc.fontRenderer.drawString(this.tooltipText, 2, 2, this.tooltipTextColor);               
                 GlStateManager.popMatrix();
-            } else if (this.hasAdvancedTooltip()) 
-                this.advancedTooltip.draw(mouseX, mouseY);
+            }
         }
     }
 
@@ -194,10 +190,6 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         return (T) this;
     }
 
-    public AbstractGUITooltip getTooltip() {   	
-        return this.getTooltip();
-    }
-
     public T initSimpleTooltip(String text) {  
         this.tooltipText = text;
         this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
@@ -220,12 +212,6 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         this.tooltipTextColor = textColorHex;
         this.tooltipBackgroundColor = backgroundColorHex;
         this.hasSimpleTooltip = true;
-        return (T) this;
-    }
-
-    public T initAdvancedTooltip(AbstractGUITooltip tooltip) { 	
-        this.advancedTooltip = tooltip.setSize(this.getWidth(), this.getHeight()).setScale(this.getScale());; 	
-        this.hasAdvancedTooltip = true;
         return (T) this;
     }
 

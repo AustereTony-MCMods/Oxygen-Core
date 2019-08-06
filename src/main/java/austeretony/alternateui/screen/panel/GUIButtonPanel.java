@@ -6,8 +6,7 @@ import java.util.List;
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.button.GUIButton;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import austeretony.alternateui.util.EnumGUIOrientation;
 
 /**
  * Панель для кнопок GUIButton.
@@ -16,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
 
-    public final GUIEnumOrientation orientation;
+    public final EnumGUIOrientation orientation;
 
     private int buttonsOffset, buttonWidth, buttonHeight;
 
@@ -34,7 +33,7 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
      * @param buttonWidth ширина кнопки
      * @param buttonHeight высота кнопки
      */
-    public GUIButtonPanel(GUIEnumOrientation orientation, int xPosition, int yPosition, int buttonWidth, int buttonHeight) {   	    	   	
+    public GUIButtonPanel(EnumGUIOrientation orientation, int xPosition, int yPosition, int buttonWidth, int buttonHeight) {   	    	   	
         this.orientation = orientation;
         this.setPosition(xPosition, yPosition);
         this.buttonWidth = buttonWidth;
@@ -53,18 +52,18 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
         if (!this.visibleButtons.contains(button)) { 
             size = this.visibleButtons.size();    		
             if (!this.hasScroller()) {    		
-                button.setPosition(this.orientation == GUIEnumOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
-                        this.orientation == GUIEnumOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
+                button.setPosition(this.orientation == EnumGUIOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
+                        this.orientation == EnumGUIOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
                 button.setSize(this.getButtonWidth(), this.getButtonHeight());   		
                 button.setScale(this.getScale());   	
                 button.setTextScale(this.getTextScale());   		    			   		    		
                 this.visibleButtons.add(button);   			
-                this.setSize(this.orientation == GUIEnumOrientation.HORIZONTAL ? (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale()) * (size + 1) : this.getButtonWidth(), 
-                        this.orientation == GUIEnumOrientation.VERTICAL ? (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale()) * (size + 1) : this.getButtonHeight());
+                this.setSize(this.orientation == EnumGUIOrientation.HORIZONTAL ? (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale()) * (size + 1) : this.getButtonWidth(), 
+                        this.orientation == EnumGUIOrientation.VERTICAL ? (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale()) * (size + 1) : this.getButtonHeight());
             } else {
                 if (size < this.getScroller().rowsVisible) {
-                    button.setPosition(this.orientation == GUIEnumOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
-                            this.orientation == GUIEnumOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
+                    button.setPosition(this.orientation == EnumGUIOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
+                            this.orientation == EnumGUIOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
                     button.setSize(this.getButtonWidth(), this.getButtonHeight());   		
                     button.setScale(this.getScale());   	
                     button.setTextScale(this.getTextScale());   		    			   		    		
@@ -74,8 +73,8 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
         }    	
         if (!this.buttonsBuffer.contains(button)) { 		
             size = this.buttonsBuffer.size();  		
-            button.setPosition(this.orientation == GUIEnumOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
-                    this.orientation == GUIEnumOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
+            button.setPosition(this.orientation == EnumGUIOrientation.HORIZONTAL ? this.getX() + (int) ((this.getButtonWidth() + this.getButtonsOffset()) * this.getScale() * size) : this.getX(), 
+                    this.orientation == EnumGUIOrientation.VERTICAL ? this.getY() + (int) ((this.getButtonHeight() + this.getButtonsOffset()) * this.getScale() * size) : this.getY());  		
             button.setSize(this.getButtonWidth(), this.getButtonHeight());   		
             button.setScale(this.getScale());    
             button.setTextScale(this.getTextScale());   		    			   		    		
@@ -222,14 +221,4 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
         this.visibleButtons.clear();
         this.buttonsBuffer.clear();
     } 
-
-    /**
-     * Enum для определения ориентации панели.
-     */
-    @SideOnly(Side.CLIENT)
-    public enum GUIEnumOrientation {
-
-        HORIZONTAL,
-        VERTICAL
-    }
 }

@@ -56,7 +56,7 @@ public class PrivilegeManagerServer {
 
     public void addDefaultGroups() {
         this.addGroup(PrivilegedGroup.DEFAULT_GROUP, false);
-        this.addGroup(PrivilegedGroup.OPERATORS_GROUP, true);
+        this.addGroup(PrivilegedGroup.OPERATORS_GROUP, false);
     }
 
     public void removeGroup(String groupName) {

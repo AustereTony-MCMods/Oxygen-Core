@@ -13,7 +13,7 @@ import austeretony.oxygen.util.StreamUtils;
 
 public class ClientSettingsManager implements IPersistentData {
 
-    private final Map<Integer, Integer> settings = new HashMap<Integer, Integer>(10);
+    private final Map<Integer, Integer> settings = new HashMap<Integer, Integer>(5);
 
     public void register(int settingId) {
         this.settings.put(settingId, 0);
@@ -71,6 +71,6 @@ public class ClientSettingsManager implements IPersistentData {
     public void read(BufferedInputStream bis) throws IOException {
         int amount = StreamUtils.readShort(bis);
         for (int i = 0; i < amount; i++)
-            this.settings.put((int) StreamUtils.readShort(bis), StreamUtils.readInt(bis));
+            this.settings.put(StreamUtils.readShort(bis), StreamUtils.readInt(bis));
     }
 }

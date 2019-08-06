@@ -1,6 +1,7 @@
 package austeretony.oxygen.common.network.client;
 
 import austeretony.oxygen.client.api.event.OxygenChatMessageEvent;
+import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.common.network.ProxyPacket;
 import austeretony.oxygen.util.PacketBufferUtils;
 import net.minecraft.network.INetHandler;
@@ -39,6 +40,6 @@ public class CPShowMessage extends ProxyPacket {
         if (this.args.length > 0)
             for (int i = 0; i < this.args.length; i++)
                 this.args[i] = PacketBufferUtils.readString(buffer);
-        MinecraftForge.EVENT_BUS.post(new OxygenChatMessageEvent(this.modIndex, this.messageIndex, this.args));
+        ClientReference.delegateToClientThread(()->MinecraftForge.EVENT_BUS.post(new OxygenChatMessageEvent(this.modIndex, this.messageIndex, this.args)));
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import austeretony.alternateui.container.core.AbstractGUIContainer;
 import austeretony.alternateui.screen.core.GUISimpleElement;
+import austeretony.alternateui.util.EnumGUISlotsPosition;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -17,7 +18,7 @@ import net.minecraft.item.ItemStack;
  */
 public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
 
-    public final GUIEnumPosition slotsPosition;
+    public final EnumGUISlotsPosition slotsPosition;
 
     public final Container container;
 
@@ -50,7 +51,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
      * @param rows кол-во отображаемых слотов по горизонтали.
      * @param columns кол-во слотов отображаемых по вертикали.
      */
-    public GUISlotsFramework(GUIEnumPosition slotsPosition, Container container, int firstSlotIndex, int lastSlotIndex, int rows, int columns) {
+    public GUISlotsFramework(EnumGUISlotsPosition slotsPosition, Container container, int firstSlotIndex, int lastSlotIndex, int rows, int columns) {
         this.slots = new GUIContainerSlots(this);
         this.slotsPosition = slotsPosition;	
         this.container = container;
@@ -95,7 +96,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
                 if (sorter.isSlotValid(slotCopy)) {   
                     if (slotCopy.getHasStack())
                         this.slots.items.put(size, slotCopy.getStack());
-                    if (this.slotsPosition == GUIEnumPosition.CUSTOM) {        
+                    if (this.slotsPosition == EnumGUISlotsPosition.CUSTOM) {        
                         k = size / this.columns;
                         slotCopy.xPos = this.getX() + size * (this.getSlotWidth() + this.getSlotDistanceHorizontal()) - k * ((this.getSlotWidth() + this.getSlotDistanceHorizontal()) * this.columns);
                         slotCopy.yPos = this.getY() + k * (this.getSlotHeight() + this.getSlotDistanceVertical()) - (size / this.visibleSlots) * (this.rows * (this.getSlotHeight() + this.getSlotDistanceVertical()));
@@ -115,7 +116,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
                     slotCopy = this.copySlot(slot);  
                     if (!slotCopy.getHasStack()) {
                         size = this.slots.visibleSlots.size();
-                        if (this.slotsPosition == GUIEnumPosition.CUSTOM) {
+                        if (this.slotsPosition == EnumGUISlotsPosition.CUSTOM) {
                             k = size / this.columns;
                             slotCopy.xPos = this.getX() + size * (this.getSlotWidth() + this.getSlotDistanceHorizontal()) - k * ((this.getSlotWidth() + this.getSlotDistanceHorizontal()) * this.columns);
                             slotCopy.yPos = this.getY() + k * (this.getSlotHeight() + this.getSlotDistanceVertical()) - (size / this.visibleSlots) * (this.rows * (this.getSlotHeight() + this.getSlotDistanceVertical()));
@@ -207,7 +208,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
                 if (itemName.startsWith(typedText) || itemName.contains(" " + typedText)) {
                     size = framework.slots.searchSlots.size();
                     slotCopy = this.copySlot(framework.slots.slotsBuffer.get(slotIndex));
-                    if (framework.slotsPosition == GUIEnumPosition.CUSTOM) {
+                    if (framework.slotsPosition == EnumGUISlotsPosition.CUSTOM) {
                         k = size / framework.columns;
                         slotCopy.xPos = framework.getX() + size * (framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) - k * ((framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) * framework.columns);
                         slotCopy.yPos = framework.getY() + k * (framework.getSlotHeight() + framework.getSlotDistanceVertical()) - (size / framework.visibleSlots) * (framework.rows * (framework.getSlotHeight() + framework.getSlotDistanceVertical()));
@@ -252,7 +253,7 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
      */
     @Override
     public GUISlotsFramework setPosition(int xPosition, int yPosition) {
-        if (this.slotsPosition == GUIEnumPosition.CUSTOM)
+        if (this.slotsPosition == EnumGUISlotsPosition.CUSTOM)
             super.setPosition(xPosition, yPosition);
         return this;
     }
@@ -348,14 +349,5 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
     public GUISlotsFramework disableTooltips() {
         this.isTooltipsDisabled = true;
         return this;
-    }
-
-    /**
-     * Enum для определения используемых слотами координат при добавлении в ГПИ.
-     */
-    public enum GUIEnumPosition {
-
-        CONTAINER,
-        CUSTOM
     }
 }

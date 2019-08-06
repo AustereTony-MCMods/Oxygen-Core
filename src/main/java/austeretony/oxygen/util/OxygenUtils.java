@@ -1,20 +1,10 @@
 package austeretony.oxygen.util;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.client.core.api.ClientReference;
-import austeretony.oxygen.common.config.IConfigHolder;
-import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.text.TextFormatting;
 
 public class OxygenUtils {
@@ -37,114 +27,67 @@ public class OxygenUtils {
         return TextFormatting.getValueByName(code);
     }
 
-    public static String getLastActivityTimeLocalizedString(long millis) {
-        if (millis > 0L) {
+    public static String getTimePassedLocalizedString(long timeStampMillis) {
+        if (timeStampMillis > 0L) {
             long 
-            delta = System.currentTimeMillis() - millis,
-            hours = delta / 3_600_000L,
-            days;        
+            delta = System.currentTimeMillis() - timeStampMillis,
+            hours = delta / 3_600_000L;        
             if (hours < 24L) {
                 if (hours % 10L == 1L)
-                    return ClientReference.localize("oxygen.lastActivity.hour", hours);
-                else
-                    return ClientReference.localize("oxygen.lastActivity.hours", hours);
+                    return ClientReference.localize("oxygen.gui.hour", hours);
+                else {
+                    if (hours < 1L) {
+                        long minutes = delta / 60_000L;
+                        if (minutes % 10L == 1L)
+                            return ClientReference.localize("oxygen.gui.minute", minutes);
+                        else               
+                            return ClientReference.localize("oxygen.gui.minutes", minutes);
+                    }
+                    return ClientReference.localize("oxygen.gui.hours", hours);
+                }
             } else {
-                days = hours / 24L;
+                long days = hours / 24L;
                 if (days % 10L == 1L)
-                    return ClientReference.localize("oxygen.lastActivity.day", days);
+                    return ClientReference.localize("oxygen.gui.day", days);
                 else               
-                    return ClientReference.localize("oxygen.lastActivity.days", days);
+                    return ClientReference.localize("oxygen.gui.days", days);
             }
         } else
-            return ClientReference.localize("oxygen.lastActivity.noData");
+            return ClientReference.localize("oxygen.gui.undef");
     }
 
-    public static JsonObject updateConfig(JsonObject internalConfig, String externalConfigFolder, IConfigHolder configHolder) throws IOException {
-        try {            
-            JsonObject externalConfigOld, externalConfigNew, externalGroupNew;
-            externalConfigOld = JsonUtils.getExternalJsonData(externalConfigFolder).getAsJsonObject();   
-            JsonElement versionElement = externalConfigOld.get("version");
-            if (versionElement == null || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
-                OxygenMain.OXYGEN_LOGGER.info("Updating <{}> config file...", configHolder.getModId());
-                externalConfigNew = new JsonObject();
-                externalConfigNew.add("version", new JsonPrimitive(configHolder.getVersion()));
-                Map<String, JsonElement> 
-                internalData = new LinkedHashMap<String, JsonElement>(),
-                externlDataOld = new HashMap<String, JsonElement>(),
-                internalGroup, externlGroupOld;
-                for (Map.Entry<String, JsonElement> entry : internalConfig.entrySet())
-                    internalData.put(entry.getKey(), entry.getValue());
-                for (Map.Entry<String, JsonElement> entry : externalConfigOld.entrySet())
-                    externlDataOld.put(entry.getKey(), entry.getValue());      
-                for (String key : internalData.keySet()) {
-                    internalGroup = new LinkedHashMap<String, JsonElement>();
-                    externlGroupOld = new HashMap<String, JsonElement>();
-                    externalGroupNew = new JsonObject();
-                    for (Map.Entry<String, JsonElement> entry : internalData.get(key).getAsJsonObject().entrySet())
-                        internalGroup.put(entry.getKey(), entry.getValue());
-                    if (externlDataOld.containsKey(key)) {                    
-                        for (Map.Entry<String, JsonElement> entry : externlDataOld.get(key).getAsJsonObject().entrySet())
-                            externlGroupOld.put(entry.getKey(), entry.getValue());   
-                        for (String k : internalGroup.keySet()) {
-                            if (externlGroupOld.containsKey(k))
-                                externalGroupNew.add(k, externlGroupOld.get(k));
-                            else 
-                                externalGroupNew.add(k, internalGroup.get(k));
-                        }
-                    } else {
-                        for (String k : internalGroup.keySet())
-                            externalGroupNew.add(k, internalGroup.get(k));
-                    }
-                    externalConfigNew.add(key, externalGroupNew);
-                    JsonUtils.createExternalJsonFile(externalConfigFolder, externalConfigNew);
+    public static String getExpirationTimeLocalizedString(long expiresInMillis, long timeStampMillis) {
+        if (timeStampMillis > 0L) {
+            long 
+            deltaPassed = System.currentTimeMillis() - timeStampMillis,
+            minutesPassed = deltaPassed / 60_000L,
+            expiresInMinutes = expiresInMillis / 60_000L,
+            expirationTimeMinutes = expiresInMinutes - minutesPassed;  
+            if (expirationTimeMinutes < 0L)
+                return ClientReference.localize("oxygen.gui.expired");
+            if (expirationTimeMinutes < 60L) {
+                if (expirationTimeMinutes % 10L == 1L)
+                    return ClientReference.localize("oxygen.gui.minute", expirationTimeMinutes);
+                else
+                    return ClientReference.localize("oxygen.gui.minutes", expirationTimeMinutes);
+            } else {
+                minutesPassed /= 60L;
+                expiresInMinutes /= 60L;
+                expirationTimeMinutes = expiresInMinutes - minutesPassed;  
+                if (expirationTimeMinutes < 24L) {
+                    if (expirationTimeMinutes % 10L == 1L)
+                        return ClientReference.localize("oxygen.gui.hour", expirationTimeMinutes);
+                    else
+                        return ClientReference.localize("oxygen.gui.hours", expirationTimeMinutes);
+                } else {
+                    long expirationTimeDays = expirationTimeMinutes / 24L;
+                    if (expirationTimeDays % 10L == 1L)
+                        return ClientReference.localize("oxygen.gui.day", expirationTimeDays);
+                    else               
+                        return ClientReference.localize("oxygen.gui.days", expirationTimeDays);
                 }
-                return externalConfigNew;
             }
-            return externalConfigOld;            
-        } catch (IOException exception) {  
-            OxygenMain.OXYGEN_LOGGER.error("External configuration file for <{}> damaged!", configHolder.getModId());
-            exception.printStackTrace();
-        }
-        return null;
-    }
-
-    public static boolean isOutdated(String currentVersion, String availableVersion) {        
-        try {
-            String[] 
-                    cSplitted = currentVersion.split("[:]"),
-                    aSplitted = availableVersion.split("[:]");    
-            String 
-            cVer = cSplitted[0],
-            cType = cSplitted[1],
-            cRev = cSplitted[2],
-            aVer = aSplitted[0],
-            aType = aSplitted[1],
-            aRev = aSplitted[2];
-            String[]
-                    cVerSplitted = cVer.split("[.]"),
-                    aVerSplitted = aVer.split("[.]");
-            int verDiff, revDiff;               
-            for (int i = 0; i < 3; i++) {                                                             
-                verDiff = Integer.parseInt(aVerSplitted[i]) - Integer.parseInt(cVerSplitted[i]);                                                                                           
-                if (verDiff > 0)
-                    return true;                                
-                if (verDiff < 0)
-                    return false;
-            }  
-            if (aType.equals("release") && (cType.equals("beta") || cType.equals("alpha")))
-                return true;
-            if (aType.equals("beta") && cType.equals("alpha"))
-                return true;
-            revDiff = Integer.parseInt(aRev) - Integer.parseInt(cRev);                                                                                           
-            if (revDiff > 0)
-                return true;                                
-            if (revDiff < 0)
-                return false;
-            return false;
-        } catch (Exception exception) { 
-            OxygenMain.OXYGEN_LOGGER.error("Versions comparison failed!");               
-            exception.printStackTrace();
-        }
-        return true;
+        } else
+            return ClientReference.localize("oxygen.gui.undef");
     }
 }

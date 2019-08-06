@@ -8,7 +8,7 @@ import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
 import austeretony.oxygen.common.core.api.CommonReference;
-import austeretony.oxygen.common.main.EnumOxygenChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenChatMessage;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilege;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
@@ -46,15 +46,15 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
         for (IArgumentParameter param : params) {
             if (param.getBaseName().equals(CommandPrivilege.ACTION_GROUP_INFO))
                 type = EnumType.GROUP_INFO;
-            if (param.getBaseName().equals(CommandPrivilege.ACTION_GROUP_PRIVILEGES))
+            else if (param.getBaseName().equals(CommandPrivilege.ACTION_GROUP_PRIVILEGES))
                 type = EnumType.GROUP_PRIVILEGES;
-            if (param.getBaseName().equals(CommandPrivilege.ACTION_GROUPS_LIST))
+            else if (param.getBaseName().equals(CommandPrivilege.ACTION_GROUPS_LIST))
                 type = EnumType.GROUPS_LIST;
-            if (param.getBaseName().equals(CommandPrivilege.ACTION_PLAYER_GROUP))
+            else if (param.getBaseName().equals(CommandPrivilege.ACTION_PLAYER_GROUP))
                 type = EnumType.PLAYER_GROUP;
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_GROUP))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_GROUP))
                 groupName = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PLAYER))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PLAYER))
                 playerName = param.getValue();
         }
         if (type != null) {
@@ -63,7 +63,7 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                 if (groupName != null) {
                     IPrivilegedGroup group = CommandPrivilege.getPrivilegedGroupByName(groupName);
                     if (sender instanceof EntityPlayerMP)
-                        OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(), 
+                        OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(), 
                                 groupName, 
                                 group.getPrefix(), 
                                 group.getSuffix(), 
@@ -87,9 +87,9 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                     IPrivilegedGroup group = CommandPrivilege.getPrivilegedGroupByName(groupName);
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_PRIVILEGES.ordinal(), groupName);
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_INFO_GROUP_PRIVILEGES.ordinal(), groupName);
                         for (IPrivilege privilege : group.getPrivileges())
-                            OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.SIMPLE_LINE.ordinal(), privilege.getName());
+                            OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.SIMPLE_LINE.ordinal(), privilege.getName());
                     } else {
                         server.sendMessage(new TextComponentString(String.format("Group <%s> privileges:", groupName)));
                         for (IPrivilege privilege : group.getPrivileges())
@@ -100,9 +100,9 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
             case GROUPS_LIST:
                 if (sender instanceof EntityPlayerMP) {
                     EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                    OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUPS_LIST.ordinal()); 
+                    OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_INFO_GROUPS_LIST.ordinal()); 
                     for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values()) 
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.SIMPLE_LINE.ordinal(), group.getName()); 
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.SIMPLE_LINE.ordinal(), group.getName()); 
                 } else {
                     server.sendMessage(new TextComponentString("Groups:"));
                     for (IPrivilegedGroup group : OxygenManagerServer.instance().getPrivilegeManager().getGroups().values())      
@@ -114,7 +114,7 @@ public class InfoArgumentExecutor extends AbstractArgumentExecutor {
                     EntityPlayerMP targetMP = getPlayerByUsername(server, playerName);
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
-                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_PLAYER_GROUP.ordinal(), 
+                        OxygenHelperServer.sendMessage(playerMP, OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_INFO_PLAYER_GROUP.ordinal(), 
                                 playerName, 
                                 PrivilegeProviderServer.getPlayerGroup(CommonReference.getPersistentUUID(targetMP)).getName()); 
 

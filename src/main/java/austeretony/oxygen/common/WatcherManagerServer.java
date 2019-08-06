@@ -20,7 +20,7 @@ public class WatcherManagerServer {
     private final Map<UUID, Watcher> watchers = new ConcurrentHashMap<UUID, Watcher>();
 
     private WatcherManagerServer() {
-        OxygenHelperServer.addPersistentServiceProcess(new WatcherSyncProcess());
+        OxygenHelperServer.addPersistentServiceProcess(new WatcherSynchronizationProcess());
     }
 
     public static void create() {

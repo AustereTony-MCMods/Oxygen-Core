@@ -20,6 +20,7 @@ public abstract class AbstractTemporaryProcess implements ITemporaryProcess, Com
 
     @Override
     public boolean isExpired() {
+        this.process();
         if (this.counter > 0)
             this.counter--;
         if (this.counter == 0) {

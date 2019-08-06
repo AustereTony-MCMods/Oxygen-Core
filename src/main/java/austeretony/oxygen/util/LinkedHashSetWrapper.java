@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class LinkedHashSetWrapper<T> {
 
-    public final Set<T> set = new LinkedHashSet<T>();
+    public final Set<T> set = new LinkedHashSet<T>(5);
 
     public boolean isEmpty() {
         return this.set.isEmpty();

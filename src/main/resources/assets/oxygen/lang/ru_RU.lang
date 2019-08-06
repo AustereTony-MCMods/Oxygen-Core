@@ -3,7 +3,10 @@ key.oxygen.accept=Принять Запрос
 key.oxygen.reject=Оклонить Запрос
 key.oxygen.interact=Взаимодействовать
 
-oxygen.currency.gold=Золото
+oxygen.request.accept=Принять
+oxygen.request.reject=Отклонить
+
+oxygen.currency.coins=Монеты
 
 oxygen.gui.username=Ник
 oxygen.gui.name=Название
@@ -11,16 +14,14 @@ oxygen.gui.dimension=Измерение
 oxygen.gui.status=Статус
 oxygen.gui.description=Описание
 oxygen.gui.note=Заметка
-oxygen.gui.downloadCallback=Загрузка Данных
-oxygen.gui.downloadCallback.request=Загрузить с сервера?
-oxygen.gui.settingsCallback=Настройки
-oxygen.gui.editNoteCallback=Редактирование Заметки
 oxygen.gui.confirmButton=Принять
 oxygen.gui.cancelButton=Отмена
 oxygen.gui.closeButton=Закрыть
 oxygen.gui.addButton=Добавить
 oxygen.gui.playerFound=Игрок найден
 oxygen.gui.playerNotFound=Игрок не найден
+
+oxygen.gui.callback.settings=Настройки
 
 oxygen.gui.notifications.title=Уведомления
 oxygen.gui.notifications.setting.hideOverlay=Убрать Оверлэй Запросов
@@ -40,11 +41,16 @@ oxygen.status.away=Нет на месте
 oxygen.status.not_disturb=Не Беспокоить
 oxygen.status.offline=Не в сети
 
-oxygen.lastActivity.hour=Активность %s час назад
-oxygen.lastActivity.hours=Активность %s час назад
-oxygen.lastActivity.day=Активность %s день назад
-oxygen.lastActivity.days=Активность %s ней назад
-oxygen.lastActivity.noData=Нет данных
+oxygen.gui.minute=%s минута
+oxygen.gui.minutes=%s минут
+oxygen.gui.hour=%s час
+oxygen.gui.hours=%s часов
+oxygen.gui.day=%s день
+oxygen.gui.days=%s дней
+oxygen.gui.undef=неизвестно
+oxygen.gui.expired=истекло
+
+oxygen.gui.lastActivityTime=активность %s назад
 
 oxygen.tooltip.online=В сети
 oxygen.tooltip.download=Загрузка
@@ -84,6 +90,7 @@ oxygen.command.exception.wrongParamValue=Неверное значение па�
 oxygen.command.exception.unnecessaryParamValue=Указан лишнее значение для параметра %s: %s.
 
 oxygen.command.oxygenc.reloadGui=Настойки ГПИ перезагружены.
+oxygen.command.oxygenc.currency.balance=Клиентский баланс: %s
 
 oxygen.dim.unknown=Неиизвестно
 oxygen.dim.overworld=Верхний Мир

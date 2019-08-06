@@ -31,6 +31,8 @@ public class SharedDataManagerServer implements IPersistentData {
 
     private final Map<UUID, SharedPlayerData> persistent = new ConcurrentHashMap<UUID, SharedPlayerData>();
 
+    private final Map<String, UUID> usernames = new ConcurrentHashMap<String, UUID>();
+
     private final Map<UUID, ObservedPlayersContainer> observedPlayers = new ConcurrentHashMap<UUID, ObservedPlayersContainer>();
 
     private final Map<UUID, ImmutablePlayerData> immutableData = new ConcurrentHashMap<UUID, ImmutablePlayerData>();
@@ -38,12 +40,6 @@ public class SharedDataManagerServer implements IPersistentData {
     private final Map<Integer, SharedPlayerData> sharedData = new ConcurrentHashMap<Integer, SharedPlayerData>();
 
     private volatile int index = Integer.MIN_VALUE;
-
-    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
-
-    public void registerSharedDataValue(int id, int size) {
-        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
-    }
 
     public void createPlayerSharedDataEntrySynced(EntityPlayer player) {
         UUID playerUUID = CommonReference.getPersistentUUID(player);
@@ -55,6 +51,9 @@ public class SharedDataManagerServer implements IPersistentData {
         sharedData.setPlayerUUID(playerUUID);
         sharedData.setUsername(immutableData.username);
         sharedData.setIndex(immutableData.getIndex());
+
+        this.persistent.put(playerUUID, sharedData);
+        this.usernames.put(immutableData.username, playerUUID);
 
         for (SharedDataRegistryEntry entry : this.sharedDataRegistry)
             sharedData.createDataBuffer(entry.id, entry.size);
@@ -76,7 +75,7 @@ public class SharedDataManagerServer implements IPersistentData {
         OxygenHelperServer.setSyncing(playerUUID, false);
 
         //oxygen player data loaded, posting event for other modules
-        MinecraftForge.EVENT_BUS.post(new OxygenPlayerLoadedEvent(player));
+        CommonReference.delegateToServerThread(()->MinecraftForge.EVENT_BUS.post(new OxygenPlayerLoadedEvent(player)));
     }
 
     public void removePlayerSharedDataEntrySynced(UUID playerUUID) {
@@ -84,7 +83,7 @@ public class SharedDataManagerServer implements IPersistentData {
         sharedData.updateLastActivityTime();
         this.persistent.put(playerUUID, sharedData);
 
-        OxygenHelperServer.savePersistentDataDelegated(this);
+        this.save();
 
         this.immutableData.remove(playerUUID);
         this.sharedData.remove(sharedData.getIndex());  
@@ -151,7 +150,7 @@ public class SharedDataManagerServer implements IPersistentData {
         }
 
         if (save)
-            OxygenHelperServer.savePersistentDataDelegated(this);
+            this.save();
     }
 
     public void removeObservedPlayer(UUID observer, UUID observed, boolean save) {
@@ -162,11 +161,7 @@ public class SharedDataManagerServer implements IPersistentData {
         }
 
         if (save)
-            OxygenHelperServer.savePersistentDataDelegated(this);
-    }
-
-    public void saveObservedPlayersData() {
-        OxygenHelperServer.savePersistentDataDelegated(this);
+            this.save();
     }
 
     public boolean haveObservedPlayers(UUID observer) {
@@ -190,6 +185,38 @@ public class SharedDataManagerServer implements IPersistentData {
             indexes[count++] = OxygenHelperServer.getPlayerIndex(uuid);
         OxygenMain.network().sendTo(new CPCacheObservedData(indexes), playerMP);
     }
+
+    public boolean isValidUsername(String username) {
+        return this.usernames.containsKey(username);
+    }
+
+    public UUID getPlayerUUIDByUsername(String username) {
+        return this.usernames.get(username);
+    }
+
+    public SharedPlayerData getSharedDataByUsername(String username) {
+        if (this.usernames.containsKey(username))
+            return this.persistent.get(this.usernames.get(username));
+        return null;
+    }
+
+    public void load() {
+        OxygenHelperServer.loadServiceDataDelegated(this);
+    }
+
+    public void save() {
+        OxygenHelperServer.saveServiceDataDelegated(this);
+    }
+
+    //*** shared data registration - start
+
+    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
+
+    public void registerSharedDataValue(int id, int size) {
+        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
+    }
+
+    //*** shared data registration - end
 
     public void reset() {
         this.persistent.clear();
@@ -234,6 +261,7 @@ public class SharedDataManagerServer implements IPersistentData {
         for (; i < amount; i++) {
             sharedData = SharedPlayerData.read(bis);
             this.persistent.put(sharedData.getPlayerUUID(), sharedData);
+            this.usernames.put(sharedData.getUsername(), sharedData.getPlayerUUID());
         }
         OxygenMain.OXYGEN_LOGGER.info("Loaded {} persistent shared data entries.", amount);
         amount = StreamUtils.readInt(bis);

@@ -1,7 +1,7 @@
 package austeretony.oxygen.client.gui.settings;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class GUISettings {
@@ -12,7 +12,7 @@ public class GUISettings {
 
     private GUISettingsProfile defaultProfile, currentProfile;
 
-    private final Map<String, GUISettingsProfile> profiles = new LinkedHashMap<String, GUISettingsProfile>(1);
+    private final Map<String, GUISettingsProfile> profiles = new HashMap<String, GUISettingsProfile>(1);
 
     private GUISettings() {
         this.loader = new GUISettingsLoader(this);
@@ -251,6 +251,30 @@ public class GUISettings {
 
     public int getHoveredTextColorDark() {
         return this.currentProfile.hoveredTextColorDark;
+    }
+
+    public void setEnabledTextFieldColor(int colorHex) {
+        this.currentProfile.enabledTextFieldColor = colorHex;
+    }
+
+    public int getEnabledTextFieldColor() {
+        return this.currentProfile.enabledTextFieldColor;
+    }
+
+    public void setDisabledTextFieldColor(int colorHex) {
+        this.currentProfile.disabledTextFieldColor = colorHex;
+    }
+
+    public int getDisabledTextFieldColor() {
+        return this.currentProfile.disabledTextFieldColor;
+    }
+
+    public void setHoveredTextFieldColor(int colorHex) {
+        this.currentProfile.hoveredTextFieldColor = colorHex;
+    }
+
+    public int getHoveredTextFieldColor() {
+        return this.currentProfile.hoveredTextFieldColor;
     }
 
     public void setBaseOverlayTextColor(int colorHex) {

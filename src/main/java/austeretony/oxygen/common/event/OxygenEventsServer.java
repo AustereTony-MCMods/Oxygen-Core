@@ -3,10 +3,13 @@ package austeretony.oxygen.common.event;
 import java.util.UUID;
 
 import austeretony.oxygen.common.OxygenManagerServer;
+import austeretony.oxygen.common.api.event.OxygenPrivilegesLoadedEvent;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
+import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
+import austeretony.oxygen.common.privilege.config.OxygenPrivilegeConfig;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeHooks;
@@ -19,6 +22,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class OxygenEventsServer {
+
+    @SubscribeEvent
+    public void onPrivilegesLoaded(OxygenPrivilegesLoadedEvent event) {
+        OxygenMain.addDefaultPrivileges();
+    }
 
     @SubscribeEvent
     public void onPlayerLogIn(PlayerLoggedInEvent event) {        
@@ -38,7 +46,7 @@ public class OxygenEventsServer {
     @SubscribeEvent
     public void onChatMessage(ServerChatEvent event) {
         if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue() 
-                && OxygenConfig.ENABLE_FORMATTED_CHAT.getBooleanValue()) {
+                && OxygenPrivilegeConfig.ENABLE_FORMATTED_CHAT.getBooleanValue()) {
             UUID senderUUID = CommonReference.getPersistentUUID(event.getPlayer());
             IPrivilegedGroup group = PrivilegeProviderServer.getPlayerGroup(senderUUID);
             StringBuilder username = new StringBuilder();

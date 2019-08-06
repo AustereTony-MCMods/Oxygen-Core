@@ -1,6 +1,7 @@
 package austeretony.oxygen.client.api;
 
 import java.util.Collection;
+import java.util.Random;
 import java.util.UUID;
 
 import austeretony.oxygen.client.OxygenLoaderClient;
@@ -8,9 +9,10 @@ import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenPlayerData;
+import austeretony.oxygen.common.main.OxygenPlayerData.EnumActivityStatus;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.process.IPersistentProcess;
+import austeretony.oxygen.common.process.ITemporaryProcess;
 import net.minecraft.util.ResourceLocation;
 
 public class OxygenHelperClient {
@@ -31,6 +33,10 @@ public class OxygenHelperClient {
 
     //*** initialization - end
 
+    public static Random getRandom() {
+        return OxygenManagerClient.instance().getRandom();
+    }
+
     public static long getWorldId() {
         return OxygenManagerClient.instance().getWorldId();
     }
@@ -49,22 +55,18 @@ public class OxygenHelperClient {
 
     public static void addIOTask(IOxygenTask task) {
         OxygenManagerClient.instance().addIOTask(task);
-    }
-
-    public static void addRoutineTask(IOxygenTask task) {
-        OxygenManagerClient.instance().addRoutineTask(task);
     }    
-
-    public static void addNetworkTask(IOxygenTask task) {
-        OxygenManagerClient.instance().addNetworkTask(task);
-    }
 
     public static void addPersistentProcess(IPersistentProcess process) {
         OxygenManagerClient.instance().addPersistentProcess(process);
     }
 
+    public static void addTemporaryProcess(ITemporaryProcess process) {
+        OxygenManagerClient.instance().addTemporaryProcess(process);
+    }
+
     public static Collection<SharedPlayerData> getSharedPlayersData() {
-        return OxygenManagerClient.instance().getSharedPlayersData();
+        return OxygenManagerClient.instance().getSharedDataManager().getPlayersSharedData();
     } 
 
     public static int getPlayerDimension(SharedPlayerData sharedData) {
@@ -72,27 +74,27 @@ public class OxygenHelperClient {
     }
 
     public static int getPlayerDimension(UUID playerUUID) {
-        return OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getInt(OxygenMain.DIMENSION_SHARED_DATA_ID);
+        return getSharedPlayerData(playerUUID).getInt(OxygenMain.DIMENSION_SHARED_DATA_ID);
     }
 
-    public static OxygenPlayerData.EnumActivityStatus getPlayerStatus(SharedPlayerData sharedData) {
-        return OxygenPlayerData.EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
+    public static EnumActivityStatus getPlayerStatus(SharedPlayerData sharedData) {
+        return EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
     }
 
-    public static OxygenPlayerData.EnumActivityStatus getClientPlayerStatus() {
-        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(getPlayerUUID()).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
+    public static EnumActivityStatus getClientPlayerStatus() {
+        return EnumActivityStatus.values()[getSharedPlayerData(getPlayerUUID()).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
     }
 
-    public static OxygenPlayerData.EnumActivityStatus getPlayerStatus(UUID playerUUID) {
-        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
+    public static EnumActivityStatus getPlayerStatus(UUID playerUUID) {
+        return EnumActivityStatus.values()[getSharedPlayerData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
     }
 
     public static boolean isOfflineStatus(UUID playerUUID) {
-        return OxygenPlayerData.EnumActivityStatus.values()[OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == OxygenPlayerData.EnumActivityStatus.OFFLINE;
+        return EnumActivityStatus.values()[getSharedPlayerData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == EnumActivityStatus.OFFLINE;
     }
 
     public static boolean isOfflineStatus(SharedPlayerData sharedData) {
-        return OxygenPlayerData.EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == OxygenPlayerData.EnumActivityStatus.OFFLINE;
+        return EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == EnumActivityStatus.OFFLINE;
     }
 
     public static int getClientPlayerIndex() {
@@ -100,35 +102,39 @@ public class OxygenHelperClient {
     }
 
     public static int getPlayerIndex(UUID playerUUID) {
-        return OxygenManagerClient.instance().getSharedPlayerData(playerUUID).getIndex();
+        return OxygenManagerClient.instance().getSharedDataManager().getSharedData(playerUUID).getIndex();
     }
 
     public static SharedPlayerData getSharedClientPlayerData() {
-        return OxygenManagerClient.instance().getSharedPlayerData(getPlayerUUID());
+        return OxygenManagerClient.instance().getSharedDataManager().getSharedData(getPlayerUUID());
     }
 
     public static SharedPlayerData getSharedPlayerData(int index) {
-        return OxygenManagerClient.instance().getSharedPlayerData(index);
+        return OxygenManagerClient.instance().getSharedDataManager().getSharedData(index);
     }
 
     public static SharedPlayerData getSharedPlayerData(UUID playerUUID) {
-        return OxygenManagerClient.instance().getSharedPlayerData(playerUUID);
+        return OxygenManagerClient.instance().getSharedDataManager().getSharedData(playerUUID);
+    }
+
+    public static SharedPlayerData getSharedPlayerData(String username) {
+        return OxygenManagerClient.instance().getSharedDataManager().getSharedDataByUsername(username);
     }
 
     public static boolean observedSharedDataExist(UUID playerUUID) {
-        return OxygenManagerClient.instance().observedSharedDataExist(playerUUID);
+        return OxygenManagerClient.instance().getSharedDataManager().observedSharedDataExist(playerUUID);
     }
 
     public static SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        return OxygenManagerClient.instance().getObservedSharedData(playerUUID);
+        return OxygenManagerClient.instance().getSharedDataManager().getObservedSharedData(playerUUID);
     }
 
     public static boolean isOnline(int index) {
-        return OxygenManagerClient.instance().isPlayerOnline(index);
+        return OxygenManagerClient.instance().getSharedDataManager().getOnlinePlayersIndexes().contains(index);
     }
 
     public static boolean isOnline(UUID playerUUID) {
-        return OxygenManagerClient.instance().isPlayerOnline(playerUUID);
+        return OxygenManagerClient.instance().getSharedDataManager().getOnlinePlayersUUIDs().contains(playerUUID);
     }
 
     public static void loadPersistentDataDelegated(IPersistentData persistentData) {
@@ -146,6 +152,8 @@ public class OxygenHelperClient {
     public static void savePersistentData(IPersistentData persistentData) {
         OxygenLoaderClient.savePersistentData(persistentData);
     }
+
+    //*** client settings - start
 
     public static void setClientSetting(int settingId, int value) {
         OxygenManagerClient.instance().getSettingsManager().set(settingId, value);
@@ -166,4 +174,6 @@ public class OxygenHelperClient {
     public static void saveClientSettings() {
         OxygenManagerClient.instance().getSettingsManager().save();
     }
+
+    //*** client settings - end
 }

@@ -61,8 +61,8 @@ public class CommonReference {
         return entity.getEntityId();
     }
 
-    public static Entity getEntityById(int entityId) {
-        return getServer().getEntityWorld().getEntityByID(entityId);
+    public static Entity getEntityById(Entity reference, int entityId) {
+        return reference.world.getEntityByID(entityId);
     }
 
     public static boolean isEntitiesNear(Entity first, Entity second, double range) {
@@ -91,5 +91,9 @@ public class CommonReference {
             worldServer.spawnEntity(playerMP);
             worldServer.updateEntityWithOptionalForce(playerMP, false);
         }
+    }
+
+    public static void delegateToServerThread(Runnable task) {
+        getServer().addScheduledTask(task);
     }
 }

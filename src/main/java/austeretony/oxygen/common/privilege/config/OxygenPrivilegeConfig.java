@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.privilege.config;
 
-import java.util.Queue;
+import java.util.List;
 
 import austeretony.oxygen.common.api.config.AbstractConfigHolder;
 import austeretony.oxygen.common.api.config.ConfigValue;
@@ -10,6 +10,7 @@ import austeretony.oxygen.common.main.OxygenMain;
 public class OxygenPrivilegeConfig extends AbstractConfigHolder {
 
     public static final ConfigValue
+    ENABLE_FORMATTED_CHAT = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_formatted_chat"),
     SHOW_PREFIX = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "show_prefix"),
     SHOW_SUFFIX = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "show_suffix"),
     ENABLE_NICKNAME_COLOR = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_nickname_color"),
@@ -38,7 +39,8 @@ public class OxygenPrivilegeConfig extends AbstractConfigHolder {
     }
 
     @Override
-    public void getValues(Queue<ConfigValue> values) {
+    public void getValues(List<ConfigValue> values) {
+        values.add(ENABLE_FORMATTED_CHAT);    
         values.add(SHOW_PREFIX);    
         values.add(SHOW_SUFFIX);        
         values.add(ENABLE_NICKNAME_COLOR);        

@@ -24,7 +24,10 @@
         "hovered_text": "FFE5E5E5",         
         "enabled_text_dark": "FFA5A5A5",
         "disabled_text_dark": "FF7F7F7F",
-        "hovered_text_dark": "FFBFBFBF",        
+        "hovered_text_dark": "FFBFBFBF", 
+        "enabled_textfield": "FF505050",
+        "disabled_textfield": "FF404040",
+        "hovered_textfield": "FF555555",  
         "base_overlay_text": "FFAAAAAA",
         "additional_overlay_text": "FFEEEEEE",       
         "tooltip_background": "FF333333",
@@ -44,8 +47,8 @@
       "other": {
         "texture_offset_x": 0,
         "texture_offset_y": 0,
-        "drop_down_list_width": 55,
-        "context_menu_width": 55
+        "drop_down_list_width": 58,
+        "context_menu_width": 58
       }
     }
   ]

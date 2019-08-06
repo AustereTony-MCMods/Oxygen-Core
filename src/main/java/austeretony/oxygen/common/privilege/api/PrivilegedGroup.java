@@ -198,7 +198,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());
             group.privileges.put(privilege.getName(), privilege);
         }
-        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getName());
+        OxygenMain.OXYGEN_LOGGER.info("Loaded privileged group: {}.", group.getName());
         return group;
     }
 
@@ -212,7 +212,7 @@ public class PrivilegedGroup implements IPrivilegedGroup {
             privilege = Privilege.deserialize(privilegesElement.getAsJsonObject());
             group.privileges.put(privilege.getName(), privilege);
         }
-        OxygenMain.PRIVILEGE_LOGGER.info("Loaded group: {}.", group.getName());
+        OxygenMain.OXYGEN_LOGGER.info("Loaded privileged group: {}.", group.getName());
         return group;
     }
 

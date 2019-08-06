@@ -77,7 +77,7 @@ public class Watcher {
     }
 
     public void forceSync(int... valuesIds) {
-        OxygenMain.watcherNetwork().sendTo(new CPSyncWatchedValues(this, true), CommonReference.playerByUUID(this.playerUUID));
+        OxygenMain.watcherNetwork().sendTo(new CPSyncWatchedValues(this, true, valuesIds), CommonReference.playerByUUID(this.playerUUID));
     }
 
     public void forcedSync(PacketBuffer buffer, int... valuesIds) {

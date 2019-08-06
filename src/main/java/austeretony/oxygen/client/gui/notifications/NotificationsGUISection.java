@@ -11,8 +11,8 @@ import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.panel.GUIButtonPanel;
-import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
 import austeretony.alternateui.screen.text.GUITextLabel;
+import austeretony.alternateui.util.EnumGUIOrientation;
 import austeretony.oxygen.client.OxygenManagerClient;
 import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
@@ -40,15 +40,15 @@ public class NotificationsGUISection extends AbstractGUISection {
 
     @Override
     public void init() {
-        this.addElement(new NotificationsBackgroundGUIFiller(0, 0, this.getWidth(), this.getHeight()));
+        this.addElement(new NotificationsGUIFiller(0, 0, this.getWidth(), this.getHeight()));
         this.addElement(new GUITextLabel(2, 4).setDisplayText(ClientReference.localize("oxygen.gui.notifications.title"), false, GUISettings.instance().getTitleScale()));
-        this.addElement(this.settingsButton = new GUIButton(this.getWidth() - 12, 2, 10, 10).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.SETTINGS_ICONS, 10, 10).initSimpleTooltip(ClientReference.localize("oxygen.tooltip.settings"), GUISettings.instance().getTooltipScale()));
+        this.addElement(this.settingsButton = new GUIButton(this.getWidth() - 5, 0, 5, 5).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.TRIANGLE_TOP_RIGHT_CORNER_ICONS, 5, 5).initSimpleTooltip(ClientReference.localize("oxygen.tooltip.settings"), GUISettings.instance().getTooltipScale()));
 
         String baseNoticeStr = ClientReference.localize("oxygen.gui.notifications.empty");   
-        this.addElement(this.defaultNoteTextLabel = new GUITextLabel((this.getWidth() - this.textWidth(baseNoticeStr, GUISettings.instance().getTextScale())) / 2, 21).setDisplayText(baseNoticeStr, false, GUISettings.instance().getTextScale()));
+        this.addElement(this.defaultNoteTextLabel = new GUITextLabel((this.getWidth() - this.textWidth(baseNoticeStr, GUISettings.instance().getSubTextScale())) / 2, 16).setDisplayText(baseNoticeStr, false, GUISettings.instance().getSubTextScale()));
 
-        this.addElement(this.notificationsPanel = new GUIButtonPanel(GUIEnumOrientation.VERTICAL, 0, 14, this.getWidth() - 3, 20).setButtonsOffset(1).setTextScale(GUISettings.instance().getPanelTextScale()));   
-        GUIScroller scroller = new GUIScroller(20, 7);
+        this.addElement(this.notificationsPanel = new GUIButtonPanel(EnumGUIOrientation.VERTICAL, 0, 14, this.getWidth() - 3, 20).setButtonsOffset(1).setTextScale(GUISettings.instance().getPanelTextScale()));   
+        GUIScroller scroller = new GUIScroller(50, 7);
         this.notificationsPanel.initScroller(scroller);
         GUISlider slider = new GUISlider(this.getWidth() - 2, 14, 2, 146);
         slider.setDynamicBackgroundColor(GUISettings.instance().getEnabledSliderColor(), GUISettings.instance().getDisabledSliderColor(), GUISettings.instance().getHoveredSliderColor());
@@ -77,7 +77,7 @@ public class NotificationsGUISection extends AbstractGUISection {
     }
 
     @Override
-    public boolean keyTyped(char typedChar, int keyCode) {   
+    public boolean keyTyped(char typedChar, int keyCode) {  
         if (keyCode == OxygenKeyHandler.NOTIFICATIONS_MENU.getKeyCode())
             this.screen.close();
         return super.keyTyped(typedChar, keyCode); 

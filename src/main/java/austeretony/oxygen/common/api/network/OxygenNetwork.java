@@ -48,6 +48,11 @@ public class OxygenNetwork {
         this.packets.put(this.id++, packet);
     }
 
+    public void registerPacketCheckExisted(Class<? extends ProxyPacket> packet) {
+        if (!this.packets.containsValue(packet))
+            this.packets.put(this.id++, packet);
+    }
+
     @SubscribeEvent
     public void onClientPacketRecieve(FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException {
         this.networkThread.addTask(new IOxygenTask() {
@@ -98,62 +103,26 @@ public class OxygenNetwork {
     }
 
     public void sendToServer(ProxyPacket packet) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendToServer(pack(packet, null));
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendToServer(this.pack(packet, null)));
     }
 
     public void sendTo(ProxyPacket packet, EntityPlayerMP player) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendTo(pack(packet, player.connection.netManager.getNetHandler()), player);
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendTo(this.pack(packet, player.connection.netManager.getNetHandler()), player));
     }
 
     public void sendToAll(ProxyPacket packet) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendToAll(pack(packet, null));
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendToAll(this.pack(packet, null)));
     }
 
     public void sendToAllAround(ProxyPacket packet, TargetPoint point) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendToAllAround(pack(packet, null), point);
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendToAllAround(this.pack(packet, null), point));
     }
 
     public void sendToAllTracking(ProxyPacket packet, Entity entity) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendToAllTracking(pack(packet, null), entity);
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendToAllTracking(this.pack(packet, null), entity));
     }
 
     public void sendToAllTracking(ProxyPacket packet, TargetPoint point) {
-        this.networkThread.addTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                channel.sendToAllTracking(pack(packet, null), point);
-            }            
-        });
+        this.networkThread.addTask(()->this.channel.sendToAllTracking(this.pack(packet, null), point));
     }
 }

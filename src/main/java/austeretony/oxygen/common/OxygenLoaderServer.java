@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.core.api.CommonReference;
@@ -36,13 +35,7 @@ public class OxygenLoaderServer {
     public void createOrLoadWorldIdDelegated(String worldFolder, int maxPlayers) {
         this.worldFolder = worldFolder;
         this.maxPlayers = maxPlayers;
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                createOrLoadWorldId();
-            }           
-        });
+        OxygenHelperServer.addServiceIOTask(()->this.createOrLoadWorldId());
     }
 
     private void createOrLoadWorldId() {
@@ -77,25 +70,19 @@ public class OxygenLoaderServer {
     }
 
     public static void loadPlayerDataCreateSharedEntryDelegated(UUID playerUUID, IPersistentData persistentData, EntityPlayer player) {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                loadPersistentData(persistentData);              
-                OxygenManagerServer.instance().getSharedDataManager().createPlayerSharedDataEntrySynced(player);
-                WatcherManagerServer.instance().initWatcher(player, playerUUID);
-            }     
+        OxygenHelperServer.addCommonIOTask(()->{                
+            loadPersistentData(persistentData);              
+            OxygenManagerServer.instance().getSharedDataManager().createPlayerSharedDataEntrySynced(player);
+            WatcherManagerServer.instance().initWatcher(player, playerUUID);
         });
     }
 
     public static void loadPersistentDataDelegated(IPersistentData persistentData) {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
+        OxygenHelperServer.addCommonIOTask(()->loadPersistentData(persistentData));
+    }
 
-            @Override
-            public void execute() {
-                loadPersistentData(persistentData);
-            }     
-        });
+    public static void loadServiceDataDelegated(IPersistentData persistentData) {
+        OxygenHelperServer.addServiceIOTask(()->loadPersistentData(persistentData));
     }
 
     public static void loadPersistentData(IPersistentData persistentData) {
@@ -112,13 +99,11 @@ public class OxygenLoaderServer {
     }
 
     public static void savePersistentDataDelegated(IPersistentData persistentData) {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
+        OxygenHelperServer.addCommonIOTask(()->savePersistentData(persistentData));
+    }
 
-            @Override
-            public void execute() {
-                savePersistentData(persistentData);
-            }     
-        });
+    public static void saveServiceDataDelegated(IPersistentData persistentData) {
+        OxygenHelperServer.addServiceIOTask(()->savePersistentData(persistentData));
     }
 
     public static void savePersistentData(IPersistentData persistentData) {

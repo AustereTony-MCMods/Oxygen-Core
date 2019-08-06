@@ -2,6 +2,7 @@ package austeretony.alternateui.screen.browsing;
 
 import org.lwjgl.input.Mouse;
 
+import austeretony.alternateui.container.framework.GUISlotsFramework;
 import austeretony.alternateui.screen.button.GUISlider;
 import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,7 +17,7 @@ public class GUIScroller {
 
     private AbstractGUIScreen screen;
 
-    public final GUIEnumScrollerType scrollerType;
+    public final EnumScrollerType scrollerType;
 
     public final int rowsVisible;
 
@@ -39,7 +40,7 @@ public class GUIScroller {
      * @param rowsVisible кол-во видимых элементов
      */
     public GUIScroller(int rowsAmount, int rowsVisible) {		
-        this.scrollerType = GUIEnumScrollerType.STANDARD;
+        this.scrollerType = EnumScrollerType.STANDARD;
         this.rowsAmount = rowsAmount;
         this.rowsVisible = rowsVisible;		
         this.maxPosition = rowsAmount - rowsVisible;		
@@ -57,7 +58,6 @@ public class GUIScroller {
         return this.rowsAmount;
     }
 
-    //TODO CONTAINERS
     /**
      * Автоматически расчитываемый скроллер для фреймворка GUISlotsFramework. Скроллинг возможен только в пределах блока слотов фреймворка 
      * (для исключения конфликтов нескольких скроллеров), используйте GUIScroller#ignoreBorders() 
@@ -65,16 +65,13 @@ public class GUIScroller {
      * 
      * @param framework фреймворк, для которого создаётся скроллер.
      */
-    /*public GUIScroller(GUISlotsFramework framework) {
-
-    	this.scrollerType = GUIEnumScrollerType.STANDARD;
-		this.rowsAmount = (int) (((float) (framework.lastSlotIndex - framework.firstSlotIndex + 1) / (float) (framework.rows * framework.columns)) * (float) framework.rows);
-		this.rowsVisible = framework.rows;
-
-		this.maxPosition = this.rowsAmount - this.rowsVisible;
-
-		this.currentPosition = 0;
-	}*/
+    public GUIScroller(GUISlotsFramework framework) {
+        this.scrollerType = EnumScrollerType.STANDARD;
+        this.rowsAmount = (int) (((float) (framework.lastSlotIndex - framework.firstSlotIndex + 1) / (float) (framework.rows * framework.columns)) * (float) framework.rows);
+        this.rowsVisible = framework.rows;
+        this.maxPosition = this.rowsAmount - this.rowsVisible;
+        this.currentPosition = 0;
+    }
 
     public GUIScroller initScreen(AbstractGUIScreen screen) {		
         this.screen = screen;
@@ -179,16 +176,16 @@ public class GUIScroller {
         return this.ignoreBorders;
     }
 
-    public GUIEnumScrollerType getType() {		
+    public EnumScrollerType getType() {		
         return this.scrollerType;
     }
 
     public boolean isStandard() {		
-        return this.scrollerType == GUIEnumScrollerType.STANDARD;
+        return this.scrollerType == EnumScrollerType.STANDARD;
     }
 
     public boolean isSmooth() {		
-        return this.scrollerType == GUIEnumScrollerType.SMOOTH;
+        return this.scrollerType == EnumScrollerType.SMOOTH;
     }
 
     public float getSmoothCounter() {		
@@ -232,7 +229,7 @@ public class GUIScroller {
      * Определяет способ скроллинга слотов (стандартный (аля креатив) или плавный). ВНИМАНИЕ! Плавный скролл ещё не реализован, используйте STANDARD.
      */
     @SideOnly(Side.CLIENT)
-    public enum GUIEnumScrollerType {
+    public enum EnumScrollerType {
 
         STANDARD,
         SMOOTH

@@ -28,9 +28,14 @@ public class GUISettingsLoader {
         if (Files.exists(externalPath)) {
             try {      
                 this.loadData(JsonUtils.getExternalJsonData(externalPathStr).getAsJsonObject());
-            } catch (IOException exception) {  
-                OxygenMain.OXYGEN_LOGGER.error("External GUI settings file damaged!");
-                exception.printStackTrace();
+            } catch (IOException | NullPointerException exception) {  
+                OxygenMain.OXYGEN_LOGGER.error("External GUI settings file damaged or outdated! Creating default config...");
+                try {
+                    this.createExternalCopyAndLoad(JsonUtils.getInternalJsonData(internalPathStr).getAsJsonObject(), externalPathStr);
+                } catch (IOException e) {
+                    OxygenMain.OXYGEN_LOGGER.error("Internal GUI settings file damaged!");
+                    e.printStackTrace();
+                }  
             }       
         } else {                
             try {               

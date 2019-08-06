@@ -60,16 +60,8 @@ public class WatcherManagerClient {
     }
 
     public void read(PacketBuffer buffer) {
-        for (int i = 0; i < this.stats.size(); i++) {
-            if (buffer.readableBytes() != 0)
+        if (buffer.readableBytes() != 0)
+            for (int i = 0; i < this.stats.size(); i++)
                 this.stats.get((int) buffer.readByte()).read(buffer);
-            else
-                break;
-        }
-    }
-
-    public void reset() {
-        for (WatchedValue value : this.stats.values())
-            value.reset();
     }
 }

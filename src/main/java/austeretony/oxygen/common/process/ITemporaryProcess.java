@@ -5,6 +5,8 @@ public interface ITemporaryProcess {
     long getId();
 
     int getExpireTime();
+    
+    void process();
 
     void expired();
 

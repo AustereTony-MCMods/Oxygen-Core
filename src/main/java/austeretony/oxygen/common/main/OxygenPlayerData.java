@@ -20,24 +20,24 @@ import net.minecraft.entity.player.EntityPlayer;
 public class OxygenPlayerData implements IPersistentData {
 
     public static final int 
-    CURRENCY_GOLD_ID = 0,
-    CURRENCY_GOLD_INDEX = 0;
+    CURRENCY_COINS_WATCHER_ID = 0,//'oxygen coins' - default currency for regular operations
+    CURRENCY_COINS_INDEX = 0;//currency index for 'oxygen coins', there are supposed to be several currencies
 
     private UUID playerUUID;
 
     private EnumActivityStatus status;
 
-    private final Map<Long, ITemporaryProcess> temporaryProcesses = new ConcurrentHashMap<Long, ITemporaryProcess>(5);
+    private final Map<Long, ITemporaryProcess> processes = new ConcurrentHashMap<Long, ITemporaryProcess>(5);
 
     private final Map<Integer, Integer> currency = new ConcurrentHashMap<Integer, Integer>(3);
 
-    private volatile boolean syncing, requesting, requested, temporaryProcessesExist;
+    private volatile boolean syncing, requesting, requested, process;
 
     public final String dataPath;
 
     public OxygenPlayerData(UUID playerUUID) {
         this.status = EnumActivityStatus.ONLINE;    
-        this.currency.put(CURRENCY_GOLD_INDEX, 0);
+        this.currency.put(CURRENCY_COINS_INDEX, 0);
         this.playerUUID = playerUUID;
         this.dataPath = "players/" + this.playerUUID + "/core/player_data.dat";
     }
@@ -59,21 +59,21 @@ public class OxygenPlayerData implements IPersistentData {
     }
 
     public void addTemporaryProcess(ITemporaryProcess process) {
-        this.temporaryProcesses.put(process.getId(), process);
-        this.temporaryProcessesExist = true;
+        this.processes.put(process.getId(), process);
+        this.process = true;
     }
 
     public void removeTemporaryProcess(long processId) {
-        this.temporaryProcesses.remove(processId);
-        this.temporaryProcessesExist = this.temporaryProcesses.size() > 0;
+        this.processes.remove(processId);
+        this.process = !this.processes.isEmpty();
     }
 
     public boolean haveTemporaryProcess(long processId) {
-        return this.temporaryProcesses.containsKey(processId);
+        return this.processes.containsKey(processId);
     }
 
     public ITemporaryProcess getTemporaryProcess(long processId) {
-        return this.temporaryProcesses.get(processId);
+        return this.processes.get(processId);
     }
 
     public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long id) {
@@ -91,12 +91,12 @@ public class OxygenPlayerData implements IPersistentData {
     }
 
     public void runTemporaryProcesses() {
-        if (this.temporaryProcessesExist) {
-            Iterator<ITemporaryProcess> iterator = this.temporaryProcesses.values().iterator();
+        if (this.process) {
+            Iterator<ITemporaryProcess> iterator = this.processes.values().iterator();
             while (iterator.hasNext()) {
                 if (iterator.next().isExpired()) {
                     iterator.remove();
-                    this.temporaryProcessesExist = this.temporaryProcesses.size() > 0;
+                    this.process = !this.processes.isEmpty();
                 }
             }
         }
@@ -110,24 +110,24 @@ public class OxygenPlayerData implements IPersistentData {
         return this.currency.containsKey(index);
     }
 
-    public int getCurrency(int index) {
+    public synchronized int getCurrency(int index) {
         return this.currency.get(index);
     }
 
-    public boolean enoughCurrency(int index, int required) {
+    public synchronized boolean enoughCurrency(int index, int required) {
         return this.currency.get(index) >= required;
     }
 
-    public int setCurrency(int index, int value) {
-        return this.currency.put(index, MathUtils.clamp(value, 0, Integer.MAX_VALUE));
+    public synchronized void setCurrency(int index, int value) {
+        this.currency.put(index, MathUtils.clamp(value, 0, Integer.MAX_VALUE));
     }
 
-    public int addCurrency(int index, int value) {
-        return this.currency.put(index, MathUtils.clamp(this.currency.get(index) + value, 0, Integer.MAX_VALUE));
+    public synchronized void addCurrency(int index, int value) {
+        this.currency.put(index, MathUtils.clamp(this.currency.get(index) + value, 0, Integer.MAX_VALUE));
     }
 
-    public int removeCurrency(int index, int value) {
-        return this.currency.put(index, MathUtils.clamp(this.currency.get(index) - value, 0, Integer.MAX_VALUE));
+    public synchronized void removeCurrency(int index, int value) {
+        this.currency.put(index, MathUtils.clamp(this.currency.get(index) - value, 0, Integer.MAX_VALUE));
     }
 
     public boolean isSyncing() {
@@ -194,7 +194,7 @@ public class OxygenPlayerData implements IPersistentData {
     }
 
     public void reset() {
-        this.temporaryProcesses.clear();
+        this.processes.clear();
     }
 
     public enum EnumActivityStatus {

@@ -13,25 +13,25 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.common.OxygenManagerServer;
-import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.OxygenHelperServer;
+import austeretony.oxygen.common.api.event.OxygenPrivilegesLoadedEvent;
+import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.IPrivilegedGroup;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
 import austeretony.oxygen.util.JsonUtils;
 import austeretony.oxygen.util.OxygenUtils;
+import net.minecraftforge.common.MinecraftForge;
 
 public class PrivilegeLoaderServer {
 
     public static void loadPrivilegeDataDelegated() {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
+        OxygenHelperServer.addServiceIOTask(()->{
+            loadPrivilegedGroups();
+            loadPlayerList();
+            OxygenManagerServer.instance().getPrivilegeManager().addDefaultGroups();
 
-            @Override
-            public void execute() {
-                loadPrivilegedGroups();
-                loadPlayerList();
-                OxygenManagerServer.instance().getPrivilegeManager().addDefaultGroups();//It should be somewhere...
-            }           
+            CommonReference.delegateToServerThread(()->MinecraftForge.EVENT_BUS.post(new OxygenPrivilegesLoadedEvent()));
         });
     }
 
@@ -45,14 +45,12 @@ public class PrivilegeLoaderServer {
                 UUID playerUUID;
                 for (JsonElement element : jsonArray) {
                     object = element.getAsJsonObject();
-                    playerUUID = new UUID(
-                            object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID_MSB)).getAsLong(),
-                            object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID_LSB)).getAsLong());
+                    playerUUID = UUID.fromString(object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID)).getAsString());
                     OxygenManagerServer.instance().getPrivilegeManager().promotePlayer(playerUUID, object.get(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.GROUP)).getAsString());
                 }
-                OxygenMain.PRIVILEGE_LOGGER.info("Loaded player list.");
+                OxygenMain.OXYGEN_LOGGER.info("Loaded privileged players list.");
             } catch (IOException exception) {
-                OxygenMain.PRIVILEGE_LOGGER.error("Players list loading failed.");
+                OxygenMain.OXYGEN_LOGGER.error("Privileged players list loading failed.");
                 exception.printStackTrace();
             }       
         }
@@ -66,22 +64,16 @@ public class PrivilegeLoaderServer {
                 JsonArray groupArray = JsonUtils.getExternalJsonData(folder).getAsJsonArray();
                 for (JsonElement groupElement : groupArray)
                     OxygenManagerServer.instance().getPrivilegeManager().addGroup(PrivilegedGroup.deserializeServer(groupElement.getAsJsonObject()), false);
-                OxygenMain.PRIVILEGE_LOGGER.info("Privileged groups loaded.");
+                OxygenMain.OXYGEN_LOGGER.info("Privileged groups loaded.");
             } catch (IOException exception) {
-                OxygenMain.PRIVILEGE_LOGGER.error("Privileged groups loading failed.");
+                OxygenMain.OXYGEN_LOGGER.error("Privileged groups loading failed.");
                 exception.printStackTrace();
             }       
         }
     }
 
     public static void savePlayerListDelegated() {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                savePlayerList();
-            }           
-        });
+        OxygenHelperServer.addServiceIOTask(()->savePlayerList());
     }
 
     public static void savePlayerList() {
@@ -99,26 +91,19 @@ public class PrivilegeLoaderServer {
             JsonObject object;
             for (Map.Entry<UUID, String> entry : OxygenManagerServer.instance().getPrivilegeManager().getPlayers().entrySet()) {
                 object = new JsonObject();
-                object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID_MSB), new JsonPrimitive(entry.getKey().getMostSignificantBits()));
-                object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID_LSB), new JsonPrimitive(entry.getKey().getLeastSignificantBits()));
+                object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PLAYER_UUID), new JsonPrimitive(entry.getKey().toString()));
                 object.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.GROUP), new JsonPrimitive(entry.getValue()));
                 jsonArray.add(object);
             }
             JsonUtils.createExternalJsonFile(folder, jsonArray);
         } catch (IOException exception) {
-            OxygenMain.PRIVILEGE_LOGGER.error("Players list saving failed.");
+            OxygenMain.OXYGEN_LOGGER.error("Privileged players list saving failed.");
             exception.printStackTrace();
         }       
     }
 
     public static void savePrivilegedGroupsDelegated() {
-        OxygenHelperServer.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                savePrivilegedGroups();
-            }           
-        });
+        OxygenHelperServer.addServiceIOTask(()->savePrivilegedGroups());
     }
 
     public static void savePrivilegedGroups() {
@@ -138,7 +123,7 @@ public class PrivilegeLoaderServer {
                 jsonArray.add(group.serialize());
             JsonUtils.createExternalJsonFile(folder, jsonArray);
         } catch (IOException exception) {
-            OxygenMain.PRIVILEGE_LOGGER.error("Privileged groups saving failed.");
+            OxygenMain.OXYGEN_LOGGER.error("Privileged groups saving failed.");
             exception.printStackTrace();
         }       
     }

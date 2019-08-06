@@ -6,7 +6,7 @@ import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.api.command.AbstractArgumentExecutor;
 import austeretony.oxygen.common.api.command.ArgumentParameter;
 import austeretony.oxygen.common.command.IArgumentParameter;
-import austeretony.oxygen.common.main.EnumOxygenChatMessages;
+import austeretony.oxygen.common.main.EnumOxygenChatMessage;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.privilege.api.PrivilegeProviderServer;
 import austeretony.oxygen.common.privilege.api.PrivilegedGroup;
@@ -53,23 +53,23 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
         for (IArgumentParameter param : params) {
             if (param.getBaseName().equals(CommandPrivilege.ACTION_CREATE))
                 action = EnumAction.CREATE;
-            if (param.getBaseName().equals(CommandPrivilege.ACTION_EDIT))
+            else if (param.getBaseName().equals(CommandPrivilege.ACTION_EDIT))
                 action = EnumAction.EDIT;
-            if (param.getBaseName().equals(CommandPrivilege.ACTION_REMOVE))
+            else if (param.getBaseName().equals(CommandPrivilege.ACTION_REMOVE))
                 action = EnumAction.REMOVE;
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_GROUP))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_GROUP))
                 groupName = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PREFIX))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PREFIX))
                 prefix = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_SUFFIX))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_SUFFIX))
                 suffix = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_USERNAME_COLOR))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_USERNAME_COLOR))
                 nameColor = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PREFIX_COLOR))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_PREFIX_COLOR))
                 prefixColor = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_SUFFIX_COLOR))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_SUFFIX_COLOR))
                 suffixColor = param.getValue();
-            if (param.getBaseName().equals(CommandPrivilege.PARAMETER_CHAT_COLOR))
+            else if (param.getBaseName().equals(CommandPrivilege.PARAMETER_CHAT_COLOR))
                 chatColor = param.getValue();
         }
         if (action != null && groupName != null) {
@@ -99,8 +99,8 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
                 }
                 PrivilegeProviderServer.addGroup(group, true);
                 if (sender instanceof EntityPlayerMP) {
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_GROUP_CREATE.ordinal(), groupName);
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(),
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_GROUP_CREATE.ordinal(), groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_INFO_GROUP_INFO.ordinal(),
                             groupName, 
                             group.getPrefix(), 
                             group.getSuffix(), 
@@ -126,7 +126,7 @@ public class GroupArgumentExecutor extends AbstractArgumentExecutor {
             case REMOVE:
                 PrivilegeProviderServer.removeGroup(CommandPrivilege.getPrivilegedGroupByName(groupName).getName());
                 if (sender instanceof EntityPlayerMP)
-                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessages.COMMAND_PRIVILEGE_GROUP_REMOVE.ordinal(), groupName);
+                    OxygenHelperServer.sendMessage(CommandBase.getCommandSenderAsPlayer(sender), OxygenMain.OXYGEN_MOD_INDEX, EnumOxygenChatMessage.COMMAND_PRIVILEGE_GROUP_REMOVE.ordinal(), groupName);
                 else
                     server.sendMessage(new TextComponentString(String.format("Removed group <%s>.", groupName)));
                 break;

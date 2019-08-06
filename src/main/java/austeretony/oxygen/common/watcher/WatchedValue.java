@@ -71,10 +71,14 @@ public class WatchedValue {
     }
 
     public void set(long value) {
-        for (int i = 7; i >= 0; i--) {
-            this.buffer[i] = (byte) (value & 0xFFL);
-            value >>= 8;
-        }
+        this.buffer[0] = (byte) value;
+        this.buffer[1] = (byte) (value >> 8);
+        this.buffer[2] = (byte) (value >> 16);
+        this.buffer[3] = (byte) (value >> 24);
+        this.buffer[4] = (byte) (value >> 32);
+        this.buffer[5] = (byte) (value >> 40);
+        this.buffer[6] = (byte) (value >> 48);
+        this.buffer[7] = (byte) (value >> 56);
         this.needSync();
     }
 
@@ -109,14 +113,14 @@ public class WatchedValue {
     }
 
     public long getLong() {
-        return (this.buffer[0] & 0xFFL) << 56
-                | (this.buffer[1] & 0xFFL) << 48
-                | (this.buffer[2] & 0xFFL) << 40
-                | (this.buffer[3] & 0xFFL) << 32
-                | (this.buffer[4] & 0xFFL) << 24
-                | (this.buffer[5] & 0xFFL) << 16
-                | (this.buffer[6] & 0xFFL) << 8
-                | (this.buffer[7] & 0xFFL);
+        return (this.buffer[7] & 0xFFL) << 56
+                | (this.buffer[6] & 0xFFL) << 48
+                | (this.buffer[5] & 0xFFL) << 40
+                | (this.buffer[4] & 0xFFL) << 32
+                | (this.buffer[3] & 0xFFL) << 24
+                | (this.buffer[2] & 0xFFL) << 16
+                | (this.buffer[1] & 0xFFL) << 8
+                | (this.buffer[0] & 0xFFL);
     }
 
     public float getFloat() {

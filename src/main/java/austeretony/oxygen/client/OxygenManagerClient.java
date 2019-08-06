@@ -1,7 +1,10 @@
 package austeretony.oxygen.client;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -9,12 +12,12 @@ import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.delegate.OxygenThread;
 import austeretony.oxygen.common.main.OxygenMain;
-import austeretony.oxygen.common.main.OxygenPlayerData;
-import austeretony.oxygen.common.main.SharedPlayerData;
-import austeretony.oxygen.common.network.server.SPChangeStatus;
+import austeretony.oxygen.common.main.OxygenPlayerData.EnumActivityStatus;
+import austeretony.oxygen.common.network.server.SPChangeActivityStatus;
 import austeretony.oxygen.common.privilege.PrivilegeManagerClient;
 import austeretony.oxygen.common.privilege.io.PrivilegeLoaderClient;
 import austeretony.oxygen.common.process.IPersistentProcess;
+import austeretony.oxygen.common.process.ITemporaryProcess;
 
 public class OxygenManagerClient {
 
@@ -28,7 +31,7 @@ public class OxygenManagerClient {
 
     private UUID playerUUID;  
 
-    private OxygenThread ioThreadClient, routineThreadClient, networkThreadClient;
+    private OxygenThread commonIOThread;
 
     private final PrivilegeManagerClient privilegeManager;
 
@@ -42,6 +45,12 @@ public class OxygenManagerClient {
 
     private final Set<IPersistentProcess> persistentProcesses = new HashSet<IPersistentProcess>(5);
 
+    private final Map<Long, ITemporaryProcess> temporaryProcesses = new HashMap<Long, ITemporaryProcess>(5);
+
+    private boolean process;
+
+    private final Random random = new Random();
+
     private OxygenManagerClient() {
         this.privilegeManager = new PrivilegeManagerClient();
         this.notificationsManager = new NotificationManagerClient();
@@ -52,14 +61,16 @@ public class OxygenManagerClient {
     }
 
     public static void create() {
-        if (instance == null) {
-            OxygenMain.OXYGEN_LOGGER.info("Created Oxygen client manager.");
+        if (instance == null)
             instance = new OxygenManagerClient();
-        }
     }
 
     public static OxygenManagerClient instance() {
         return instance;
+    }
+
+    public Random getRandom() {
+        return this.random;
     }
 
     public PrivilegeManagerClient getPrivilegeManager() {
@@ -83,15 +94,9 @@ public class OxygenManagerClient {
     }
 
     public void createOxygenClientThreads() {
-        this.ioThreadClient = new OxygenThread("Oxygen IO Client");
-        this.routineThreadClient = new OxygenThread("Oxygen Routine Client");
-        this.networkThreadClient = new OxygenThread("Oxygen Network Client");
+        this.commonIOThread = new OxygenThread("Oxygen IO Client");
         OxygenMain.OXYGEN_LOGGER.info("Starting IO client thread...");
-        this.ioThreadClient.start();
-        OxygenMain.OXYGEN_LOGGER.info("Starting Routine client thread...");
-        this.routineThreadClient.start();
-        OxygenMain.OXYGEN_LOGGER.info("Starting Network client thread...");
-        this.networkThreadClient.start();
+        this.commonIOThread.start();
     }
 
     public void init() {
@@ -100,27 +105,11 @@ public class OxygenManagerClient {
     }
 
     public OxygenThread getIOClientThread() {
-        return this.ioThreadClient;
-    }
-
-    public OxygenThread getProcessClientThread() {
-        return this.routineThreadClient;
-    }
-
-    public OxygenThread getSyncClientThread() {
-        return this.networkThreadClient;
+        return this.commonIOThread;
     }
 
     public void addIOTask(IOxygenTask task) {
-        this.ioThreadClient.addTask(task);
-    }
-
-    public void addRoutineTask(IOxygenTask task) {
-        this.routineThreadClient.addTask(task);
-    }
-
-    public void addNetworkTask(IOxygenTask task) {
-        this.networkThreadClient.addTask(task);
+        this.commonIOThread.addTask(task);
     }
 
     public void setWorldId(long id) {
@@ -160,45 +149,36 @@ public class OxygenManagerClient {
         return this.playerUUID;
     }
 
-    public Collection<SharedPlayerData> getSharedPlayersData() {
-        return this.sharedDataManager.getPlayersSharedData();
-    }
-
-    public SharedPlayerData getSharedPlayerData(UUID playerUUID) {
-        return this.sharedDataManager.getSharedData(playerUUID);
-    }
-
-    public SharedPlayerData getSharedPlayerData(int index) {
-        return this.sharedDataManager.getSharedData(index);
-    }
-
-    public boolean observedSharedDataExist(UUID playerUUID) {
-        return this.sharedDataManager.observedSharedDataExist(playerUUID);
-    }
-
-    public SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        return this.sharedDataManager.getObservedSharedData(playerUUID);
-    }
-
-    public boolean isPlayerOnline(int index) {
-        return this.sharedDataManager.getOnlinePlayersIndexes().contains(index);
-    }
-
-    public boolean isPlayerOnline(UUID playerUUID) {
-        return this.sharedDataManager.getOnlinePlayersUUIDs().contains(playerUUID);
-    }
-
     public void addPersistentProcess(IPersistentProcess process) {
         this.persistentProcesses.add(process);
     }
 
-    public void runPersistentProcesses() {
-        for (IPersistentProcess process : this.persistentProcesses)
-            process.run();
+    public void addTemporaryProcess(ITemporaryProcess process) {
+        this.temporaryProcesses.put(process.getId(), process);
+        this.process = true;
     }
 
-    public void changeActivityStatusSynced(OxygenPlayerData.EnumActivityStatus status) {
-        OxygenMain.network().sendToServer(new SPChangeStatus(status));
+    public void removeTemporaryProcess(long processId) {
+        this.temporaryProcesses.remove(processId);
+        this.process = !this.temporaryProcesses.isEmpty();
+    }
+
+    public void runProcesses() {
+        for (IPersistentProcess process : this.persistentProcesses)
+            process.run();
+        if (this.process) {
+            Iterator<ITemporaryProcess> iterator = this.temporaryProcesses.values().iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().isExpired()) {
+                    iterator.remove();
+                    this.process = !this.temporaryProcesses.isEmpty();
+                }
+            }
+        }
+    }
+
+    public void changeActivityStatusSynced(EnumActivityStatus status) {
+        OxygenMain.network().sendToServer(new SPChangeActivityStatus(status));
     }
 
     public void reset() {

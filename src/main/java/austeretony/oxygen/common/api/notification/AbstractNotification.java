@@ -30,6 +30,9 @@ public abstract class AbstractNotification implements INotification, Comparable<
     }
 
     @Override
+    public void process() {}
+
+    @Override
     public int getCounter() {
         return this.counter;
     }

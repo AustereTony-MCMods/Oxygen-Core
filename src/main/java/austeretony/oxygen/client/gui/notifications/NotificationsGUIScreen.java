@@ -10,9 +10,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class NotificationsGUIScreen extends AbstractGUIScreen {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/background.png");
+    public static final ResourceLocation 
+    NOTIFICATIONS_MENU_BACKGROUND = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/notifications_menu.png"),
+    SETTINGS_CALLBACK_BACKGROUND = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/settings_callback.png");
 
-    protected AbstractGUISection mainSection;
+    protected AbstractGUISection notificationsSection;
 
     @Override
     protected GUIWorkspace initWorkspace() {
@@ -21,12 +23,12 @@ public class NotificationsGUIScreen extends AbstractGUIScreen {
 
     @Override
     protected void initSections() {
-        this.mainSection = this.getWorkspace().initSection(new NotificationsGUISection(this));        
+        this.notificationsSection = this.getWorkspace().initSection(new NotificationsGUISection(this));        
     }
 
     @Override
     protected AbstractGUISection getDefaultSection() {
-        return this.mainSection;
+        return this.notificationsSection;
     }
 
     @Override

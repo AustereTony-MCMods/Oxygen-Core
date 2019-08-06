@@ -1,6 +1,6 @@
 package austeretony.oxygen.common.config;
 
-import java.util.Queue;
+import java.util.List;
 
 import austeretony.oxygen.common.api.config.AbstractConfigHolder;
 import austeretony.oxygen.common.api.config.ConfigValue;
@@ -12,10 +12,7 @@ public class OxygenConfig extends AbstractConfigHolder {
     public static final ConfigValue
     SYNC_CONFIGS = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "sync_configs"),
     SYNC_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "sync_privileges"),
-    ENABLE_TELEMETRY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_telemetry"),
     ENABLE_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_privileges"),
-    ENABLE_FORMATTED_CHAT = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_formatted_chat"),
-    ENABLE_CURRENCY = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_currency"),
     INTERACT_WITH_RMB = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "interact_with_rmb");
 
     @Override
@@ -39,13 +36,10 @@ public class OxygenConfig extends AbstractConfigHolder {
     }
 
     @Override
-    public void getValues(Queue<ConfigValue> values) {
+    public void getValues(List<ConfigValue> values) {
         values.add(SYNC_CONFIGS);
         values.add(SYNC_PRIVILEGES);
-        values.add(ENABLE_TELEMETRY);
         values.add(ENABLE_PRIVILEGES);
-        values.add(ENABLE_FORMATTED_CHAT);
-        values.add(ENABLE_CURRENCY);
         values.add(INTERACT_WITH_RMB);
     }
 

@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import org.lwjgl.input.Mouse;
 
-import austeretony.alternateui.screen.browsing.GUIScroller.GUIEnumScrollerType;
+import austeretony.alternateui.screen.browsing.GUIScroller.EnumScrollerType;
 import austeretony.alternateui.screen.button.GUIButton;
 import austeretony.alternateui.screen.list.GUIDropDownElement;
 import austeretony.alternateui.screen.list.GUIDropDownList;
 import austeretony.alternateui.screen.panel.GUIButtonPanel;
-import austeretony.alternateui.screen.panel.GUIButtonPanel.GUIEnumOrientation;
+import austeretony.alternateui.util.EnumGUIOrientation;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -45,7 +45,7 @@ public abstract class AbstractGUIScreen extends GuiScreen {
         this.workspaceCreated = true;
     }
 
-    private void init() {  	
+    protected void init() {  	
         this.initSections();    	
         for (AbstractGUISection section : this.getWorkspace().getSections())   		
             section.init();
@@ -181,7 +181,7 @@ public abstract class AbstractGUIScreen extends GuiScreen {
         int i = 0, size;    	
         GUIDropDownElement dropDownElement;   	    		
         dropDownList.visibleElements.clear();   	
-        if (dropDownList.getScroller().scrollerType == GUIEnumScrollerType.STANDARD) {   		   		
+        if (dropDownList.getScroller().scrollerType == EnumScrollerType.STANDARD) {   		   		
             for (i = dropDownList.getScroller().getPosition(); i < dropDownList.getScroller().getPosition() + dropDownList.getScroller().rowsVisible; i++) {   		
                 if (i < dropDownList.elementsBuffer.size()) {   			
                     dropDownElement = dropDownList.elementsBuffer.get(i);     			            	            	
@@ -199,13 +199,13 @@ public abstract class AbstractGUIScreen extends GuiScreen {
         boolean scrollingSearch = !panel.searchButtons.isEmpty();
         GUIButton button;
         panel.visibleButtons.clear();
-        if (panel.getScroller().scrollerType == GUIEnumScrollerType.STANDARD) {
+        if (panel.getScroller().scrollerType == EnumScrollerType.STANDARD) {
             for (i = panel.getScroller().getPosition(); i < panel.getScroller().getPosition() + panel.getVisibleElementsAmount(); i++) {
                 if ((!scrollingSearch && i < panel.buttonsBuffer.size()) || (scrollingSearch && i < panel.searchButtons.size())) {
                     button = scrollingSearch ? panel.searchButtons.get(i) : panel.buttonsBuffer.get(i);  
                     size = panel.visibleButtons.size();
-                    button.setPosition(panel.orientation == GUIEnumOrientation.HORIZONTAL ? panel.getX() + size * (panel.getButtonWidth() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonWidth() + panel.getButtonsOffset())) : panel.getX(),
-                            panel.orientation == GUIEnumOrientation.VERTICAL ? panel.getY() + size * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())) : panel.getY());   
+                    button.setPosition(panel.orientation == EnumGUIOrientation.HORIZONTAL ? panel.getX() + size * (panel.getButtonWidth() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonWidth() + panel.getButtonsOffset())) : panel.getX(),
+                            panel.orientation == EnumGUIOrientation.VERTICAL ? panel.getY() + size * (panel.getButtonHeight() + panel.getButtonsOffset()) - (size / panel.getVisibleElementsAmount()) * (panel.getMaxElementsAmount() * (panel.getButtonHeight() + panel.getButtonsOffset())) : panel.getY());   
                     panel.visibleButtons.add(button);
                 }
             }

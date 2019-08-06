@@ -2,10 +2,7 @@
   "main": {
     "sync_configs": true,
     "sync_privileges": true,
-    "enable_telemetry": false,
     "enable_privileges": true,
-    "enable_formatted_chat": false,
-    "enable_currency": true,
     "interact_with_rmb": false
   }
 }

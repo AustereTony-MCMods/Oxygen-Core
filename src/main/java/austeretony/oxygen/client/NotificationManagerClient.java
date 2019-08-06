@@ -58,16 +58,16 @@ public class NotificationManagerClient {
 
     public void addNotification(INotification notification) {
         this.notifications.put(notification.getId(), notification);
+        ClientReference.getClientPlayer().playSound(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 1.0F, 1.0F);
         if (notification.getType() == EnumNotification.REQUEST) {
-            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.REQUEST_RECEIVED.soundEvent, 1.0F, 1.0F);//request received sound effect
             if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING_ID))
                 this.latestNotificationId = notification.getId();
         }
         this.notificationsExist = true;
-        MinecraftForge.EVENT_BUS.post(new OxygenNotificationRecievedEvent(notification));//custom forge event   
+        ClientReference.delegateToClientThread(()->MinecraftForge.EVENT_BUS.post(new OxygenNotificationRecievedEvent(notification)));
     }
 
-    public boolean latestRequestIdExist() {
+    public boolean pendingRequestExist() {
         return this.latestNotificationId != 0L;
     }
 
@@ -100,7 +100,7 @@ public class NotificationManagerClient {
     }
 
     public void acceptKeyPressedSynced() {
-        if (!ClientReference.hasActiveGUI() && this.latestRequestIdExist()) {
+        if (!ClientReference.hasActiveGUI() && this.pendingRequestExist()) {
             this.notifications.remove(this.latestNotificationId);
             OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.ACCEPT, this.latestNotificationId));
             this.resetLatestRequestId();
@@ -108,7 +108,7 @@ public class NotificationManagerClient {
     }
 
     public void rejectKeyPressedSynced() {
-        if (!ClientReference.hasActiveGUI() && this.latestRequestIdExist()) {
+        if (!ClientReference.hasActiveGUI() && this.pendingRequestExist()) {
             this.notifications.remove(this.latestNotificationId);
             OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.REJECT, this.latestNotificationId));
             this.resetLatestRequestId();

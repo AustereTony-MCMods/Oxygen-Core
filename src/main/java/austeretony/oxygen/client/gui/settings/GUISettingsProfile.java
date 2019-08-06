@@ -29,6 +29,9 @@ public class GUISettingsProfile {
     enabledTextColorDark, 
     disabledTextColorDark, 
     hoveredTextColorDark,
+    enabledTextFieldColor, 
+    disabledTextFieldColor, 
+    hoveredTextFieldColor,
     baseOverlayTextColor,
     additionalOverlayTextColor,
     tooltipBackgroundColor,
@@ -53,310 +56,6 @@ public class GUISettingsProfile {
 
     public GUISettingsProfile(String name) {
         this.name = name;
-    }
-
-    public void setTextureOffsetX(int value) {
-        this.textureOffsetX = value;
-    }
-
-    public int getTextureOffsetX() {
-        return this.textureOffsetX;
-    }
-
-    public void setTextureOffsetY(int value) {
-        this.textureOffsetY = value;
-    }
-
-    public int getTextureOffsetY() {
-        return this.textureOffsetY;
-    }
-
-    public void setBaseGUIBackgroundColor(int colorHex) {
-        this.baseGUIBackgroundColor = colorHex;
-    }
-
-    public int getBaseGUIBackgroundColor() {
-        return this.baseGUIBackgroundColor;
-    }
-
-    public void setAdditionalGUIBackgroundColor(int colorHex) {
-        this.additionalGUIBackgroundColor = colorHex;
-    }
-
-    public int getAdditionalGUIBackgroundColor() {
-        return this.additionalGUIBackgroundColor;
-    }
-
-    public void setPanelGUIBackgroundColor(int colorHex) {
-        this.panelGUIBackgroundColor = colorHex;
-    }
-
-    public int getPanelGUIBackgroundColor() {
-        return this.panelGUIBackgroundColor;
-    }
-
-    public void setEnabledButtonColor(int colorHex) {
-        this.enabledButtonColor = colorHex;
-    }
-
-    public int getEnabledButtonColor() {
-        return this.enabledButtonColor;
-    }
-
-    public void setDisabledButtonColor(int colorHex) {
-        this.disabledButtonColor = colorHex;
-    }
-
-    public int getDisabledButtonColor() {
-        return this.disabledButtonColor;
-    }
-
-    public void setHoveredButtonColor(int colorHex) {
-        this.hoveredButtonColor = colorHex;
-    }
-
-    public int getHoveredButtonColor() {
-        return this.hoveredButtonColor;
-    }
-
-    public void setEnabledElementColor(int colorHex) {
-        this.enabledElementColor = colorHex;
-    }
-
-    public int getEnabledElementColor() {
-        return this.enabledElementColor;
-    }
-
-    public void setDisabledElementColor(int colorHex) {
-        this.disabledElementColor = colorHex;
-    }
-
-    public int getDisabledElementColor() {
-        return this.disabledElementColor;
-    }
-
-    public void setHoveredElementColor(int colorHex) {
-        this.hoveredElementColor = colorHex;
-    }
-
-    public int getHoveredElementColor() {
-        return this.hoveredElementColor;
-    }
-
-    public void setEnabledContextActionColor(int colorHex) {
-        this.enabledContextActionColor = colorHex;
-    }
-
-    public int getEnabledContextActionColor() {
-        return this.enabledContextActionColor;
-    }
-
-    public void setDisabledContextActionColor(int colorHex) {
-        this.disabledContextActionColor = colorHex;
-    }
-
-    public int getDisabledContextActionColor() {
-        return this.disabledContextActionColor;
-    }
-
-    public void setHoveredContextActionColor(int colorHex) {
-        this.hoveredContextActionColor = colorHex;
-    }
-
-    public int getHoveredContextActionColor() {
-        return this.hoveredContextActionColor;
-    }
-
-    public void setEnabledSliderColor(int colorHex) {
-        this.enabledSliderColor = colorHex;
-    }
-
-    public int getEnabledSliderColor() {
-        return this.enabledSliderColor;
-    }
-
-    public void setDisabledSliderColor(int colorHex) {
-        this.disabledSliderColor = colorHex;
-    }
-
-    public int getDisabledSliderColor() {
-        return this.disabledSliderColor;
-    }
-
-    public void setHoveredSliderColor(int colorHex) {
-        this.hoveredSliderColor = colorHex;
-    }
-
-    public int getHoveredSliderColor() {
-        return this.hoveredSliderColor;
-    }
-
-    public void setEnabledTextColor(int colorHex) {
-        this.enabledTextColor = colorHex;
-    }
-
-    public int getEnabledTextColor() {
-        return this.enabledTextColor;
-    }
-
-    public void setDisabledTextColor(int colorHex) {
-        this.disabledTextColor = colorHex;
-    }
-
-    public int getDisabledTextColor() {
-        return this.disabledTextColor;
-    }
-
-    public void setHoveredTextColor(int colorHex) {
-        this.hoveredTextColor = colorHex;
-    }
-
-    public int getHoveredTextColor() {
-        return this.hoveredTextColor;
-    }
-
-    public void setEnabledTextColorDark(int colorHex) {
-        this.enabledTextColorDark = colorHex;
-    }
-
-    public int getEnabledTextColorDark() {
-        return this.enabledTextColorDark;
-    }
-
-    public void setDisabledTextColorDark(int colorHex) {
-        this.disabledTextColorDark = colorHex;
-    }
-
-    public int getDisabledTextColorDark() {
-        return this.disabledTextColorDark;
-    }
-
-    public void setHoveredTextColorDark(int colorHex) {
-        this.hoveredTextColorDark = colorHex;
-    }
-
-    public int getHoveredTextColorDark() {
-        return this.hoveredTextColorDark;
-    }
-
-    public void setBaseOverlayTextColor(int colorHex) {
-        this.baseOverlayTextColor = colorHex;
-    }
-
-    public int getBaseOverlayTextColor() {
-        return this.baseOverlayTextColor;
-    }
-
-    public void setAdditionalOverlayTextColor(int colorHex) {
-        this.additionalOverlayTextColor = colorHex;
-    }
-
-    public int getAdditionalOverlayTextColor() {
-        return this.additionalOverlayTextColor;
-    }
-
-    public int getTooltipBackgroundColor() {
-        return this.tooltipBackgroundColor;
-    }
-
-    public void setTooltipBackgroundColor(int colorHex) {
-        this.tooltipBackgroundColor = colorHex;
-    }
-
-    public int getTooltipTextColor() {
-        return this.tooltipTextColor;
-    }
-
-    public void setTooltipTextColor(int colorHex) {
-        this.tooltipTextColor = colorHex;
-    }
-
-    public float getTitleScale() {
-        return this.titleScale;
-    }
-
-    public void setTitleScale(float scaleFactor) {
-        this.titleScale = scaleFactor;
-    }
-
-    public float getButtonTextScale() {
-        return this.buttonTextScale;
-    }
-
-    public void setButtonTextScale(float scaleFactor) {
-        this.buttonTextScale = scaleFactor;
-    }
-
-    public float getTooltipScale() {
-        return this.tooltipScale;
-    }
-
-    public void setTooltipScale(float scaleFactor) {
-        this.tooltipScale = scaleFactor;
-    }
-
-    public float getTextScale() {
-        return this.textScale;
-    }
-
-    public void setTextScale(float scaleFactor) {
-        this.textScale = scaleFactor;
-    }
-
-    public float getSubTextScale() {
-        return this.subTextScale;
-    }
-
-    public void setSubTextScale(float scaleFactor) {
-        this.subTextScale = scaleFactor;
-    }
-
-    public float getPanelTextScale() {
-        return this.panelTextScale;
-    }
-
-    public void setPanelTextScale(float scaleFactor) {
-        this.panelTextScale = scaleFactor;
-    }
-
-    public float getDropDownListScale() {
-        return this.dropDownListScale;
-    }
-
-    public void setDropDownListScale(float scaleFactor) {
-        this.dropDownListScale = scaleFactor;
-    }
-
-    public float getContextMenuScale() {
-        return this.contextMenuScale;
-    }
-
-    public void setContextMenuScale(float scaleFactor) {
-        this.contextMenuScale = scaleFactor;
-    }
-
-    public float getOverlayScale() {
-        return this.overlayScale;
-    }
-
-    public void setOverlayScale(float scaleFactor) {
-        this.overlayScale = scaleFactor;
-    }
-
-    public int getDropDownListWidth() {
-        return this.dropDownListWidth;
-    }
-
-    public void setDropDownListWidth(int width) {
-        this.dropDownListWidth = width;
-    }
-
-    public int getContextMenuWidth() {
-        return this.contextMenuWidth;
-    }
-
-    public void setContextMenuWidth(int width) {
-        this.contextMenuWidth = width;
     }
 
     public JsonObject serealize() {
@@ -393,6 +92,10 @@ public class GUISettingsProfile {
         colorSection.add(EnumSettingsFileKey.ENABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.enabledTextColorDark));
         colorSection.add(EnumSettingsFileKey.DISABLED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.disabledTextColorDark));
         colorSection.add(EnumSettingsFileKey.HOVERED_TEXT_DARK_COLOR.key, new JsonPrimitive(this.hoveredTextColorDark));
+
+        colorSection.add(EnumSettingsFileKey.ENABLED_TEXTFIELD_COLOR.key, new JsonPrimitive(this.enabledTextFieldColor));
+        colorSection.add(EnumSettingsFileKey.DISABLED_TEXTFIELD_COLOR.key, new JsonPrimitive(this.disabledTextFieldColor));
+        colorSection.add(EnumSettingsFileKey.HOVERED_TEXTFIELD_COLOR.key, new JsonPrimitive(this.hoveredTextFieldColor));
 
         colorSection.add(EnumSettingsFileKey.BASE_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.baseOverlayTextColor));
         colorSection.add(EnumSettingsFileKey.ADDITIONAL_OVERLAY_TEXT_COLOR.key, new JsonPrimitive(this.additionalOverlayTextColor));
@@ -459,6 +162,10 @@ public class GUISettingsProfile {
         profie.enabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
         profie.disabledTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_TEXT_DARK_COLOR.key).getAsString(), 16);
         profie.hoveredTextColorDark = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_TEXT_DARK_COLOR.key).getAsString(), 16);
+
+        profie.enabledTextFieldColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ENABLED_TEXTFIELD_COLOR.key).getAsString(), 16);
+        profie.disabledTextFieldColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.DISABLED_TEXTFIELD_COLOR.key).getAsString(), 16);
+        profie.hoveredTextFieldColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.HOVERED_TEXTFIELD_COLOR.key).getAsString(), 16);
 
         profie.baseOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.BASE_OVERLAY_TEXT_COLOR.key).getAsString(), 16);
         profie.additionalOverlayTextColor = (int) Long.parseLong(section.get(EnumSettingsFileKey.ADDITIONAL_OVERLAY_TEXT_COLOR.key).getAsString(), 16);

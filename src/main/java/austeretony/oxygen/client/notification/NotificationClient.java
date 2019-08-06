@@ -83,6 +83,9 @@ public class NotificationClient implements INotification, Comparable<Notificatio
     }
 
     @Override
+    public void process() {}
+
+    @Override
     public void expired() {}
 
     @Override

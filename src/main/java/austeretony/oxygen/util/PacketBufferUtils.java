@@ -12,7 +12,7 @@ import net.minecraft.network.PacketBuffer;
 public class PacketBufferUtils {
 
     public static void writeString(String value, PacketBuffer buffer) {
-        buffer.writeByte(value.length());
+        buffer.writeShort(value.length());
         buffer.writeString(value);
     }
 
@@ -22,7 +22,7 @@ public class PacketBufferUtils {
     }
 
     public static String readString(PacketBuffer buffer) {
-        return buffer.readString(buffer.readByte());
+        return buffer.readString(buffer.readShort());
     }
 
     public static UUID readUUID(PacketBuffer buffer) {

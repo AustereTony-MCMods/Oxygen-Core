@@ -41,15 +41,15 @@ public class PrivilegeLoaderClient {
                 if (groupId == OxygenManagerClient.instance().getGroupId()) {
                     OxygenManagerClient.instance().getPrivilegeManager().setPrivelegedGroup(PrivilegedGroup.deserializeClient(groupObject));
                 } else {
-                    OxygenMain.OXYGEN_LOGGER.info("Client group id mismatch with id recieved from server.");
+                    OxygenMain.OXYGEN_LOGGER.info("Client privileged group id mismatch with id recieved from server.");
                     OxygenManagerClient.instance().getPrivilegeManager().requestGroupSync();
                 }
             } catch (IOException exception) {
-                OxygenMain.PRIVILEGE_LOGGER.error("Privileged group loading failed.");
+                OxygenMain.OXYGEN_LOGGER.error("Privileged group loading failed.");
                 exception.printStackTrace();
             }       
         } else {            
-            OxygenMain.OXYGEN_LOGGER.info("Group data file not exist.");
+            OxygenMain.OXYGEN_LOGGER.info("Privileged group data file not exist.");
             OxygenManagerClient.instance().getPrivilegeManager().requestGroupSync();
         }
     }
@@ -84,9 +84,9 @@ public class PrivilegeLoaderClient {
                 privilegesArray.add(privilege.serialize());
             jsonObject.add(OxygenUtils.keyFromEnum(EnumPrivilegeFileKey.PRIVILEGES), privilegesArray);
             JsonUtils.createExternalJsonFile(folder, jsonObject);
-            OxygenMain.PRIVILEGE_LOGGER.info("Saved privileged group.");
+            OxygenMain.OXYGEN_LOGGER.info("Saved privileged group.");
         } catch (IOException exception) {
-            OxygenMain.PRIVILEGE_LOGGER.error("Privileged groups saving failed.");
+            OxygenMain.OXYGEN_LOGGER.error("Privileged groups saving failed.");
             exception.printStackTrace();
         }       
     }

@@ -12,8 +12,6 @@ public enum EnumPrivilegeFileKey {
     CHAT_COLOR,
     PRIVILEGES,
     VALUE,
-    NICKNAME,
-    PLAYER_UUID_MSB,
-    PLAYER_UUID_LSB,
+    PLAYER_UUID,
     GROUP
 }

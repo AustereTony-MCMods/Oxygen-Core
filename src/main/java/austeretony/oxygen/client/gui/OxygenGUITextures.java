@@ -6,11 +6,12 @@ import net.minecraft.util.ResourceLocation;
 public class OxygenGUITextures {
 
     public static final ResourceLocation 
-    GOLD_COIN_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/gold_coin_icon.png"),
-    SIMPLE_NOTIFICATION_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/simple_notification_icon.png"),
-    ALERT_NOTIFICATION_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/alert_notification_icon.png"),
-    REQUEST_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/request_icon.png"),
-    TELEPORT_REQUEST_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/teleport_request_icon.png"),
+    COIN_ICON = new ResourceLocation(OxygenMain.MODID, "textures/gui/coin_icon.png"),
+
+    NOTIFICATION_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/notification_icons.png"),
+    ALERT_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/alert_icons.png"),
+    REQUEST_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/request_icons.png"),
+    MAP_PIN_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/map_pin_icons.png"),
     CHECK_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/check_icons.png"),
     CROSS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/cross_icons.png"),
     FRIENDS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/friends_icons.png"),
@@ -25,5 +26,11 @@ public class OxygenGUITextures {
     SORT_DOWN_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/sort_down_icons.png"),
     NOTE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/note_icons.png"),
     UNDEFINED_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/undefined_icons.png"),
-    ADD_TO_FRIENDS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/add_to_friends_icons.png");
+    ADD_TO_FRIENDS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/add_to_friends_icons.png"),
+
+    //custom icons
+    TRIANGLE_TOP_RIGHT_CORNER_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/triangle_top_right_corner_icons.png"),
+    ENVELOPE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/envelope_icons.png"),
+    PENCIL_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/pencil_icons.png"),
+    EXCLAMATION_MARK_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/exclamation_mark_icons.png");
 }

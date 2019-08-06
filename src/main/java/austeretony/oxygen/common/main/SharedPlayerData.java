@@ -101,10 +101,14 @@ public class SharedPlayerData {
 
     public void setLong(int id, long value) {
         byte[] buffer = this.data.get(id);
-        for (int i = 7; i >= 0; i--) {
-            buffer[i] = (byte) (value & 0xFFL);
-            value >>= 8;
-        }
+        buffer[0] = (byte) value;
+        buffer[1] = (byte) (value >> 8);
+        buffer[2] = (byte) (value >> 16);
+        buffer[3] = (byte) (value >> 24);
+        buffer[4] = (byte) (value >> 32);
+        buffer[5] = (byte) (value >> 40);
+        buffer[6] = (byte) (value >> 48);
+        buffer[7] = (byte) (value >> 56);
     }
 
     public void setFloat(int id, float value) {
@@ -141,14 +145,14 @@ public class SharedPlayerData {
 
     public long getLong(int id) {
         byte[] buffer = this.data.get(id);
-        return (buffer[0] & 0xFFL) << 56
-                | (buffer[1] & 0xFFL) << 48
-                | (buffer[2] & 0xFFL) << 40
-                | (buffer[3] & 0xFFL) << 32
-                | (buffer[4] & 0xFFL) << 24
-                | (buffer[5] & 0xFFL) << 16
-                | (buffer[6] & 0xFFL) << 8
-                | (buffer[7] & 0xFFL);
+        return (buffer[7] & 0xFFL) << 56
+                | (buffer[6] & 0xFFL) << 48
+                | (buffer[5] & 0xFFL) << 40
+                | (buffer[4] & 0xFFL) << 32
+                | (buffer[3] & 0xFFL) << 24
+                | (buffer[2] & 0xFFL) << 16
+                | (buffer[1] & 0xFFL) << 8
+                | (buffer[0] & 0xFFL);
     }
 
     public float getFloat(int id) {
@@ -181,7 +185,7 @@ public class SharedPlayerData {
         for (int i = 0; i < amount; i++) {
             bytes = new byte[StreamUtils.readByte(bis)];
             StreamUtils.readBytes(bytes, bis);
-            sharedData.data.put((int) StreamUtils.readByte(bis), bytes);
+            sharedData.data.put(StreamUtils.readByte(bis), bytes);
         }
         return sharedData;
     }

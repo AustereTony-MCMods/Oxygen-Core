@@ -1,5 +1,6 @@
 package austeretony.oxygen.common.command;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import austeretony.oxygen.common.api.command.AbstractOxygenCommand;
@@ -13,21 +14,19 @@ import net.minecraft.server.MinecraftServer;
 
 public class CommandOxygenServer extends AbstractOxygenCommand {
 
-    public static final String 
-    ACTION_INFO = "info",
-    ACTION_REMOVE = "remove",
-    ACTION_ADD = "add",
-    PARAMETER_AMOUNT = "amount",
-    PARAMETER_CURRENCY = "currency",
-    PARAMETER_PLAYER = "player";
+    private static final Set<IArgumentExecutor> ARGUMENTS = new HashSet<IArgumentExecutor>(5);
 
     public CommandOxygenServer(String commandName) {
         super(commandName);
     }
 
+    public static void registerArgumentExecutor(IArgumentExecutor executor) {
+        ARGUMENTS.add(executor);
+    }
+
     @Override
     public void getArgumentExecutors(Set<IArgumentExecutor> executors) {
-        executors.add(new CurrencyArgumentExecutor("currency", true));
+        executors.addAll(ARGUMENTS);
     }
 
     @Override

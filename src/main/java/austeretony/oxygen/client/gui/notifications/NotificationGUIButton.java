@@ -11,7 +11,6 @@ import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.notification.EnumNotification;
 import austeretony.oxygen.common.notification.INotification;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 public class NotificationGUIButton extends GUIButton {
@@ -34,11 +33,11 @@ public class NotificationGUIButton extends GUIButton {
 
     @Override
     public void init() {
-        this.processDescription(I18n.format(this.notification.getDescription(), (Object[]) this.notification.getArguments()));
+        this.processDescription(ClientReference.localize(this.notification.getDescription(), (Object[]) this.notification.getArguments()));
         this.acceptButton = new GUIButton(this.getWidth() - 20, 7, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CHECK_ICONS, 6, 6).initScreen(this.getScreen());
         this.rejectButton = new GUIButton(this.getWidth() - 12, 7, 6, 6).setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent).setTexture(OxygenGUITextures.CROSS_ICONS, 6, 6).initScreen(this.getScreen());
         if (notification.getType() == EnumNotification.NOTICE)
-            this.rejectButton.disableFull();
+            this.acceptButton.disableFull();
     }
 
     @Override
@@ -46,21 +45,24 @@ public class NotificationGUIButton extends GUIButton {
         if (this.isVisible()) {         
             GlStateManager.pushMatrix();           
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);    
-            int color, textColor, textY;                      
-            if (!this.isEnabled()) {                 
+            int 
+            iconU = 0, 
+            color = this.getEnabledBackgroundColor(), 
+            textColor = this.getEnabledTextColor(), 
+            textY;                      
+            if (!this.isEnabled()) {       
+                iconU = 10;
                 color = this.getDisabledBackgroundColor();
                 textColor = this.getDisabledTextColor();           
-            } else if (this.isHovered() || this.isToggled()) {                 
+            } else if (this.isHovered() || this.isToggled()) {    
+                iconU = 20;
                 color = this.getHoveredBackgroundColor();
                 textColor = this.getHoveredTextColor();
-            } else {                   
-                color = this.getEnabledBackgroundColor(); 
-                textColor = this.getEnabledTextColor();      
             }
             drawRect(0, 0, this.getWidth(), this.getHeight(), color);
             textY = (this.getHeight() - this.textHeight(this.getTextScale())) / 2;
             GlStateManager.pushMatrix();           
-            GlStateManager.translate(20.0F, textY + 1, 0.0F); 
+            GlStateManager.translate(20.0F, textY + 1.0F, 0.0F); 
             GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);     
             if (this.description.size() == 1) 
                 this.mc.fontRenderer.drawString(this.description.get(0), 0, 0, textColor, true); 
@@ -72,12 +74,12 @@ public class NotificationGUIButton extends GUIButton {
                 GlStateManager.pushMatrix();           
                 GlStateManager.translate(this.getWidth() - 36.0F, textY + 1, 0.0F); 
                 GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);     
-                this.mc.fontRenderer.drawString("(" + String.valueOf(this.notification.getCounter() / 20) + ")", 0, 0, textColor, true); 
+                this.mc.fontRenderer.drawString(String.valueOf(this.notification.getCounter() / 20), 0, 0, textColor, true); 
                 GlStateManager.popMatrix();
             }
             if (this.hasIcon) {
                 this.mc.getTextureManager().bindTexture(this.icon);
-                drawCustomSizedTexturedRect(5, 5, 0, 0, 10, 10, 10, 10);
+                drawCustomSizedTexturedRect(5, 5, iconU, 0, 10, 10, 30, 10);
             }
             this.acceptButton.draw(mouseX, mouseY);
             this.rejectButton.draw(mouseX, mouseY);

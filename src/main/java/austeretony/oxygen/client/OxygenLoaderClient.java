@@ -10,20 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import austeretony.oxygen.client.api.OxygenHelperClient;
-import austeretony.oxygen.common.api.IOxygenTask;
 import austeretony.oxygen.common.api.IPersistentData;
 import austeretony.oxygen.common.main.OxygenMain;
 
 public class OxygenLoaderClient {
 
     public static void loadPersistentDataDelegated(IPersistentData persistentData) {
-        OxygenHelperClient.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                loadPersistentData(persistentData);
-            }     
-        });
+        OxygenHelperClient.addIOTask(()->loadPersistentData(persistentData));
     }
 
     public static void loadPersistentData(IPersistentData persistentData) {
@@ -40,13 +33,7 @@ public class OxygenLoaderClient {
     }
 
     public static void savePersistentDataDelegated(IPersistentData persistentData) {
-        OxygenHelperClient.addIOTask(new IOxygenTask() {
-
-            @Override
-            public void execute() {
-                savePersistentData(persistentData);
-            }     
-        });
+        OxygenHelperClient.addIOTask(()->savePersistentData(persistentData));
     }
 
     public static void savePersistentData(IPersistentData persistentData) {

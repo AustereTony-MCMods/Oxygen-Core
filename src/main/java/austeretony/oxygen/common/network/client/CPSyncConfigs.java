@@ -12,13 +12,13 @@ public class CPSyncConfigs extends ProxyPacket {
 
     @Override
     public void write(PacketBuffer buffer, INetHandler netHandler) {
-        for (IConfigHolder configHolder : ConfigLoader.CONFIG_HOLDERS) 
+        for (IConfigHolder configHolder : ConfigLoader.CONFIGS) 
             configHolder.write(buffer);
     }
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        for (IConfigHolder configHolder : ConfigLoader.CONFIG_HOLDERS) 
+        for (IConfigHolder configHolder : ConfigLoader.CONFIGS) 
             configHolder.read(buffer);
     }
 }

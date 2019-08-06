@@ -10,10 +10,10 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.Sets;
 
 import austeretony.alternateui.container.framework.GUISlotsFramework;
-import austeretony.alternateui.container.framework.GUISlotsFramework.GUIEnumPosition;
-import austeretony.alternateui.screen.browsing.GUIScroller.GUIEnumScrollerType;
+import austeretony.alternateui.screen.browsing.GUIScroller.EnumScrollerType;
 import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import austeretony.alternateui.screen.core.GUISimpleElement;
+import austeretony.alternateui.util.EnumGUISlotsPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -74,10 +74,12 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
         GlStateManager.enableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
         this.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        RenderHelper.enableGUIStandardItemLighting();
         InventoryPlayer inventoryplayer = this.mc.player.inventory;
         ItemStack itemstack = this.draggedStack.isEmpty() ? inventoryplayer.getItemStack() : this.draggedStack;
 
+        RenderHelper.enableGUIStandardItemLighting();            
+        GlStateManager.enableDepth();
+        
         if (!itemstack.isEmpty()) {
             int j2 = 8;
             int k2 = this.draggedStack.isEmpty() ? 8 : 16;
@@ -85,7 +87,7 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
 
             if (!this.draggedStack.isEmpty() && this.isRightMouseClick) {
                 itemstack = itemstack.copy();
-                itemstack.setCount(MathHelper.ceil((float)itemstack.getCount() / 2.0F));
+                itemstack.setCount(MathHelper.ceil((float) itemstack.getCount() / 2.0F));
             } else if (this.dragSplitting && this.dragSplittingSlots.size() > 1) {
                 itemstack = itemstack.copy();
                 itemstack.setCount(this.dragSplittingRemnant);
@@ -110,11 +112,13 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
             this.drawItemStack(this.returningStack, l1, i2, (String) null);
         }
         
+        GlStateManager.disableDepth();
+        RenderHelper.disableStandardItemLighting();
+
         GlStateManager.popMatrix();
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
-        RenderHelper.enableStandardItemLighting();
-        
+
         this.renderHoveredToolTip(mouseX, mouseY);
 
         this.yPrevMouse = mouseY;
@@ -197,8 +201,8 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
                 this.updateDragSplitting();
             }
         }
-        //this.zLevel = 100.0F;
-        //this.itemRender.zLevel = 100.0F;
+        this.zLevel = 100.0F;
+        this.itemRender.zLevel = 100.0F;
         if (itemstack.isEmpty() && slot.isEnabled()) {
             TextureAtlasSprite textureatlassprite = slot.getBackgroundSprite();
             if (textureatlassprite != null) {
@@ -216,8 +220,8 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
             this.itemRender.renderItemAndEffectIntoGUI(this.mc.player, itemstack, i, j);
             this.itemRender.renderItemOverlayIntoGUI(this.fontRenderer, itemstack, i, j, s);
         }
-        //this.itemRender.zLevel = 0.0F;
-        //this.zLevel = 0.0F;
+        this.itemRender.zLevel = 0.0F;
+        this.zLevel = 0.0F;
     }
 
     public void handleFrameworkSlidebar(GUISlotsFramework framework, int mouseY) {
@@ -240,13 +244,13 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
         Slot slot, slotCopy;
         framework.slots.visibleSlots.clear();
         framework.slots.visibleSlotsIndexes.clear();
-        if (framework.slots.getScroller().scrollerType == GUIEnumScrollerType.STANDARD) {
+        if (framework.slots.getScroller().scrollerType == EnumScrollerType.STANDARD) {
             for (i = framework.slots.getScroller().getPosition() * framework.columns; i < framework.slots.getScroller().getPosition() * framework.columns + framework.visibleSlots; i++) {
                 if ((!scrollingSearch && i < framework.slots.slotsBuffer.size()) || (scrollingSearch && i < framework.slots.searchSlots.size())) {
                     slot = scrollingSearch ? framework.slots.searchSlots.get(i) : framework.slots.slotsBuffer.get(i);  
                     slotCopy = this.copySlot(slot); 
                     size = framework.slots.visibleSlots.size();
-                    if (framework.slotsPosition == GUIEnumPosition.CUSTOM) {
+                    if (framework.slotsPosition == EnumGUISlotsPosition.CUSTOM) {
                         k = size / framework.columns;
                         slotCopy.xPos = framework.getX() + size * (framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) - k * ((framework.getSlotWidth() + framework.getSlotDistanceHorizontal()) * framework.columns);
                         slotCopy.yPos = framework.getY() + k * (framework.getSlotHeight() + framework.getSlotDistanceVertical()) - (size / framework.visibleSlots) * (framework.rows * (framework.getSlotHeight() + framework.getSlotDistanceVertical()));

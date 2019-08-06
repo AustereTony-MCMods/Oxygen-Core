@@ -99,7 +99,7 @@ public class ClientReference {
     public static UUID getPersistentUUID(Entity entity) {
         return entity.getPersistentID();
     }
-    
+
     public static boolean isEntitiesNear(Entity first, Entity second, double range) {
         return first.getDistanceSq(second) <= range * range;
     }
@@ -126,5 +126,9 @@ public class ClientReference {
             return resource != null;
         }
         return VERIFIED_TEXTURES.get(location);
+    }
+
+    public static void delegateToClientThread(Runnable task) {
+        getMinecraft().addScheduledTask(task);
     }
 }

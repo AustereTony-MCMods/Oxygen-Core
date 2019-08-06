@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
 
-    private boolean initOnSectionChange, enableDefaultBackground;
+    private boolean enableDefaultBackground;
 
     private final Set<AbstractGUISection> sectionsList = new LinkedHashSet<AbstractGUISection>(3);
 
@@ -104,10 +104,6 @@ public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
      */
     public void setCurrentSection(AbstractGUISection section) {		
         this.currentSection = section;		
-        if (this.isReinitAllowed()) {			
-            this.currentSection.clear();			
-            this.currentSection.init();
-        }
     }
 
     public int getXAlignment() {		
@@ -175,23 +171,6 @@ public class GUIWorkspace extends GUIAdvancedElement<GUIWorkspace> {
         this.setPosition(xPos + xOffset, yPos + yOffset);           
         return this;
     }
-
-    public boolean isReinitAllowed() {		
-        return this.initOnSectionChange;
-    }
-
-    //TODO Fix it
-    /**
-     * Содержимое разделов будет пересоздаваться при переключении. 
-     * ВНИМАНИЕ! На данный момент элементы не удаляются, что приводит к их дублированию при каждом переключении раздела.
-     * Требуется реализовать очистку списков элементов предыдущего раздела при переходе в новый раздел.
-     * 
-     * @return GUIWorkspace
-     */
-    public GUIWorkspace allowSectionsReinit() {		
-        this.initOnSectionChange = true;		
-        return this;
-    } 
 
     public boolean isDefaultBackgroundEnabled() {
         return this.enableDefaultBackground;

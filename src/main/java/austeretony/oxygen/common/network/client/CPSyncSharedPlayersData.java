@@ -3,6 +3,7 @@ package austeretony.oxygen.common.network.client;
 import java.util.Collection;
 
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.OxygenManagerServer;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.network.ProxyPacket;
@@ -29,7 +30,7 @@ public class CPSyncSharedPlayersData extends ProxyPacket {
         for (int i = 0; i < valid; i++)
             buffer.writeByte(this.ids[i]);
 
-        Collection<SharedPlayerData> data = OxygenManagerServer.instance().getSharedPlayersData();
+        Collection<SharedPlayerData> data = OxygenManagerServer.instance().getSharedDataManager().getPlayersSharedData();
         buffer.writeShort(data.size());
         for (SharedPlayerData sharedData : data) {
             buffer.writeInt(sharedData.getIndex());
@@ -49,7 +50,7 @@ public class CPSyncSharedPlayersData extends ProxyPacket {
         index;
         for (i = 0; i < size; i++) {
             index = buffer.readInt();
-            OxygenManagerClient.instance().getSharedPlayerData(index).read(buffer, this.ids);
+            OxygenHelperClient.getSharedPlayerData(index).read(buffer, this.ids);
         }
 
         OxygenManagerClient.instance().getGUIManager().updateSharedDataListenersDataState(true);

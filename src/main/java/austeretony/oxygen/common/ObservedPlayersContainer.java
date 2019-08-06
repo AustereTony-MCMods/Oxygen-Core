@@ -17,7 +17,7 @@ public class ObservedPlayersContainer {
     public Set<UUID> getObservedPlayers() {
         return this.observed.keySet();
     }
-    
+
     public boolean isEmpty() {
         return this.observed.isEmpty();
     }
@@ -52,7 +52,7 @@ public class ObservedPlayersContainer {
         ObservedPlayersContainer container = new ObservedPlayersContainer();
         int amount = StreamUtils.readShort(bis);
         for (int i = 0; i < amount; i++)
-            container.observed.put(StreamUtils.readUUID(bis), (int) StreamUtils.readByte(bis));
+            container.observed.put(StreamUtils.readUUID(bis), StreamUtils.readByte(bis));
         return container;
     }
 }

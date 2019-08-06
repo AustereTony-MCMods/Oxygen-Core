@@ -10,9 +10,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 
-/**
- * Простое однострочное поле для ввода текста.
- */
 public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected String typedText;
@@ -23,7 +20,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected boolean resetTypedText, hasCustomCursor, numberFieldMode;
 
-    protected int lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, maxNumber = - 1;
+    protected int lineOffset, lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, maxNumber = - 1;
 
     /**
      * Текстовое поле.
@@ -33,11 +30,12 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
      * @param width ширина
      * @param maxStringLength максимальное кол-во символов, которое можно ввести
      */
-    public GUITextField(int xPosition, int yPosition, int width, int maxStringLength) {   	    	
+    public GUITextField(int xPosition, int yPosition, int width, int height, int maxStringLength) {                 
         this.setPosition(xPosition, yPosition);
-        this.setSize(width, FONT_HEIGHT);
-        this.maxStringLength = maxStringLength > 64 ? 64 : maxStringLength;        
+        this.setSize(width, height);
+        this.maxStringLength = maxStringLength > 150 ? 150 : maxStringLength;        
         this.typedText = "";
+        this.lineOffset = 1;
         this.enableFull();
     }
 
@@ -59,16 +57,16 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
     }
 
     @Override
-    public void updateCursorCounter() {    	
+    public void updateCursorCounter() {         
         this.cursorCounter++;
     }
 
-    public String getTypedText() {  	
+    public String getTypedText() {      
         return this.typedText;
     }
 
-    public GUITextField setText(String text) {   	
-        if (text.length() > this.maxStringLength)       	
+    public GUITextField setText(String text) {          
+        if (text.length() > this.maxStringLength)               
             this.typedText = text.substring(0, this.maxStringLength);    
         else
             this.typedText = text;
@@ -80,13 +78,13 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         this.setText("");
     }
 
-    private String getSelectedText() {  	
+    private String getSelectedText() {          
         int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
         int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;       
         return this.typedText.substring(i, j);
     }
 
-    public void writeText(String text) {    	
+    public void writeText(String text) {        
         String s1 = "";
         String s2 = this.numberFieldMode ? this.filterAllowedCharacters(text) : ChatAllowedCharacters.filterAllowedCharacters(text);      
         int 
@@ -96,10 +94,10 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                         l;
         if (!this.typedText.isEmpty())
             s1 = s1 + this.typedText.substring(0, i);
-        if (k < s2.length()) {       	
+        if (k < s2.length()) {          
             s1 = s1 + s2.substring(0, k);         
             l = k;
-        } else {        	
+        } else {                
             s1 = s1 + s2;            
             l = s2.length();
         }
@@ -128,12 +126,17 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             if (this.isAllowedCharacter(c) && !this.typedText.startsWith("0"))
                 stringBuilder.append(c);
         String typed = this.typedText + stringBuilder.toString();
-        int value = typed.isEmpty() ? 0 : Integer.parseInt(typed);
+        int value = 0;
+        try {
+            value = Integer.parseInt(typed);
+        } catch (NumberFormatException exception) {
+            exception.printStackTrace();
+        }
         return (this.maxNumber == - 1 || value <= this.maxNumber) ? stringBuilder.toString() : "";
     }
 
-    private void deleteWords(int index) {   	
-        if (this.typedText.length() != 0) {       	
+    private void deleteWords(int index) {       
+        if (this.typedText.length() != 0) {             
             if (this.selectionEnd != this.cursorPosition)
                 this.writeText("");
             else 
@@ -141,11 +144,11 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         }
     }
 
-    private void deleteFromCursor(int index) {    	
-        if (this.typedText.length() != 0) {      	
-            if (this.selectionEnd != this.cursorPosition) {          	
+    private void deleteFromCursor(int index) {          
+        if (this.typedText.length() != 0) {             
+            if (this.selectionEnd != this.cursorPosition) {             
                 this.writeText("");
-            } else {          	
+            } else {            
                 boolean flag = index < 0;               
                 int j = flag ? this.cursorPosition + index : this.cursorPosition;
                 int k = flag ? this.cursorPosition : this.cursorPosition + index;                
@@ -155,17 +158,17 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                 if (k < this.typedText.length())            
                     s = s + this.typedText.substring(k);
                 this.typedText = s;
-                if (flag)                	
+                if (flag)                       
                     this.moveCursorBy(index);
             }
         }
     }
 
-    private int getNthWordFromCursor(int index) {    	
+    private int getNthWordFromCursor(int index) {       
         return this.getNthWordFromPos(index, this.getCursorPosition());
     }
 
-    private int getNthWordFromPos(int index1, int index2) {    	
+    private int getNthWordFromPos(int index1, int index2) {     
         return this.getWord(index1, this.getCursorPosition(), true);
     }
 
@@ -207,11 +210,11 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         this.setSelectionPos(this.cursorPosition);
     }
 
-    private void setCursorPositionZero() {    	
+    private void setCursorPositionZero() {      
         this.setCursorPosition(0);
     }
 
-    protected void setCursorPositionEnd() {   	
+    protected void setCursorPositionEnd() {     
         this.setCursorPosition(this.typedText.length());
     }
 
@@ -317,12 +320,10 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                 if (this.isDragged() && this.shouldCancelDraggedLogic())
                     resetDragged();
                 if (!this.isHovered() && this.shouldResetOnMisclick())
-                    this.setText("");   	       
+                    this.setText("");                  
                 if (this.isDragged() && this.isHovered()) {
-                    int l = (int) ((1.0F + this.getScale()) * (float) (mouseX - this.getX()));//why?
-                    if (this.isDynamicBackgroundEnabled())
-                        l -= 4;                  
-                    String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), this.getWidth());
+                    int l = (int) ((1.0F + this.getScale()) * (float) (mouseX - this.getX())) - 2;//why?      
+                    String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), this.getWidth() - 6);
                     this.setCursorPosition(this.mc.fontRenderer.trimStringToWidth(s, l).length() + this.lineScrollOffset);
                     this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);
                     this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);
@@ -343,16 +344,26 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
             GlStateManager.scale(this.getScale(), this.getScale(), 0.0F);                          
             if (this.isDynamicBackgroundEnabled()) {
-                this.drawRect(0, - 1, this.getWidth(), this.getHeight() + 1, this.getEnabledBackgroundColor());
+                if (this.isEnabled())
+                    this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getEnabledBackgroundColor());
+                else
+                    this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getDisabledBackgroundColor());
                 if (this.isDragged())
-                    this.drawRect(0, - 1, this.getWidth(), this.getHeight() + 1, this.getHoveredBackgroundColor());
+                    this.drawRect(0, 0, this.getWidth(), this.getHeight(), this.getHoveredBackgroundColor());
             }
             int 
             i = this.isEnabled() ? this.getEnabledTextColor() : this.getDisabledTextColor(),
                     j = this.cursorPosition - this.lineScrollOffset,
                     k = this.selectionEnd - this.lineScrollOffset;           
 
-            String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), this.getWidth()); 
+            GlStateManager.pushMatrix();           
+            GlStateManager.translate(0.0F, 0.0F, 0.0F);            
+            GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            
+            int o = (int) ((float) this.getWidth() * (1.0F + this.getTextScale()));//TODO
+
+            String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), o); 
             boolean 
             flag = j >= 0 && j <= s.length(),
             flag1 = this.isDragged() && this.cursorCounter / 6 % 2 == 0 && flag;
@@ -361,10 +372,10 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                 k = s.length();
             if (s.length() > 0) {
                 String s1 = flag ? s.substring(0, j) : s;
-                j1 = this.mc.fontRenderer.drawString(s1, l, i1 + 1, i, this.isTextShadowEnabled());
+                j1 = this.mc.fontRenderer.drawString(s1, l, i1 + this.lineOffset, i, this.isTextShadowEnabled());
             }
             if (this.hasDisplayText() && !this.isDragged() && this.getTypedText().isEmpty())
-                this.mc.fontRenderer.drawString(this.getDisplayText(), l, i1 + 1, this.getEnabledTextColor(), this.isTextShadowEnabled());
+                this.mc.fontRenderer.drawString(this.getDisplayText(), l, i1 + this.lineOffset, this.getEnabledTextColor(), this.isTextShadowEnabled());
             boolean flag2 = this.cursorPosition < this.typedText.length() || this.typedText.length() >= this.getMaxStringLength();
             int k1 = j1;
             if (!flag)
@@ -374,43 +385,47 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
                     j1++;
                 }
             if (s.length() > 0 && flag && j < s.length())
-                this.mc.fontRenderer.drawString(s.substring(j), j1, i1 + 1, i, this.isTextShadowEnabled());
+                this.mc.fontRenderer.drawString(s.substring(j), j1, i1 + this.lineOffset, i, this.isTextShadowEnabled());
             if (flag1) {
                 if (!this.hasCustomCursor()) {
                     if (flag2)
-                        this.drawRect(k1, i1, k1 + 1, i1 + FONT_HEIGHT, - 3092272);
+                        drawRect(k1, i1 + this.lineOffset - 2, k1 + 1, i1 + FONT_HEIGHT + this.lineOffset - 2, - 3092272);
                     else
-                        this.drawRect(k1, i1, k1 + 1, i1 + FONT_HEIGHT, - 3092272);
+                        drawRect(k1, i1 + this.lineOffset - 2, k1 + 1, i1 + FONT_HEIGHT + this.lineOffset - 2, - 3092272);
                 } else
-                    this.mc.fontRenderer.drawString(String.valueOf(this.getCursorSymbol()), k1, i1 + 1, this.getEnabledTextColor(), this.isTextShadowEnabled());
+                    this.mc.fontRenderer.drawString(String.valueOf(this.getCursorSymbol()), k1, i1 + this.lineOffset, this.getEnabledTextColor(), this.isTextShadowEnabled());
             }
             if (k != j) {
                 int l1 = l + this.mc.fontRenderer.getStringWidth(s.substring(0, k));
                 if (!this.hasCustomCursor())
-                    this.drawCursorVertical(k1, i1, l1 - 1, i1 + 1 + FONT_HEIGHT);
+                    this.drawCursorVertical(k1, i1, l1 - 1, i1 + this.lineOffset + FONT_HEIGHT);
                 else
-                    this.mc.fontRenderer.drawString(String.valueOf(this.getCursorSymbol()), k1, i1 + 1, this.getEnabledTextColor(), this.isTextShadowEnabled());
+                    this.mc.fontRenderer.drawString(String.valueOf(this.getCursorSymbol()), k1, i1 + this.lineOffset, this.getEnabledTextColor(), this.isTextShadowEnabled());
             }
+            GlStateManager.popMatrix();
+
             GlStateManager.popMatrix();
         }
     }
 
-    private void drawCursorVertical(int xStart, int yStart, int xEnd, int yEnd) {   	
+    private void drawCursorVertical(int xStart, int yStart, int xEnd, int yEnd) {       
         int i1;
-        if (xStart < xEnd) {        	
+        if (xStart < xEnd) {            
             i1 = xStart;
             xStart = xEnd;
             xEnd = i1;
         }
-        if (yStart < yEnd) {        	
+        if (yStart < yEnd) {            
             i1 = yStart;
             yStart = yEnd;
             yEnd = i1;
         }
-        if (xEnd > this.getX() + this.getWidth())
-            xEnd = this.getX() + this.getWidth();
-        if (xStart > this.getX() + this.getWidth())
-            xStart = this.getX() + this.getWidth();
+        int j = (int) ((float) this.getWidth() * (1.0F + this.getTextScale()));//TODO
+        
+        if (xEnd > this.getX() + j)
+            xEnd = this.getX() + j;
+        if (xStart > this.getX() + j)
+            xStart = this.getX() + j;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
@@ -427,32 +442,27 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         GlStateManager.enableTexture2D();
     }
 
-    public int getMaxStringLength() {   	
+    public int getMaxStringLength() {           
         return this.maxStringLength;
     }
 
-    public int getCursorPosition() {   	
+    public int getCursorPosition() {    
         return this.cursorPosition;
     }
 
     @Override
-    public GUITextField setDragged(boolean isDragged) {       	
-        super.setDragged(isDragged);    	
-        if (!this.isCanNotBeDragged())	
-            this.cursorCounter = 0;	
+    public GUITextField setDragged(boolean isDragged) {         
+        super.setDragged(isDragged);            
+        if (!this.isCanNotBeDragged())  
+            this.cursorCounter = 0;     
         return this;
     }
 
-    public int getSelectionEnd() {   	
+    public int getSelectionEnd() {      
         return this.selectionEnd;
     }
 
-    @Override
-    public int getWidth() {    	
-        return this.isDynamicBackgroundEnabled() ? super.getWidth() + 8 : super.getWidth();
-    }
-
-    private void setSelectionPos(int index) {   	
+    private void setSelectionPos(int index) {           
         int i = this.typedText.length();
         if (index > i)
             index = i;
@@ -462,7 +472,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         if (this.mc.fontRenderer != null) {
             if (this.lineScrollOffset > i)
                 this.lineScrollOffset = i;
-            int j = this.getWidth();//TODO getWidth() called
+            int j = (int) ((float) this.getWidth() * (1.0F + this.getTextScale()));//TODO
             String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), j);
             int k = s.length() + this.lineScrollOffset;
             if (index == this.lineScrollOffset)
@@ -475,20 +485,20 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         }
     }
 
-    public boolean shouldResetOnMisclick() {    	
+    public boolean shouldResetOnMisclick() {            
         return this.resetTypedText;
     }
 
-    public GUITextField resetOnMisclick() {   	
-        this.resetTypedText = true;   	
+    public GUITextField resetOnMisclick() {     
+        this.resetTypedText = true;     
         return this;
     }
 
-    public boolean hasCustomCursor() {   	
+    public boolean hasCustomCursor() {          
         return this.hasCustomCursor;
     }
 
-    public char getCursorSymbol() {    	
+    public char getCursorSymbol() {     
         return this.cursorSymbol;
     }
 
@@ -499,9 +509,14 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
      * 
      * @return
      */
-    public GUITextField setCustomCursor(char symbol) {   	
-        this.cursorSymbol = symbol;    	
-        this.hasCustomCursor = true;  	
+    public GUITextField setCustomCursor(char symbol) {          
+        this.cursorSymbol = symbol;     
+        this.hasCustomCursor = true;    
+        return this;
+    }
+
+    public GUITextField setLineOffset(int offset) {
+        this.lineOffset = offset;
         return this;
     }
 }

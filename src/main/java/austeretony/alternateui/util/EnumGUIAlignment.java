@@ -2,6 +2,8 @@ package austeretony.alternateui.util;
 
 /**
  * Enum для определения положения элементов.
+ * 
+ * @author AustereTony
  */
 public enum EnumGUIAlignment {
 

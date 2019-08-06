@@ -1,7 +1,6 @@
 package austeretony.oxygen.client;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,17 +17,9 @@ public class SharedDataManagerClient {
 
     private final Map<UUID, SharedPlayerData> observed = new ConcurrentHashMap<UUID, SharedPlayerData>();
 
-    private final Map<String, UUID> usernames = new HashMap<String, UUID>();
-
     private final Map<UUID, ImmutablePlayerData> immutableData = new ConcurrentHashMap<UUID, ImmutablePlayerData>();
 
     private final Map<Integer, SharedPlayerData> sharedData = new ConcurrentHashMap<Integer, SharedPlayerData>();
-
-    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
-
-    public void registerSharedDataValue(int id, int size) {
-        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
-    }
 
     public void addPlayerSharedDataEntry(ImmutablePlayerData immutableData) {
         this.immutableData.put(immutableData.playerUUID, immutableData);
@@ -76,14 +67,6 @@ public class SharedDataManagerClient {
         return this.sharedData.get(this.immutableData.get(playerUUID).getIndex());
     }
 
-    public boolean knownUsername(String username) {
-        return this.usernames.containsKey(username);
-    }
-
-    public UUID getUUIDByUsername(String username) {
-        return this.usernames.get(username);
-    }
-
     public boolean observedSharedDataExist(UUID playerUUID) {
         return this.observed.containsKey(playerUUID);
     }
@@ -97,7 +80,6 @@ public class SharedDataManagerClient {
 
     public void addObservedSharedData(SharedPlayerData sharedData) {
         this.observed.put(sharedData.getPlayerUUID(), sharedData);
-        this.usernames.put(sharedData.getUsername(), sharedData.getPlayerUUID());
         OxygenMain.OXYGEN_LOGGER.info("Cached player <{} / {}> shared (observed) data.", sharedData.getUsername(), sharedData.getPlayerUUID());//TODO debug
     }
 
@@ -110,9 +92,25 @@ public class SharedDataManagerClient {
             OxygenMain.OXYGEN_LOGGER.error("Couldn't cache shared data for index <{}>, data absent!", index);
     }
 
+    public SharedPlayerData getSharedDataByUsername(String username) {
+        for (SharedPlayerData sharedData : this.sharedData.values())
+            if (sharedData.getUsername().equals(username))
+                return sharedData;
+        return null;
+    }
+
+    //*** shared data registration - start
+
+    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
+
+    public void registerSharedDataValue(int id, int size) {
+        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
+    }
+
+    //*** shared data registration - end
+
     public void reset() {
         this.observed.clear();
-        this.usernames.clear();
         this.immutableData.clear();
         this.sharedData.clear();
     }

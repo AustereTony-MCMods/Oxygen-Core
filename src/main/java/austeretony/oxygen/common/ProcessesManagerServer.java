@@ -48,7 +48,7 @@ public class ProcessesManagerServer {
             while (iterator.hasNext()) {
                 if (iterator.next().isExpired()) {
                     iterator.remove();
-                    this.globalTemporaryProcessesExist = this.globalTemporaryProcesses.size() > 0;
+                    this.globalTemporaryProcessesExist = !this.globalTemporaryProcesses.isEmpty();
                 }
             }
         }
