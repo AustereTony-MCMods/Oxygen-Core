@@ -1,3 +1,10 @@
+0.8.0b
++Major API improvements for performance, synchronization, GUI and I/O operations.
+Вata of previous versions are incompatible with the new version, delete oxygen folder 
+from game directory (also recommended to delete config files).
++Added currency providers system: oxygen coins can be replaced with currency from 
+other modifications. Test provider for Grand Economy currency available now.
+
 0.7.1b
 +GUI fixes:
  - sliders now can be used for scrolling.
