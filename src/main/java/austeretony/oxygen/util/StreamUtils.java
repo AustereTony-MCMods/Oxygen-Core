@@ -52,8 +52,9 @@ public class StreamUtils {
     }
 
     public static void write(String value, OutputStream os) throws IOException {
-        write((short) value.length(), os);
-        os.write(value.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        write((short) bytes.length, os);
+        os.write(bytes);
     }
 
     public static void write(UUID uuid, OutputStream os) throws IOException {

@@ -103,7 +103,7 @@ public class CurrencyArgumentExecutorServer extends AbstractArgumentExecutor {
                     } else {
                         CurrencyHelperServer.addCurrency(targetUUID, amount);
                         CurrencyHelperServer.save(targetUUID);
-                        WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_COINS_WATCHER_ID, CurrencyHelperServer.getCurrency(targetUUID));
+                        WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_COINS_WATCHER_ID, (int) CurrencyHelperServer.getCurrency(targetUUID));
                     }
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
@@ -132,7 +132,7 @@ public class CurrencyArgumentExecutorServer extends AbstractArgumentExecutor {
                     } else {
                         CurrencyHelperServer.removeCurrency(targetUUID, amount);
                         CurrencyHelperServer.save(targetUUID);
-                        WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_COINS_WATCHER_ID, CurrencyHelperServer.getCurrency(targetUUID));
+                        WatcherHelperServer.setValue(targetUUID, OxygenPlayerData.CURRENCY_COINS_WATCHER_ID, (int) CurrencyHelperServer.getCurrency(targetUUID));
                     }
                     if (sender instanceof EntityPlayerMP) {
                         EntityPlayerMP playerMP = (EntityPlayerMP) sender;
