@@ -1,10 +1,10 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/oxygen-core",
   "1.12.2": {
-    "0.8.1": "Fixed string encoding and oxygen chat commands errors."
+    "0.8.2": "Minor improvements. See change log."
   },
   "promos": {
-    "1.12.2-latest": "0.8.1",
-    "1.12.2-recommended": "0.8.1"
+    "1.12.2-latest": "0.8.2",
+    "1.12.2-recommended": "0.8.2"
   }
 }

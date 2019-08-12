@@ -1,3 +1,9 @@
+0.8.2b [2019-08-11]
++Fixed rare issues with world identifier initialization.
++Added updates adapter service for patching incompatible data.
++Code cleanup for 'shared data' service.
++Added Oxygen Menu API. Oxygen Menu support for notifications menu.
+
 0.8.1b [2019-08-08]
 +Fixed string encoding. Now any symbols properly encoded in UTF-8.
 +Fixed errors with chat commands "/oxygens currency --add" and "/oxygens currency --remove".
