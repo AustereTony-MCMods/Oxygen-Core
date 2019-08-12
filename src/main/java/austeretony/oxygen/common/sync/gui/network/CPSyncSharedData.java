@@ -1,9 +1,8 @@
 package austeretony.oxygen.common.sync.gui.network;
 
-import java.util.Collection;
-
 import austeretony.oxygen.client.api.OxygenHelperClient;
 import austeretony.oxygen.common.OxygenManagerServer;
+import austeretony.oxygen.common.api.OxygenHelperServer;
 import austeretony.oxygen.common.main.SharedPlayerData;
 import austeretony.oxygen.common.network.ProxyPacket;
 import net.minecraft.network.INetHandler;
@@ -29,11 +28,12 @@ public class CPSyncSharedData extends ProxyPacket {
         for (int i = 0; i < valid; i++)
             buffer.writeByte(this.ids[i]);
 
-        Collection<SharedPlayerData> data = OxygenManagerServer.instance().getSharedDataManager().getPlayersSharedData();
-        buffer.writeShort(data.size());
-        for (SharedPlayerData sharedData : data) {
-            buffer.writeInt(sharedData.getIndex());
-            sharedData.write(buffer, valid, this.ids);   
+        buffer.writeShort(OxygenManagerServer.instance().getSharedDataManager().getOnlinePlayersIndexes().size());
+        for (SharedPlayerData sharedData : OxygenManagerServer.instance().getSharedDataManager().getPlayersSharedData()) {
+            if (OxygenHelperServer.isOnline(sharedData.getIndex())) {
+                buffer.writeInt(sharedData.getIndex());
+                sharedData.write(buffer, valid, this.ids);   
+            }
         }
     }    
 

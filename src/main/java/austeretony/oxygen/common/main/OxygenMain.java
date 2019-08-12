@@ -14,9 +14,12 @@ import austeretony.oxygen.client.command.GUIArgumentExecutor;
 import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.event.OxygenEventsClient;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
+import austeretony.oxygen.client.gui.notifications.NotificationsGUIScreen;
 import austeretony.oxygen.client.gui.overlay.OxygenOverlayHandler;
 import austeretony.oxygen.client.gui.overlay.RequestOverlay;
 import austeretony.oxygen.client.gui.settings.GUISettings;
+import austeretony.oxygen.client.input.InteractKeyHandler;
+import austeretony.oxygen.client.input.NotificationsMenuKeyHandler;
 import austeretony.oxygen.client.input.OxygenKeyHandler;
 import austeretony.oxygen.client.sync.gui.api.AdvancedGUIHandlerClient;
 import austeretony.oxygen.client.sync.gui.api.ComplexGUIHandlerClient;
@@ -30,21 +33,21 @@ import austeretony.oxygen.common.api.network.OxygenNetwork;
 import austeretony.oxygen.common.command.CommandOxygenServer;
 import austeretony.oxygen.common.command.CurrencyArgumentExecutorServer;
 import austeretony.oxygen.common.config.ConfigLoader;
+import austeretony.oxygen.common.config.OxygenClientConfig;
 import austeretony.oxygen.common.config.OxygenConfig;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.event.OxygenEventsServer;
 import austeretony.oxygen.common.network.client.CPAddSharedDataEntry;
-import austeretony.oxygen.common.network.client.CPCacheObservedData;
 import austeretony.oxygen.common.network.client.CPOpenOxygenScreen;
 import austeretony.oxygen.common.network.client.CPPlaySoundEvent;
-import austeretony.oxygen.common.network.client.CPRemoveSharedDataEntry;
+import austeretony.oxygen.common.network.client.CPPlayerLoggedOut;
 import austeretony.oxygen.common.network.client.CPShowMessage;
 import austeretony.oxygen.common.network.client.CPSyncConfigs;
 import austeretony.oxygen.common.network.client.CPSyncGroup;
 import austeretony.oxygen.common.network.client.CPSyncMainData;
 import austeretony.oxygen.common.network.client.CPSyncNotification;
 import austeretony.oxygen.common.network.client.CPSyncObservedPlayersData;
-import austeretony.oxygen.common.network.client.CPSyncPlayersImmutableData;
+import austeretony.oxygen.common.network.client.CPSyncPlayersSharedData;
 import austeretony.oxygen.common.network.client.CPSyncSharedPlayersData;
 import austeretony.oxygen.common.network.client.CPSyncWatchedValues;
 import austeretony.oxygen.common.network.server.SPChangeActivityStatus;
@@ -60,6 +63,7 @@ import austeretony.oxygen.common.privilege.io.PrivilegeLoaderServer;
 import austeretony.oxygen.common.sync.gui.api.AdvancedGUIHandlerServer;
 import austeretony.oxygen.common.sync.gui.api.ComplexGUIHandlerServer;
 import austeretony.oxygen.common.sync.gui.network.CPSyncSharedData;
+import austeretony.oxygen.common.update.UpdateAdaptersManager;
 import austeretony.oxygen.common.watcher.WatchedValue;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -82,7 +86,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen", 
     NAME = "Oxygen Core", 
-    VERSION = "0.8.1", 
+    VERSION = "0.8.2", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -93,6 +97,8 @@ public class OxygenMain {
 
     public static final int 
     OXYGEN_MOD_INDEX = 0,//Teleportation - 1, Groups - 2, Exchange - 3, Merchants - 4, Players List - 5, Friends List - 6, Interaction - 7, Mail - 8, Chat - 9 
+
+    NOTIFICATIONS_MENU_SCREEN_ID = 0,
 
     SIMPLE_NOTIFICATION_ID = 0,
     ALERT_NOTIFICATION_ID = 1,
@@ -105,6 +111,7 @@ public class OxygenMain {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         OxygenHelperServer.registerConfig(new OxygenConfig());
+        OxygenHelperServer.registerConfig(new OxygenClientConfig());
         OxygenHelperServer.registerConfig(new OxygenPrivilegeConfig());
         if (event.getSide() == Side.CLIENT) {
             CommandOxygenClient.registerArgumentExecutor(new GUIArgumentExecutor("gui", true));
@@ -132,8 +139,12 @@ public class OxygenMain {
             WatcherManagerClient.create();
             ClientReference.registerCommand(new CommandOxygenClient("oxygenc"));
             CommonReference.registerEvent(new OxygenEventsClient());
-            CommonReference.registerEvent(new OxygenKeyHandler());
             CommonReference.registerEvent(new OxygenOverlayHandler());     
+            CommonReference.registerEvent(new OxygenKeyHandler());
+            if (!OxygenGUIHelper.isOxygenMenuEnabled())
+                CommonReference.registerEvent(new NotificationsMenuKeyHandler());
+            if (!OxygenClientConfig.INTERACT_WITH_RMB.getBooleanValue())
+                CommonReference.registerEvent(new InteractKeyHandler());
             WatcherHelperClient.registerValue(new WatchedValue(OxygenPlayerData.CURRENCY_COINS_WATCHER_ID, Integer.BYTES));
             OxygenHelperClient.registerSharedDataValue(ACTIVITY_STATUS_SHARED_DATA_ID, Byte.BYTES);
             OxygenHelperClient.registerSharedDataValue(DIMENSION_SHARED_DATA_ID, Integer.BYTES);
@@ -141,6 +152,7 @@ public class OxygenMain {
             OxygenHelperClient.registerNotificationIcon(ALERT_NOTIFICATION_ID, OxygenGUITextures.ALERT_ICONS);
             OxygenHelperClient.registerClientSetting(HIDE_REQUESTS_OVERLAY_SETTING_ID);
             OxygenGUIHelper.registerOverlay(new RequestOverlay());
+            OxygenGUIHelper.registerOxygenMenuEntry(NotificationsGUIScreen.NOTIFICATIONS_MENU_ENTRY);
         }
     }
 
@@ -163,7 +175,8 @@ public class OxygenMain {
         worldFolder = event.getServer().isSinglePlayer() ? CommonReference.getGameFolder() + "/saves/" + worldName : CommonReference.getGameFolder() + "/" + worldName;
         OXYGEN_LOGGER.info("Initializing IO for world: {}.", worldName);
         OxygenManagerServer.instance().reset();
-        OxygenManagerServer.instance().getLoader().createOrLoadWorldIdDelegated(worldFolder, event.getServer().getMaxPlayers());
+        OxygenManagerServer.instance().getLoader().createOrLoadWorldId(worldFolder, event.getServer().getMaxPlayers());
+        UpdateAdaptersManager.applyChanges();
         WatcherManagerServer.instance().reset();
         PrivilegeLoaderServer.loadPrivilegeDataDelegated();
         if (OxygenConfig.ENABLE_PRIVILEGES.getBooleanValue())
@@ -200,11 +213,10 @@ public class OxygenMain {
         network.registerPacket(CPSyncSharedData.class);
         network.registerPacket(CPShowMessage.class);
         network.registerPacket(CPSyncNotification.class);
-        network.registerPacket(CPSyncPlayersImmutableData.class);
-        network.registerPacket(CPRemoveSharedDataEntry.class);
+        network.registerPacket(CPSyncPlayersSharedData.class);
+        network.registerPacket(CPPlayerLoggedOut.class);
         network.registerPacket(CPAddSharedDataEntry.class);
         network.registerPacket(CPSyncObservedPlayersData.class);
-        network.registerPacket(CPCacheObservedData.class);
         network.registerPacket(CPPlaySoundEvent.class);
         network.registerPacket(CPOpenOxygenScreen.class);
 

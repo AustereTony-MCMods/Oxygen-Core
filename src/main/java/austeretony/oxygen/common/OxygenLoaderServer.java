@@ -32,10 +32,10 @@ public class OxygenLoaderServer {
 
     private long worldId;
 
-    public void createOrLoadWorldIdDelegated(String worldFolder, int maxPlayers) {
+    public void createOrLoadWorldId(String worldFolder, int maxPlayers) {
         this.worldFolder = worldFolder;
         this.maxPlayers = maxPlayers;
-        OxygenHelperServer.addServiceIOTask(()->this.createOrLoadWorldId());
+        this.createOrLoadWorldId();
     }
 
     private void createOrLoadWorldId() {

@@ -14,11 +14,12 @@ import austeretony.alternateui.screen.panel.GUIButtonPanel;
 import austeretony.alternateui.screen.text.GUITextLabel;
 import austeretony.alternateui.util.EnumGUIOrientation;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.api.OxygenGUIHelper;
 import austeretony.oxygen.client.core.api.ClientReference;
 import austeretony.oxygen.client.gui.OxygenGUITextures;
 import austeretony.oxygen.client.gui.notifications.callback.SettingsGUICallback;
 import austeretony.oxygen.client.gui.settings.GUISettings;
-import austeretony.oxygen.client.input.OxygenKeyHandler;
+import austeretony.oxygen.client.input.NotificationsMenuKeyHandler;
 import austeretony.oxygen.common.main.OxygenSoundEffects;
 import austeretony.oxygen.common.notification.INotification;
 
@@ -78,7 +79,10 @@ public class NotificationsGUISection extends AbstractGUISection {
 
     @Override
     public boolean keyTyped(char typedChar, int keyCode) {  
-        if (keyCode == OxygenKeyHandler.NOTIFICATIONS_MENU.getKeyCode())
+        if (OxygenGUIHelper.isOxygenMenuEnabled()) {
+            if (keyCode == NotificationsGUIScreen.NOTIFICATIONS_MENU_ENTRY.index + 2)
+                this.screen.close();
+        } else if (keyCode == NotificationsMenuKeyHandler.NOTIFICATIONS_MENU.getKeyCode())
             this.screen.close();
         return super.keyTyped(typedChar, keyCode); 
     }

@@ -92,7 +92,7 @@ public class OxygenHelperServer {
     }
 
     public static int getPlayerIndex(UUID playerUUID) {
-        return OxygenManagerServer.instance().getSharedDataManager().getImmutableData(playerUUID).getIndex();
+        return OxygenManagerServer.instance().getSharedDataManager().getSharedData(playerUUID).getIndex();
     }
 
     public static UUID getPlayerUUID(int index) {
@@ -101,10 +101,6 @@ public class OxygenHelperServer {
 
     public static UUID getPlayerUUID(String username) {
         return OxygenManagerServer.instance().getSharedDataManager().getPlayerUUIDByUsername(username);
-    }
-
-    public static boolean isValidUsername(String username) {
-        return OxygenManagerServer.instance().getSharedDataManager().isValidUsername(username);
     }
 
     public static SharedPlayerData getSharedPlayerData(int index) {
@@ -119,20 +115,12 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getSharedDataManager().getSharedDataByUsername(username);
     }
 
-    public static SharedPlayerData getPersistentSharedData(UUID playerUUID) {
-        return OxygenManagerServer.instance().getSharedDataManager().getPersistentSharedData(playerUUID);
-    }
-
     public static void syncSharedPlayersData(EntityPlayerMP playerMP, int... identifiers) {
         OxygenManagerServer.instance().syncSharedPlayersData(playerMP, identifiers);
     }
 
     public static void syncObservedPlayersData(EntityPlayerMP playerMP) {
         OxygenManagerServer.instance().getSharedDataManager().syncObservedPlayersData(playerMP);
-    }
-
-    public static void cacheObservedPlayersDataOnClient(EntityPlayerMP playerMP, UUID... observed) {
-        OxygenManagerServer.instance().getSharedDataManager().cacheObservedPlayersDataOnClient(playerMP, observed);
     }
 
     public static boolean haveObservedPlayers(UUID observerUUID) {

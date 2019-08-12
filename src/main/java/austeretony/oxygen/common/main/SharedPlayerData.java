@@ -193,6 +193,7 @@ public class SharedPlayerData {
     public void write(PacketBuffer buffer) {
         PacketBufferUtils.writeUUID(this.playerUUID, buffer);
         PacketBufferUtils.writeString(this.username, buffer);
+        buffer.writeInt(this.index);
         buffer.writeLong(this.lastActivityTime);
         buffer.writeByte(this.data.size());
         for (Map.Entry<Integer, byte[]> entry : this.data.entrySet()) {
@@ -206,6 +207,7 @@ public class SharedPlayerData {
         SharedPlayerData sharedData = new SharedPlayerData();
         sharedData.setPlayerUUID(PacketBufferUtils.readUUID(buffer));
         sharedData.setUsername(PacketBufferUtils.readString(buffer));
+        sharedData.setIndex(buffer.readInt());
         sharedData.setLastActivityTime(buffer.readLong());
         int amount = buffer.readByte();
         byte[] bytes;

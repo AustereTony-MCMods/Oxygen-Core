@@ -4,6 +4,8 @@ import java.util.Set;
 
 import austeretony.alternateui.screen.contextmenu.AbstractContextAction;
 import austeretony.oxygen.client.OxygenManagerClient;
+import austeretony.oxygen.client.gui.AbstractMenuEntry;
+import austeretony.oxygen.client.gui.OxygenMenuManager;
 import austeretony.oxygen.client.gui.overlay.IOverlay;
 import austeretony.oxygen.client.sync.gui.api.IGUIHandlerClient;
 
@@ -67,5 +69,13 @@ public class OxygenGUIHelper {
 
     public static Set<AbstractContextAction> getContextActions(int screenId) {
         return OxygenManagerClient.instance().getGUIManager().getContextActions(screenId);
+    }
+
+    public static boolean isOxygenMenuEnabled() {
+        return OxygenMenuManager.isOxygenMenuEnabled();
+    }
+
+    public static void registerOxygenMenuEntry(AbstractMenuEntry entry) {
+        OxygenMenuManager.registerOxygenMenuEntry(entry);
     }
 }

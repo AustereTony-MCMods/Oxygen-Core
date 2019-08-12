@@ -5,6 +5,8 @@ import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUIWorkspace;
 import austeretony.alternateui.util.EnumGUIAlignment;
+import austeretony.oxygen.client.gui.AbstractMenuEntry;
+import austeretony.oxygen.client.gui.NotificationsMenuEntry;
 import austeretony.oxygen.common.main.OxygenMain;
 import net.minecraft.util.ResourceLocation;
 
@@ -13,6 +15,8 @@ public class NotificationsGUIScreen extends AbstractGUIScreen {
     public static final ResourceLocation 
     NOTIFICATIONS_MENU_BACKGROUND = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/notifications_menu.png"),
     SETTINGS_CALLBACK_BACKGROUND = new ResourceLocation(OxygenMain.MODID, "textures/gui/notifications/settings_callback.png");
+
+    public static final AbstractMenuEntry NOTIFICATIONS_MENU_ENTRY = new NotificationsMenuEntry();
 
     protected AbstractGUISection notificationsSection;
 

@@ -34,7 +34,7 @@ public class ComplexGUIHandlerClient {
     }
 
     public static void openScreen(int screenId) {
-        OxygenMain.network().sendToServer(new SPOpenOxygenScreen(EnumScreenType.DOUBLE_ADVANCED_SCREEN, screenId));
+        OxygenMain.network().sendToServer(new SPOpenOxygenScreen(EnumScreenType.COMPLEX_SCREEN, screenId));
     }
 
     public static OxygenNetwork getNetwork(int screenId) {

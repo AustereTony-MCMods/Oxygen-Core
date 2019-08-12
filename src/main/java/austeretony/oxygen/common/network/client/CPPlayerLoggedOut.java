@@ -5,13 +5,13 @@ import austeretony.oxygen.common.network.ProxyPacket;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
 
-public class CPRemoveSharedDataEntry extends ProxyPacket {
+public class CPPlayerLoggedOut extends ProxyPacket {
 
     private int index;
 
-    public CPRemoveSharedDataEntry() {}
+    public CPPlayerLoggedOut() {}
 
-    public CPRemoveSharedDataEntry(int index) {
+    public CPPlayerLoggedOut(int index) {
         this.index = index;
     }
 
@@ -22,6 +22,6 @@ public class CPRemoveSharedDataEntry extends ProxyPacket {
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
-        OxygenManagerClient.instance().getSharedDataManager().removePlyerSharedDataEntry(buffer.readInt());
+        OxygenManagerClient.instance().getSharedDataManager().playerLoggedOut(buffer.readInt());
     }
 }

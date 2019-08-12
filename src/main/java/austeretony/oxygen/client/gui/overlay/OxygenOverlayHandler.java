@@ -13,10 +13,10 @@ public class OxygenOverlayHandler {
     public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == ElementType.CROSSHAIRS)//disabling render while in GUI
             event.setCanceled(!Minecraft.getMinecraft().inGameHasFocus);
-        if (event.getType() == ElementType.TEXT)
-            if (ClientReference.getMinecraft().inGameHasFocus)
-                for (IOverlay overlay : OxygenManagerClient.instance().getGUIManager().getOverlays())
-                    if (overlay.shouldDraw())
-                        overlay.draw(event.getPartialTicks());
+        if (event.getType() == ElementType.TEXT) {
+            for (IOverlay overlay : OxygenManagerClient.instance().getGUIManager().getOverlays())
+                if (overlay.shouldDraw() && (ClientReference.getMinecraft().inGameHasFocus || overlay.drawWhileInGUI()))
+                    overlay.draw(event.getPartialTicks());
+        }
     }
 }

@@ -1,95 +1,62 @@
 package austeretony.oxygen.client;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen.client.api.OxygenHelperClient;
-import austeretony.oxygen.common.ImmutablePlayerData;
-import austeretony.oxygen.common.SharedDataManagerServer.SharedDataRegistryEntry;
 import austeretony.oxygen.common.main.OxygenMain;
 import austeretony.oxygen.common.main.SharedPlayerData;
 
 public class SharedDataManagerClient {
 
-    private final Map<UUID, SharedPlayerData> observed = new ConcurrentHashMap<UUID, SharedPlayerData>();
+    private final Map<UUID, SharedPlayerData> sharedData = new ConcurrentHashMap<UUID, SharedPlayerData>();
 
-    private final Map<UUID, ImmutablePlayerData> immutableData = new ConcurrentHashMap<UUID, ImmutablePlayerData>();
+    private final Map<Integer, UUID> access = new ConcurrentHashMap<Integer, UUID>();
 
-    private final Map<Integer, SharedPlayerData> sharedData = new ConcurrentHashMap<Integer, SharedPlayerData>();
-
-    public void addPlayerSharedDataEntry(ImmutablePlayerData immutableData) {
-        this.immutableData.put(immutableData.playerUUID, immutableData);
-        SharedPlayerData sharedData = new SharedPlayerData();
-        sharedData.setPlayerUUID(immutableData.playerUUID);
-        sharedData.setUsername(immutableData.username);
-        sharedData.setIndex(immutableData.getIndex());
-
-        for (SharedDataRegistryEntry entry : this.sharedDataRegistry)
-            sharedData.createDataBuffer(entry.id, entry.size);
-
-        this.sharedData.put(immutableData.getIndex(), sharedData);
+    public void addPlayerSharedDataEntry(SharedPlayerData sharedData) {
+        this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
+        this.access.put(sharedData.getIndex(), sharedData.getPlayerUUID());
     }
 
-    public void removePlyerSharedDataEntry(int index) {
-        this.cacheObservedData(index);
-        this.immutableData.remove(this.sharedData.remove(index).getPlayerUUID());  
+    public void playerLoggedOut(int index) {
+        this.updateLastActivityTime(index);
+        this.access.remove(index);
     }
 
     public Set<Integer> getOnlinePlayersIndexes() {
-        return this.sharedData.keySet();
+        return this.access.keySet();
     }
 
-    public Set<UUID> getOnlinePlayersUUIDs() {
-        return this.immutableData.keySet();
-    }
-
-    public Collection<ImmutablePlayerData> getPlayersImmutableData() {
-        return this.immutableData.values();
+    public Collection<UUID> getOnlinePlayersUUIDs() {
+        return this.access.values();
     }
 
     public Collection<SharedPlayerData> getPlayersSharedData() {
         return this.sharedData.values();
     }
 
-    public ImmutablePlayerData getImmutableData(UUID playerUUID) {
-        return this.immutableData.get(playerUUID);
-    }
-
     public SharedPlayerData getSharedData(int index) {
-        return this.sharedData.get(index);
+        return this.sharedData.get(this.access.get(index));
     }
 
     public SharedPlayerData getSharedData(UUID playerUUID) {
-        return this.sharedData.get(this.immutableData.get(playerUUID).getIndex());
-    }
-
-    public boolean observedSharedDataExist(UUID playerUUID) {
-        return this.observed.containsKey(playerUUID);
-    }
-
-    public SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        if (OxygenHelperClient.isOnline(playerUUID) 
-                && !OxygenHelperClient.isOfflineStatus(playerUUID))
-            return this.getSharedData(playerUUID);
-        return this.observed.get(playerUUID);
+        return this.sharedData.get(playerUUID);
     }
 
     public void addObservedSharedData(SharedPlayerData sharedData) {
-        this.observed.put(sharedData.getPlayerUUID(), sharedData);
-        OxygenMain.OXYGEN_LOGGER.info("Cached player <{} / {}> shared (observed) data.", sharedData.getUsername(), sharedData.getPlayerUUID());//TODO debug
+        this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
+        OxygenMain.OXYGEN_LOGGER.info("Cached player <{}> shared (observed) data.", sharedData.getUsername());
     }
 
-    public void cacheObservedData(int index) {
-        if (this.sharedData.containsKey(index)) {
-            SharedPlayerData sharedData = this.sharedData.get(index);
+    public void updateLastActivityTime(int index) {
+        if (this.access.containsKey(index)) {
+            SharedPlayerData sharedData = this.sharedData.get(this.access.get(index));
             sharedData.setLastActivityTime(System.currentTimeMillis());
-            this.addObservedSharedData(sharedData);
+            OxygenMain.OXYGEN_LOGGER.info("Player <{}> logged out.", sharedData.getUsername());
         } else
-            OxygenMain.OXYGEN_LOGGER.error("Couldn't cache shared data for index <{}>, data absent!", index);
+            OxygenMain.OXYGEN_LOGGER.error("Couldn't update shared data for index <{}>, data absent!", index);
     }
 
     public SharedPlayerData getSharedDataByUsername(String username) {
@@ -99,19 +66,8 @@ public class SharedDataManagerClient {
         return null;
     }
 
-    //*** shared data registration - start
-
-    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<SharedDataRegistryEntry>(5);
-
-    public void registerSharedDataValue(int id, int size) {
-        this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
-    }
-
-    //*** shared data registration - end
-
     public void reset() {
-        this.observed.clear();
-        this.immutableData.clear();
         this.sharedData.clear();
+        this.access.clear();
     }
 }

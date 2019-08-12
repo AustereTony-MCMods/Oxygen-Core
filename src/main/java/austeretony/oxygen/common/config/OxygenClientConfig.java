@@ -7,16 +7,13 @@ import austeretony.oxygen.common.api.config.ConfigValue;
 import austeretony.oxygen.common.core.api.CommonReference;
 import austeretony.oxygen.common.main.OxygenMain;
 
-public class OxygenConfig extends AbstractConfigHolder {
+public class OxygenClientConfig extends AbstractConfigHolder {
 
-    public static final ConfigValue
-    SYNC_CONFIGS = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "sync_configs"),
-    SYNC_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "sync_privileges"),
-    ENABLE_PRIVILEGES = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "enable_privileges");
+    public static final ConfigValue INTERACT_WITH_RMB = new ConfigValue(ConfigValue.EnumValueType.BOOLEAN, "main", "interact_with_rmb");
 
     @Override
     public String getModId() {
-        return OxygenMain.MODID;
+        return OxygenMain.MODID + ":client";
     }
 
     @Override
@@ -26,23 +23,21 @@ public class OxygenConfig extends AbstractConfigHolder {
 
     @Override
     public String getExternalPath() {
-        return CommonReference.getGameFolder() + "/config/oxygen/oxygen.json";
+        return CommonReference.getGameFolder() + "/config/oxygen/oxygen_client.json";
     }
 
     @Override
     public String getInternalPath() {
-        return "assets/oxygen/oxygen.json";
+        return "assets/oxygen/oxygen_client.json";
     }
 
     @Override
     public void getValues(List<ConfigValue> values) {
-        values.add(SYNC_CONFIGS);
-        values.add(SYNC_PRIVILEGES);
-        values.add(ENABLE_PRIVILEGES);
+        values.add(INTERACT_WITH_RMB);
     }
 
     @Override
     public boolean sync() {
-        return true;
+        return false;
     }
 }

@@ -2,7 +2,6 @@
   "main": {
     "sync_configs": true,
     "sync_privileges": true,
-    "enable_privileges": true,
-    "interact_with_rmb": false
+    "enable_privileges": true
   }
 }

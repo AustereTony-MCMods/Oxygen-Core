@@ -1,5 +1,6 @@
 package austeretony.oxygen.client;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.alternateui.screen.contextmenu.AbstractContextAction;
 import austeretony.oxygen.client.core.api.ClientReference;
+import austeretony.oxygen.client.gui.IOxygenMenuEntry;
 import austeretony.oxygen.client.gui.overlay.IOverlay;
 import austeretony.oxygen.client.sync.gui.api.IGUIHandlerClient;
 import austeretony.oxygen.common.main.OxygenMain;

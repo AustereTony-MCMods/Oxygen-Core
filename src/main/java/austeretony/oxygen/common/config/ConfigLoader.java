@@ -16,6 +16,7 @@ import com.google.gson.JsonPrimitive;
 
 import austeretony.oxygen.common.api.config.ConfigValue;
 import austeretony.oxygen.common.main.OxygenMain;
+import austeretony.oxygen.common.update.UpdateAdaptersManager;
 import austeretony.oxygen.util.JsonUtils;
 
 public class ConfigLoader {
@@ -89,7 +90,8 @@ public class ConfigLoader {
             JsonObject externalConfigOld, externalConfigNew, externalGroupNew;
             externalConfigOld = JsonUtils.getExternalJsonData(externalConfigFolder).getAsJsonObject();   
             JsonElement versionElement = externalConfigOld.get("version");
-            if (versionElement == null || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
+            if (versionElement == null 
+                    || isOutdated(versionElement.getAsString(), configHolder.getVersion())) {
                 OxygenMain.OXYGEN_LOGGER.info("Updating <{}> config file...", configHolder.getModId());
                 externalConfigNew = new JsonObject();
                 externalConfigNew.add("version", new JsonPrimitive(configHolder.getVersion()));
@@ -123,6 +125,8 @@ public class ConfigLoader {
                     externalConfigNew.add(key, externalGroupNew);
                     JsonUtils.createExternalJsonFile(externalConfigFolder, externalConfigNew);
                 }
+                if (versionElement != null)
+                    UpdateAdaptersManager.moduleUpdated(configHolder.getModId(), versionElement.getAsString(), configHolder.getVersion());
                 return externalConfigNew;
             }
             return externalConfigOld;            

@@ -19,8 +19,9 @@ public class OxygenHelperClient {
 
     //*** initialization - start
 
+    //TODO Remove in 0.9.0b
     public static void registerSharedDataValue(int dataId, int capacity) {
-        OxygenManagerClient.instance().getSharedDataManager().registerSharedDataValue(dataId, capacity);
+        //unused
     }
 
     public static void registerNotificationIcon(int index, ResourceLocation textureLocation) {
@@ -119,14 +120,6 @@ public class OxygenHelperClient {
 
     public static SharedPlayerData getSharedPlayerData(String username) {
         return OxygenManagerClient.instance().getSharedDataManager().getSharedDataByUsername(username);
-    }
-
-    public static boolean observedSharedDataExist(UUID playerUUID) {
-        return OxygenManagerClient.instance().getSharedDataManager().observedSharedDataExist(playerUUID);
-    }
-
-    public static SharedPlayerData getObservedSharedData(UUID playerUUID) {
-        return OxygenManagerClient.instance().getSharedDataManager().getObservedSharedData(playerUUID);
     }
 
     public static boolean isOnline(int index) {

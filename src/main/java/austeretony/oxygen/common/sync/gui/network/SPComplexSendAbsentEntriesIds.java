@@ -71,7 +71,7 @@ public class SPComplexSendAbsentEntriesIds extends ProxyPacket {
         if (this.amountFirst != 0 || this.amountSecond != 0)
             ComplexGUIHandlerServer.getNetwork(this.screenId).sendTo(new CPComplexSyncAbsentEntries(this.screenId, playerUUID, this.entriesFirstIds, this.entriesSecondIds), playerMP);
 
-        OxygenMain.network().sendTo(new CPOpenOxygenScreen(EnumScreenType.DOUBLE_ADVANCED_SCREEN, this.screenId), playerMP);
+        OxygenMain.network().sendTo(new CPOpenOxygenScreen(EnumScreenType.COMPLEX_SCREEN, this.screenId), playerMP);
         OxygenHelperServer.setSyncing(playerUUID, false);
     }
 }

@@ -32,7 +32,7 @@ public class SPOpenOxygenScreen extends ProxyPacket {
         case ADVANCED_SCREEN:
             OxygenManagerServer.instance().openAdvancedScreen(getEntityPlayerMP(netHandler), buffer.readByte());
             break;
-        case DOUBLE_ADVANCED_SCREEN:
+        case COMPLEX_SCREEN:
             OxygenManagerServer.instance().openComplexScreen(getEntityPlayerMP(netHandler), buffer.readByte());
             break;
         }

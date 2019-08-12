@@ -25,14 +25,14 @@ public class CPSyncObservedPlayersData extends ProxyPacket {
     public void write(PacketBuffer buffer, INetHandler netHandler) {
         buffer.writeShort(this.observed.size());
         for (UUID uuid : this.observed)
-            OxygenManagerServer.instance().getSharedDataManager().getPersistentSharedData(uuid).write(buffer);
+            OxygenManagerServer.instance().getSharedDataManager().getSharedData(uuid).write(buffer);
     }
 
     @Override
     public void read(PacketBuffer buffer, INetHandler netHandler) {
         int amount = buffer.readShort();
-        OxygenMain.OXYGEN_LOGGER.info("Synchronized {} observed players data.", amount);
         for (int i = 0; i < amount; i++)
             OxygenManagerClient.instance().getSharedDataManager().addObservedSharedData(SharedPlayerData.read(buffer));
+        OxygenMain.OXYGEN_LOGGER.info("Synchronized {} observed players data entries.", amount);
     }
 }

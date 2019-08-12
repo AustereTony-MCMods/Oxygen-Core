@@ -34,7 +34,7 @@ public class CPOpenOxygenScreen extends ProxyPacket {
         case ADVANCED_SCREEN:
             AdvancedGUIHandlerClient.openScreenDelegated(buffer.readByte());
             break;
-        case DOUBLE_ADVANCED_SCREEN:
+        case COMPLEX_SCREEN:
             ComplexGUIHandlerClient.openScreenDelegated(buffer.readByte());
             break;
         }
