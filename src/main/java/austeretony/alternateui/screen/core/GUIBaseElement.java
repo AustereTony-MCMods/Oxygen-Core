@@ -45,8 +45,13 @@ public class GUIBaseElement<T extends GUIBaseElement> {
 
     public void bind(GUIBaseElement element) {
         if (this.boundElements == null)
-            this.boundElements = new HashSet<GUIBaseElement>();
+            this.boundElements = new HashSet<>();
         this.boundElements.add(element);
+    }
+
+    public void unbind(GUIBaseElement element) {
+        if (this.boundElements != null)
+            this.boundElements.remove(element);
     }
 
     public boolean isBound(GUIBaseElement element) {
@@ -69,8 +74,8 @@ public class GUIBaseElement<T extends GUIBaseElement> {
         return hasDraggedElement;
     }
 
-    public T cancelDraggedElementLogic() {
-        this.cancelDraggedLogic = true;
+    public T cancelDraggedElementLogic(boolean flag) {
+        this.cancelDraggedLogic = flag;
         return (T) this;
     }
 

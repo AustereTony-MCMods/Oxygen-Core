@@ -1,9 +1,9 @@
 [
 {
-  "modid": "oxygen",
+  "modid": "oxygen_core",
   "name": "Oxygen Core",
   "description": "API for Oxygen mod series.",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "mcversion": "1.12.2",
   "url": "https://www.curseforge.com/minecraft/mc-mods/oxygen-core",
   "updateUrl": "",

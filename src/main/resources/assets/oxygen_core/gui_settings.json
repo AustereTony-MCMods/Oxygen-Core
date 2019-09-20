@@ -1,0 +1,55 @@
+{
+  "profile": "default",
+  "profiles": [
+    {
+      "name": "default",
+      "color": {
+        "base_background": "DC050505",
+        "additional_background": "FF404040",
+        "enabled_button": "FF404040",
+        "disabled_button": "FF202020",
+        "hovered_button": "FF606060",
+        "enabled_element": "96080808",
+        "disabled_element": "96040404",
+        "hovered_element": "96303030",
+        "enabled_slider": "FF404040",
+        "disabled_slider": "FF202020",
+        "hovered_slider": "FF606060",
+        "enabled_text": "FFCCCCCC",
+        "disabled_text": "FF999999",
+        "hovered_text": "FFE5E5E5",
+        "enabled_text_dark": "FFA5A5A5",
+        "disabled_text_dark": "FF7F7F7F",
+        "hovered_text_dark": "FFBFBFBF",
+        "enabled_textfield": "FF505050",
+        "disabled_textfield": "FF404040",
+        "hovered_textfield": "FF555555",
+        "base_overlay_text": "FFAAAAAA",
+        "additional_overlay_text": "FFEEEEEE",
+        "tooltip_background": "FF333333",
+        "tooltip_text": "FFEEEEEE",
+        "status_element": "FF00E5E5",
+        "status_element_transparent": "3200E5E5",   
+        "active_element": "FF00E51A",
+        "active_element_transparent": "3200E51A",
+        "inactive_element": "FFCC0000",
+        "inactive_element_transparent": "32CC0000"
+      },
+      "scale": {
+        "title": 0.85,
+        "button_text": 0.65,
+        "tooltip": 0.75,
+        "text": 0.7,
+        "sub_text": 0.6,
+        "panel_text": 0.6,
+        "drop_down_list": 0.9,
+        "context_menu": 0.9,
+        "overlay": 0.8
+      },
+      "other": {
+        "drop_down_list_width": 60,
+        "context_menu_width": 60
+      }
+    }
+  ]
+}

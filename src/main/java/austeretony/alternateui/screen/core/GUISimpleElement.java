@@ -16,7 +16,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
 
     public final static int FONT_HEIGHT = 9;
 
-    private boolean isDebugMode, isVisible, isStatBackgroundEnabled, isDynBackgroundEnabled, isTextShadowEnabled, hasSimpleTooltip, hasAdvancedTooltip, hasDisplayText;
+    private boolean isDebugMode, isVisible, isStatBackgroundEnabled, isDynBackgroundEnabled, isTextShadowEnabled, hasTooltip, hasDisplayText;
 
     private String displayText, tooltipText;
 
@@ -90,17 +90,15 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
 
     @Override
     public void drawTooltip(int mouseX, int mouseY) {  	
-        if (this.isHovered()) {  
-            if (this.hasSimpleTooltip()) {   
-                int width = (int) ((float) this.tooltipWidth * this.tooltipScaleFactor);
-                GlStateManager.pushMatrix();           
-                GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11.0F, 0.0F);           
-                GlStateManager.scale(this.tooltipScaleFactor, this.tooltipScaleFactor, 0.0F);    
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                drawRect(0, 0, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
-                this.mc.fontRenderer.drawString(this.tooltipText, 2, 2, this.tooltipTextColor);               
-                GlStateManager.popMatrix();
-            }
+        if (this.isVisible() && this.isHovered() && this.hasTooltip()) {   
+            int width = (int) ((float) this.tooltipWidth * this.tooltipScaleFactor);
+            GlStateManager.pushMatrix();           
+            GlStateManager.translate(mouseX + this.screen.guiLeft + width >= this.screen.width ? mouseX - width : mouseX, mouseY - 11.0F, 0.0F);           
+            GlStateManager.scale(this.tooltipScaleFactor, this.tooltipScaleFactor, 0.0F);    
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            drawRect(0, 0, this.tooltipWidth, 11, this.tooltipBackgroundColor);               
+            this.mc.fontRenderer.drawString(this.tooltipText, 2, 2, this.tooltipTextColor);               
+            GlStateManager.popMatrix();
         }
     }
 
@@ -190,37 +188,73 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         return (T) this;
     }
 
-    public T initSimpleTooltip(String text) {  
+    public T initTooltip(String text) {  
         this.tooltipText = text;
         this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
-        this.hasSimpleTooltip = true;
+        this.hasTooltip = true;
         return (T) this;
     }
 
-    public T initSimpleTooltip(String text, float scale) {  
+    public T initTooltip(String text, float scale) {  
         this.tooltipText = text;
         this.tooltipScaleFactor = scale;
         this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
-        this.hasSimpleTooltip = true;
+        this.hasTooltip = true;
         return (T) this;
     }
 
-    public T initSimpleTooltip(String text, int textColorHex, int backgroundColorHex, float scale) {    
+    public T initTooltip(String text, int textColorHex, int backgroundColorHex, float scale) {    
         this.tooltipText = text;
         this.tooltipScaleFactor = scale;
         this.tooltipWidth = this.textWidth(text, 1.0F) + 4;
         this.tooltipTextColor = textColorHex;
         this.tooltipBackgroundColor = backgroundColorHex;
-        this.hasSimpleTooltip = true;
+        this.hasTooltip = true;
         return (T) this;
     }
 
-    public boolean hasSimpleTooltip() {           
-        return this.hasSimpleTooltip;
+    public boolean hasTooltip() {           
+        return this.hasTooltip;
     }
 
-    public boolean hasAdvancedTooltip() {   	
-        return this.hasAdvancedTooltip;
+    public String getTooltipText() {
+        return this.tooltipText;
+    }
+
+    public void setTooltipText(String text) {
+        this.tooltipText = text;
+    }
+
+    public float getTooltipScaleFactor() {
+        return this.tooltipScaleFactor;
+    }
+
+    public void setTooltipScaleFactor(float scale) {
+        this.tooltipScaleFactor = scale;
+    }
+
+    public int getTooltipWidth() {
+        return this.tooltipWidth;
+    }
+
+    public void setTooltipWidth(int width) {
+        this.tooltipWidth = width;
+    }
+
+    public int getTooltipTextColor() {
+        return this.tooltipTextColor;
+    }
+
+    public void setTooltipTextColor(int colorHex) {
+        this.tooltipTextColor = colorHex;
+    }
+
+    public int getTooltipBackgroundColor() {
+        return this.tooltipBackgroundColor;
+    }
+
+    public void setTooltipBackgroundColor(int colorHex) {
+        this.tooltipBackgroundColor = colorHex;
     }
 
     public String getDisplayText() {   	

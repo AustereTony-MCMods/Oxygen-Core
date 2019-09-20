@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -10,8 +10,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "1.12.2-0.8.2"
-group = "austeretony.oxygen" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12.2-0.9.0"
+group = "austeretony.oxygen_core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "oxygen-core"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -20,7 +20,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
+    version = "1.12.2-14.23.5.2838"
     runDir = "run"
     
 	replace '@FINGERPRINT@', project.findProperty('sign')
@@ -38,7 +38,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+      	
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -78,7 +78,7 @@ processResources {
 
 jar {
    manifest {
-       attributes 'FMLCorePlugin': 'austeretony.oxygen.common.core.plugin.OxygenCorePlugin'
+       attributes 'FMLCorePlugin': 'austeretony.oxygen_core.common.core.plugin.OxygenCorePlugin'
        attributes 'FMLCorePluginContainsFMLMod': 'true'
    }
 }

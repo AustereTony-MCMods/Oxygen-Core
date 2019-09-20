@@ -52,7 +52,6 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
 
     @Override
     public GUITextBoxLabel setDisplayText(String displayText) {  
-        super.setDisplayText(displayText);
         this.lines.clear(); 
         int width = this.getWidth() - 3;
         StringBuilder builder = new StringBuilder();    

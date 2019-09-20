@@ -1,0 +1,58 @@
+{
+  "inventory": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:inventory"
+      }
+    ]
+  },
+  "sell": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:sell"
+      }
+    ]
+  },
+  "request_recieved": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:request_recieved"
+      }
+    ]
+  },
+  "button_click": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:button_click"
+      }
+    ]
+  },
+  "context_open": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:context_open"
+      }
+    ]
+  },
+  "context_close": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:context_close"
+      }
+    ]
+  },
+  "drop_down_list_open": { 
+    "category": "player", 
+    "sounds": [
+      {
+        "name": "oxygen_core:drop_down_list_open"
+      }
+    ]
+  }
+}

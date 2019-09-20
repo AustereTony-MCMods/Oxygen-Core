@@ -1,0 +1,128 @@
+key.oxygen.notifications=Open Notifications Menu
+key.oxygen.accept=Accept Request
+key.oxygen.reject=Reject Request
+key.oxygen.interact=Interact
+
+oxygen.request.accept=Accept
+oxygen.request.reject=Reject
+
+oxygen.currency.coins=Coins
+
+oxygen.gui.username=Username
+oxygen.gui.name=Name
+oxygen.gui.dimension=Dimension
+oxygen.gui.status=Status
+oxygen.gui.description=Description
+oxygen.gui.note=Note
+oxygen.gui.confirmButton=Confirm
+oxygen.gui.cancelButton=Cancel
+oxygen.gui.closeButton=Close
+oxygen.gui.addButton=Add
+oxygen.gui.playerFound=Player found
+oxygen.gui.playerNotFound=Player not found
+
+oxygen.gui.callback.settings=Settings
+
+oxygen.gui.notifications.title=Notifications
+oxygen.gui.notifications.setting.hideOverlay=Hide Requests Overlay
+oxygen.gui.notifications.empty=You have no active notifications.
+
+oxygen.gui.players=Players 
+
+oxygen.gui.action.remove=Remove
+oxygen.gui.action.ignore=Ignore
+oxygen.gui.action.editNote=Edit Note
+oxygen.gui.action.addToFriends=Add to Friends
+
+oxygen.request.friendRequest=%s sent you friend request.
+
+oxygen.status.online=Online
+oxygen.status.away=Away
+oxygen.status.not_disturb=Not Disturb
+oxygen.status.offline=Offline
+
+oxygen.gui.minute=%s minute
+oxygen.gui.minutes=%s minutes
+oxygen.gui.hour=%s hour
+oxygen.gui.hours=%s hours
+oxygen.gui.day=%s day
+oxygen.gui.days=%s days
+oxygen.gui.undef=undefined
+oxygen.gui.expired=expired
+
+oxygen.gui.lastActivityTime=activity %s ago
+
+oxygen.tooltip.online=Online
+oxygen.tooltip.download=Download
+oxygen.tooltip.settings=Settings
+oxygen.tooltip.search=Search
+oxygen.tooltip.refresh=Refresh
+oxygen.tooltip.sort=Sort
+
+oxygen.sorting.name=Name
+oxygen.sorting.username=Username
+oxygen.sorting.time=Time
+oxygen.sorting.status=Status
+oxygen.sorting.dimension=Dimension
+
+oxygen_core.gui.inventoryLoad=Items:
+
+oxygen.message.command.privilege.info.groupInfo=Group: %s - prefix: %s, suffix: %s, username color: %s, prefix color: %s, suffix color: %s, chat color: %s.
+oxygen.message.command.privilege.info.groupPrivileges=Group <%s> privileges:
+oxygen.message.command.privilege.info.groupsList=Groups:
+oxygen.message.command.privilege.info.playerGroup=Player %s group: %s.
+oxygen.message.command.privilege.group.create=Created group <%s>.
+oxygen.message.command.privilege.group.edit=Edited group <%s>.
+oxygen.message.command.privilege.group.remove=Removed group <%s>.
+oxygen.message.command.privilege.privilege.add=Added privilege <%s> with value <%s> to group <%s>.
+oxygen.message.command.privilege.privilege.remove=Removed privilege <%s> from group <%s>.
+oxygen.message.command.privilege.promote=Player <%s> promoted to group <%s>.
+
+oxygen.message.command.oxygens.currency.info=Player <%s> currency with index <%s> amount is <%s>.
+oxygen.message.command.oxygens.currency.add=Player <%s> recieved <%s> currency units with index <%s>.
+oxygen.message.command.oxygens.currency.remove=Player <%s> lost <%s> currency units with index <%s>.
+
+oxygen.message.statusChanged=Status changed to %s.
+oxygen.message.requestSent=Request sent.
+oxygen.message.requestReset=Request reset.
+oxygen.message.targetOffline=Player offline.
+
+oxygen.command.exception.playerNotFound=Player %s not found.
+oxygen.command.exception.groupNotFound=Group %s not found.
+oxygen.command.exception.privilegeNotFound=Privilege %s not found.
+
+oxygen.command.exception.wrongArg=Wrong argument: %s.
+oxygen.command.exception.noParams=No parameters provided.
+oxygen.command.exception.unnecessaryParams=Defined unnecessary parameters: %s , ...
+oxygen.command.exception.wrongParamValue=Wrong parameter <%s> value: %s.
+oxygen.command.exception.unnecessaryParamValue=Defined unnecessary parameter <%s> value: %s.
+
+oxygen.command.oxygenc.reloadGui=GUI settings reloaded.
+oxygen.command.oxygenc.currency.balance=Client oxygen coins balance is: %s
+
+oxygen.status.requestSent=Request sent
+oxygen.status.requestReset=Request reset
+
+oxygen.dim.unknown=Unknown
+oxygen.dim.overworld=Overworld
+oxygen.dim.nether=Nether
+oxygen.dim.end=The End
+
+oxygen.dim.twilightForest=Twilight Forest
+oxygen.dim.beneath=The Beneath
+oxygen.dim.huntingDimension=Hunting Dimension
+oxygen.dim.betweenlands=Betweenlands
+oxygen.dim.storageCell=Storage Cell
+oxygen.dim.pocketDimension=Pocket Dimension
+
+oxygen.dim.abyssalWasteland=The Abyssal Wasteland
+oxygen.dim.dreadlands=The Dreadlands
+oxygen.dim.omothol=Omothol
+oxygen.dim.darkRealm=The Dark Realm
+
+oxygen.dim.overworldSpaceStation=Overworld Space Station
+oxygen.dim.static=Static
+oxygen.dim.moon=Moon
+oxygen.dim.mars=Mars
+oxygen.dim.asteroids=Asteroids
+oxygen.dim.venus=Venus

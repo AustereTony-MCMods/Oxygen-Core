@@ -20,7 +20,9 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
 
     protected boolean resetTypedText, hasCustomCursor, numberFieldMode;
 
-    protected int lineOffset, lineScrollOffset, cursorCounter, cursorPosition, selectionEnd, maxNumber = - 1;
+    protected int lineOffset, lineScrollOffset, cursorCounter, cursorPosition, selectionEnd;
+
+    protected long maxNumber = - 1L;
 
     /**
      * Текстовое поле.
@@ -44,16 +46,16 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
         return this;
     }
 
-    public GUITextField enableNumberFieldMode(int maxNumber) {
+    public GUITextField enableNumberFieldMode(long maxNumber) {
         this.numberFieldMode = true;
         this.maxNumber = maxNumber;
         return this;
     }
 
-    public int getTypedNumber() {
+    public long getTypedNumber() {
         if (!this.numberFieldMode || this.typedText.isEmpty())
             return 0;
-        return Integer.parseInt(this.typedText);
+        return Long.parseLong(this.typedText);
     }
 
     @Override
@@ -126,13 +128,13 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             if (this.isAllowedCharacter(c) && !this.typedText.startsWith("0"))
                 stringBuilder.append(c);
         String typed = this.typedText + stringBuilder.toString();
-        int value = 0;
+        long value = 0;
         try {
-            value = Integer.parseInt(typed);
+            value = Long.parseLong(typed);
         } catch (NumberFormatException exception) {
             exception.printStackTrace();
         }
-        return (this.maxNumber == - 1 || value <= this.maxNumber) ? stringBuilder.toString() : "";
+        return (this.maxNumber == - 1L || value <= this.maxNumber) ? stringBuilder.toString() : "";
     }
 
     private void deleteWords(int index) {       
@@ -360,7 +362,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             GlStateManager.translate(0.0F, 0.0F, 0.0F);            
             GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            
+
             int o = (int) ((float) this.getWidth() * (1.0F + this.getTextScale()));//TODO
 
             String s = this.mc.fontRenderer.trimStringToWidth(this.typedText.substring(this.lineScrollOffset), o); 
@@ -421,7 +423,7 @@ public class GUITextField extends GUISimpleElement<GUITextField> {
             yEnd = i1;
         }
         int j = (int) ((float) this.getWidth() * (1.0F + this.getTextScale()));//TODO
-        
+
         if (xEnd > this.getX() + j)
             xEnd = this.getX() + j;
         if (xStart > this.getX() + j)

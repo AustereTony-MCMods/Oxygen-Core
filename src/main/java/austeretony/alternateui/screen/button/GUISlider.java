@@ -36,7 +36,7 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
         this.setEnabled(true);
         this.setVisible(true);
         this.enableSlidebarBackground();
-        this.cancelDraggedElementLogic();
+        this.cancelDraggedElementLogic(true);
     }
 
     public void setScroller(GUIScroller scroller) {
