@@ -1,3 +1,9 @@
+0.9.0b [2019-09-20]
++Major API improvements.
++Interface redesign.
++Fixed rare crash caused by requests overlay rendering.
+Delete old "oxygen" folder from game root directory and from config directory before game start.
+
 0.8.2b [2019-08-11]
 +Fixed rare issues with world identifier initialization.
 +Added updates adapter service for patching incompatible data.
@@ -10,7 +16,7 @@
 
 0.8.0b
 +Major API improvements for performance, synchronization, GUI and I/O operations.
-Вata of previous versions are incompatible with the new version, delete oxygen folder 
+Data of previous versions are incompatible with the new version, delete oxygen folder 
 from game directory (also recommended to delete config files).
 +Added currency providers system: oxygen coins can be replaced with currency from 
 other modifications. Test provider for Grand Economy currency available now.
