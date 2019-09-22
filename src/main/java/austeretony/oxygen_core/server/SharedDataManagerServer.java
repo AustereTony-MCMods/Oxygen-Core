@@ -32,8 +32,6 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     private final Map<Integer, UUID> access = new ConcurrentHashMap<>();
 
-    private volatile int index;
-
     private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<>(5);
 
     private final ByteBuf compressed = Unpooled.buffer();
@@ -108,7 +106,7 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         PlayerSharedData sharedData = new PlayerSharedData();
         sharedData.setPlayerUUID(playerUUID);
         sharedData.setUsername(CommonReference.getName(playerMP));
-        sharedData.setIndex(this.index++);
+        sharedData.setIndex(CommonReference.getEntityId(playerMP));
 
         for (SharedDataRegistryEntry entry : this.sharedDataRegistry)
             sharedData.createDataBuffer(entry.id, entry.size);
@@ -151,11 +149,19 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
         if (this.haveObservedPlayers(playerUUID)) {
             ObservedPlayersContainer container = this.getObservedPlayersContainer(playerUUID);
-            ByteBuf buffer = Unpooled.buffer();
-            buffer.writeShort(container.getObservedPlayersAmount());
-            for (UUID uuid : container.getObservedPlayers())
-                this.sharedData.get(uuid).write(buffer);
-            OxygenMain.network().sendTo(new CPSyncObservedPlayersData(buffer), playerMP);
+            ByteBuf buffer = null;
+            try {
+                buffer = Unpooled.buffer();
+                buffer.writeShort(container.getObservedPlayersAmount());
+                for (UUID uuid : container.getObservedPlayers())
+                    this.sharedData.get(uuid).write(buffer);
+                byte[] compressed = new byte[buffer.writerIndex()];
+                buffer.readBytes(compressed);
+                OxygenMain.network().sendTo(new CPSyncObservedPlayersData(compressed), playerMP);
+            } finally {
+                if (buffer != null)
+                    buffer.release();
+            }
         }
     }
 

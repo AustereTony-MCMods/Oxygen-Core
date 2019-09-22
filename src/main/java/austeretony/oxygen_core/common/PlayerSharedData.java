@@ -19,9 +19,17 @@ public class PlayerSharedData {
 
     private long lastActivityTime;
 
+    private final Map<Integer, byte[]> data = new ConcurrentHashMap<>(5);
+
     private int index;
 
-    private final Map<Integer, byte[]> data = new ConcurrentHashMap<>(5);
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int value) {
+        this.index = value;
+    }
 
     public UUID getPlayerUUID() {
         return this.playerUUID;
@@ -49,14 +57,6 @@ public class PlayerSharedData {
 
     public void updateLastActivityTime() {
         this.lastActivityTime = System.currentTimeMillis();
-    }
-
-    public int getIndex() {
-        return this.index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public void createDataBuffer(int id, int size) {

@@ -60,7 +60,7 @@ public final class OxygenManagerClient {
         this.executionManager = new OxygenExecutionManager(
                 EnumSide.CLIENT, 
                 OxygenConfigClient.IO_THREADS_AMOUNT.getIntValue(), 
-                OxygenConfigClient.NETWORK_THREADS_AMOUNT.getIntValue(), 
+                /*OxygenConfigClient.NETWORK_THREADS_AMOUNT.getIntValue()*/1,
                 OxygenConfigClient.ROUTINE_THREADS_AMOUNT.getIntValue(), 
                 OxygenConfigClient.SCHEDULER_THREADS_AMOUNT.getIntValue());
         this.ioManager = new OxygenIOManager(this.executionManager);

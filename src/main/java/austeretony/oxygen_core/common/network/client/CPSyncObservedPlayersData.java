@@ -8,22 +8,17 @@ import net.minecraft.network.INetHandler;
 
 public class CPSyncObservedPlayersData extends Packet {
 
-    private ByteBuf compressed;
+    private byte[] compressed;
 
     public CPSyncObservedPlayersData() {}
 
-    public CPSyncObservedPlayersData(ByteBuf compressed) {
+    public CPSyncObservedPlayersData(byte[] compressed) {
         this.compressed = compressed;
     }
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        try {
-            buffer.writeBytes(this.compressed, 0, this.compressed.writerIndex());
-        } finally {
-            if (this.compressed != null)
-                this.compressed.release();
-        }
+        buffer.writeBytes(this.compressed);
     }
 
     @Override

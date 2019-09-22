@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 
 public class PresetsManagerClient {
 
-    private final List<PresetClient> presets = new ArrayList<>(3);
+    private final List<PresetClient> presets = new ArrayList<>(5);
 
     public void registerPreset(PresetClient preset) {
         this.presets.add(preset);
@@ -20,7 +20,7 @@ public class PresetsManagerClient {
     public void presetsVersionsReceived(long[] data) {
         OxygenHelperClient.addIOTask(()->{
             OxygenMain.LOGGER.info("Presets loading started...");
-            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/" + data[0] + "/";
+            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + data[0] + "/";
             for (PresetClient preset : this.presets) {
                 if (preset.loadVersionId(folder + preset.getDomain() + "/presets/"))
                     OxygenMain.LOGGER.info("Preset <{}> version id loaded successfully.", preset.getDisplayName());
@@ -47,7 +47,7 @@ public class PresetsManagerClient {
         try {
             long worldId = buffer.readLong();
             int presetId = buffer.readByte();
-            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/" + worldId + "/";
+            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + worldId + "/";
             for (PresetClient preset : this.presets)
                 if (preset.getId() == presetId) {
                     OxygenMain.LOGGER.info("Received raw preset <{}> data, processing...", preset.getDisplayName());

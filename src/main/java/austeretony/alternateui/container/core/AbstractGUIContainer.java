@@ -79,7 +79,7 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
 
         RenderHelper.enableGUIStandardItemLighting();            
         GlStateManager.enableDepth();
-        
+
         if (!itemstack.isEmpty()) {
             int j2 = 8;
             int k2 = this.draggedStack.isEmpty() ? 8 : 16;
@@ -111,7 +111,7 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
             i2 = this.touchUpY + (int) ((float) i3 * f);
             this.drawItemStack(this.returningStack, l1, i2, (String) null);
         }
-        
+
         GlStateManager.disableDepth();
         RenderHelper.disableStandardItemLighting();
 
@@ -344,69 +344,71 @@ public abstract class AbstractGUIContainer extends AbstractGUIScreen {
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        boolean flag = this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100);
-        Slot slot = this.getSlotAtPosition(mouseX, mouseY);
-        long i = Minecraft.getSystemTime();
-        this.doubleClick = this.lastClickSlot == slot && i - this.lastClickTime < 250L && this.lastClickButton == mouseButton;
-        this.ignoreMouseUp = false;
-        if (mouseButton == 0 || mouseButton == 1 || flag) {
-            int j = this.guiLeft;
-            int k = this.guiTop;
-            boolean flag1 = this.hasClickedOutside(mouseX, mouseY, j, k);
-            if (slot != null) flag1 = false; // Forge, prevent dropping of items through slots outside of GUI boundaries
-            int l = -1;
-            if (slot != null)
-                l = slot.slotNumber;
-            if (flag1)
-                l = -999;
-            if (this.mc.gameSettings.touchscreen && flag1 && this.mc.player.inventory.getItemStack().isEmpty()) {
-                this.mc.displayGuiScreen((GuiScreen)null);
-                return;
-            }
-            if (l != -1) {
-                if (this.mc.gameSettings.touchscreen) {
-                    if (slot != null && slot.getHasStack()) {
-                        this.clickedSlot = slot;
-                        this.draggedStack = ItemStack.EMPTY;
-                        this.isRightMouseClick = mouseButton == 1;
-                    } else
-                        this.clickedSlot = null;
-                } else if (!this.dragSplitting) {
-                    if (this.mc.player.inventory.getItemStack().isEmpty()) {
-                        if (this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100))
-                            this.handleMouseClick(slot, l, mouseButton, ClickType.CLONE);
-                        else {
-                            boolean flag2 = l != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
-                            ClickType clicktype = ClickType.PICKUP;
+        if (!this.getWorkspace().getCurrentSection().hasCurrentCallback()) {
+            boolean flag = this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100);
+            Slot slot = this.getSlotAtPosition(mouseX, mouseY);
+            long i = Minecraft.getSystemTime();
+            this.doubleClick = this.lastClickSlot == slot && i - this.lastClickTime < 250L && this.lastClickButton == mouseButton;
+            this.ignoreMouseUp = false;
+            if (mouseButton == 0 || mouseButton == 1 || flag) {
+                int j = this.guiLeft;
+                int k = this.guiTop;
+                boolean flag1 = this.hasClickedOutside(mouseX, mouseY, j, k);
+                if (slot != null) flag1 = false; // Forge, prevent dropping of items through slots outside of GUI boundaries
+                int l = -1;
+                if (slot != null)
+                    l = slot.slotNumber;
+                if (flag1)
+                    l = -999;
+                if (this.mc.gameSettings.touchscreen && flag1 && this.mc.player.inventory.getItemStack().isEmpty()) {
+                    this.mc.displayGuiScreen((GuiScreen)null);
+                    return;
+                }
+                if (l != -1) {
+                    if (this.mc.gameSettings.touchscreen) {
+                        if (slot != null && slot.getHasStack()) {
+                            this.clickedSlot = slot;
+                            this.draggedStack = ItemStack.EMPTY;
+                            this.isRightMouseClick = mouseButton == 1;
+                        } else
+                            this.clickedSlot = null;
+                    } else if (!this.dragSplitting) {
+                        if (this.mc.player.inventory.getItemStack().isEmpty()) {
+                            if (this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100))
+                                this.handleMouseClick(slot, l, mouseButton, ClickType.CLONE);
+                            else {
+                                boolean flag2 = l != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
+                                ClickType clicktype = ClickType.PICKUP;
 
-                            if (flag2) {
-                                this.shiftClickedSlot = slot != null && slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
-                                clicktype = ClickType.QUICK_MOVE;
-                            } else if (l == -999)
-                                clicktype = ClickType.THROW;
-                            this.handleMouseClick(slot, l, mouseButton, clicktype);
+                                if (flag2) {
+                                    this.shiftClickedSlot = slot != null && slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
+                                    clicktype = ClickType.QUICK_MOVE;
+                                } else if (l == -999)
+                                    clicktype = ClickType.THROW;
+                                this.handleMouseClick(slot, l, mouseButton, clicktype);
+                            }
+                            this.ignoreMouseUp = true;
+                        } else {
+                            this.dragSplitting = true;
+                            this.dragSplittingButton = mouseButton;
+                            this.dragSplittingSlots.clear();
+                            if (mouseButton == 0)
+                                this.dragSplittingLimit = 0;
+                            else if (mouseButton == 1)
+                                this.dragSplittingLimit = 1;
+                            else if (this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100))
+                                this.dragSplittingLimit = 2;
                         }
-                        this.ignoreMouseUp = true;
-                    } else {
-                        this.dragSplitting = true;
-                        this.dragSplittingButton = mouseButton;
-                        this.dragSplittingSlots.clear();
-                        if (mouseButton == 0)
-                            this.dragSplittingLimit = 0;
-                        else if (mouseButton == 1)
-                            this.dragSplittingLimit = 1;
-                        else if (this.mc.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseButton - 100))
-                            this.dragSplittingLimit = 2;
                     }
                 }
             }
+            this.lastClickSlot = slot;
+            this.lastClickTime = i;
+            this.lastClickButton = mouseButton;
         }
-        this.lastClickSlot = slot;
-        this.lastClickTime = i;
-        this.lastClickButton = mouseButton;
         for (GUISlotsFramework framework : this.getWorkspace().getCurrentSection().getSlotsFrameworks())
             framework.mouseClicked(mouseX, mouseY, mouseButton);
+        this.getWorkspace().getCurrentSection().mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     protected boolean hasClickedOutside(int p_193983_1_, int p_193983_2_, int p_193983_3_, int p_193983_4_) {

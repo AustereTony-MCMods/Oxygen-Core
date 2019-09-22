@@ -60,7 +60,7 @@ public final class OxygenManagerServer {
         this.executionManager = new OxygenExecutionManager(
                 EnumSide.SERVER, 
                 OxygenConfigServer.IO_THREADS_AMOUNT.getIntValue(), 
-                OxygenConfigServer.NETWORK_THREADS_AMOUNT.getIntValue(), 
+                /*OxygenConfigServer.NETWORK_THREADS_AMOUNT.getIntValue()*/1, //TODO Total mess up if more than one thread used
                 OxygenConfigServer.ROUTINE_THREADS_AMOUNT.getIntValue(), 
                 OxygenConfigServer.SCHEDULER_THREADS_AMOUNT.getIntValue());
         this.ioManager = new OxygenIOManager(this.executionManager);
