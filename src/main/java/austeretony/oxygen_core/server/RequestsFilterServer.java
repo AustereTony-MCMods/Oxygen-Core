@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen_core.server.api.OxygenHelperServer;
+
 public class RequestsFilterServer {
 
     private final Map<UUID, RequestsContainer> containers = new ConcurrentHashMap<>();
@@ -31,8 +33,10 @@ public class RequestsFilterServer {
     }
 
     protected void process() {
-        for (RequestsContainer container : this.containers.values())
-            container.process();
+        OxygenHelperServer.addRoutineTask(()->{
+            for (RequestsContainer container : this.containers.values())
+                container.process();
+        });
     }
 
     private static class RegistryData {

@@ -43,6 +43,10 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
         this.screen.getWorkspace().getCurrentSection().openCallback(this);
     }
 
+    public boolean isInitialized() {
+        return this.initiliazed;
+    }
+
     /**
      * Вызывается один раз при первом открытии всплывающего окна. Используется для добавления неизменяемых элементов.
      */

@@ -61,16 +61,18 @@ public class NotificationManagerClient {
     }
 
     public void processNotifications() {
-        Iterator<Notification> iterator = this.notifications.values().iterator();
-        Notification notification;
-        while (iterator.hasNext()) {
-            notification = iterator.next();
-            if (notification.isExpired()) {
-                if (notification.getId() == this.latestNotificationId)
-                    this.latestNotificationId = 0L;
-                iterator.remove();
+        OxygenHelperClient.addRoutineTask(()->{
+            Iterator<Notification> iterator = this.notifications.values().iterator();
+            Notification notification;
+            while (iterator.hasNext()) {
+                notification = iterator.next();
+                if (notification.isExpired()) {
+                    if (notification.getId() == this.latestNotificationId)
+                        this.latestNotificationId = 0L;
+                    iterator.remove();
+                }
             }
-        }
+        });
     }
 
     public void acceptKeyPressedSynced() {

@@ -63,6 +63,19 @@ public class SharedDataManagerClient {
         }
     }
 
+    public void addSharedData(PlayerSharedData sharedData) {
+        this.access.put(sharedData.getIndex(), sharedData.getPlayerUUID());
+        this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
+    }
+
+    public void removeSharedData(UUID playerUUID) {
+        this.removeSharedData(this.getSharedData(playerUUID).getIndex());
+    }
+
+    public void removeSharedData(int index) {
+        this.access.remove(index);
+    }
+
     public void sharedDataReceived(ByteBuf buffer) {
         try {
             Iterator<PlayerSharedData> iterator = this.sharedData.values().iterator();

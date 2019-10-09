@@ -82,7 +82,7 @@ public class PlayerDataManagerServer {
         if (status != playerData.getActivityStatus()) {
             playerData.setActivityStatus(status);
             playerData.setChanged(true);
-            this.manager.getSharedDataManager().updateActivityStatus(playerUUID, status);
+            this.manager.getSharedDataManager().updateActivityStatus(playerMP, status);
         }
     }
 

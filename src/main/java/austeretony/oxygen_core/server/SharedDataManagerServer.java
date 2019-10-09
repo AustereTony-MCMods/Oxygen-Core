@@ -19,10 +19,12 @@ import austeretony.oxygen_core.common.persistent.AbstractPersistentData;
 import austeretony.oxygen_core.common.util.StreamUtils;
 import austeretony.oxygen_core.server.OxygenPlayerData.EnumActivityStatus;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
+import austeretony.oxygen_core.server.api.event.OxygenActivityStatusChangedEvent;
 import austeretony.oxygen_core.server.config.OxygenConfigServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
 
 public class SharedDataManagerServer extends AbstractPersistentData {
 
@@ -129,13 +131,17 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         this.setChanged(true);
     }
 
-    public void updateActivityStatus(UUID playerUUID, EnumActivityStatus status) {
-        this.getSharedData(playerUUID).setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, status.ordinal());
+    public void updateActivityStatus(EntityPlayerMP playerMP, EnumActivityStatus status) {
+        UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
+        PlayerSharedData sharedData = this.getSharedData(playerUUID);
+        int prevStatus = sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID);
+        sharedData.setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, status.ordinal());
         if (status == EnumActivityStatus.OFFLINE) {
-            PlayerSharedData sharedData = this.getSharedData(playerUUID);
             sharedData.updateLastActivityTime();
-            this.sharedData.put(playerUUID, sharedData);
+            this.sharedData.put(playerUUID, sharedData);   
         }
+        CommonReference.delegateToServerThread(
+                ()->MinecraftForge.EVENT_BUS.post(new OxygenActivityStatusChangedEvent(playerMP, EnumActivityStatus.values()[prevStatus], status)));
         this.setChanged(true);
     }
 
@@ -166,18 +172,20 @@ public class SharedDataManagerServer extends AbstractPersistentData {
     }
 
     protected void compressSharedData() {
-        synchronized (this.compressed) {
-            if (System.currentTimeMillis() >= this.nextUpdateTime) {
-                this.nextUpdateTime = System.currentTimeMillis() + 1000L;
-                this.compressed.clear();
-                this.compressed.writeShort(this.access.size());
-                UUID playerUUID;
-                for (int index : this.access.keySet()) {
-                    playerUUID = this.access.get(index);
-                    this.sharedData.get(playerUUID).write(this.compressed);
+        OxygenHelperServer.addRoutineTask(()->{
+            synchronized (this.compressed) {
+                if (System.currentTimeMillis() >= this.nextUpdateTime) {
+                    this.nextUpdateTime = System.currentTimeMillis() + 1000L;
+                    this.compressed.clear();
+                    this.compressed.writeShort(this.access.size());
+                    UUID playerUUID;
+                    for (int index : this.access.keySet()) {
+                        playerUUID = this.access.get(index);
+                        this.sharedData.get(playerUUID).write(this.compressed);
+                    }
                 }
             }
-        }
+        });
     }
 
     public void syncSharedData(EntityPlayerMP playerMP, int id) {

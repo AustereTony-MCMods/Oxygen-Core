@@ -34,11 +34,13 @@ public class OxygenPlayerDataContainerServer {
     }
 
     public void saveData() {
-        for (OxygenPlayerData data : this.playersData.values()) {
-            if (data.isChanged()) {
-                data.setChanged(false);
-                OxygenHelperServer.savePersistentDataAsync(data);
-            }
-        }   
+        OxygenHelperServer.addRoutineTask(()->{
+            for (OxygenPlayerData data : this.playersData.values()) {
+                if (data.isChanged()) {
+                    data.setChanged(false);
+                    OxygenHelperServer.savePersistentDataAsync(data);
+                }
+            }   
+        });
     }
 }
