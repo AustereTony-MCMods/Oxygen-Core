@@ -5,7 +5,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import austeretony.oxygen_core.common.PlayerSharedData;
+import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.common.network.client.CPAddSharedData;
+import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
 import austeretony.oxygen_core.common.network.client.CPShowChatMessage;
 import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
 import austeretony.oxygen_core.common.notification.Notification;
@@ -126,6 +129,26 @@ public class OxygenHelperServer {
 
     public static PlayerSharedData getPlayerSharedData(String username) {
         return OxygenManagerServer.instance().getSharedDataManager().getSharedDataByUsername(username);
+    }
+
+    public static void sendPlayerSharedData(EntityPlayerMP playerMP, EntityPlayerMP target) {
+        sendPlayerSharedData(getPlayerSharedData(CommonReference.getPersistentUUID(playerMP)), target);
+    }
+
+    public static void sendPlayerSharedData(UUID playerUUID, EntityPlayerMP target) {
+        sendPlayerSharedData(getPlayerSharedData(playerUUID), target);
+    }
+
+    public static void sendPlayerSharedData(PlayerSharedData sharedData, EntityPlayerMP target) {
+        OxygenMain.network().sendTo(new CPAddSharedData(sharedData), target);
+    }
+
+    public static void removePlayerSharedData(EntityPlayerMP playerMP, EntityPlayerMP target) {
+        removePlayerSharedData(CommonReference.getPersistentUUID(playerMP), target);
+    }
+
+    public static void removePlayerSharedData(UUID playerUUID, EntityPlayerMP target) {
+        OxygenMain.network().sendTo(new CPRemoveSharedData(playerUUID), target);
     }
 
     public static boolean haveObservedPlayers(UUID observerUUID) {

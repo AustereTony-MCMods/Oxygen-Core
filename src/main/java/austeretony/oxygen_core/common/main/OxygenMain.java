@@ -25,7 +25,9 @@ import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.api.OxygenHelperCommon;
 import austeretony.oxygen_core.common.config.ConfigManager;
 import austeretony.oxygen_core.common.network.Network;
+import austeretony.oxygen_core.common.network.client.CPAddSharedData;
 import austeretony.oxygen_core.common.network.client.CPPlaySoundEvent;
+import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
 import austeretony.oxygen_core.common.network.client.CPRequestPresetSync;
 import austeretony.oxygen_core.common.network.client.CPShowChatMessage;
 import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
@@ -88,7 +90,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.9.2", 
+    VERSION = "0.9.3", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -235,6 +237,8 @@ public class OxygenMain {
         network.registerPacket(CPRequestPresetSync.class);
         network.registerPacket(CPSyncPreset.class);
         network.registerPacket(CPSyncWatchedValue.class);
+        network.registerPacket(CPAddSharedData.class);
+        network.registerPacket(CPRemoveSharedData.class);
 
         network.registerPacket(SPOxygenRequest.class);
         network.registerPacket(SPRequestReply.class);

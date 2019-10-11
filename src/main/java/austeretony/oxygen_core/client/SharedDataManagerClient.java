@@ -69,10 +69,14 @@ public class SharedDataManagerClient {
     }
 
     public void removeSharedData(UUID playerUUID) {
-        this.removeSharedData(this.getSharedData(playerUUID).getIndex());
+        PlayerSharedData sharedData = this.getSharedData(playerUUID);
+        if (sharedData != null) {
+            sharedData.updateLastActivityTime();
+            this.removeSharedDataAccessEntry(sharedData.getIndex());
+        }
     }
 
-    public void removeSharedData(int index) {
+    public void removeSharedDataAccessEntry(int index) {
         this.access.remove(index);
     }
 

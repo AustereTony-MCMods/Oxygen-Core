@@ -123,6 +123,8 @@ public class OxygenHelperClient {
     }
 
     public static EnumActivityStatus getPlayerActivityStatus(PlayerSharedData sharedData) {
+        if (!isPlayerOnline(sharedData.getPlayerUUID()))
+            return EnumActivityStatus.OFFLINE;
         return EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
     }
 
@@ -131,14 +133,20 @@ public class OxygenHelperClient {
     }
 
     public static EnumActivityStatus getPlayerActivityStatus(UUID playerUUID) {
+        if (!isPlayerOnline(playerUUID))
+            return EnumActivityStatus.OFFLINE;
         return EnumActivityStatus.values()[getPlayerSharedData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)];
     }
 
     public static boolean isOfflineStatus(UUID playerUUID) {
+        if (!isPlayerOnline(playerUUID))
+            return true;
         return EnumActivityStatus.values()[getPlayerSharedData(playerUUID).getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == EnumActivityStatus.OFFLINE;
     }
 
     public static boolean isOfflineStatus(PlayerSharedData sharedData) {
+        if (!isPlayerOnline(sharedData.getPlayerUUID()))
+            return true;
         return EnumActivityStatus.values()[sharedData.getByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID)] == EnumActivityStatus.OFFLINE;
     }
 
