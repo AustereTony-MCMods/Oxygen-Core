@@ -16,15 +16,15 @@ public class SectionsGUIDDList extends GUISimpleElement<SectionsGUIDDList> {
 
     public SectionsGUIDDList(int xPosition, int yPosition, AbstractGUISection... sections) {           
         this.setScale(GUISettings.get().getDropDownListScale());
-        this.setTextScale(GUISettings.get().getTitleScale() - 0.1F);
+        this.setTextScale(GUISettings.get().getTextScale());
         this.setDisplayText(sections[0].getDisplayText());
 
         int 
         textWidth, 
         width = 0,
-        height = this.textHeight(GUISettings.get().getTitleScale());
+        height = this.textHeight(this.getTextScale());
         for (AbstractGUISection section : sections) {
-            textWidth = this.textWidth(section.getDisplayText(), GUISettings.get().getTitleScale());
+            textWidth = this.textWidth(section.getDisplayText(), this.getTextScale());
             if (width == 0 || width < textWidth)
                 width = textWidth;
         }
@@ -69,9 +69,9 @@ public class SectionsGUIDDList extends GUISimpleElement<SectionsGUIDDList> {
 
                 //frame
                 int size = this.elements.length;
-                CustomRectUtils.drawRect(0.0D, this.getHeight() + 1.0D, 0.4D, (this.getHeight() + 1.0D) * (size + 1) - 0.5D, this.getDisabledBackgroundColor());
-                CustomRectUtils.drawRect(this.getWidth() - 0.4D, this.getHeight() + 1.0D, this.getWidth(), (this.getHeight() + 1.0D) * (size + 1) - 0.4D, this.getDisabledBackgroundColor());
-                CustomRectUtils.drawRect(0.0D, this.getHeight() + 1.0D, this.getWidth(), this.getHeight() + 1.4D, this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(0.0D, this.getHeight(), 0.4D, (this.getHeight() + 1.0D) * (size + 1) - 0.5D, this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(this.getWidth() - 0.4D, this.getHeight(), this.getWidth(), (this.getHeight() + 1.0D) * (size + 1) - 0.4D, this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(0.0D, this.getHeight(), this.getWidth(), this.getHeight() + 0.4D, this.getDisabledBackgroundColor());
                 CustomRectUtils.drawRect(0.0D, (this.getHeight() + 1.0D) * (size + 1) - 0.4D, this.getWidth(), (this.getHeight() + 1.0D) * (size + 1), this.getDisabledBackgroundColor());
             }
 

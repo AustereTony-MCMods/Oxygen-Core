@@ -24,7 +24,7 @@ public class Network {
 
     private final HashBiMap<Integer, Class<? extends Packet>> packets = HashBiMap.create();
 
-    private int id;
+    private int id = Byte.MIN_VALUE;
 
     private Network(String channelName) {
         this.channelName = channelName;

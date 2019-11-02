@@ -90,7 +90,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.9.3", 
+    VERSION = "0.9.4", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
