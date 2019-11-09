@@ -1,5 +1,9 @@
+0.9.5b [2019-11-09]
++Improvements for GUI sections switcher.
++Improvements for GUI context menu.
+
 0.9.4b [2019-11-02]
-+Minor improvements to GUI sections switcher.
++Minor improvements for GUI sections switcher.
 
 0.9.3b [2019-10-11]
 +Fixed sorting of players in lists. Offline player activity status is now correctly determined.
