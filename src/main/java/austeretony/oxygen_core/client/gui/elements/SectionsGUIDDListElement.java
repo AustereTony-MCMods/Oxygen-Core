@@ -10,11 +10,15 @@ public class SectionsGUIDDListElement extends GUISimpleElement<SectionsGUIDDList
 
     public final AbstractGUISection section;
 
-    public SectionsGUIDDListElement(AbstractGUISection section) {
+    public SectionsGUIDDListElement(int xPosition, int yPosition, int width, int height, AbstractGUISection section) {
         this.section = section;
+        this.setPosition(xPosition, yPosition);
+        this.setSize(width, height);
+        this.setScale(GUISettings.get().getDropDownListScale());
+        this.setTextScale(GUISettings.get().getTextScale());
         this.setStaticBackgroundColor(GUISettings.get().getHoveredElementColor());
         this.setTextDynamicColor(GUISettings.get().getEnabledTextColor(), GUISettings.get().getDisabledTextColor(), GUISettings.get().getHoveredTextColor());
-        this.enableFull();
+        this.setEnabled(section.isEnabled());
     }
 
     @Override

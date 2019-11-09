@@ -90,7 +90,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.9.4", 
+    VERSION = "0.9.5", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -112,6 +112,7 @@ public class OxygenMain {
      * Mail - 8
      * Chat - 9
      * Trade - 10
+     * Guilds - 11
      */
 
     public static final int 

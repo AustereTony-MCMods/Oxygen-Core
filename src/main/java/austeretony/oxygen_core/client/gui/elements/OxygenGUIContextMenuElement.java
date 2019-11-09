@@ -11,8 +11,8 @@ public class OxygenGUIContextMenuElement extends GUISimpleElement<OxygenGUIConte
     public final ContextMenuAction action;
 
     public OxygenGUIContextMenuElement(int width, int height, ContextMenuAction action) {
-        this.setSize(width, height);
         this.action = action;
+        this.setSize(width, height);
         this.setScale(GUISettings.get().getContextMenuScale());
         this.setTextScale(GUISettings.get().getSubTextScale());
         this.setStaticBackgroundColor(GUISettings.get().getHoveredElementColor());

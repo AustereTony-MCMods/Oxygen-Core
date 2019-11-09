@@ -1,8 +1,5 @@
 package austeretony.oxygen_core.client.gui.elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import austeretony.alternateui.screen.contextmenu.GUIContextMenu;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.util.GUISoundEffect;
@@ -27,14 +24,10 @@ public class OxygenGUIContextMenu extends GUIContextMenu {
         this.elements = new OxygenGUIContextMenuElement[actions.length];
 
         int index = 0;
-        OxygenGUIContextMenuElement element;
-        for (ContextMenuAction action : actions) {
-            this.elements[index++] = element = new OxygenGUIContextMenuElement(width, height, action);
-            this.bind(element);     
-        }
+        for (ContextMenuAction action : actions)
+            this.bind(this.elements[index++] = new OxygenGUIContextMenuElement(width, height, action));
 
         this.setSize(width, height * actions.length);
-        this.setScale(GUISettings.get().getContextMenuScale());
         this.setDynamicBackgroundColor(GUISettings.get().getBaseGUIBackgroundColor(), GUISettings.get().getAdditionalGUIBackgroundColor(), 0);
     }
 
@@ -43,7 +36,7 @@ public class OxygenGUIContextMenu extends GUIContextMenu {
         if (this.isEnabled()) {     
             for (OxygenGUIContextMenuElement element : this.elements)
                 element.mouseOver(mouseX, mouseY);
-            this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() * this.getScale() && mouseY < this.getY() + (this.getHeight() * this.elements.length) * this.getScale());   
+            this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() * this.getScale() && mouseY < this.getY() + this.getHeight());   
 
             GlStateManager.pushMatrix();           
             GlStateManager.translate(this.getX(), this.getY(), 0.0F);            
@@ -51,13 +44,13 @@ public class OxygenGUIContextMenu extends GUIContextMenu {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             //background
-            drawRect(0, - 2, this.getWidth(), this.getHeight() + 2, this.getEnabledBackgroundColor());
+            drawRect(0, 0, this.getWidth(), this.getHeight(), this.getEnabledBackgroundColor());
 
             //frame
-            CustomRectUtils.drawRect(0.0D, - 2.0D, 0.4D, this.getHeight() + 2.0D, this.getDisabledBackgroundColor());
-            CustomRectUtils.drawRect(this.getWidth() - 0.4D, - 2.0D, this.getWidth(), this.getHeight() + 2.0D, this.getDisabledBackgroundColor());
-            CustomRectUtils.drawRect(0.0D, - 1.6D, this.getWidth(), - 2.0D, this.getDisabledBackgroundColor());
-            CustomRectUtils.drawRect(0.0D, this.getHeight() + 1.6D, this.getWidth(), this.getHeight() + 2.0D, this.getDisabledBackgroundColor());
+            CustomRectUtils.drawRect(0.0D, 0.0D, 0.4D, this.getHeight(), this.getDisabledBackgroundColor());
+            CustomRectUtils.drawRect(this.getWidth() - 0.4D, 0.0D, this.getWidth(), this.getHeight(), this.getDisabledBackgroundColor());
+            CustomRectUtils.drawRect(0.0D, - 0.4D, this.getWidth(), 0.0D, this.getDisabledBackgroundColor());
+            CustomRectUtils.drawRect(0.0D, this.getHeight(), this.getWidth(), this.getHeight() - 0.4F, this.getDisabledBackgroundColor());
 
             GlStateManager.popMatrix();
 

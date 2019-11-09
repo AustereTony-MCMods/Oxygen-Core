@@ -4,7 +4,7 @@
     {
       "name": "default",
       "color": {
-        "base_background": "DC050505",
+        "base_background": "DC101010",
         "additional_background": "FF404040",
         "enabled_button": "FF404040",
         "disabled_button": "FF202020",

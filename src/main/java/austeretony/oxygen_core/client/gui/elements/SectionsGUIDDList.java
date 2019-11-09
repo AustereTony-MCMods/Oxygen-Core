@@ -15,36 +15,25 @@ public class SectionsGUIDDList extends GUISimpleElement<SectionsGUIDDList> {
     private SectionChangeListener sectionChangeListener;
 
     public SectionsGUIDDList(int xPosition, int yPosition, AbstractGUISection... sections) {           
-        this.setScale(GUISettings.get().getDropDownListScale());
         this.setTextScale(GUISettings.get().getTextScale());
         this.setDisplayText(sections[0].getDisplayText());
 
         int 
         textWidth, 
-        width = 0,
-        height = this.textHeight(this.getTextScale());
+        width = 0;
         for (AbstractGUISection section : sections) {
             textWidth = this.textWidth(section.getDisplayText(), this.getTextScale());
             if (width == 0 || width < textWidth)
                 width = textWidth;
         }
-        this.setSize(width + 8, height + 2);
-        this.setPosition(xPosition - this.getWidth(), yPosition);        
+        this.setSize(width + 8, 9);
+        this.setPosition(xPosition - this.getWidth() - 1, yPosition);        
 
         this.elements = new SectionsGUIDDListElement[sections.length];
 
         int index = 0;               
-        SectionsGUIDDListElement element;
-        for (AbstractGUISection section : sections) {
-            element = new SectionsGUIDDListElement(section);
-            element.initScreen(this.getScreen());
-            element.setPosition(this.getX(), this.getY() + this.getHeight() * (index + 1));                
-            element.setSize(this.getWidth(), this.getHeight());   
-            element.setScale(this.getScale());
-            element.setTextScale(this.getTextScale());
-            this.elements[index++] = element;
-            this.bind(element);
-        }
+        for (AbstractGUISection section : sections)
+            this.bind(this.elements[index++] = new SectionsGUIDDListElement(this.getX(), this.getY() + index * 9, this.getWidth(), 9, section));
 
         this.setDynamicBackgroundColor(GUISettings.get().getBaseGUIBackgroundColor(), GUISettings.get().getAdditionalGUIBackgroundColor(), 0);
         this.setTextDynamicColor(GUISettings.get().getEnabledTextColor(), GUISettings.get().getDisabledTextColor(), GUISettings.get().getHoveredTextColor());
@@ -64,15 +53,16 @@ public class SectionsGUIDDList extends GUISimpleElement<SectionsGUIDDList> {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             if (this.isDragged()) {
+                int size = this.elements.length + 1;
+
                 //background
-                drawRect(0, this.getHeight(), this.getWidth(), (this.getHeight() + 1) * (this.elements.length + 1), this.getEnabledBackgroundColor());
+                drawRect(0, this.getHeight(), this.getWidth(), this.getHeight() * size, this.getEnabledBackgroundColor());
 
                 //frame
-                int size = this.elements.length;
-                CustomRectUtils.drawRect(0.0D, this.getHeight(), 0.4D, (this.getHeight() + 1.0D) * (size + 1) - 0.5D, this.getDisabledBackgroundColor());
-                CustomRectUtils.drawRect(this.getWidth() - 0.4D, this.getHeight(), this.getWidth(), (this.getHeight() + 1.0D) * (size + 1) - 0.4D, this.getDisabledBackgroundColor());
-                CustomRectUtils.drawRect(0.0D, this.getHeight(), this.getWidth(), this.getHeight() + 0.4D, this.getDisabledBackgroundColor());
-                CustomRectUtils.drawRect(0.0D, (this.getHeight() + 1.0D) * (size + 1) - 0.4D, this.getWidth(), (this.getHeight() + 1.0D) * (size + 1), this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(0.0D, this.getHeight(), 0.4D, this.getHeight() * size - 0.4D, this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(this.getWidth() - 0.4D, this.getHeight(), this.getWidth(), this.getHeight() * size - 0.4D, this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(0.0D, this.getHeight() - 0.4D, this.getWidth(), this.getHeight(), this.getDisabledBackgroundColor());
+                CustomRectUtils.drawRect(0.0D, this.getHeight() * size - 0.4D, this.getWidth(), this.getHeight() * size, this.getDisabledBackgroundColor());
             }
 
             GlStateManager.pushMatrix();           
