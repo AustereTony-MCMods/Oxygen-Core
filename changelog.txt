@@ -1,99 +1,247 @@
+0.10.0b [2020-01-17]
++ The privilege system has been improved. The system of groups is replaced by roles, a player can have up to five roles. The role defines privileges (permissions) available to the player and chat formatting (if active) - prefix and colors. By default, players do not have roles, their permissions are determined by configuration. To view player roles and manage privileges (for operators) a special menu has been added. The menu can be invoked with the command / oxygenc core -privileges. You can also open it through general menu (Oxygen Menu).
++Privileges added:
+  - "core:exposeOfflinePlayers" [id - 10, type - BOOLEAN] - the ability to see players online with "offline" activity status and interact with them (in the menu).
+  
++ The virtual currency system has been improved, oxygen now supports several virtual currencies at a time. Main currency is oxygen coins [index 0], additional currencies can be used only in some modules (eg Merchants). Two new currencies have been added: shards [index 1] and vauchers [index 2]. It is possible to customize currency widgets (icons and names).
++ Changed the principle of currency providers. The provider can now be used to replace existing currencies or adding a new one (the currency depends on the particular mode for which the provider is used). Several providers can be used at a time. The provider currency index is configured through the provider config, by default, any provider replaces the main currency - oxygen
+coins [index 0]. For providers, the option of forced balance synchronization is available, which should be used if the mod adding currency acts as an API for other modifications (example: using the Grand Economy to interact with the Sponge economy).
++ Chat commands has been improved. Oxygen adds three commands for which other modules register their arguments: /oxygenc (available only to the client), /oxygens (available for any player, used for server operations), /oxygenop (available for operators (permission level 2) and console). Commands that take a player’s nickname as an argument support target selectors.
++ Updated configuration options:
+ Client [Core]
+ - "data_save_peroid_seconds" [int] - data save period in seconds
+ - "enable_notifications_key" [boolean] - enable the "open notification menu" key
+ - "enable_accept_key" [boolean] - enable the "accept request" key
+ - "enable_reject_key" [boolean] - enable the "reject request" key
+ - "enable_interaction_key" [boolean] - enable the "interaction" key
+ - "date_format_pattern" [string] - date display format pattern (for menus)
+ 
+ Server [Core]
+ - "io_threads_amount" [int] - the number of threads for processing I/O operations
+ - "routine_threads_amount" [int] - the number of threads for processing routine operations
+ - "scheduler_threads_amount" [int] - the number of threads for processing scheduled tasks
+ - "data_save_period_seconds" [int] - data save period in seconds
+ - "sync_configs" [boolean] - allow synchronization of marked config options with clients
+ - "enable_privileges" [boolean] (synchronized) - enable privilege system
+ - "sync_entities_health" [boolean] - enable synchronization of health of tracked entities
+ - "sync_entities_absorption_value" [boolean] - allow synchronization of the absorption value of tracked entities
+ - "sync_entities_armor_value" [boolean] - enable synchronization of armor of tracked entities
+ - "sync_entities_active_effects" [boolean] - allow synchronization of active effects of tracked entities
+ 
+ Server [Privileges]
+ - "enable_formatted_chat" [boolean] (synchronized) - enable chat formatting (by roles)
+ - "enable_chat_formatting_role_management" [boolean] (synchronized) - allow changing the active chat formatting mode for the player
+ - "enable_custom_formatted_chat" [boolean] - enable the use of a custom pattern to format chat
+ - "custom_formatted_chat_pattern" [string] - pattern for formatting the chat (if the player does not have a prefix)
+ - "custom_formatted_chat_prefix_pattern" [string] - pattern for formatting the chat (if the player has a prefix)
+ - "custom_formatted_default_chat_color" [int] - default chat color index (index of TextFormatting element)
+ - "show_prefix" [boolean] - show the prefix specified by the role
+ - "enable_nickname_color" [boolean] - use the nickname color specified by the role
+ - "enable_prefix_color" [boolean] - use the prefix color specified by the role
+ - "enable_chat_color" [boolean] - use the message color specified by the role
+ 
++ Added chat commands:
+ Server - Operators [/oxygenop]
+ - Adding a role to a player (privileges): /oxygenop core -privileges -add-role <target> <role id>
+ - Removing the player role (privileges): /oxygenop core -privileges -remove-role <target> <role id>
+
+ - Balance check (player): /oxygenop core -currency -balance <target> <currency index>
+ - Setting the balance: /oxygenop core -currency -set <target> <currency index> <value>
+ - Balance replenishment: /oxygenop core -currency -add <target> <currency index> <value>
+ - Balance reduction: /oxygenop core -currency -remove <target> <currency index> <value>
+
+ - Sending a notification (for the notification menu): /oxygenop core -notification <target> <message>
+ 
+ Customer [/oxygenc]
+ - Open the privileges menu: /oxygenc core -privileges
+ - Checking the value of privilege: /oxygenc core -privileges -get-value <privilege id>
+ 
+ - Balance check (player): /oxygenc core -currency -balance <currency index>
+ 
+ - Open the notification menu: /oxygenc core -notifictions
+ 
+ - Open the client settings menu: /oxygenc core -settings
+ - Reload the settings file: /oxygenc core -settings -reload-settings
+ - Reload 'properties' (system for customizing elements, such as virtual currency widgets): /oxygenc core -settings -reload-properties
+ 
+ - Accept the request: /oxygenc core -request -accept
+ - Reject the request: /oxygenc core -request -reject
+ 
++ Changed the configuration loading system. It is recommended that you delete the oxygen configuration folder completely before
+launching a new version.
++ Added the basis of the chat channel system. Currently used by the Groups module to add group chat.
++ Added entity parameters tracking system. Currently, the system monitors health, absorption, armor and active effects of nearby players, as well as tagged players. Used by the Groups module to display the data of group members in the overlay.
++ Added a filtering system for packets sent by players to the server. Used to limit the processing of packets sent too often (e.g. status change activity is possible no more than 1 time per second). Cooldown is set for all requests sent, for most operations it is 1 second.
++ Added timeout system. Timeouts are used to filter the operations of players who should not be executed without a specific condition (eg sending requests  for the purchase of goods from merchants (Merchants) will be possible only for a certain time after the authorized menu opening).
++ The item category preset (used in the trade menu (Trade)) has been transferred to Core. Categories based on tabs of creative inventory of the vanilla game and do not change dynamically. Categories can be customized.
++ Added client settings menu. You can open it with the command /oxygenc core -settings. It can also be opened through the general menu (Oxygen Menu). The settings menu contains two sections: general settings and interface settings. The oxygen modules will add their settings to this menu.
++ Added client settings:
+ Common [basic]
+ - use RMB interaction
+ - enable menu sound effects
+ - allow rendering of item names using quality (rarity) colors
+ - allow rendering of the status bar of items in the menus
+ 
+ Interface [basic]
+ - background fill color of the screen when the menu is open
+ - background fill color of the screen with an active dialog box in the menu
+ - base menu background color
+ - additional menu background color
+ - button color in active state
+ - button color in inactive state
+ - button color when hovering over
+ - element color in active state
+ - element color in inactive state
+ - element color when hovering over
+ - slider color in active state
+ - slider color in inactive state
+ - slider color when hovering over
+ - text color in active state
+ - text color in inactive state
+ - text color when hovering over
+ - additional text color in active state
+ - additional text color in inactive state
+ - additional text color when hovering over
+ - text input field color in active state
+ - text input field color in inactive state
+ - text input field color when hovering over
+ - base overlay text color
+ - additional overlay text color
+ - tooltip background color
+ - tooltip text color
+ - active text color
+ - active element color
+ - inactive text color
+ - inactive element color
+ - status text color
+ - status element color
+ - title text scale
+ - button text scale
+ - tooltip text scale
+ - text scale
+ - scale of additional text
+ - text scale of panel elements
+ - overlay scale
+ - use vertical gradient fill to the borders of the screen
+ 
+ General [Core]
+ - hide the overlay of the active request
+ - the ability to open the notification menu through the general menu (Oxygen Menu)
+ - the ability to open the settings menu through the general menu
+ - the ability to open the privilege menu through the general menu
+  
+ Interface [Core]
+ - alignment of the notification menu
+ - alignment of the settings menu
+ - alignment of privilege menu
+ - vertical offset of the active request overlay
+ 
++ Improved menu design.
++ Improved text input fields: added support for operations by pressing key combinations (Ctrl+A, Ctrl+X, etc.).
++ Fixed the position of the overlay of the active request, now it is always exactly in the middle of the screen. Request overlay renderer is optimized, now it will be initialized (updated) only once upon receipt of a new request.
++ Added duplication of buttons in the menu with keys.
++ Added date display pattern used in some menus. You can change it through the "oxygen.json" configuration file.
+The pattern uses the java SimpleDateFormat schema.
++ Added generation of userfriendly dimension names (based on DimensionType names) displayed in the menu. For the generated (displayed) value, you can add localization through lang files.
++ Added support for item names rendering using quality (rarity) colors.
++ Added support for item status bar rendering in the menus.
+
 0.9.5b [2019-11-09]
-+Improvements for GUI sections switcher.
-+Improvements for GUI context menu.
++ Improvements for GUI sections switcher.
++ Improvements for GUI context menu.
 
 0.9.4b [2019-11-02]
-+Minor improvements for GUI sections switcher.
++ Minor improvements for GUI sections switcher.
 
 0.9.3b [2019-10-11]
-+Fixed sorting of players in lists. Offline player activity status is now correctly determined.
-+Added helper methods for synchronizing shared player data.
++ Fixed sorting of players in lists. Offline player activity status is now correctly determined.
++ Added helper methods for synchronizing shared player data.
 
 0.9.2b [2019-10-09]
-+Minor improvements.
++ Minor improvements.
 
 0.9.1b [2019-09-22]
-+Improvements for interaction API.
++ Improvements for interaction API.
 
 0.9.0b [2019-09-20]
-+Major API improvements.
-+Interface redesign.
-+Fixed rare crash caused by requests overlay rendering.
++ Major API improvements.
++ Interface redesign.
++ Fixed rare crash caused by requests overlay rendering.
 Delete old "oxygen" folder from game root directory and from config directory before game start.
 
 0.8.2b [2019-08-11]
-+Fixed rare issues with world identifier initialization.
-+Added updates adapter service for patching incompatible data.
-+Code cleanup for 'shared data' service.
-+Added Oxygen Menu API. Oxygen Menu support for notifications menu.
++ Fixed rare issues with world identifier initialization.
++ Added updates adapter service for patching incompatible data.
++ Code cleanup for 'shared data' service.
++ Added Oxygen Menu API. Oxygen Menu support for notifications menu.
 
 0.8.1b [2019-08-08]
-+Fixed string encoding. Now any symbols properly encoded in UTF-8.
-+Fixed errors with chat commands "/oxygens currency --add" and "/oxygens currency --remove".
++ Fixed string encoding. Now any symbols properly encoded in UTF-8.
++ Fixed errors with chat commands "/oxygens currency --add" and "/oxygens currency --remove".
 
 0.8.0b
-+Major API improvements for performance, synchronization, GUI and I/O operations.
++ Major API improvements for performance, synchronization, GUI and I/O operations.
 Data of previous versions are incompatible with the new version, delete oxygen folder 
 from game directory (also recommended to delete config files).
-+Added currency providers system: oxygen coins can be replaced with currency from 
++ Added currency providers system: oxygen coins can be replaced with currency from 
 other modifications. Test provider for Grand Economy currency available now.
 
 0.7.1b
-+GUI fixes:
++ GUI fixes:
  - sliders now can be used for scrolling.
  - text fields correctly calculate cursor position on click.
-+Improved currency balance synchronization.
-+Slightly improved notifications menu.
++ Improved currency balance synchronization.
++ Slightly improved notifications menu.
 
 0.7.0a
-+API cleanup. Friends list/ignore list, players list and interaction menu now separated 
++ API cleanup. Friends list/ignore list, players list and interaction menu now separated 
 from core and available as independent modules.
 
 0.6.2a
-+Improved chat processing for privileged groups and ignored players.
-+Fixed tooltips for friendlist entries notes and last activity time notes.
++ Improved chat processing for privileged groups and ignored players.
++ Fixed tooltips for friendlist entries notes and last activity time notes.
 
 0.6.1a
-+Hotfix for crash caused by damaged config.
++ Hotfix for crash caused by damaged config.
 
 0.6.0a
-+Improvements to privileges system.
-+Support for containers.
++ Improvements to privileges system.
++ Support for containers.
 
 0.5.1a
-+Fixed crash on unmodified client connection attempt to server.
++ Fixed crash on unmodified client connection attempt to server.
 
 0.5.0a
-+Added sound effect on notification recieve.
-+Added option to hide requests overlay (checkbox button in notifications menu).
-+Added option to accept all incoming friend requests (checkbox button in friendlist menu).
++ Added sound effect on notification recieve.
++ Added option to hide requests overlay (checkbox button in notifications menu).
++ Added option to accept all incoming friend requests (checkbox button in friendlist menu).
 
 0.4.1a
-+Major API improvements.
-+Added option to disable Server Tab Overlay.
-+Added option to disable Oxygen player list (advanced version of server tab overlay). 
-+Player list remapped to "U" key.
-+Added sound effects for GUIs.
++ Major API improvements.
++ Added option to disable Server Tab Overlay.
++ Added option to disable Oxygen player list (advanced version of server tab overlay). 
++ Player list remapped to "U" key.
++ Added sound effects for GUIs.
 
 0.4.0a
-+Added privileges:
++ Added privileges:
  - 'oxygen:preventIgnore' - prevent 'ignore' option for players,
  - 'oxygen:exposePlayersOffline' - show players with 'offline' activity status in GUIs
-+Added tab overlay replacer - player list menu (enabled by default, can be disabled in config).
-+Added interaction menu for direct interaction with players.
-+Added last activity time display for friends offline.
-+Multiple optimizations and improvements.
-+GUI improvements.
++ Added tab overlay replacer - player list menu (enabled by default, can be disabled in config).
++ Added interaction menu for direct interaction with players.
++ Added last activity time display for friends offline.
++ Multiple optimizations and improvements.
++ GUI improvements.
 
 0.3.0a
-+Added player activity statuses: online, away, not disturb and offline.
-+Added friend list. 
-+Added ignored players list.
++ Added player activity statuses: online, away, not disturb and offline.
++ Added friend list. 
++ Added ignored players list.
 
 0.2.0a
-+Added notifications menu, "N" key by default. 
-+Added keybindings for fast request (notification) reply, "R" to accept and "X" to reject.
-+Added privileges management with chat commands.
++ Added notifications menu, "N" key by default. 
++ Added keybindings for fast request (notification) reply, "R" to accept and "X" to reject.
++ Added privileges management with chat commands.
 
 0.1.0a
-+Initial release.
++ Initial release.
