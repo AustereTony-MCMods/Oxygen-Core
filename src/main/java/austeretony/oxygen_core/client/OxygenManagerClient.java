@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -7,13 +9,18 @@ import java.util.concurrent.TimeUnit;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
 import austeretony.oxygen_core.client.api.event.OxygenClientInitEvent;
-import austeretony.oxygen_core.client.config.OxygenConfigClient;
+import austeretony.oxygen_core.client.chat.ChatMessagesManagerClient;
+import austeretony.oxygen_core.client.currency.CurrencyManagerClient;
+import austeretony.oxygen_core.client.input.OxygenKeyHandler;
+import austeretony.oxygen_core.client.instant.InstantDataManagerClient;
+import austeretony.oxygen_core.client.preset.ItemCategoriesPresetClient;
 import austeretony.oxygen_core.client.preset.PresetsManagerClient;
 import austeretony.oxygen_core.client.privilege.PrivilegesManagerClient;
-import austeretony.oxygen_core.client.status.ChatMessagesManagerClient;
+import austeretony.oxygen_core.client.shared.SharedDataSyncManagerClient;
 import austeretony.oxygen_core.client.sync.DataSyncManagerClient;
-import austeretony.oxygen_core.client.sync.shared.SharedDataSyncManagerClient;
+import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.concurrent.OxygenExecutionManager;
+import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.main.EnumSide;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.persistent.OxygenIOManager;
@@ -34,6 +41,8 @@ public final class OxygenManagerClient {
 
     private final PresetsManagerClient presetsManager = new PresetsManagerClient();
 
+    private final ItemCategoriesPresetClient itemCategoriesPreset = new ItemCategoriesPresetClient();
+
     private final ClientDataContainer clientData = new ClientDataContainer();
 
     private final ClientDataManager clientDataManager = new ClientDataManager();
@@ -48,32 +57,38 @@ public final class OxygenManagerClient {
 
     private final OxygenGUIManager guiManager = new OxygenGUIManager();
 
-    private final ClientSettingsManager clientSettings = new ClientSettingsManager();
-
     private final WatcherManagerClient watcherManager = new WatcherManagerClient();
+
+    private final InstantDataManagerClient instantDataManager = new InstantDataManagerClient();
 
     private final ChatMessagesManagerClient chatMessagesManager = new ChatMessagesManagerClient();
 
+    private final OxygenKeyHandler keyHandler = new OxygenKeyHandler();
+
+    private final OxygenClientSettingsManager clientSettingManager = new OxygenClientSettingsManager();
+
+    private final CurrencyManagerClient currencyManager = new CurrencyManagerClient();
+
     private final Random random = new Random();
 
+    private final DateFormat dateFormat;
+
     private OxygenManagerClient() {
-        this.executionManager = new OxygenExecutionManager(
-                EnumSide.CLIENT, 
-                OxygenConfigClient.IO_THREADS_AMOUNT.getIntValue(), 
-                /*OxygenConfigClient.NETWORK_THREADS_AMOUNT.getIntValue()*/1,
-                OxygenConfigClient.ROUTINE_THREADS_AMOUNT.getIntValue(), 
-                OxygenConfigClient.SCHEDULER_THREADS_AMOUNT.getIntValue());
+        this.executionManager = new OxygenExecutionManager(EnumSide.CLIENT, 1, 1, 1, 1);
         this.ioManager = new OxygenIOManager(this.executionManager);
-        this.persistentDataManager = new PersistentDataManager(this.executionManager, this.ioManager);
+        this.persistentDataManager = new PersistentDataManager(this.executionManager, this.ioManager, OxygenConfig.CLIENT_DATA_SAVE_PERIOD_SECONDS.asInt());
+        this.presetsManager.registerPreset(this.itemCategoriesPreset);
+        CommonReference.registerEvent(this.keyHandler);
+        this.dateFormat = new SimpleDateFormat(OxygenConfig.DATE_FORMAT_PATTERN.asString());
     }
 
     private void registerPersistentData() {
-        OxygenHelperClient.registerPersistentData(this.clientSettings);
+        OxygenHelperClient.registerPersistentData(()->this.clientSettingManager.save());
     }
 
     private void scheduleRepeatableProcesses() {
         this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(
-                ()->this.notificationsManager.processNotifications(), 1L, 1L, TimeUnit.SECONDS);
+                ()->this.notificationsManager.process(), 1L, 1L, TimeUnit.SECONDS);
     }
 
     public static void create() {
@@ -108,6 +123,10 @@ public final class OxygenManagerClient {
         return this.presetsManager;
     } 
 
+    public ItemCategoriesPresetClient getItemCategoriesPreset() {
+        return this.itemCategoriesPreset;
+    } 
+
     public ClientDataContainer getClientDataContainer() {
         return this.clientData;
     } 
@@ -136,27 +155,46 @@ public final class OxygenManagerClient {
         return this.guiManager;
     }
 
-    public ClientSettingsManager getSettingsManager() {
-        return this.clientSettings;
-    }
-
     public WatcherManagerClient getWatcherManager() {
         return this.watcherManager;
+    }
+
+    public InstantDataManagerClient getInstantDataManager() {
+        return this.instantDataManager;
     }
 
     public ChatMessagesManagerClient getChatMessagesManager() {
         return this.chatMessagesManager;
     }
 
+    public OxygenKeyHandler getKeyHandler() {
+        return this.keyHandler;
+    }
+
+    public OxygenClientSettingsManager getClientSettingManager() {
+        return this.clientSettingManager;
+    }
+
+    public CurrencyManagerClient getCurrencyManager() {
+        return this.currencyManager;
+    }
+
     public Random getRandom() {
         return this.random;
     }
 
-    public void init(long worldId, int maxPlayers, UUID playerUUID, long groupId) {
+    public DateFormat getDateFormat() {
+        return this.dateFormat;
+    }
+
+    public void init() {
+        this.currencyManager.loadProperties();
+    }
+
+    public void initWorld(long worldId, int maxPlayers, UUID playerUUID) {
         this.reset();
+        this.clientSettingManager.loadSettings();
         this.clientData.init(worldId, maxPlayers, playerUUID);
-        this.privilegesManager.init(groupId);
-        OxygenHelperClient.loadPersistentDataAsync(this.clientSettings);
         ClientReference.delegateToClientThread(()->MinecraftForge.EVENT_BUS.post(new OxygenClientInitEvent()));
         OxygenMain.LOGGER.info("Client initialized.");
     }

@@ -3,9 +3,9 @@ package austeretony.oxygen_core.server.sync;
 import java.util.Set;
 import java.util.UUID;
 
-import austeretony.oxygen_core.common.sync.SynchronizedData;
+import austeretony.oxygen_core.common.sync.SynchronousEntry;
 
-public interface DataSyncHandlerServer<T extends SynchronizedData> {
+public interface DataSyncHandlerServer<T extends SynchronousEntry> {
 
     int getDataId();
 

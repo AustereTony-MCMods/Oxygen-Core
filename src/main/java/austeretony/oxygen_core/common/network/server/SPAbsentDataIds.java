@@ -4,7 +4,6 @@ import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.network.Packet;
 import austeretony.oxygen_core.server.OxygenManagerServer;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
-import austeretony.oxygen_core.server.api.RequestsFilterHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
@@ -37,9 +36,9 @@ public class SPAbsentDataIds extends Packet {
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
         final int dataId = buffer.readByte();
-        if (RequestsFilterHelper.getLock(CommonReference.getPersistentUUID(playerMP), dataId + 200)) {
+        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), dataId + 2000)) {
             final long[] ids = new long[buffer.readShort()];
-            if (ids.length > 0) {
+            if (ids.length > 0 && buffer.readableBytes() > 0) {
                 for (int i = 0; i < ids.length; i++)
                     ids[i] = buffer.readLong();
                 OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getDataSyncManager().syncAbsentData(playerMP, dataId, ids));

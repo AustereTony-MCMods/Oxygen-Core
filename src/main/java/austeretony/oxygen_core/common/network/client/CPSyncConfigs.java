@@ -18,7 +18,7 @@ public class CPSyncConfigs extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeBytes(this.compressed, 0, this.compressed.writerIndex());
+        this.compressed.getBytes(0, buffer);
     }
 
     @Override

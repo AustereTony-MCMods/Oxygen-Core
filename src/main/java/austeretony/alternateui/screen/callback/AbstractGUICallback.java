@@ -26,7 +26,6 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
     public AbstractGUICallback(AbstractGUIScreen screen, AbstractGUISection section, int width, int height) {				
         this.initScreen(screen);			
         this.setSize(width, height);	
-        //this.setPosition((screen.getWorkspace().getWidth() - width) / 2, (screen.getWorkspace().getHeight() - height) / 2);	
         this.setPosition((this.screen.width - this.getWidth()) / 2, (this.screen.height - this.getHeight()) / 2);           
         this.enableFull();		
     }
@@ -43,10 +42,6 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
         this.screen.getWorkspace().getCurrentSection().openCallback(this);
     }
 
-    public boolean isInitialized() {
-        return this.initiliazed;
-    }
-
     /**
      * Вызывается один раз при первом открытии всплывающего окна. Используется для добавления неизменяемых элементов.
      */
@@ -61,8 +56,9 @@ public abstract class AbstractGUICallback extends GUIAdvancedElement<AbstractGUI
     /**
      * Закрытие всплывающего окна.
      */
-    public void close() {		
-        this.lastHoveredElement.setHovered(false);				
+    public void close() {	
+        if (this.lastHoveredElement != null)
+            this.lastHoveredElement.setHovered(false);				
         this.onClose();		
         this.screen.getWorkspace().getCurrentSection().closeCallback();					
         this.clear();

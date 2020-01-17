@@ -1,8 +1,8 @@
 package austeretony.oxygen_core.client;
 
+import austeretony.oxygen_core.common.chat.ChatMessagesHandler;
 import austeretony.oxygen_core.common.main.EnumOxygenStatusMessage;
 import austeretony.oxygen_core.common.main.OxygenMain;
-import austeretony.oxygen_core.common.status.ChatMessagesHandler;
 
 public class OxygenStatusMessagesHandler implements ChatMessagesHandler {
 
@@ -13,6 +13,6 @@ public class OxygenStatusMessagesHandler implements ChatMessagesHandler {
 
     @Override
     public String getMessage(int messageIndex) {
-        return EnumOxygenStatusMessage.values()[messageIndex].localizedName();
+        return EnumOxygenStatusMessage.values()[messageIndex].localized();
     }
 }

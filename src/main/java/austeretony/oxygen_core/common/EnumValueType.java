@@ -3,8 +3,13 @@ package austeretony.oxygen_core.common;
 public enum EnumValueType {
 
     BOOLEAN,
+    BYTE,
+    SHORT,
     INT,
     LONG,
     FLOAT,
-    STRING
+    DOUBLE,
+    STRING,
+
+    HEX
 }

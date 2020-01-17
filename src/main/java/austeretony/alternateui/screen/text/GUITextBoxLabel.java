@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
 
-    private final List<String> lines = new ArrayList<String>(5);
+    private final List<String> lines = new ArrayList<>(5);
 
     protected int lineOffset;
 
@@ -38,7 +38,7 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
             GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            int index = 0;//fix for equal lines render issue (if List#indexOf() used)
+            int index = 0;
             for (String line : this.lines) {
                 this.mc.fontRenderer.drawString(line, 0.0F, (this.mc.fontRenderer.FONT_HEIGHT + this.lineOffset) * index, this.getEnabledTextColor(), this.isTextShadowEnabled());
                 index++;

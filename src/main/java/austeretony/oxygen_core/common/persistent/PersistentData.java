@@ -7,10 +7,8 @@ import java.io.IOException;
 public interface PersistentData {
 
     String getDisplayName();
-    
-    String getPath();
 
-    long getSaveDelayMinutes();
+    String getPath();
 
     boolean isChanged();
 
@@ -19,6 +17,6 @@ public interface PersistentData {
     void write(BufferedOutputStream bos) throws IOException;
 
     void read(BufferedInputStream bis) throws IOException;
-    
+
     void reset();
 }

@@ -1,19 +1,16 @@
 package austeretony.oxygen_core.server.sync;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.main.OxygenMain;
-import austeretony.oxygen_core.common.network.client.CPSyncDataFragment;
+import austeretony.oxygen_core.common.network.client.CPSyncAbsentData;
 import austeretony.oxygen_core.common.network.client.CPSyncValidDataIds;
-import austeretony.oxygen_core.common.sync.DataFragment;
-import austeretony.oxygen_core.common.sync.SynchronizedData;
-import austeretony.oxygen_core.server.api.RequestsFilterHelper;
+import austeretony.oxygen_core.common.sync.SynchronousEntry;
+import austeretony.oxygen_core.server.network.NetworkRequestsRegistryServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,14 +21,15 @@ public class DataSyncManagerServer {
 
     public void registerHandler(DataSyncHandlerServer handler) {
         this.handlers.put(handler.getDataId(), handler);
-        RequestsFilterHelper.registerNetworkRequest(handler.getDataId() + 100, 2);
-        RequestsFilterHelper.registerNetworkRequest(handler.getDataId() + 200, 2);
+
+        NetworkRequestsRegistryServer.registerRequest(handler.getDataId() + 1000, 2000);
+        NetworkRequestsRegistryServer.registerRequest(handler.getDataId() + 2000, 2000);
     }
 
     public void syncData(EntityPlayerMP playerMP, int dataId) {
-        if (this.handlers.containsKey(dataId)) {         
+        DataSyncHandlerServer<SynchronousEntry> handler = this.getHandler(dataId);
+        if (handler != null) {         
             UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-            DataSyncHandlerServer handler = this.getHandler(dataId);
             if (!handler.allowSync(playerUUID))
                 return;
             Set<Long> idsSet = handler.getIds(playerUUID);
@@ -48,50 +46,49 @@ public class DataSyncManagerServer {
     }
 
     public void syncAbsentData(EntityPlayerMP playerMP, int dataId, long[] ids) {
-        if (this.handlers.containsKey(dataId)) {
+        DataSyncHandlerServer<SynchronousEntry> handler = this.getHandler(dataId);
+        if (handler != null) {
             UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-            ByteBuf buffer = null;
-            try {
-                DataSyncHandlerServer handler = this.getHandler(dataId);
-                buffer = Unpooled.buffer(Short.MAX_VALUE / 2);
-                int 
-                maxPayload = Short.MAX_VALUE - (4 * Byte.SIZE + 2 * Short.SIZE),
-                entriesCount = 0,
-                prevWriterIndex = 0;
-                byte[] rawEntries;
-                List<DataFragment> fragments = new ArrayList<>(3);
+            if (!handler.allowSync(playerUUID))
+                return;
+            if (ids.length <= handler.getIds(playerUUID).size()) {
+                ByteBuf buffer = null;
+                try {
+                    buffer = Unpooled.buffer(Short.MAX_VALUE / 4);
 
-                SynchronizedData entry;
-                for (long id : ids) {
-                    entry = handler.getEntry(playerUUID, id);
-                    if (entry != null) {
-                        prevWriterIndex = buffer.writerIndex();
-                        entry.write(buffer);
-                        entriesCount++;
-                        if (buffer.writerIndex() > maxPayload) {//if buffer overloaded
-                            buffer.writerIndex(prevWriterIndex);
-                            rawEntries = new byte[prevWriterIndex];
-                            buffer.readBytes(rawEntries);
-                            fragments.add(new DataFragment(entriesCount - 1, rawEntries));
-                            buffer.clear();
-                            entriesCount = 0;
-
-                            prevWriterIndex = buffer.writerIndex();
+                    int entriesAmount = 0;
+                    SynchronousEntry entry;
+                    for (long id : ids) {
+                        entry = handler.getEntry(playerUUID, id);
+                        if (entry != null) {
                             entry.write(buffer);
-                            entriesCount++;
+                            entriesAmount++;
                         }
                     }
-                }
 
-                //if no overload
-                rawEntries = new byte[buffer.writerIndex()];
-                buffer.readBytes(rawEntries);
-                fragments.add(new DataFragment(entriesCount, rawEntries));
-                for (DataFragment fragment : fragments)
-                    OxygenMain.network().sendTo(new CPSyncDataFragment(dataId, fragments.size(), fragment.entriesAmount, fragment.rawData), playerMP);
-            } finally {
-                if (buffer != null)
-                    buffer.release();
+                    //Note 0.10: Removed data sync with fragmentation.
+                    //
+                    //diesieben07 from www.minecraftforge.net forum said server->client packet 
+                    //max payload is 200MB, so Oxygen will sync specified data with single packet.
+                    //
+                    //(I’m curious how it will handle synchronization of offers and sales history over the past 30 days with a new player.)                
+
+                    if (entriesAmount > 0) {
+                        if (buffer.writerIndex() > 209715200) {
+                            OxygenMain.LOGGER.error("Data {} synchronization buffer exceed maximum packet payload ({}/209715200) for player {}, it will not be synchronized!",
+                                    dataId,
+                                    buffer.writerIndex(),
+                                    CommonReference.getName(playerMP));
+                        } else {
+                            byte[] rawEntries = new byte[buffer.writerIndex()];
+                            buffer.readBytes(rawEntries);
+                            OxygenMain.network().sendTo(new CPSyncAbsentData(dataId, entriesAmount, rawEntries), playerMP);
+                        }
+                    }
+                } finally {
+                    if (buffer != null)
+                        buffer.release();
+                }
             }
         }
     }

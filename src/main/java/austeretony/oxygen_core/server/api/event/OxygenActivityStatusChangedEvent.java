@@ -1,6 +1,6 @@
 package austeretony.oxygen_core.server.api.event;
 
-import austeretony.oxygen_core.server.OxygenPlayerData.EnumActivityStatus;
+import austeretony.oxygen_core.common.EnumActivityStatus;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.Event;
 

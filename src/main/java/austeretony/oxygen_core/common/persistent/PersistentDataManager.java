@@ -13,33 +13,49 @@ public class PersistentDataManager {
 
     private final OxygenIOManager ioManager;
 
-    private final Set<PersistentData> globalData = new HashSet<PersistentData>();
+    private final int savePeriodSeconds;
 
-    public PersistentDataManager(OxygenExecutionManager executionManager, OxygenIOManager ioManager) {
+    private final Set<PersistentData> containers = new HashSet<>();
+
+    private final Set<Runnable> tasks = new HashSet<>();
+
+    public PersistentDataManager(OxygenExecutionManager executionManager, OxygenIOManager ioManager, int savePeriodSeconds) {
         this.executionManager = executionManager;
         this.ioManager = ioManager;
+        this.savePeriodSeconds = savePeriodSeconds;
+
+        Runnable task = ()->{
+            for (PersistentData container : this.containers) {
+                if (container.isChanged()) {
+                    container.setChanged(false);
+                    this.ioManager.savePersistentDataAsync(container);
+                }
+            }
+            for (Runnable r : this.tasks)
+                r.run();
+        };
+        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(task, this.savePeriodSeconds, this.savePeriodSeconds, TimeUnit.SECONDS);
     }
 
     public void registerPersistentData(PersistentData data) {
-        this.globalData.add(data);
-        Runnable task = ()->{
-            if (data.isChanged()) {
-                data.setChanged(false);
-                this.ioManager.savePersistentDataAsync(data);
-            }
-        };
-        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(task, data.getSaveDelayMinutes(), data.getSaveDelayMinutes(), TimeUnit.MINUTES);
-        OxygenMain.LOGGER.info("Registered <{}> persistent data. Scheduled save every <{}> minutes.", data.getDisplayName(), data.getSaveDelayMinutes());
+        this.containers.add(data);
+        OxygenMain.LOGGER.info("Registered <{}> persistent data.", data.getDisplayName());
+    }
+
+    public void registerPersistentData(Runnable task) {
+        this.tasks.add(task);
     }
 
     public void worldUnloaded() {
         OxygenMain.LOGGER.info("Forcing persistent data save on world unload...");
-        for (PersistentData data : this.globalData) {
+        for (PersistentData data : this.containers) {
             if (data.isChanged()) {
                 data.setChanged(false);
                 this.ioManager.savePersistentDataAsync(data);
                 OxygenMain.LOGGER.info("Persistent data <{}> saved.", data.getDisplayName());
             }
         }
+        for (Runnable r : this.tasks)
+            r.run();
     }
 }

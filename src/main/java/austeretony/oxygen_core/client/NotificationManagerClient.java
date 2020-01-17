@@ -5,9 +5,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.oxygen_core.client.api.ClientReference;
+import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
 import austeretony.oxygen_core.client.api.event.OxygenNotificationRecievedEvent;
-import austeretony.oxygen_core.client.gui.notifications.NotificationsGUIScreen;
+import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
+import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.network.server.SPRequestReply;
 import austeretony.oxygen_core.common.notification.EnumNotification;
@@ -18,12 +20,12 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class NotificationManagerClient {
 
-    private final Map<Long, Notification> notifications = new ConcurrentHashMap<>(5);
+    private final Map<Long, Notification> notifications = new ConcurrentHashMap<>();
 
-    private long latestNotificationId;
+    private volatile long latestNotification;
 
     public void openNotificationsMenu() {
-        ClientReference.displayGuiScreen(new NotificationsGUIScreen());
+        ClientReference.displayGuiScreen(new NotificationsScreen());
     }
 
     public Map<Long, Notification> getNotifications() {
@@ -36,63 +38,64 @@ public class NotificationManagerClient {
 
     public void addNotification(Notification notification) {
         this.notifications.put(notification.getId(), notification);
-        ClientReference.getClientPlayer().playSound(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 1.0F, 1.0F);
+        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
+            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 1.0F, 1.0F);
         if (notification.getType() == EnumNotification.REQUEST) {
-            if (!OxygenHelperClient.getClientSettingBoolean(OxygenMain.HIDE_REQUESTS_OVERLAY_SETTING_ID))
-                this.latestNotificationId = notification.getId();
+            if (!EnumCoreClientSetting.HIDE_REQUESTS_OVERLAY.get().asBoolean())
+                this.latestNotification = notification.getId();
         }
         ClientReference.delegateToClientThread(()->MinecraftForge.EVENT_BUS.post(new OxygenNotificationRecievedEvent(notification)));
     }
 
     public boolean pendingRequestExist() {
-        return this.latestNotificationId != 0L;
+        return this.latestNotification != 0L;
     }
 
     public long getLatestRequestId() {
-        return this.latestNotificationId;
+        return this.latestNotification;
     }
 
     public Notification getLatestRequest() {
-        return this.notifications.get(this.latestNotificationId);
+        return this.notifications.get(this.latestNotification);
     }
 
     public void resetLatestRequestId() {       
-        this.latestNotificationId = 0L;
+        this.latestNotification = 0L;
     }
 
-    public void processNotifications() {
+    public void process() {
         OxygenHelperClient.addRoutineTask(()->{
             Iterator<Notification> iterator = this.notifications.values().iterator();
             Notification notification;
             while (iterator.hasNext()) {
                 notification = iterator.next();
                 if (notification.isExpired()) {
-                    if (notification.getId() == this.latestNotificationId)
-                        this.latestNotificationId = 0L;
+                    if (notification.getId() == this.latestNotification)
+                        this.latestNotification = 0L;
                     iterator.remove();
                 }
             }
         });
     }
 
-    public void acceptKeyPressedSynced() {
-        if (!ClientReference.hasActiveGUI() && this.pendingRequestExist()) {
-            this.notifications.remove(this.latestNotificationId);
-            OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.ACCEPT, this.latestNotificationId));
+    public void acceptRequestSynced() {
+        if (this.pendingRequestExist()) {
+            this.notifications.remove(this.latestNotification);
+            OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.ACCEPT, this.latestNotification));
             this.resetLatestRequestId();
         }
     }
 
-    public void rejectKeyPressedSynced() {
-        if (!ClientReference.hasActiveGUI() && this.pendingRequestExist()) {
-            this.notifications.remove(this.latestNotificationId);
-            OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.REJECT, this.latestNotificationId));
+    public void rejectRequestSynced() {
+        if (this.pendingRequestExist()) {
+            this.notifications.remove(this.latestNotification);
+            OxygenMain.network().sendToServer(new SPRequestReply(EnumRequestReply.REJECT, this.latestNotification));
             this.resetLatestRequestId();
         }
     }
 
     public void reset() {
         this.notifications.clear();
-        this.latestNotificationId = 0L;
+        this.latestNotification = 0L;
     }
 }

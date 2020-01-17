@@ -27,7 +27,7 @@ public class GUIBaseElement<T extends GUIBaseElement> {
 
     private long lastClickTimeMillis;
 
-    private boolean isEnabled, isHovered, isToggled, isDragged, hasSound, canNotBeDragged, needDoubleClick, hasScroller, hasSearchField, isSearchField, hasContextMenu, cancelDraggedLogic;
+    private boolean isEnabled, isVisible, isHovered, isToggled, isDragged, hasSound, canNotBeDragged, needDoubleClick, hasScroller, hasSearchField, isSearchField, hasContextMenu, cancelDraggedLogic;
 
     private GUIScroller scroller;
 
@@ -370,6 +370,22 @@ public class GUIBaseElement<T extends GUIBaseElement> {
         this.isEnabled = isEnabled;    	
         return (T) this;
     }  
+
+    public boolean isVisible() {    
+        return this.isVisible;
+    }
+
+    /**
+     * Определяет, будет ли отображаться элемент.
+     * 
+     * @param isVisible
+     * 
+     * @return вызывающий объект
+     */
+    public T setVisible(boolean isVisible) {    
+        this.isVisible = isVisible;     
+        return (T) this;
+    }
 
     public boolean isHovered() {   	   	    	    	
         return this.isHovered;

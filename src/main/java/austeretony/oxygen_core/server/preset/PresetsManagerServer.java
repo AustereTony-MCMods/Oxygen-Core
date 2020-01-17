@@ -1,7 +1,5 @@
 package austeretony.oxygen_core.server.preset;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,8 +12,6 @@ import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class PresetsManagerServer {
-
-    public static final DateFormat PRESET_DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmss");
 
     private final List<PresetServer> presets = new ArrayList<>(5);
 
@@ -34,10 +30,10 @@ public class PresetsManagerServer {
             OxygenMain.LOGGER.info("Presets loading started...");
             String folder = CommonReference.getGameFolder() + "/config/oxygen/data/server/";
             for (PresetServer preset : this.presets)
-                if (preset.load(folder + preset.getDomain() + "/presets/"))
-                    OxygenMain.LOGGER.info("Preset <{}> loaded successfully.", preset.getDisplayName());
+                if (preset.load(folder + "presets/" + preset.getDirectory() + "/"))
+                    OxygenMain.LOGGER.info("Preset <{}> loaded successfully.", preset.getName());
                 else
-                    OxygenMain.LOGGER.error("Failed to load preset <{}>.", preset.getDisplayName());
+                    OxygenMain.LOGGER.error("Failed to load preset <{}>.", preset.getName());
         });          
     }
 

@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 
 import austeretony.alternateui.container.framework.GUISlotsFramework;
 import austeretony.alternateui.screen.callback.AbstractGUICallback;
+import austeretony.oxygen_core.client.api.ClientReference;
 import net.minecraft.client.renderer.GlStateManager;
 
 /**
@@ -35,6 +36,10 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     public AbstractGUISection(AbstractGUIScreen screen) {		
         this.initScreen(screen);		
         this.setDebugColor(0x6400FFFF);
+    }
+
+    public AbstractGUISection() {
+        this((AbstractGUIScreen) ClientReference.getCurrentScreen());
     }
 
     /**
@@ -127,40 +132,43 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {    	
-        //TODO mouseClicked()
-        for (GUIBaseElement element : this.getElements()) {
-            if (element == this.hoveredElement)
-                element.mouseClicked(mouseX, mouseY, mouseButton);
-            else if (element.isDragged())       		
-                element.setDragged(false);
-        }    	      
-        if (this.hasCurrentCallback())    		
+        if (!this.hasCurrentCallback()) {
+            for (GUIBaseElement element : this.getElements()) {
+                if (element == this.hoveredElement)
+                    element.mouseClicked(mouseX, mouseY, mouseButton);
+                else if (element.isDragged())       		
+                    element.setDragged(false);
+            }    	      
+        } else   		
             this.currentCallback.mouseClicked(mouseX, mouseY, mouseButton);
         return true;    	   	
     }
 
     @Override
     public void handleScroller(boolean isScrolling) {  	
-        if (isScrolling && !hasDraggedElement()) {     		
-            for (GUIBaseElement element : this.getElements())                     
-                element.handleScroller(isScrolling);     	
-            if (this.hasCurrentCallback())    			
+        if (isScrolling && !hasDraggedElement()) {     	
+            if (!this.hasCurrentCallback()) {
+                for (GUIBaseElement element : this.getElements())                     
+                    element.handleScroller(isScrolling);     	
+            } else
                 this.getCurrentCallback().handleScroller(isScrolling);
         }  	
-        if (!Mouse.isButtonDown(0)) {//TODO Why? 		
-            for (GUIBaseElement element : this.getElements())   
-                element.handleSlider();           
-            if (this.hasCurrentCallback())
+        if (!Mouse.isButtonDown(0)) {//TODO Why? 	
+            if (!this.hasCurrentCallback()) {
+                for (GUIBaseElement element : this.getElements())   
+                    element.handleSlider();           
+            } else
                 this.getCurrentCallback().handleSlider();
         }
     }
 
     @Override
-    public boolean keyTyped(char typedChar, int keyCode) {    	
-        for (GUIBaseElement element : this.getElements())   
-            if (!element.isSearchField())
-                element.keyTyped(typedChar, keyCode);	     
-        if (this.hasCurrentCallback())
+    public boolean keyTyped(char typedChar, int keyCode) { 
+        if (!this.hasCurrentCallback()) {
+            for (GUIBaseElement element : this.getElements())   
+                if (!element.isSearchField())
+                    element.keyTyped(typedChar, keyCode);	     
+        } else
             this.getCurrentCallback().keyTyped(typedChar, keyCode);
         return true;
     }
@@ -170,9 +178,6 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
         for (GUIBaseElement element : this.getElements()) {               
             element.updateCursorCounter();			
             element.update();			
-            /*if (element.hasScroller()) {
-		element.getScroller().updateSmoothCounter();
-	    }*/
         }	
         if (this.hasCurrentCallback())			
             this.getCurrentCallback().updateScreen();
@@ -187,7 +192,8 @@ public abstract class AbstractGUISection extends GUIAdvancedElement<AbstractGUIS
     }
 
     public void openCallback(AbstractGUICallback callback) {	
-        this.hoveredElement.setHovered(false);
+        if (this.hoveredElement != null)
+            this.hoveredElement.setHovered(false);
         this.currentCallback = callback;	
         this.hasCurrentCallback = true;
     }

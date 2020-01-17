@@ -3,6 +3,7 @@ package austeretony.alternateui.screen.framework;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import austeretony.alternateui.screen.core.AbstractGUIScreen;
 import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 
@@ -17,9 +18,10 @@ public class GUIElementsFramework extends GUISimpleElement<GUIElementsFramework>
 
     private GUIBaseElement hoveredElement;
 
-    private boolean clearElementsList;
-
-    public GUIElementsFramework() {
+    public GUIElementsFramework(AbstractGUIScreen screen, int xPosition, int yPosition, int width, int height) {
+        this.initScreen(screen);
+        this.setPosition(xPosition, yPosition);
+        this.setSize(width, height);
         this.enableFull();
     }
 
@@ -36,6 +38,8 @@ public class GUIElementsFramework extends GUISimpleElement<GUIElementsFramework>
 
     @Override
     public void draw(int mouseX, int mouseY) {
+        if (this.isDebugMode())             
+            drawRect(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getDebugColor());        
         if (this.isVisible())
             for (GUIBaseElement element : this.getElements())    
                 element.draw(mouseX, mouseY);	
@@ -94,5 +98,53 @@ public class GUIElementsFramework extends GUISimpleElement<GUIElementsFramework>
      */
     public GUIBaseElement getHoveredElement() {
         return this.hoveredElement;
+    }
+
+    /**
+     * Отключает элемент (setEnabled(false) и setVisible(false)).
+     */
+    public GUIElementsFramework disableFull() {    
+        this.setEnabled(false);
+        this.setVisible(false);
+        return this;
+    }
+
+    /**
+     * Включает элемент (setEnabled(true) и setVisible(true)).
+     */
+    public GUIElementsFramework enableFull() {
+        this.setEnabled(true);
+        this.setVisible(true);
+        return this;
+    }
+
+    /**
+     * Определяет, можно ли взаимодействовать с элементом.
+     * 
+     * @param isEnabled
+     * 
+     * @return вызывающий объект
+     */
+    @Override
+    public GUIElementsFramework setEnabled(boolean isEnabled) {     
+        for (GUIBaseElement element : this.elements)
+            element.setEnabled(isEnabled);
+        super.setEnabled(isEnabled);
+        return this;
+    }  
+
+    /**
+     * Определяет, будет ли отображаться элемент.
+     * 
+     * @param isVisible
+     * 
+     * @return вызывающий объект
+     */
+    @Override
+    public GUIElementsFramework setVisible(boolean isVisible) {    
+        for (GUIBaseElement element : this.elements)
+            element.setVisible(isVisible);
+        super.setVisible(isVisible);
+        return this;
     }
 }

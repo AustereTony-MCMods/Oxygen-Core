@@ -4,11 +4,11 @@ import austeretony.oxygen_core.common.process.TemporaryProcess;
 
 public abstract class AbstractTemporaryProcess implements TemporaryProcess, Comparable<TemporaryProcess> {
 
-    private final long id, expireTime;
+    private final long id, expireTimeMillis;
 
     public AbstractTemporaryProcess() {
         this.id = System.nanoTime();
-        this.expireTime = System.currentTimeMillis() + this.getExpireTimeSeconds() * 1000;
+        this.expireTimeMillis = System.currentTimeMillis() + this.getExpireTimeSeconds() * 1000L;
     }
 
     @Override
@@ -18,13 +18,13 @@ public abstract class AbstractTemporaryProcess implements TemporaryProcess, Comp
 
     @Override
     public long getExpirationTimeStamp() {
-        return this.expireTime;
+        return this.expireTimeMillis;
     }
 
     @Override
     public boolean isExpired() {
         this.process();
-        if (System.currentTimeMillis() >= this.expireTime) {
+        if (System.currentTimeMillis() >= this.expireTimeMillis) {
             this.expired();
             return true;
         }
@@ -33,6 +33,6 @@ public abstract class AbstractTemporaryProcess implements TemporaryProcess, Comp
 
     @Override
     public int compareTo(TemporaryProcess other) {        
-        return (int) (this.id - other.getId());
+        return other.getId() < this.getId() ? - 1 : other.getId() > this.getId() ? 1 : 0;
     }
 }

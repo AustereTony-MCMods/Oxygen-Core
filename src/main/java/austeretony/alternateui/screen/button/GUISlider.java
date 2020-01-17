@@ -96,9 +96,8 @@ public class GUISlider extends GUIAdvancedElement<GUISlider> {
         return false;
     }
 
-    public void reset() {
-        this.scroller.resetPosition();
-        this.handleSlidebarViaScroller();
+    public void resetSlidebarPosition() {
+        this.setSlidebarPosition(this.getX(), this.getY());
     }
 
     public void setSlidebarNotDragged() {

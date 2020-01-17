@@ -1,11 +1,12 @@
 package austeretony.oxygen_core.client.gui.overlay;
 
-import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.OxygenManagerClient;
 import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.gui.elements.CustomRectUtils;
-import austeretony.oxygen_core.client.gui.settings.GUISettings;
-import austeretony.oxygen_core.client.input.OxygenKeyHandler;
+import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
+import austeretony.oxygen_core.client.api.OxygenHelperClient;
+import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
+import austeretony.oxygen_core.client.settings.gui.EnumCoreGUISetting;
+import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.notification.Notification;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -13,12 +14,33 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class RequestOverlay implements Overlay {
 
-    private Notification notification;
+    Notification notification;
+
+    //cache
+
+    Minecraft mc;
+
+    String acceptKeyName, rejectKeyName, acceptStr, rejectStr, requestStr;
+
+    int x, y, baseOverlayTextColor, additionalOverlayTextColor, baseBackgroundColor, additionalBackgroundColor, acceptKeyNameWidth, 
+    rejectKeyNameWidth, acceptKeyFrameWidth, rejectKeyFrameWidth, frameHeight;
+
+    boolean acceptKeyEnabled, rejectKeyEnabled;
+
+    float scale;
 
     @Override
-    public boolean shouldDraw() {
-        return OxygenManagerClient.instance().getNotificationsManager() != null 
-                && OxygenManagerClient.instance().getNotificationsManager().pendingRequestExist();
+    public boolean valid() {
+        if (OxygenManagerClient.instance().getNotificationsManager() != null 
+                && OxygenManagerClient.instance().getNotificationsManager().pendingRequestExist()) {
+            Notification notification = OxygenManagerClient.instance().getNotificationsManager().getLatestRequest();
+            if (this.notification == null || this.notification.getId() != notification.getId()) {
+                this.notification = notification;
+                this.initOverlay();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -26,54 +48,64 @@ public class RequestOverlay implements Overlay {
         return false;
     }
 
-    @Override
-    public void draw(float partialTicks) {
-        this.notification = OxygenManagerClient.instance().getNotificationsManager().getLatestRequest();
-        if (this.notification == null) return;
-        Minecraft mc = ClientReference.getMinecraft();
-        ScaledResolution scaledResolution = new ScaledResolution(mc);  
-        String 
-        request = ClientReference.localize(this.notification.getDescription(), (Object[]) this.notification.getArguments()),
-        acceptKeyName = OxygenKeyHandler.ACCEPT.getDisplayName(),
-        rejectKeyName = OxygenKeyHandler.REJECT.getDisplayName();
-        int 
-        requestWidth = (int) (mc.fontRenderer.getStringWidth(request) * GUISettings.get().getOverlayScale()),
-        x = (scaledResolution.getScaledWidth() - requestWidth) / 2,
-        y = scaledResolution.getScaledHeight() / 2 + 25,
-        acceptKeyNameWidth = mc.fontRenderer.getStringWidth(acceptKeyName),
-        rejectKeyNameWidth = mc.fontRenderer.getStringWidth(rejectKeyName),
-        frameWidth = acceptKeyNameWidth + 6,
-        frameHeight = 12;
+    private void initOverlay() {
+        this.mc = ClientReference.getMinecraft();
 
-        GlStateManager.pushMatrix();    
-        GlStateManager.translate(x, y, 0.0F);          
-        GlStateManager.scale(GUISettings.get().getOverlayScale(), GUISettings.get().getOverlayScale(), 0.0F);  
+        this.scale = EnumBaseGUISetting.OVERLAY_SCALE.get().asFloat();
+        this.requestStr = ClientReference.localize(this.notification.getDescription(), (Object[]) this.notification.getArguments());
 
-        mc.fontRenderer.drawString(request, 0, 0, GUISettings.get().getAdditionalOverlayTextColor(), true);
+        int requestWidth = (int) (this.mc.fontRenderer.getStringWidth(this.requestStr) * this.scale);
 
-        this.drawKeyFrame(0, 12, frameWidth, frameHeight);
-        mc.fontRenderer.drawString(acceptKeyName, 3, 15, GUISettings.get().getAdditionalOverlayTextColor());
+        ScaledResolution scaledResolution = new ScaledResolution(this.mc);   
+        this.x = (scaledResolution.getScaledWidth() - requestWidth) / 2;
+        this.y = scaledResolution.getScaledHeight() / 2 + EnumCoreGUISetting.REQUEST_OVERLAY_OFFSET.get().asInt();
 
-        mc.fontRenderer.drawString(ClientReference.localize("oxygen.request.accept"), 10 + acceptKeyNameWidth, 15, GUISettings.get().getBaseOverlayTextColor(), true);
+        this.baseOverlayTextColor = EnumBaseGUISetting.OVERLAY_TEXT_BASE_COLOR.get().asInt();
+        this.additionalOverlayTextColor = EnumBaseGUISetting.OVERLAY_TEXT_ADDITIONAL_COLOR.get().asInt();
+        this.baseBackgroundColor = EnumBaseGUISetting.BACKGROUND_BASE_COLOR.get().asInt();
+        this.additionalBackgroundColor = EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt();
 
-        this.drawKeyFrame(0, 26, frameWidth, frameHeight);
-        mc.fontRenderer.drawString(rejectKeyName, 3, 29, GUISettings.get().getAdditionalOverlayTextColor());
+        this.acceptKeyEnabled = OxygenConfig.ENABLE_ACCEPT_KEY.asBoolean();
+        this.acceptKeyName = this.acceptKeyEnabled ? OxygenHelperClient.getKeyHandler().getAcceptKeybinding().getDisplayName() : "/oxygenc core -request -accept";
 
-        mc.fontRenderer.drawString(ClientReference.localize("oxygen.request.reject"), 10 + rejectKeyNameWidth, 29, GUISettings.get().getBaseOverlayTextColor(), true);
+        this.rejectKeyEnabled = OxygenConfig.ENABLE_REJECT_KEY.asBoolean();
+        this.rejectKeyName = this.rejectKeyEnabled ? OxygenHelperClient.getKeyHandler().getRejectKeybinding().getDisplayName() : "/oxygenc core -request -reject";
 
-        mc.fontRenderer.drawString("(" + String.valueOf((this.notification.getExpirationTimeStamp() - System.currentTimeMillis()) / 1000) + ")", 0, 43, GUISettings.get().getAdditionalOverlayTextColor(), true);
+        this.acceptStr = ClientReference.localize("oxygen_core.request.accept");
+        this.rejectStr = ClientReference.localize("oxygen_core.request.reject");
 
-        GlStateManager.popMatrix();
+        this.acceptKeyNameWidth = this.mc.fontRenderer.getStringWidth(this.acceptKeyName);
+        this.rejectKeyNameWidth = this.mc.fontRenderer.getStringWidth(this.rejectKeyName);
+
+        this.acceptKeyFrameWidth = this.acceptKeyNameWidth + 6;
+        this.rejectKeyFrameWidth = this.rejectKeyNameWidth + 6;
+
+        this.frameHeight = 12;      
     }
 
-    private void drawKeyFrame(int x, int y, int width, int height) {
-        //background
-        GUISimpleElement.drawRect(x, y, x + width, y + height, GUISettings.get().getBaseGUIBackgroundColor());
+    @Override
+    public void draw(float partialTicks) {
+        if (this.notification == null) return;
+        GlStateManager.pushMatrix();    
+        GlStateManager.translate(this.x, this.y, 0.0F);          
+        GlStateManager.scale(this.scale, this.scale, 0.0F);  
 
-        //frame
-        CustomRectUtils.drawRect(x, y, x + 0.4D, y + height, GUISettings.get().getAdditionalGUIBackgroundColor());
-        CustomRectUtils.drawRect(x + width - 0.4D, y, x + width, y + height, GUISettings.get().getAdditionalGUIBackgroundColor());
-        CustomRectUtils.drawRect(x, y, x + width, y + 0.4D, GUISettings.get().getAdditionalGUIBackgroundColor());
-        CustomRectUtils.drawRect(x, y + height - 0.4D, x + width, y + height, GUISettings.get().getAdditionalGUIBackgroundColor());
+        this.mc.fontRenderer.drawString(this.requestStr, 0, 0, this.additionalOverlayTextColor, true);
+
+        if (this.acceptKeyEnabled) {
+            OxygenGUIUtils.drawKeyFrame(0, 12, this.acceptKeyFrameWidth, this.frameHeight, this.baseBackgroundColor, this.additionalBackgroundColor);
+            this.mc.fontRenderer.drawString(this.acceptStr, 10 + this.acceptKeyNameWidth, 15, this.baseOverlayTextColor, true);
+        }
+        this.mc.fontRenderer.drawString(this.acceptKeyName, 3, 15, this.additionalOverlayTextColor, true);
+
+        if (this.rejectKeyEnabled) {
+            OxygenGUIUtils.drawKeyFrame(0, 26, this.rejectKeyFrameWidth, this.frameHeight, this.baseBackgroundColor, this.additionalBackgroundColor);
+            this.mc.fontRenderer.drawString(this.rejectStr, 10 + this.rejectKeyNameWidth, 29, this.baseOverlayTextColor, true);
+        }
+        this.mc.fontRenderer.drawString(this.rejectKeyName, 3, 29, this.additionalOverlayTextColor, true);
+
+        this.mc.fontRenderer.drawString("(" + String.valueOf((this.notification.getExpirationTimeStamp() - System.currentTimeMillis()) / 1000) + ")", 0, 43, this.additionalOverlayTextColor, true);
+
+        GlStateManager.popMatrix();
     }
 }

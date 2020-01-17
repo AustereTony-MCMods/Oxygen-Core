@@ -8,7 +8,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import austeretony.oxygen_core.common.api.CommonReference;
@@ -31,7 +30,7 @@ public class ServerDataContainer {
     public long getWorldId() {
         return this.worldId;
     }
-    
+
     public void createOrLoadWorldId(String worldFolder, int maxPlayers) {
         this.worldFolder = worldFolder;
         this.maxPlayers = maxPlayers;
@@ -47,13 +46,13 @@ public class ServerDataContainer {
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader(worldIdFilePathStr))) {  
                 worldIdStr = bufferedReader.readLine();
                 this.worldId = Long.parseLong(worldIdStr);
-                OxygenMain.LOGGER.info("Loaded world id: {}.", worldIdStr);
+                OxygenMain.LOGGER.info("Loaded world id: {}", worldIdStr);
             } catch (IOException exception) {
                 OxygenMain.LOGGER.error("World id loading failed.");
                 exception.printStackTrace();
             }           
         } else {
-            this.worldId = Long.parseLong(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
+            this.worldId = Long.parseLong(OxygenMain.ID_DATE_FORMAT.format(new Date()));
             worldIdStr = String.valueOf(this.worldId);
             OxygenMain.LOGGER.info("Created world id: {}.", worldIdStr);
             try {               

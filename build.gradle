@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "1.12.2-0.9.5"
+version = "1.12.2-0.10.0"
 group = "austeretony.oxygen_core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "oxygen-core"
 
@@ -74,11 +74,4 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-jar {
-   manifest {
-       attributes 'FMLCorePlugin': 'austeretony.oxygen_core.common.core.plugin.OxygenCorePlugin'
-       attributes 'FMLCorePluginContainsFMLMod': 'true'
-   }
 }

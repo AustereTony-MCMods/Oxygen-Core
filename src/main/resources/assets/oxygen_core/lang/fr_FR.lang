@@ -1,0 +1,13 @@
+oxygen_core.category.common=Tout
+oxygen_core.category.blocks=Blocs
+oxygen_core.category.blocks.building=Construction
+oxygen_core.category.blocks.decoration=Décoration
+oxygen_core.category.blocks.transportation=Transport
+oxygen_core.category.blocks.redstone=Redstone
+oxygen_core.category.items=Items
+oxygen_core.category.items.misc=Autres
+oxygen_core.category.items.food=Nourritures
+oxygen_core.category.items.tools=Outils
+oxygen_core.category.items.combat=Combat
+oxygen_core.category.items.brewing=Potions
+oxygen_core.category.items.enchanting=Enchantement

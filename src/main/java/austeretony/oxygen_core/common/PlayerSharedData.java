@@ -19,17 +19,9 @@ public class PlayerSharedData {
 
     private long lastActivityTime;
 
-    private final Map<Integer, byte[]> data = new ConcurrentHashMap<>(5);
-
     private int index;
 
-    public int getIndex() {
-        return this.index;
-    }
-
-    public void setIndex(int value) {
-        this.index = value;
-    }
+    private final Map<Integer, byte[]> data = new ConcurrentHashMap<>(5);
 
     public UUID getPlayerUUID() {
         return this.playerUUID;
@@ -57,6 +49,14 @@ public class PlayerSharedData {
 
     public void updateLastActivityTime() {
         this.lastActivityTime = System.currentTimeMillis();
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void createDataBuffer(int id, int size) {
@@ -165,6 +165,7 @@ public class PlayerSharedData {
         StreamUtils.write(this.playerUUID, bos);
         StreamUtils.write(this.username, bos);
         StreamUtils.write(this.lastActivityTime, bos);
+
         StreamUtils.write((byte) this.data.size(), bos);
         for (Map.Entry<Integer, byte[]> entry : this.data.entrySet()) {
             StreamUtils.write((byte) entry.getValue().length, bos);
@@ -178,6 +179,7 @@ public class PlayerSharedData {
         sharedData.setPlayerUUID(StreamUtils.readUUID(bis));
         sharedData.setUsername(StreamUtils.readString(bis));
         sharedData.setLastActivityTime(StreamUtils.readLong(bis));
+
         int amount = StreamUtils.readByte(bis);
         byte[] bytes;
         for (int i = 0; i < amount; i++) {
@@ -191,8 +193,9 @@ public class PlayerSharedData {
     public void write(ByteBuf buffer) {
         ByteBufUtils.writeUUID(this.playerUUID, buffer);
         ByteBufUtils.writeString(this.username, buffer);
-        buffer.writeInt(this.index);
         buffer.writeLong(this.lastActivityTime);
+        buffer.writeInt(this.index);
+
         buffer.writeByte(this.data.size());
         for (Map.Entry<Integer, byte[]> entry : this.data.entrySet()) {
             buffer.writeByte(entry.getValue().length);
@@ -205,8 +208,9 @@ public class PlayerSharedData {
         PlayerSharedData sharedData = new PlayerSharedData();
         sharedData.setPlayerUUID(ByteBufUtils.readUUID(buffer));
         sharedData.setUsername(ByteBufUtils.readString(buffer));
-        sharedData.setIndex(buffer.readInt());
         sharedData.setLastActivityTime(buffer.readLong());
+        sharedData.setIndex(buffer.readInt());
+
         int amount = buffer.readByte();
         byte[] bytes;
         for (int i = 0; i < amount; i++) {
@@ -215,5 +219,30 @@ public class PlayerSharedData {
             sharedData.data.put((int) buffer.readByte(), bytes);
         }
         return sharedData;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.playerUUID == null) ? 0 : this.playerUUID.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PlayerSharedData other = (PlayerSharedData) obj;
+        if (this.playerUUID == null) {
+            if (other.playerUUID != null)
+                return false;
+        } else if (!this.playerUUID.equals(other.playerUUID))
+            return false;
+        return true;
     }
 }

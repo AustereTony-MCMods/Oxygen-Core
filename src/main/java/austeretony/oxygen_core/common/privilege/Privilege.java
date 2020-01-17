@@ -2,26 +2,16 @@ package austeretony.oxygen_core.common.privilege;
 
 import com.google.gson.JsonObject;
 
-import austeretony.oxygen_core.common.EnumValueType;
+import austeretony.oxygen_core.common.value.TypedValue;
 import io.netty.buffer.ByteBuf;
 
-public interface Privilege {
+public interface Privilege<T extends TypedValue> {
 
-    String getName();
+    int getId();
 
-    EnumValueType getType();
+    T get();
 
-    boolean getBooleanValue();
-
-    int getIntValue();
-
-    long getLongValue();
-
-    float getFloatValue();
-
-    String getStringValue();
-
-    JsonObject serialize();
+    JsonObject toJson();
 
     void write(ByteBuf buffer);
 }

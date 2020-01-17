@@ -9,38 +9,32 @@ import austeretony.oxygen_core.server.api.OxygenHelperServer;
 
 public class OxygenPlayerDataContainerServer {
 
-    private final Map<UUID, OxygenPlayerData> playersData = new ConcurrentHashMap<>();
+    private final Map<UUID, OxygenPlayerData> players = new ConcurrentHashMap<>();
 
     public Collection<OxygenPlayerData> getPlayersData() {
-        return this.playersData.values();
-    }
-
-    public boolean isPlayerDataExist(UUID playerUUID) {
-        return this.playersData.containsKey(playerUUID);
+        return this.players.values();
     }
 
     public OxygenPlayerData getPlayerData(UUID playerUUID) {
-        return this.playersData.get(playerUUID);
+        return this.players.get(playerUUID);
     }
 
     public OxygenPlayerData createPlayerData(UUID playerUUID) {
-        OxygenPlayerData oxygenData = new OxygenPlayerData(playerUUID);
-        this.playersData.put(playerUUID, oxygenData);
-        return oxygenData;
+        OxygenPlayerData playerData = new OxygenPlayerData(playerUUID);
+        this.players.put(playerUUID, playerData);
+        return playerData;
     }
 
     public void removePlayerData(UUID playerUUID) {
-        this.playersData.remove(playerUUID);
+        this.players.remove(playerUUID);
     }
 
-    public void saveData() {
-        OxygenHelperServer.addRoutineTask(()->{
-            for (OxygenPlayerData data : this.playersData.values()) {
-                if (data.isChanged()) {
-                    data.setChanged(false);
-                    OxygenHelperServer.savePersistentDataAsync(data);
-                }
-            }   
-        });
+    public void save() {
+        for (OxygenPlayerData playerData : this.players.values()) {
+            if (playerData.isChanged()) {
+                playerData.setChanged(false);
+                OxygenHelperServer.savePersistentDataAsync(playerData);
+            }
+        }   
     }
 }

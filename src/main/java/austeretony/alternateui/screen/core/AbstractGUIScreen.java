@@ -17,16 +17,10 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
-/**
- * Модернизированный GuiScreen. Должен быть унаследован вашим ГПИ простого интерфейса.
- * 
- * @author AustereTony
- */
 public abstract class AbstractGUIScreen extends GuiScreen {
 
     public int xSize, ySize, guiLeft, guiTop;
 
-    /** Рабочее пространство */
     private GUIWorkspace workspace;
 
     protected boolean workspaceCreated, isScrolling;
@@ -190,10 +184,9 @@ public abstract class AbstractGUIScreen extends GuiScreen {
                     dropDownList.visibleElements.add(dropDownElement);
                 }
             }
-        }//TODO Handle smooth scroller
+        }
     }
 
-    //TODO scrollButtonPanel()
     public void scrollButtonPanel(GUIButtonPanel panel) {       
         int i = 0, size, k;
         boolean scrollingSearch = !panel.searchButtons.isEmpty();
@@ -209,10 +202,9 @@ public abstract class AbstractGUIScreen extends GuiScreen {
                     panel.visibleButtons.add(button);
                 }
             }
-        }//TODO Handle smooth scroller
+        }
     }
 
-    //TODO searchButtonPanel()
     public void searchButtonPanel(GUIButtonPanel panel) {      
         int buttonIndex, size, k;       
         GUIButton buttonCopy, button;        
@@ -246,17 +238,12 @@ public abstract class AbstractGUIScreen extends GuiScreen {
         return this.doesGUIPauseGame();
     }
 
-    //TODO updateScreen()
     @Override
     public void updateScreen() {    	
         if (this.isWorkspaceCreated())	
             this.getWorkspace().getCurrentSection().updateScreen();    		
     }
 
-    //TODO close()
-    /**
-     * Закрывает ГПИ.
-     */
     public void close() {
         this.mc.displayGuiScreen((GuiScreen)null);
         if (this.mc.currentScreen == null) 
@@ -272,14 +259,11 @@ public abstract class AbstractGUIScreen extends GuiScreen {
         this.renderToolTip(stack, x, y);
     }
 
-    /** 
-     * Возвращает длину переданной строки.
-     * 
-     * @param text
-     * 
-     * @return длина строки в пикселях
-     */
-    public int width(String text) {   	
-        return this.mc.fontRenderer.getStringWidth(text);
+    public float textWidth(String text, float scaleFactor) {
+        return (float) this.mc.fontRenderer.getStringWidth(text) * scaleFactor;
+    }
+
+    public float textHeight(float scaleFactor) {
+        return (float) this.mc.fontRenderer.FONT_HEIGHT * scaleFactor;
     }
 }

@@ -41,12 +41,12 @@ public class Network {
     }
 
     @SubscribeEvent
-    public void onClientPacketRecieve(final FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException {
+    public void onClientPacketRecieved(final FMLNetworkEvent.ClientCustomPacketEvent event) throws IOException {
         OxygenHelperClient.addNetworkTask(()->this.process(event));
     }
 
     @SubscribeEvent
-    public void onServerPacketRecieve(final FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException {
+    public void onServerPacketRecieved(final FMLNetworkEvent.ServerCustomPacketEvent event) throws IOException {
         OxygenHelperServer.addNetworkTask(()->this.process(event));
     }
 

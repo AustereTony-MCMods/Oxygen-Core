@@ -1,21 +1,26 @@
 package austeretony.oxygen_core.server.api;
 
+import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import austeretony.oxygen_core.common.EnumActivityStatus;
 import austeretony.oxygen_core.common.PlayerSharedData;
 import austeretony.oxygen_core.common.api.CommonReference;
+import austeretony.oxygen_core.common.concurrent.OxygenExecutionManager;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.network.client.CPAddSharedData;
 import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
-import austeretony.oxygen_core.common.network.client.CPShowChatMessage;
 import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
 import austeretony.oxygen_core.common.notification.Notification;
+import austeretony.oxygen_core.common.persistent.OxygenIOManager;
 import austeretony.oxygen_core.common.persistent.PersistentData;
+import austeretony.oxygen_core.common.persistent.PersistentDataManager;
 import austeretony.oxygen_core.server.OxygenManagerServer;
 import austeretony.oxygen_core.server.OxygenPlayerData;
-import austeretony.oxygen_core.server.OxygenPlayerData.EnumActivityStatus;
+import austeretony.oxygen_core.server.chat.ChatChannel;
 import austeretony.oxygen_core.server.preset.PresetServer;
 import austeretony.oxygen_core.server.request.RequestValidator;
 import austeretony.oxygen_core.server.sync.DataSyncHandlerServer;
@@ -37,6 +42,10 @@ public class OxygenHelperServer {
         OxygenManagerServer.instance().getPersistentDataManager().registerPersistentData(data);
     }
 
+    public static void registerPersistentData(Runnable task) {
+        OxygenManagerServer.instance().getPersistentDataManager().registerPersistentData(task);
+    }
+
     public static void registerDataSyncHandler(DataSyncHandlerServer handler) {
         OxygenManagerServer.instance().getDataSyncManager().registerHandler(handler);
     }   
@@ -45,7 +54,27 @@ public class OxygenHelperServer {
         OxygenManagerServer.instance().getPresetsManager().registerPreset(preset);
     } 
 
+    public static void registerChatChannel(ChatChannel channel) {
+        OxygenManagerServer.instance().getChatChannelsManager().registerChannel(channel);
+    }
+
     //*** initialization - end
+
+    public static OxygenExecutionManager getExecutionManager() {
+        return OxygenManagerServer.instance().getExecutionManager();
+    }    
+
+    public static OxygenIOManager getIOManager() {
+        return OxygenManagerServer.instance().getIOManager();
+    }    
+
+    public static PersistentDataManager getPersistentDataManager() {
+        return OxygenManagerServer.instance().getPersistentDataManager();
+    }    
+
+    public static ScheduledExecutorService getSchedulerExecutorService() {
+        return OxygenManagerServer.instance().getExecutionManager().getExecutors().getSchedulerExecutorService();
+    }  
 
     public static void addIOTask(Runnable task) {
         OxygenManagerServer.instance().getExecutionManager().addIOTask(task);
@@ -151,10 +180,6 @@ public class OxygenHelperServer {
         OxygenMain.network().sendTo(new CPRemoveSharedData(playerUUID), target);
     }
 
-    public static boolean haveObservedPlayers(UUID observerUUID) {
-        return OxygenManagerServer.instance().getSharedDataManager().haveObservedPlayers(observerUUID);
-    }
-
     public static void addObservedPlayer(UUID observerUUID, UUID observedUUID) {
         OxygenManagerServer.instance().getSharedDataManager().addObservedPlayer(observerUUID, observedUUID);
     }
@@ -163,16 +188,16 @@ public class OxygenHelperServer {
         OxygenManagerServer.instance().getSharedDataManager().removeObservedPlayer(observerUUID, observedUUID);
     }
 
+    public static Collection<UUID> getOnlinePlayersUUIDs() {
+        return OxygenManagerServer.instance().getSharedDataManager().getOnlinePlayersUUIDs();
+    }
+
     public static boolean isPlayerOnline(int index) {
         return OxygenManagerServer.instance().getSharedDataManager().getOnlinePlayersIndexes().contains(index);
     }
 
     public static boolean isPlayerOnline(UUID playerUUID) {
         return OxygenManagerServer.instance().getSharedDataManager().getOnlinePlayersUUIDs().contains(playerUUID);
-    }
-
-    public static void sendChatMessage(EntityPlayerMP playerMP, int mod, int message, String... args) {
-        OxygenMain.network().sendTo(new CPShowChatMessage(mod, message, args), playerMP);
     }
 
     public static void sendStatusMessage(EntityPlayerMP playerMP, int modIndex, int messageIndex) {
@@ -185,5 +210,53 @@ public class OxygenHelperServer {
 
     public static void sendRequest(EntityPlayerMP sender, EntityPlayerMP target, Notification notification) {
         OxygenManagerServer.instance().getPlayerDataManager().sendRequest(sender, target, notification);
+    }
+
+    public static boolean isNetworkRequestAvailable(UUID playerUUID, int requestId) {
+        return getOxygenPlayerData(playerUUID).isNetworkRequestAvailable(requestId);
+    }
+
+    public static boolean checkTimeOut(UUID playerUUID, int id) {
+        return getOxygenPlayerData(playerUUID).checkTimeOut(id);
+    }
+
+    public static void resetTimeOut(UUID playerUUID, int id) {
+        getOxygenPlayerData(playerUUID).resetTimeOut(id);
+    }
+
+    public static void setWatchedValueBoolean(UUID playerUUID, int id, boolean value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueBoolean(id, value);
+    }
+
+    public static void setWatchedValueByte(UUID playerUUID, int id, int value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueByte(id, value);
+    }
+
+    public static void setWatchedValueShort(UUID playerUUID, int id, int value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueShort(id, value);
+    }
+
+    public static void setWatchedValueInt(UUID playerUUID, int id, int value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueInt(id, value);
+    }
+
+    public static void setWatchedValueLong(UUID playerUUID, int id, long value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueLong(id, value);
+    }
+
+    public static void setWatchedValueFloat(UUID playerUUID, int id, float value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueFloat(id, value);
+    }
+
+    public static void setWatchedValueDouble(UUID playerUUID, int id, double value) {
+        getOxygenPlayerData(playerUUID).setWatchedValueDouble(id, value);
+    }
+
+    public static void addTrackedEntity(UUID playerUUID, UUID trackedEntityUUID, boolean persistent) {
+        getOxygenPlayerData(playerUUID).addTrackedEntity(trackedEntityUUID, persistent);
+    }
+
+    public static void removeTrackedEntity(UUID playerUUID, UUID trackedEntityUUID, boolean ignorePersistance) {
+        getOxygenPlayerData(playerUUID).removeTrackedEntity(trackedEntityUUID, ignorePersistance);
     }
 }

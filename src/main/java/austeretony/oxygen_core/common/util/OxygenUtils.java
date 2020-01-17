@@ -19,9 +19,24 @@ public class OxygenUtils {
         for (char c : new StringBuilder(input).reverse().toString().toCharArray()) {
             builder.append(c);
             if (index % 3 == 0 && index != input.length())
-                builder.append(",");
+                builder.append(',');
             index++;
         }
+        return builder.reverse().toString();
+    }
+
+    public static String formatDecimalCurrencyValue(String input) {
+        int index = 1;
+        StringBuilder builder = new StringBuilder();
+        String[] array = input.split("[.]");
+        for (char c : new StringBuilder(array[0]).reverse().toString().toCharArray()) {
+            builder.append(c);
+            if (index % 3 == 0 && index != array[0].length())
+                builder.append(',');
+            index++;
+        }
+        if (array.length == 2)
+            return builder.reverse().append('.').append(array[1]).toString();
         return builder.reverse().toString();
     }
 
@@ -32,26 +47,26 @@ public class OxygenUtils {
             hours = delta / 3_600_000L;        
             if (hours < 24L) {
                 if (hours % 10L == 1L)
-                    return ClientReference.localize("oxygen.gui.hour", hours);
+                    return ClientReference.localize("oxygen_core.gui.hour", hours);
                 else {
                     if (hours < 1L) {
                         long minutes = delta / 60_000L;
                         if (minutes % 10L == 1L)
-                            return ClientReference.localize("oxygen.gui.minute", minutes);
+                            return ClientReference.localize("oxygen_core.gui.minute", minutes);
                         else               
-                            return ClientReference.localize("oxygen.gui.minutes", minutes);
+                            return ClientReference.localize("oxygen_core.gui.minutes", minutes);
                     }
-                    return ClientReference.localize("oxygen.gui.hours", hours);
+                    return ClientReference.localize("oxygen_core.gui.hours", hours);
                 }
             } else {
                 long days = hours / 24L;
                 if (days % 10L == 1L)
-                    return ClientReference.localize("oxygen.gui.day", days);
+                    return ClientReference.localize("oxygen_core.gui.day", days);
                 else               
-                    return ClientReference.localize("oxygen.gui.days", days);
+                    return ClientReference.localize("oxygen_core.gui.days", days);
             }
         } else
-            return ClientReference.localize("oxygen.gui.undef");
+            return ClientReference.localize("oxygen_core.gui.undef");
     }
 
     public static String getExpirationTimeLocalizedString(long expiresInMillis, long timeStampMillis) {
@@ -62,30 +77,30 @@ public class OxygenUtils {
             expiresInMinutes = expiresInMillis / 60_000L,
             expirationTimeMinutes = expiresInMinutes - minutesPassed;  
             if (expirationTimeMinutes < 0L)
-                return ClientReference.localize("oxygen.gui.expired");
+                return ClientReference.localize("oxygen_core.gui.expired");
             if (expirationTimeMinutes < 60L) {
                 if (expirationTimeMinutes % 10L == 1L)
-                    return ClientReference.localize("oxygen.gui.minute", expirationTimeMinutes);
+                    return ClientReference.localize("oxygen_core.gui.minute", expirationTimeMinutes);
                 else
-                    return ClientReference.localize("oxygen.gui.minutes", expirationTimeMinutes);
+                    return ClientReference.localize("oxygen_core.gui.minutes", expirationTimeMinutes);
             } else {
                 minutesPassed /= 60L;
                 expiresInMinutes /= 60L;
                 expirationTimeMinutes = expiresInMinutes - minutesPassed;  
                 if (expirationTimeMinutes < 24L) {
                     if (expirationTimeMinutes % 10L == 1L)
-                        return ClientReference.localize("oxygen.gui.hour", expirationTimeMinutes);
+                        return ClientReference.localize("oxygen_core.gui.hour", expirationTimeMinutes);
                     else
-                        return ClientReference.localize("oxygen.gui.hours", expirationTimeMinutes);
+                        return ClientReference.localize("oxygen_core.gui.hours", expirationTimeMinutes);
                 } else {
                     long expirationTimeDays = expirationTimeMinutes / 24L;
                     if (expirationTimeDays % 10L == 1L)
-                        return ClientReference.localize("oxygen.gui.day", expirationTimeDays);
+                        return ClientReference.localize("oxygen_core.gui.day", expirationTimeDays);
                     else               
-                        return ClientReference.localize("oxygen.gui.days", expirationTimeDays);
+                        return ClientReference.localize("oxygen_core.gui.days", expirationTimeDays);
                 }
             }
         } else
-            return ClientReference.localize("oxygen.gui.undef");
+            return ClientReference.localize("oxygen_core.gui.undef");
     }
 }

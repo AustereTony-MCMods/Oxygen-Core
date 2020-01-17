@@ -2,6 +2,8 @@ package austeretony.oxygen_core.common.watcher;
 
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import io.netty.buffer.ByteBuf;
 
 public class WatchedValue {
@@ -10,16 +12,16 @@ public class WatchedValue {
 
     private final byte[] buffer;
 
-    private volatile boolean needSync;
+    private volatile boolean changed;
 
-    private WatchedValueInitializer initializer;
+    private Initializer initializer;
 
     public WatchedValue(int id, int bufferCapacity) {
         this.id = id;
         this.buffer = new byte[bufferCapacity];
     }
 
-    public WatchedValue(int id, int bufferCapacity, WatchedValueInitializer initializer) {
+    public WatchedValue(int id, int bufferCapacity, @Nullable Initializer initializer) {
         this(id, bufferCapacity);
         this.initializer = initializer;
     }
@@ -42,39 +44,39 @@ public class WatchedValue {
             this.buffer[i] = 0;
     }
 
-    public boolean isNeedSync() {
-        return this.needSync;
+    public boolean isChanged() {
+        return this.changed;
     }
 
-    public void setNeedSync(boolean flag) {
-        this.needSync = flag;
+    public void setChanged(boolean flag) {
+        this.changed = flag;
     }
 
-    public void set(boolean value) {
+    public void setBoolean(boolean value) {
         this.buffer[0] = (byte) (value ?  1 : 0);
-        this.setNeedSync(true);
+        this.setChanged(true);
     }
 
-    public void set(byte value) {
-        this.buffer[0] = value;
-        this.setNeedSync(true);
+    public void setByte(int value) {
+        this.buffer[0] = (byte) value;
+        this.setChanged(true);
     }
 
-    public void set(short value) {
+    public void setShort(int value) {
         this.buffer[0] = (byte) (value >> 8);
         this.buffer[1] = (byte) value;
-        this.setNeedSync(true);
+        this.setChanged(true);
     }
 
-    public void set(int value) {
+    public void setInt(int value) {
         this.buffer[0] = (byte) (value >> 24);
         this.buffer[1] = (byte) (value >> 16);
         this.buffer[2] = (byte) (value >> 8);
         this.buffer[3] = (byte) value;
-        this.setNeedSync(true);
+        this.setChanged(true);
     }
 
-    public void set(long value) {
+    public void setLong(long value) {
         this.buffer[0] = (byte) value;
         this.buffer[1] = (byte) (value >> 8);
         this.buffer[2] = (byte) (value >> 16);
@@ -83,17 +85,15 @@ public class WatchedValue {
         this.buffer[5] = (byte) (value >> 40);
         this.buffer[6] = (byte) (value >> 48);
         this.buffer[7] = (byte) (value >> 56);
-        this.setNeedSync(true);
+        this.setChanged(true);
     }
 
-    public void set(float value) {
-        int bits = Float.floatToIntBits(value);
-        this.set(bits);
+    public void setFloat(float value) {
+        this.setInt(Float.floatToIntBits(value));
     }
 
-    public void set(double value) {
-        long bits = Double.doubleToLongBits(value);
-        this.set(bits);
+    public void setDouble(double value) {
+        this.setLong(Double.doubleToLongBits(value));
     }
 
     public boolean getBoolean() {
@@ -142,5 +142,10 @@ public class WatchedValue {
     public void read(byte[] buffer) {
         for (int i = 0; i < this.buffer.length; i++)
             this.buffer[i] = buffer[i];
+    }
+
+    public static interface Initializer {
+
+        void init(UUID playerUUID, WatchedValue value);
     }
 }

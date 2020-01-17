@@ -86,8 +86,8 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
         this.slots.searchIndexes.clear();
         this.slots.items.clear();
         this.slots.setCurrentSorter(sorter);
-        if (this.slots.hasScroller() && this.slots.getScroller().hasSlider())
-            this.slots.getScroller().getSlider().reset();
+        if (this.slots.hasScroller())
+            this.slots.getScroller().reset();
         for (i = this.firstSlotIndex; i <= this.lastSlotIndex; i++) {
             if (i < this.container.inventorySlots.size()) {
                 slot = (Slot) this.container.inventorySlots.get(i);   
@@ -180,9 +180,8 @@ public class GUISlotsFramework extends GUISimpleElement<GUISlotsFramework> {
                         this.updateSearchResult(this);
                     else
                         this.updateFramework(this.slots.getCurrentSorter());
-                    if (this.slots.hasScroller() 
-                            && this.slots.getScroller().hasSlider())
-                        this.slots.getScroller().getSlider().reset();
+                    if (this.slots.hasScroller())
+                        this.slots.getScroller().reset();
                 }
             }
         }

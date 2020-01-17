@@ -1,9 +1,8 @@
 package austeretony.oxygen_core.client.api;
 
 import austeretony.oxygen_core.client.OxygenManagerClient;
-import austeretony.oxygen_core.client.gui.elements.OxygenGUIContextMenuElement.ContextMenuAction;
+import austeretony.oxygen_core.client.gui.elements.OxygenContextMenu.OxygenContextMenuAction;
 import austeretony.oxygen_core.client.gui.menu.OxygenMenuEntry;
-import austeretony.oxygen_core.client.gui.menu.OxygenMenuManager;
 import austeretony.oxygen_core.client.gui.overlay.Overlay;
 
 public class OxygenGUIHelper {
@@ -16,15 +15,15 @@ public class OxygenGUIHelper {
         OxygenManagerClient.instance().getGUIManager().registerOverlay(overlay);
     }
 
-    public static void registerContextAction(int screenId, ContextMenuAction action) {
+    public static void registerContextAction(int screenId, OxygenContextMenuAction action) {
         OxygenManagerClient.instance().getGUIManager().registerContextAction(screenId, action);
     }
 
     public static boolean isOxygenMenuEnabled() {
-        return OxygenMenuManager.isOxygenMenuEnabled();
+        return OxygenMenuHelper.isOxygenMenuEnabled();
     }
 
     public static void registerOxygenMenuEntry(OxygenMenuEntry entry) {
-        OxygenMenuManager.registerOxygenMenuEntry(entry);
+        OxygenMenuHelper.registerOxygenMenuEntry(entry);
     }
 }

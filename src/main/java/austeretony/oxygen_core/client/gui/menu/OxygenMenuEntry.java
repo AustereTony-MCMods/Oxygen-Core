@@ -2,9 +2,11 @@ package austeretony.oxygen_core.client.gui.menu;
 
 public interface OxygenMenuEntry {
 
-    String getName();
+    int getId();
     
-    int getIndex();
+    String getLocalizedName();
+
+    int getKeyCode();
 
     boolean isValid();
 

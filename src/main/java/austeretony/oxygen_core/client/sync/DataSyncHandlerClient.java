@@ -2,9 +2,9 @@ package austeretony.oxygen_core.client.sync;
 
 import java.util.Set;
 
-import austeretony.oxygen_core.common.sync.SynchronizedData;
+import austeretony.oxygen_core.common.sync.SynchronousEntry;
 
-public interface DataSyncHandlerClient<T extends SynchronizedData> {
+public interface DataSyncHandlerClient<T extends SynchronousEntry> {
 
     int getDataId();
 

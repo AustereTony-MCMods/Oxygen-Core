@@ -12,7 +12,7 @@ public class RequestsManagerServer {
 
     public void registerRequestValidator(RequestValidator validator) {
         if (this.requestValidators == null)
-            this.requestValidators = new HashSet<>(3);
+            this.requestValidators = new HashSet<>(5);
         this.requestValidators.add(validator);
     }
 

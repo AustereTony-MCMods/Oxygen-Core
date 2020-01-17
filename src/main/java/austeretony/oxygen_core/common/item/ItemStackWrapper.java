@@ -4,11 +4,15 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import austeretony.oxygen_core.common.inventory.InventoryHelper;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.util.ByteBufUtils;
 import austeretony.oxygen_core.common.util.StreamUtils;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -96,12 +100,37 @@ public class ItemStackWrapper {
 
     public static ItemStackWrapper read(BufferedInputStream bis) throws IOException {
         String registryName = StreamUtils.readString(bis);
+        Item item = Item.getByNameOrId(registryName);
+        if (item == null)
+            item = Items.AIR;
         return new ItemStackWrapper(
-                Item.getIdFromItem(Item.getByNameOrId(registryName)), 
+                Item.getIdFromItem(item), 
                 registryName,
                 StreamUtils.readShort(bis), 
                 StreamUtils.readString(bis), 
                 StreamUtils.readString(bis));
+    }
+
+    public JsonObject toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("registry_name", new JsonPrimitive(this.registryName));
+        jsonObject.add("damage", new JsonPrimitive(this.damage));
+        jsonObject.add("itemstack_nbt", new JsonPrimitive(this.stackNBTStr));
+        jsonObject.add("capabilities_nbt", new JsonPrimitive(this.capNBTStr));
+        return jsonObject;
+    }
+
+    public static ItemStackWrapper fromJson(JsonObject jsonObject) {
+        String registryName = jsonObject.get("registry_name").getAsString();
+        Item item = Item.getByNameOrId(registryName);
+        if (item == null)
+            item = Items.AIR;
+        return new ItemStackWrapper(
+                Item.getIdFromItem(item), 
+                registryName,
+                jsonObject.get("damage").getAsInt(), 
+                jsonObject.get("itemstack_nbt").getAsString(), 
+                jsonObject.get("capabilities_nbt").getAsString());
     }
 
     public void write(ByteBuf buffer) {

@@ -1,110 +1,230 @@
-key.oxygen.notifications=Открыть Меню Уведомлений
-key.oxygen.accept=Принять Запрос
-key.oxygen.reject=Оклонить Запрос
-key.oxygen.interact=Взаимодействовать
+key.oxygen_core.notifications=Открыть Меню Уведомлений
+key.oxygen_core.accept=Принять Запрос
+key.oxygen_core.reject=Оклонить Запрос
+key.oxygen_core.interact=Взаимодействовать
 
-oxygen.request.accept=Принять
-oxygen.request.reject=Отклонить
+oxygen_core.request.accept=Принять
+oxygen_core.request.reject=Отклонить
 
-oxygen.currency.coins=Монеты
+oxygen_core.currency.coins=Монеты
+oxygen_core.currency.shards=Осколки
+oxygen_core.currency.vouchers=Ваучеры
 
-oxygen.gui.username=Ник
-oxygen.gui.name=Название
-oxygen.gui.dimension=Измерение
-oxygen.gui.status=Статус
-oxygen.gui.description=Описание
-oxygen.gui.note=Заметка
-oxygen.gui.confirmButton=Принять
-oxygen.gui.cancelButton=Отмена
-oxygen.gui.closeButton=Закрыть
-oxygen.gui.addButton=Добавить
-oxygen.gui.playerFound=Игрок найден
-oxygen.gui.playerNotFound=Игрок не найден
+oxygen_core.gui.callback.settings=Настройки
 
-oxygen.gui.callback.settings=Настройки
+oxygen_core.gui.notifications.title=Уведомления
+oxygen_core.gui.notifications.empty=У вас нет активных уведомлений.
 
-oxygen.gui.notifications.title=Уведомления
-oxygen.gui.notifications.setting.hideOverlay=Убрать Оверлэй Запросов
-oxygen.gui.notifications.empty=У вас нет активных уведомлений.
+oxygen_core.gui.privileges.title=Привилегии
+oxygen_core.gui.privileges.information=Информация
+oxygen_core.gui.privileges.roles=Роли
+oxygen_core.gui.privileges.players=Игроки
+oxygen_core.gui.privileges.disabled=Привилегии отключены.
+oxygen_core.gui.privileges.chatFormattingDisabled=Форматирование чата отключено.
+oxygen_core.gui.privileges.playerRoles=Ваши Роли
+oxygen_core.gui.privileges.chatFormatting=Форматирование Чата
+oxygen_core.gui.privileges.testMessage=Тест
+oxygen_core.gui.privileges.privileges=Привилегии
+oxygen_core.gui.privileges.defaultFormatting=Без Форматирования
+oxygen_core.gui.privileges.value=Значение:
 
-oxygen.gui.players=Игроки
+oxygen_core.gui.privileges.roleName=Название 
+oxygen_core.gui.privileges.roleId=Идентификатор (Приоритет)
+oxygen_core.gui.privileges.prefix=Префикс
+oxygen_core.gui.privileges.roleNameColor=Цвет Названия Роли
+oxygen_core.gui.privileges.prefixColor=Цвет Префикса
+oxygen_core.gui.privileges.usernameColor=Цвет Ника
+oxygen_core.gui.privileges.chatColor=Цвет Чата
 
-oxygen.gui.action.remove=Удалить
-oxygen.gui.action.ignore=Игнорировать
-oxygen.gui.action.editNote=Редакт. Заметку
-oxygen.gui.action.addToFriends=Доб. в Друзья
+oxygen_core.gui.privileges.callback.roleCreation=Создание Роли
+oxygen_core.gui.privileges.callback.editRole=Редактирование Роли
+oxygen_core.gui.privileges.callback.addPrivilege=Добавление Привилегии
+oxygen_core.gui.privileges.callback.removePrivilege=Удаление Привилегии
+oxygen_core.gui.privileges.callback.removeRole=Удаление Роли
+oxygen_core.gui.privileges.callback.removeRole.request=Роль будет удалена.
+oxygen_core.gui.privileges.callback.removePrivilege.request=Привилегия будет удалена.
+oxygen_core.gui.privileges.callback.addPlayerRole=Добавление Роли
+oxygen_core.gui.privileges.callback.removePlayerRole=Удаление Роли
 
-oxygen.request.friendRequest=%s отправил вам запрос в друзья.
+oxygen_core.gui.privileges.edit=Редактировать
+oxygen_core.gui.privileges.remove=Удалить
+oxygen_core.gui.privileges.addPrivilege=Добавить Привилегию
+oxygen_core.gui.privileges.removePrivilege=Удалить Привилегию
+oxygen_core.gui.privileges.addRoleToPlayer=Добавить Роль
+oxygen_core.gui.privileges.removeRoleFromPlayer=Убрать Роль
 
-oxygen.status.online=В сети
-oxygen.status.away=Нет на месте
-oxygen.status.not_disturb=Не Беспокоить
-oxygen.status.offline=Не в сети
+oxygen_core.gui.settings.title=Настройки
+oxygen_core.gui.settings.common=Общие
+oxygen_core.gui.settings.gui=Интерфейс
 
-oxygen.gui.minute=%s минута
-oxygen.gui.minutes=%s минут
-oxygen.gui.hour=%s час
-oxygen.gui.hours=%s часов
-oxygen.gui.day=%s день
-oxygen.gui.days=%s дней
-oxygen.gui.undef=неизвестно
-oxygen.gui.expired=истекло
+oxygen_core.gui.settings.module.base=Base
+oxygen_core.gui.settings.module.core=Core
 
-oxygen.gui.lastActivityTime=активность %s назад
+oxygen_core.gui.settings.option.hideOverlay=Скрыть Оверлэй Запросов
+oxygen_core.gui.settings.option.interactWithRMB=Взаимодействие ПКМ
+oxygen_core.gui.settings.option.enableSoundEffects=Звуковые Эффекты
+oxygen_core.gui.settings.option.enableRarityColors=Цвета Качества
+oxygen_core.gui.settings.option.enableItemsDurabilityBar=Полоска Состояния Предметов
 
-oxygen.tooltip.online=В сети
-oxygen.tooltip.download=Загрузка
-oxygen.tooltip.settings=Настройки
-oxygen.tooltip.search=Поиск
-oxygen.tooltip.refresh=Обновить
-oxygen.tooltip.sort=Сортировать
+oxygen_core.gui.settings.callback.setColor=Настройка Цвета
+oxygen_core.gui.settings.callback.setScale=Настройка Размера
+oxygen_core.gui.settings.callback.setOffset=Настройка Смещения
+oxygen_core.gui.settings.callback.setKey=Настойка Клавиши
+oxygen_core.gui.settings.argbColor=Цвет в формате ARGB
+oxygen_core.gui.settings.elementScale=Размер Элемента
+oxygen_core.gui.settings.offset=Смещение
+oxygen_core.gui.settings.keyboardKey=Клавиша
+oxygen_core.gui.settings.scale=Тест
+oxygen_core.gui.settings.tooltip.screen=Экран
+oxygen_core.gui.settings.tooltip.callback=Всплывающее Окно
+oxygen_core.gui.settings.tooltip.base=Базовый
+oxygen_core.gui.settings.tooltip.background=Фон
+oxygen_core.gui.settings.tooltip.text=Текст
+oxygen_core.gui.settings.tooltip.element=Элемент
+oxygen_core.gui.settings.tooltip.additional=Дополнительный
+oxygen_core.gui.settings.tooltip.enabled=Активный
+oxygen_core.gui.settings.tooltip.disabled=Неактивный
+oxygen_core.gui.settings.tooltip.hovered=Выбранный
 
-oxygen.sorting.name=Название
-oxygen.sorting.username=Имя Пользователя
-oxygen.sorting.time=Время
-oxygen.sorting.status=Статус
-oxygen.sorting.dimension=Измерение
+oxygen_core.gui.settings.option.color=Цвет
+oxygen_core.gui.settings.option.scale=Размер
+oxygen_core.gui.settings.option.misc=Разное
+oxygen_core.gui.settings.option.alignment=Выравнивание
+oxygen_core.gui.settings.option.offset=Смещение
+oxygen_core.gui.settings.option.oxygenMenu=Oxygen Menu
 
-oxygen_core.gui.inventoryLoad=Предметы:
+oxygen_core.gui.settings.option.screenFill=Заливка Экрана
+oxygen_core.gui.settings.option.guiBackground=Фон Интерфейса
+oxygen_core.gui.settings.option.button=Кнопка
+oxygen_core.gui.settings.option.element=Элемент
+oxygen_core.gui.settings.option.slider=Слайдер
+oxygen_core.gui.settings.option.text=Текст
+oxygen_core.gui.settings.option.textDark=Затемнённый Текст
+oxygen_core.gui.settings.option.textfield=Поле Ввода
+oxygen_core.gui.settings.option.overlayText=Овэрлэй
+oxygen_core.gui.settings.option.tooltip=Тултип
+oxygen_core.gui.settings.option.inactiveElement=Неактивный Элемент
+oxygen_core.gui.settings.option.activeElement=Активный Элемент
+oxygen_core.gui.settings.option.statusElement=Статус
 
-oxygen.message.command.privilege.info.groupInfo=Группа: %s - префикс: %s, суффикс: %s, цвет ника: %s, цвет префикса: %s, цвет суффикса: %s, цвет чата: %s.
-oxygen.message.command.privilege.info.groupPrivileges=Привелегии группы <%s>:
-oxygen.message.command.privilege.info.groupsList=Группы:
-oxygen.message.command.privilege.info.playerGroup=Игрок %s сосотоит в группе: %s.
-oxygen.message.command.privilege.group.create=Создана группа <%s>.
-oxygen.message.command.privilege.group.edit=Группа <%s> отредактирована.
-oxygen.message.command.privilege.group.remove=Группа <%s> удалена.
-oxygen.message.command.privilege.privilege.add=Привелегия <%s> со значением <%s> добавлена для группы <%s>.
-oxygen.message.command.privilege.privilege.remove=Привелегия <%s> удалена для группы <%s>.
-oxygen.message.command.privilege.promote=Игрок %s добавлен в группу %s.
+oxygen_core.gui.settings.option.subText=Доп. Текст
+oxygen_core.gui.settings.option.titleText=Заголовок
+oxygen_core.gui.settings.option.panelText=Текста Панели
+oxygen_core.gui.settings.option.buttonText=Текст Кнопок
+oxygen_core.gui.settings.option.tooltipText=Текст Тултипа
+oxygen_core.gui.settings.option.overlay=Оверлэй
 
-oxygen.message.command.oxygens.currency.info=Запас валюты игрока <%s> под индексом <%s> составляет <%s>.
-oxygen.message.command.oxygens.currency.add=Игрок <%s> получил <%s> единиц валюты с индексом <%s>.
-oxygen.message.command.oxygens.currency.remove=Игрок <%s> отерял <%s> единиц валюты с индексом <%s>.
+oxygen_core.gui.settings.option.verticalGradient=Вертикальный Градиент
 
-oxygen.message.statusChanged=Статус изменен на %s.
-oxygen.message.requestSent=Запрос отправлен.
-oxygen.message.requestReset=Запрос сброшен.
-oxygen.message.targetOffline=Игрок вне сети.
+oxygen_core.gui.settings.option.alignmentNotificationsMenu=Меню Уведомлений
+oxygen_core.gui.settings.option.alignmentSettingsMenu=Меню Настроек
+oxygen_core.gui.settings.option.alignmentPrivilegesMenu=Меню Привилегий
 
-oxygen.command.exception.playerNotFound=Игрок %s не найден.
-oxygen.command.exception.groupNotFound=Группа %s не найдена.
-oxygen.command.exception.privilegeNotFound=Привелегия %s не найдена.
+oxygen_core.gui.settings.option.offsetRequestOverlay=Вертикальное Смещение Оверлея Запросов
 
-oxygen.command.exception.wrongArg=Неверный аргумент: %s.
-oxygen.command.exception.noParams=Не указаны параметры.
-oxygen.command.exception.unnecessaryParams=Указаны лишние параметры: %s , ...
-oxygen.command.exception.wrongParamValue=Неверное значение параметра %s: %s.
-oxygen.command.exception.unnecessaryParamValue=Указан лишнее значение для параметра %s: %s.
+oxygen_core.gui.settings.option.addNotificationsMenu=Меню Уведомлений
+oxygen_core.gui.settings.option.addSettingsMenu=Меню Настроек
+oxygen_core.gui.settings.option.addPrivilegesMenu=Меню Привилегий
 
-oxygen.command.oxygenc.reloadGui=Настойки ГПИ перезагружены.
-oxygen.command.oxygenc.currency.balance=Клиентский баланс: %s
+oxygen_core.alignment.left=Лево
+oxygen_core.alignment.center=Центр
+oxygen_core.alignment.right=Право
 
-oxygen.status.requestSent=Запрос отправлен
-oxygen.status.requestReset=Запрос сброшен
+oxygen_core.request.friendRequest=%s отправил вам запрос в друзья.
 
-oxygen.dim.unknown=Неиизвестно
-oxygen.dim.overworld=Верхний Мир
-oxygen.dim.nether=Нижний Мир
-oxygen.dim.end=Край
-oxygen.dim.twilightForest=Сумеречный Лес
+oxygen_core.status.online=В сети
+oxygen_core.status.away=Нет на месте
+oxygen_core.status.notDisturb=Не Беспокоить
+oxygen_core.status.offline=Не в сети
+
+oxygen_core.rarity.normal=Нормальный
+oxygen_core.rarity.fine=Хороший
+oxygen_core.rarity.superior=Отличный
+oxygen_core.rarity.epic=Эпический
+oxygen_core.rarity.legendary=Легендарный
+
+oxygen_core.gui.minute=%s минута
+oxygen_core.gui.minutes=%s минут
+oxygen_core.gui.hour=%s час
+oxygen_core.gui.hours=%s часов
+oxygen_core.gui.day=%s день
+oxygen_core.gui.days=%s дней
+oxygen_core.gui.undef=неизвестно
+oxygen_core.gui.expired=истекло
+
+oxygen_core.gui.lastActivityTime=активность %s назад
+
+oxygen_core.gui.online=В сети
+oxygen_core.gui.download=Загрузка
+oxygen_core.gui.settings=Настройки
+oxygen_core.gui.search=Поиск
+oxygen_core.gui.refresh=Обновить
+oxygen_core.gui.reset=Сбросить
+oxygen_core.gui.apply=Применить
+oxygen_core.gui.remove=Удалить
+oxygen_core.gui.edit=Редактировать
+oxygen_core.gui.hide=Скрыть
+oxygen_core.gui.sort=Сортировать
+oxygen_core.gui.priority=Приоритет
+oxygen_core.gui.name=Название
+oxygen_core.gui.username=Имя Пользователя
+oxygen_core.gui.time=Время
+oxygen_core.gui.status=Статус
+oxygen_core.gui.dimension=Измерение
+oxygen_core.gui.description=Описание
+oxygen_core.gui.note=Заметка
+oxygen_core.gui.confirm=Принять
+oxygen_core.gui.cancel=Отмена
+oxygen_core.gui.close=Закрыть
+oxygen_core.gui.add=Добавить
+oxygen_core.gui.player=Игрок
+oxygen_core.gui.offer=Предложить
+oxygen_core.gui.take=Забрать
+oxygen_core.gui.pay=Оплатить
+
+oxygen_core.gui.inventoryLoad=Инвентарь
+
+oxygen_core.message.command.oxygens.currency.balance=Запас валюты игрока <%s> под индексом <%s> составляет <%s>.
+oxygen_core.message.command.oxygens.currency.set=Игроку <%s> установлено <%s> единиц валюты с индексом <%s>.
+oxygen_core.message.command.oxygens.currency.add=Игрок <%s> получил <%s> единиц валюты с индексом <%s>.
+oxygen_core.message.command.oxygens.currency.remove=Игрок <%s> отерял <%s> единиц валюты с индексом <%s>.
+
+oxygen_core.message.command.oxygens.role.add=Добавлена роль <%s> игроку <%s>.
+oxygen_core.message.command.oxygens.role.remove=Убрана роль <%s> у игрока <%s>.
+
+oxygen_core.message.command.oxygens.notification.sentTo=Отправлено уведомление <%s>: %s
+
+oxygen_core.command.exception.wrongArg=Неверный аргумент: %s.
+
+oxygen_core.command.oxygenc.reloadSettings=Настойки клиента перезагружены.
+oxygen_core.command.oxygenc.reloadProperties=Дополнительные настройки (свойства) перезагружены.
+oxygen_core.command.oxygenc.currency.balance=Клиентский баланс валюты <%s> равен %s
+oxygen_core.command.oxygenc.privileges.getValue=Клиентское значение привилегии <%s (%s)> равно: %s
+
+oxygen_core.status.activityStatusChanged=Статус активности изменён
+oxygen_core.status.requestSent=Запрос отправлен
+oxygen_core.status.requestReset=Запрос сброшен
+oxygen_core.status.roleCreated=Роль создана
+oxygen_core.status.roleEdited=Роль отредактирована
+oxygen_core.status.roleRemoved=Роль удалена
+oxygen_core.status.privilegeAdded=Привилегия добавлена
+oxygen_core.status.privilegeRemoved=Привилегия удалена
+oxygen_core.status.roleAddedToPlayer=Роль добавлена игроку
+oxygen_core.status.roleRemovedFromPlayer=Роль убрана у игрока
+oxygen_core.status.actionTimeOut=Время выполнения истекло
+
+oxygen_core.category.common=Всё
+oxygen_core.category.blocks=Блоки
+oxygen_core.category.blocks.building=Строительство
+oxygen_core.category.blocks.decoration=Декорации
+oxygen_core.category.blocks.transportation=Транспортировка
+oxygen_core.category.blocks.redstone=Редстоун
+oxygen_core.category.items=Предметы
+oxygen_core.category.items.misc=Разное
+oxygen_core.category.items.food=Еда
+oxygen_core.category.items.tools=Инструменты
+oxygen_core.category.items.combat=Экипировка
+oxygen_core.category.items.brewing=Алхимия
+oxygen_core.category.items.enchanting=Зачаровывание
+
+oxygen_core.dimension.unknown=Неизвестно

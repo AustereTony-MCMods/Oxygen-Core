@@ -8,21 +8,33 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import austeretony.oxygen_core.client.api.ClientReference;
+import austeretony.oxygen_core.common.EnumActivityStatus;
+import austeretony.oxygen_core.common.api.CommonReference;
+import austeretony.oxygen_core.common.instant.InstantData;
+import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.common.network.client.CPSyncInstantData;
+import austeretony.oxygen_core.common.network.client.CPSyncWatchedValue;
 import austeretony.oxygen_core.common.notification.EnumRequestReply;
 import austeretony.oxygen_core.common.notification.Notification;
 import austeretony.oxygen_core.common.persistent.AbstractPersistentData;
 import austeretony.oxygen_core.common.process.TemporaryProcess;
-import austeretony.oxygen_core.common.util.MathUtils;
 import austeretony.oxygen_core.common.util.StreamUtils;
+import austeretony.oxygen_core.common.watcher.WatchedValue;
+import austeretony.oxygen_core.server.api.CurrencyHelperServer;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
+import austeretony.oxygen_core.server.currency.CurrencyProvider;
+import austeretony.oxygen_core.server.instant.InstantDataRegistryServer;
+import austeretony.oxygen_core.server.network.NetworkRequestEntry;
+import austeretony.oxygen_core.server.network.NetworkRequestsRegistryServer;
+import austeretony.oxygen_core.server.timeout.TimeOutEntry;
+import austeretony.oxygen_core.server.timeout.TimeOutRegistryServer;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class OxygenPlayerData extends AbstractPersistentData {
-
-    public static final int 
-    CURRENCY_COINS_WATCHER_ID = 0,
-    CURRENCY_COINS_INDEX = 0;
 
     private UUID playerUUID;
 
@@ -30,15 +42,36 @@ public class OxygenPlayerData extends AbstractPersistentData {
 
     private final Map<Long, TemporaryProcess> processes = new ConcurrentHashMap<>(5);
 
-    private final Map<Integer, Long> currency = new ConcurrentHashMap<>(3);
+    private final Map<Integer, Long> currency = new ConcurrentHashMap<>(5);
+
+    private final Map<Integer, NetworkRequestEntry> networkRequests = new ConcurrentHashMap<>();
+
+    private final Map<Integer, TimeOutEntry> timeOutEntries = new ConcurrentHashMap<>(5);
+
+    private final Map<Integer, WatchedValue> watchedValues = new ConcurrentHashMap<>(5);
+
+    private final Map<UUID, Boolean> trackedEntities = new ConcurrentHashMap<>();
 
     public final String dataPath;
 
     public OxygenPlayerData(UUID playerUUID) {
         this.status = EnumActivityStatus.ONLINE;    
-        this.currency.put(CURRENCY_COINS_INDEX, 0L);
         this.playerUUID = playerUUID;
+
         this.dataPath = OxygenHelperServer.getDataFolder() + "/server/players/" + this.playerUUID + "/core/player_data.dat";
+
+        for (CurrencyProvider provider : CurrencyHelperServer.getCurrencyProviders())
+            this.currency.put(provider.getIndex(), 0L);
+
+        NetworkRequestsRegistryServer.REGISTRY.forEach((data)->this.networkRequests.put(data.id, new NetworkRequestEntry(data.cooldownMillis)));
+        TimeOutRegistryServer.REGISTRY.forEach((data)->this.timeOutEntries.put(data.id, new TimeOutEntry(data.timeOutMillis)));
+
+        WatchedValuesRegistryServer.REGISTRY.forEach((value)->this.watchedValues.put(value.id, value.copy()));
+    }
+
+    public void init() {
+        for (WatchedValue value : this.watchedValues.values())
+            value.init(this.playerUUID);
     }
 
     public UUID getPlayerUUID() {
@@ -65,75 +98,159 @@ public class OxygenPlayerData extends AbstractPersistentData {
         this.processes.remove(processId);
     }
 
-    public boolean haveTemporaryProcess(long processId) {
-        return this.processes.containsKey(processId);
-    }
-
     public TemporaryProcess getTemporaryProcess(long processId) {
         return this.processes.get(processId);
     }
 
-    public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long id) {
-        if (this.haveTemporaryProcess(id)) {
+    public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long processId) {
+        TemporaryProcess process = this.getTemporaryProcess(processId);
+        if (process != null) {
             switch (reply) {
             case ACCEPT:
-                ((Notification) this.getTemporaryProcess(id)).accepted(player);
+                ((Notification) process).accepted(player);
                 break;
             case REJECT:
-                ((Notification) this.getTemporaryProcess(id)).rejected(player);
+                ((Notification) process).rejected(player);
                 break;
             }
-            this.removeTemporaryProcess(id);
+            this.removeTemporaryProcess(processId);
         }
-    }
-
-    public void runTemporaryProcesses() {
-        if (!this.processes.isEmpty()) {
-            Iterator<TemporaryProcess> iterator = this.processes.values().iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().isExpired()) {
-                    iterator.remove();
-                }
-            }
-        }
-    }
-
-    public void registerCurrency(int index) {
-        this.currency.put(index, 0L);
-    }
-
-    public boolean currencyExist(int index) {
-        return this.currency.containsKey(index);
     }
 
     public long getCurrency(int index) {
         return this.currency.get(index);
     }
 
-    public boolean enoughCurrency(int index, long required) {
-        return this.currency.get(index) >= required;
-    }
-
     public void setCurrency(int index, long value) {
-        this.currency.put(index, MathUtils.clamp(value, 0L, Long.MAX_VALUE));
+        this.currency.put(index, value);
     }
 
-    public void addCurrency(int index, long value) {
-        this.currency.put(index, MathUtils.clamp(this.currency.get(index) + value, 0L, Long.MAX_VALUE));
+    public boolean isNetworkRequestAvailable(int id) {
+        return this.networkRequests.get(id).requestAvailable();
     }
 
-    public void removeCurrency(int index, long value) {
-        this.currency.put(index, MathUtils.clamp(this.currency.get(index) - value, 0L, Long.MAX_VALUE));
+    public boolean checkTimeOut(int id) {
+        return this.timeOutEntries.get(id).checkTimeOut();
+    }
+
+    public void resetTimeOut(int id) {
+        this.timeOutEntries.get(id).resetTimeOut();
+    }
+
+    public WatchedValue getWatchedValue(int id) {
+        return this.watchedValues.get(id);
+    }
+
+    public void setWatchedValueBoolean(int id, boolean value) {
+        this.watchedValues.get(id).setBoolean(value);
+    }
+
+    public void setWatchedValueByte(int id, int value) {
+        this.watchedValues.get(id).setByte(value);
+    }
+
+    public void setWatchedValueShort(int id, int value) {
+        this.watchedValues.get(id).setShort(value);
+    }
+
+    public void setWatchedValueInt(int id, int value) {
+        this.watchedValues.get(id).setInt(value);
+    }
+
+    public void setWatchedValueLong(int id, long value) {
+        this.watchedValues.get(id).setLong(value);
+    }
+
+    public void setWatchedValueFloat(int id, float value) {
+        this.watchedValues.get(id).setFloat(value);
+    }
+
+    public void setWatchedValueDouble(int id, double value) {
+        this.watchedValues.get(id).setDouble(value);
+    }
+
+    public void addTrackedEntity(UUID entityUUID, boolean persistent) {
+        this.trackedEntities.put(entityUUID, persistent);
+    }
+
+    public void removeTrackedEntity(UUID entityUUID, boolean ignorePersistance) {
+        if (ignorePersistance) {
+            this.trackedEntities.remove(entityUUID);
+        } else {
+            Boolean persistent = this.trackedEntities.get(entityUUID);
+            if (persistent != null) {
+                if (!persistent.booleanValue())
+                    this.trackedEntities.remove(entityUUID);
+            }
+        }
+    }
+
+    public void clearTrackedEntities() {
+        this.trackedEntities.clear();
+    }
+
+    public void process() {
+        if (!this.processes.isEmpty()) {
+            Iterator<TemporaryProcess> iterator = this.processes.values().iterator();
+            while (iterator.hasNext())
+                if (iterator.next().isExpired())
+                    iterator.remove();
+        }
+
+        for (CurrencyProvider provider : OxygenManagerServer.instance().getCurrencyManager().getCurrencyProviders())
+            if (provider.forceSync())
+                CurrencyHelperServer.addCurrency(this.playerUUID, 0L, provider.getIndex());
+
+        EntityPlayerMP playerMP = CommonReference.playerByUUID(this.playerUUID);
+        if (playerMP == null) return;
+
+        for (WatchedValue value : this.watchedValues.values()) {
+            if (value.isChanged()) {
+                value.setChanged(false);
+                OxygenMain.network().sendTo(new CPSyncWatchedValue(value.id, value.getBuffer()), playerMP);
+            }
+        }
+
+        this.sync(playerMP);
+    }
+
+    public void sync(EntityPlayerMP playerMP) {
+        if (this.trackedEntities.isEmpty()) return;
+
+        ByteBuf buffer = null;
+        try {
+            buffer = Unpooled.buffer();
+
+            buffer.writeShort(this.trackedEntities.size());
+            EntityLivingBase entityLiving;
+            for (UUID entityUUID : this.trackedEntities.keySet()) {
+                entityLiving = (EntityLivingBase) CommonReference.getServer().getEntityFromUuid(entityUUID);
+                if (entityLiving != null) {
+                    buffer.writeInt(entityLiving.getEntityId());
+                    for (InstantData data : InstantDataRegistryServer.REGISTRY) {
+                        if (data.isValid()) {
+                            buffer.writeByte(data.getIndex());
+                            data.write(entityLiving, buffer);
+                        } else
+                            buffer.writeByte(- 1);
+                    }
+                } else
+                    buffer.writeInt(- 1);
+            }
+
+            byte[] compressed = new byte[buffer.writerIndex()];
+            buffer.getBytes(0, compressed);
+
+            OxygenMain.network().sendTo(new CPSyncInstantData(compressed), playerMP);
+        } finally {
+            if (buffer != null)
+                buffer.release();
+        }
     }
 
     @Override
     public String getDisplayName() {
-        return "oxygen_player_data";
-    }
-
-    @Override
-    public long getSaveDelayMinutes() {
-        return 0L;//unused
+        return "core_player_data";
     }
 
     @Override
@@ -163,19 +280,6 @@ public class OxygenPlayerData extends AbstractPersistentData {
             this.currency.put((int) StreamUtils.readByte(bis), StreamUtils.readLong(bis));
     }
 
-    public void reset() {
-        this.processes.clear();
-    }
-
-    public enum EnumActivityStatus {
-
-        ONLINE,
-        AWAY,
-        NOT_DISTURB,
-        OFFLINE;
-
-        public String localizedName() {
-            return ClientReference.localize("oxygen.status." + this.toString().toLowerCase());
-        }
-    }
+    @Override
+    public void reset() {}
 }

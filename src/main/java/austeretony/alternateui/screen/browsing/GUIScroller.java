@@ -5,8 +5,6 @@ import org.lwjgl.input.Mouse;
 import austeretony.alternateui.container.framework.GUISlotsFramework;
 import austeretony.alternateui.screen.button.GUISlider;
 import austeretony.alternateui.screen.core.AbstractGUIScreen;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Скроллер, позволяющий прокручивать содержимое некоторых элементов.
@@ -24,10 +22,6 @@ public class GUIScroller {
     private int maxPosition, currentPosition, rowsAmount;
 
     private boolean ignoreBorders, hasSlider, isScrollingDown, isScrollingUp;
-
-    private float smoothCounter;
-
-    public static final float COUNTER_INCREMENT = 0.025F;
 
     private GUISlider slider;
 
@@ -50,8 +44,13 @@ public class GUIScroller {
     public void updateRowsAmount(int value) {
         this.rowsAmount = value;
         this.maxPosition = this.rowsAmount - this.rowsVisible;   
-        if (this.slider != null)
+        if (this.slider != null) {
             this.slider.setScroller(this);
+            if (value > this.rowsVisible)
+                this.slider.enableFull();
+            else
+                this.slider.disableFull();
+        }
     }
 
     public int getRowsAmount() {
@@ -156,8 +155,10 @@ public class GUIScroller {
         this.currentPosition = position >= 0 ? (position <= this.maxPosition ? position : this.maxPosition) : 0;
     }
 
-    public void resetPosition() {		
+    public void reset() {		
         this.currentPosition = 0;
+        if (this.slider != null)
+            this.slider.resetSlidebarPosition();
     }
 
     public int getMaxPosition() {		
@@ -188,47 +189,9 @@ public class GUIScroller {
         return this.scrollerType == EnumScrollerType.SMOOTH;
     }
 
-    public float getSmoothCounter() {		
-        return this.smoothCounter;
-    }
-
-    public void setSmoothCounter(float value) {		
-        this.smoothCounter = value <= 1.0F ? value > 0.0F ? value : 0.0F : 1.0F;
-    }
-
-    public boolean incrementSmoothCounter(float value) {		
-        this.smoothCounter += value;		
-        return this.smoothCounter >= 1.0F;
-    }
-
-    public boolean decrementSmoothCounter(float value) {		
-        this.smoothCounter -= value;		
-        return this.smoothCounter <= 0.0F;
-    }
-
-    public void resetSmoothCounter() {		
-        this.smoothCounter = 0.0F;
-    }
-
-    public void updateSmoothCounter() {				
-        if (this.isSmooth()) {
-            if (this.isScrollingDown()) {								
-                if (this.incrementSmoothCounter(this.COUNTER_INCREMENT)) {										
-                    this.resetSmoothCounter();					
-                    this.setScrollingDown(false);
-                }
-            } else if (this.isScrollingUp()) {																		
-                if (this.decrementSmoothCounter(this.COUNTER_INCREMENT)) {														
-                    this.setScrollingUp(false);
-                }
-            }
-        }
-    }
-
     /**
      * Определяет способ скроллинга слотов (стандартный (аля креатив) или плавный). ВНИМАНИЕ! Плавный скролл ещё не реализован, используйте STANDARD.
      */
-    @SideOnly(Side.CLIENT)
     public enum EnumScrollerType {
 
         STANDARD,

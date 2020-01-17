@@ -18,31 +18,38 @@ public class WatcherManagerClient {
     }
 
     public boolean getBoolean(int id) {
-        return this.values.get(id).getBoolean();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getBoolean() : false;
     }
 
     public int getByte(int id) {
-        return this.values.get(id).getByte();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getByte() : 0;
     }
 
     public int getShort(int id) {
-        return this.values.get(id).getShort();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getShort() : 0;
     }
 
     public int getInt(int id) {
-        return this.values.get(id).getInt();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getInt() : 0;
     }
 
     public long getLong(int id) {
-        return this.values.get(id).getLong();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getLong(): 0L;
     }
 
     public float getFloat(int id) {
-        return this.values.get(id).getFloat();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getFloat() : 0.0F;
     }
 
     public double getDouble(int id) {
-        return this.values.get(id).getDouble();
+        WatchedValue value = this.getWatchedValue(id);
+        return value != null ? value.getDouble() : 0.0D;
     }
 
     public void setValue(int id, byte[] buffer) {

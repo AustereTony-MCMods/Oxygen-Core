@@ -101,6 +101,6 @@ public class NotificationClient implements Notification, Comparable<Notification
 
     @Override
     public int compareTo(NotificationClient other) {
-        return (int) (this.id - other.id);
+        return other.getId() < this.getId() ? - 1 : other.getId() > this.getId() ? 1 : 0;
     }
 }

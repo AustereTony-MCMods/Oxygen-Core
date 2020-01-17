@@ -2,28 +2,33 @@ package austeretony.oxygen_core.common.main;
 
 import austeretony.oxygen_core.common.EnumValueType;
 import austeretony.oxygen_core.common.privilege.PrivilegeRegistry;
-import austeretony.oxygen_core.server.api.PrivilegeProviderServer;
 
 public enum EnumOxygenPrivilege {
 
-    EXPOSE_PLAYERS_OFFLINE("exposePlayersOffline", EnumValueType.BOOLEAN);
+    EXPOSE_OFFLINE_PLAYERS("core:exposeOfflinePlayers", 10, EnumValueType.BOOLEAN);
 
     private final String name;
 
+    private final int id;
+
     private final EnumValueType type;
 
-    EnumOxygenPrivilege(String name, EnumValueType type) {
-        this.name = "core:" + name;
+    EnumOxygenPrivilege(String name, int id, EnumValueType type) {
+        this.name = name;
+        this.id = id;
         this.type = type;
     }
 
-    @Override
-    public String toString() {
+    public String getName() {
         return this.name;
+    }
+
+    public int id() {
+        return id;
     }
 
     public static void register() {
         for (EnumOxygenPrivilege privilege : EnumOxygenPrivilege.values())
-            PrivilegeRegistry.registerPrivilege(privilege.name, privilege.type);
+            PrivilegeRegistry.registerPrivilege(privilege.name, privilege.id, privilege.type);
     }
 }

@@ -1,28 +1,39 @@
 package austeretony.oxygen_core.common.privilege;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import austeretony.oxygen_core.common.EnumValueType;
 
 public class PrivilegeRegistry {
 
-    private static final Map<String, PrivilegeRegistryEntry> REGISTRY = new HashMap<>();
+    private static final Map<Integer, PrivilegeRegistryEntry> REGISTRY = new HashMap<>();
 
-    public static Set<String> getRegisteredPrivileges() {
-        return REGISTRY.keySet();
+    public static Collection<PrivilegeRegistryEntry> getRegisteredPrivileges() {
+        return REGISTRY.values();
     }
 
-    public static boolean privilegeExist(String name) {
-        return getRegisteredPrivileges().contains(name);
+    public static void registerPrivilege(String name, int id, EnumValueType type) {
+        REGISTRY.put(id, new PrivilegeRegistryEntry(name, id, type));
     }
 
-    public static void registerPrivilege(String name, EnumValueType type) {
-        REGISTRY.put(name, new PrivilegeRegistryEntry(name, type));
+    public static PrivilegeRegistryEntry getRegistryEntry(int id) {
+        return REGISTRY.get(id);
     }
 
-    public static PrivilegeRegistryEntry getRegistryEntry(String name) {
-        return REGISTRY.get(name);
+    public static class PrivilegeRegistryEntry {
+
+        public final String name;
+
+        public final int id;
+
+        public final EnumValueType type;
+
+        PrivilegeRegistryEntry(String name, int id, EnumValueType type) {
+            this.name = name;
+            this.id = id;
+            this.type = type;
+        }
     }
 }

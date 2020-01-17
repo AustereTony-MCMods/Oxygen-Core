@@ -1,49 +1,88 @@
 package austeretony.oxygen_core.server;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-import austeretony.oxygen_core.common.currency.CurrencyProvider;
-import austeretony.oxygen_core.common.currency.OxygenCoinsProvider;
+import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.common.util.MathUtils;
+import austeretony.oxygen_core.common.watcher.WatchedValue;
+import austeretony.oxygen_core.server.api.CurrencyHelperServer;
+import austeretony.oxygen_core.server.api.OxygenHelperServer;
+import austeretony.oxygen_core.server.currency.CurrencyProvider;
 
 public class CurrencyManagerServer {
 
-    private CurrencyProvider provider;
+    private CurrencyProvider commonProvider;
+
+    private final Map<Integer, CurrencyProvider> providers = new HashMap<>(5);
 
     public void registerCurrencyProvider(CurrencyProvider provider) {
-        if (this.provider == null)
-            this.provider = provider;
+        if (provider.getIndex() == OxygenMain.COMMON_CURRENCY_INDEX)
+            this.commonProvider = provider;
+        this.providers.put(provider.getIndex(), provider);
+
+        WatchedValuesRegistryServer.registerWatchedValue(new WatchedValue(provider.getIndex(), Long.BYTES, 
+                (playerUUID, value)->value.setLong(CurrencyHelperServer.getCurrency(playerUUID, provider.getIndex()))));
     }
 
-    public CurrencyProvider getCurrencyProvider() {
-        return this.provider;
+    public Collection<CurrencyProvider> getCurrencyProviders() {
+        return this.providers.values();
     }
 
-    public void validateCurrencyProvider() {
-        if (this.provider == null)
-            this.provider = new OxygenCoinsProvider();
+    public CurrencyProvider getCommonCurrencyProvider() {
+        return this.commonProvider;
     }
 
-    public long getCurrency(UUID playerUUID) {
-        return this.provider.getCurrency(playerUUID);
+    public CurrencyProvider getCurrencyProvider(int index) {
+        if (index == OxygenMain.COMMON_CURRENCY_INDEX)
+            return this.commonProvider;
+        else
+            return this.providers.get(index);
     }
 
-    public boolean enoughCurrency(UUID playerUUID, long required) {
-        return this.provider.enoughCurrency(playerUUID, required);
+    public long getCurrency(UUID playerUUID, int index) {
+        synchronized (playerUUID) {
+            if (index == OxygenMain.COMMON_CURRENCY_INDEX)
+                return this.commonProvider.getCurrency(playerUUID);
+            else {
+                CurrencyProvider provider = this.providers.get(index);
+                if (provider != null)
+                    return provider.getCurrency(playerUUID);
+            }
+            return 0L;
+        }
     }
 
-    public void setCurrency(UUID playerUUID, long value) {
-        this.provider.setCurrency(playerUUID, value);
+    public void setCurrency(UUID playerUUID, long value, int index) {
+        synchronized (playerUUID) {
+            if (index == OxygenMain.COMMON_CURRENCY_INDEX) {
+                this.commonProvider.setCurrency(playerUUID, MathUtils.clamp(value, 0L, Long.MAX_VALUE));
+                this.commonProvider.updated(playerUUID);
+
+                OxygenHelperServer.setWatchedValueLong(playerUUID, index, value);
+            } else {
+                CurrencyProvider provider = this.providers.get(index);
+                if (provider != null) {
+                    provider.setCurrency(playerUUID, MathUtils.clamp(value, 0L, Long.MAX_VALUE));
+                    provider.updated(playerUUID);
+
+                    OxygenHelperServer.setWatchedValueLong(playerUUID, index, value);
+                }
+            }
+        }
     }
 
-    public void addCurrency(UUID playerUUID, long value) {
-        this.provider.addCurrency(playerUUID, value);
+    public boolean enoughCurrency(UUID playerUUID, long required, int index) {
+        return this.getCurrency(playerUUID, index) >= required;
     }
 
-    public void removeCurrency(UUID playerUUID, long value) {
-        this.provider.removeCurrency(playerUUID, value);
+    public void addCurrency(UUID playerUUID, long value, int index) {
+        this.setCurrency(playerUUID, this.getCurrency(playerUUID, index) + value, index);
     }
 
-    public void save(UUID playerUUID) {
-        this.provider.save(playerUUID);
+    public void removeCurrency(UUID playerUUID, long value, int index) {
+        this.setCurrency(playerUUID, this.getCurrency(playerUUID, index) - value, index);
     }
 }

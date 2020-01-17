@@ -71,7 +71,8 @@ public class StreamUtils {
     }
 
     public static int readByte(InputStream is) throws IOException {
-        return is.read();
+        int value = is.read();
+        return value > - 1 ? (byte) value : value;
     }
 
     public static int readShort(InputStream is) throws IOException {

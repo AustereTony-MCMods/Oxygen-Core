@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import austeretony.oxygen_core.common.EnumActivityStatus;
 import austeretony.oxygen_core.common.PlayerSharedData;
 import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.main.OxygenMain;
@@ -17,10 +18,8 @@ import austeretony.oxygen_core.common.network.client.CPSyncObservedPlayersData;
 import austeretony.oxygen_core.common.network.client.CPSyncSharedData;
 import austeretony.oxygen_core.common.persistent.AbstractPersistentData;
 import austeretony.oxygen_core.common.util.StreamUtils;
-import austeretony.oxygen_core.server.OxygenPlayerData.EnumActivityStatus;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import austeretony.oxygen_core.server.api.event.OxygenActivityStatusChangedEvent;
-import austeretony.oxygen_core.server.config.OxygenConfigServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,11 +33,11 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     private final Map<Integer, UUID> access = new ConcurrentHashMap<>();
 
-    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<>(5);
+    private final Set<SharedDataRegistryEntry> sharedDataRegistry = new HashSet<>();
 
-    private final ByteBuf compressed = Unpooled.buffer();
+    private final ByteBuf compressedSharedData = Unpooled.buffer();
 
-    private volatile long nextUpdateTime;
+    private volatile long nextUpdateTimeMillis;
 
     public void registerSharedDataValue(int id, int size) {
         this.sharedDataRegistry.add(new SharedDataRegistryEntry(id, size));
@@ -65,10 +64,11 @@ public class SharedDataManagerServer extends AbstractPersistentData {
     }
 
     public void addObservedPlayer(UUID observer, UUID observed) {
-        if (this.observedPlayers.containsKey(observer))
+        ObservedPlayersContainer container = this.observedPlayers.get(observer);
+        if (container != null)
             this.observedPlayers.get(observer).addObservedPlayer(observed);
         else {
-            ObservedPlayersContainer container = new ObservedPlayersContainer();
+            container = new ObservedPlayersContainer();
             container.addObservedPlayer(observed);
             this.observedPlayers.put(observer, container);
         }
@@ -76,16 +76,13 @@ public class SharedDataManagerServer extends AbstractPersistentData {
     }
 
     public void removeObservedPlayer(UUID observer, UUID observed) {
-        if (this.observedPlayers.containsKey(observer)) {
-            this.observedPlayers.get(observer).removeObservedPlayer(observed);
-            if (this.observedPlayers.get(observer).isEmpty())
+        ObservedPlayersContainer container = this.observedPlayers.get(observer);
+        if (container != null) {
+            container.removeObservedPlayer(observed);
+            if (container.isEmpty())
                 this.observedPlayers.remove(observer);
         }
         this.setChanged(true);
-    }
-
-    public boolean haveObservedPlayers(UUID playerUUID) {
-        return this.observedPlayers.containsKey(playerUUID);
     }
 
     public ObservedPlayersContainer getObservedPlayersContainer(UUID playerUUID) {
@@ -105,21 +102,24 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     public void createSharedDataEntry(EntityPlayerMP playerMP) {
         UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-        PlayerSharedData sharedData = new PlayerSharedData();
-        sharedData.setPlayerUUID(playerUUID);
-        sharedData.setUsername(CommonReference.getName(playerMP));
-        sharedData.setIndex(CommonReference.getEntityId(playerMP));
+        PlayerSharedData newSharedData = new PlayerSharedData();
+        newSharedData.setPlayerUUID(playerUUID);
+        newSharedData.setUsername(CommonReference.getName(playerMP));
+        newSharedData.setIndex(CommonReference.getEntityId(playerMP));
+        newSharedData.updateLastActivityTime();
 
         for (SharedDataRegistryEntry entry : this.sharedDataRegistry)
-            sharedData.createDataBuffer(entry.id, entry.size);
+            newSharedData.createDataBuffer(entry.id, entry.size);
 
-        sharedData.setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, OxygenHelperServer.getOxygenPlayerData(playerUUID).getActivityStatus().ordinal());
-        sharedData.setInt(OxygenMain.DIMENSION_SHARED_DATA_ID, playerMP.dimension);     
+        newSharedData.setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, OxygenHelperServer.getOxygenPlayerData(playerUUID).getActivityStatus().ordinal());
+        newSharedData.setInt(OxygenMain.DIMENSION_SHARED_DATA_ID, playerMP.dimension);
 
-        this.sharedData.put(playerUUID, sharedData);
-        this.access.put(sharedData.getIndex(), playerUUID);
+        this.sharedData.put(playerUUID, newSharedData);
+        this.access.put(CommonReference.getEntityId(playerMP), playerUUID);
 
         this.syncObservedPlayersData(playerMP);
+
+        OxygenManagerServer.instance().getPrivilegesManager().updatePlayerRolesSharedData(playerUUID);
 
         this.setChanged(true);
     }
@@ -153,16 +153,18 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     public void syncObservedPlayersData(EntityPlayerMP playerMP) {
         UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-        if (this.haveObservedPlayers(playerUUID)) {
-            ObservedPlayersContainer container = this.getObservedPlayersContainer(playerUUID);
+        ObservedPlayersContainer container = this.getObservedPlayersContainer(playerUUID);
+        if (container != null) {
             ByteBuf buffer = null;
             try {
                 buffer = Unpooled.buffer();
+
                 buffer.writeShort(container.getObservedPlayersAmount());
                 for (UUID uuid : container.getObservedPlayers())
                     this.sharedData.get(uuid).write(buffer);
+
                 byte[] compressed = new byte[buffer.writerIndex()];
-                buffer.readBytes(compressed);
+                buffer.getBytes(0, compressed);
                 OxygenMain.network().sendTo(new CPSyncObservedPlayersData(compressed), playerMP);
             } finally {
                 if (buffer != null)
@@ -171,39 +173,29 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         }
     }
 
-    protected void compressSharedData() {
-        OxygenHelperServer.addRoutineTask(()->{
-            synchronized (this.compressed) {
-                if (System.currentTimeMillis() >= this.nextUpdateTime) {
-                    this.nextUpdateTime = System.currentTimeMillis() + 1000L;
-                    this.compressed.clear();
-                    this.compressed.writeShort(this.access.size());
-                    UUID playerUUID;
-                    for (int index : this.access.keySet()) {
-                        playerUUID = this.access.get(index);
-                        this.sharedData.get(playerUUID).write(this.compressed);
-                    }
+    public void syncSharedData(EntityPlayerMP playerMP, int id) {
+        synchronized (this.compressedSharedData) {
+            if (System.currentTimeMillis() > this.nextUpdateTimeMillis) {
+                this.nextUpdateTimeMillis = System.currentTimeMillis() + 1000L;
+
+                this.compressedSharedData.clear();
+                this.compressedSharedData.writeShort(this.access.size());
+                UUID playerUUID;
+                for (int index : this.access.keySet()) {
+                    playerUUID = this.access.get(index);
+                    this.sharedData.get(playerUUID).write(this.compressedSharedData);
                 }
             }
-        });
-    }
 
-    public void syncSharedData(EntityPlayerMP playerMP, int id) {
-        synchronized (this.compressed) {
-            byte[] compressed = new byte[this.compressed.writerIndex()];
-            this.compressed.getBytes(0, compressed);
+            byte[] compressed = new byte[this.compressedSharedData.writerIndex()];
+            this.compressedSharedData.getBytes(0, compressed);
             OxygenMain.network().sendTo(new CPSyncSharedData(id, compressed), playerMP);
         }    
     }
 
     @Override
     public String getDisplayName() {
-        return "persistent_shared_data";
-    }
-
-    @Override
-    public long getSaveDelayMinutes() {
-        return OxygenConfigServer.SHARED_DATA_SAVE_DELAY_MINUTES.getIntValue();
+        return "players_shared_data";
     }
 
     @Override
@@ -216,6 +208,7 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         StreamUtils.write(this.sharedData.size(), bos);
         for (PlayerSharedData sharedData : this.sharedData.values())
             sharedData.write(bos);
+
         StreamUtils.write(this.observedPlayers.size(), bos);
         for (Map.Entry<UUID, ObservedPlayersContainer> entry : this.observedPlayers.entrySet()) {
             StreamUtils.write(entry.getKey(), bos);
@@ -233,7 +226,8 @@ public class SharedDataManagerServer extends AbstractPersistentData {
             sharedData = PlayerSharedData.read(bis);
             this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
         }
-        OxygenMain.LOGGER.info("Loaded {} persistent shared data entries.", amount);
+        OxygenMain.LOGGER.info("Loaded {} players shared data entries.", amount);
+
         amount = StreamUtils.readInt(bis);
         UUID playerUUID;
         for (i = 0; i < amount; i++) {

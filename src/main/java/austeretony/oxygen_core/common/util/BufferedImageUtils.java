@@ -13,9 +13,10 @@ import java.util.List;
 
 public class BufferedImageUtils {
 
+    //image chunk size for network packet
     public static final int
-    BYTE_ARRAY_LENGTH = 16384,
-    INT_ARRAY_LENGTH = 4096;
+    BYTE_ARRAY_LENGTH = Short.MAX_VALUE,//server -> client
+    INT_ARRAY_LENGTH = Short.MAX_VALUE / 4 - Byte.MAX_VALUE;//client -> server
 
     public static List<byte[]> convertBufferedImageToByteArraysList(BufferedImage bufferedImage) {
         byte[] imageArray = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
@@ -42,7 +43,7 @@ public class BufferedImageUtils {
 
     public static BufferedImage convertIntArraysListToBufferedImage(List<int[]> imageIntParts, int imageWidth, int imageHeight) {
         int[] imageArray = mergeIntArrays(imageIntParts);               
-        BufferedImage bufferedImage = new BufferedImage(imageWidth, imageWidth, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
         bufferedImage.setData(Raster.createRaster(bufferedImage.getSampleModel(), new DataBufferInt(imageArray, imageArray.length), new Point()));
         return bufferedImage;
     }

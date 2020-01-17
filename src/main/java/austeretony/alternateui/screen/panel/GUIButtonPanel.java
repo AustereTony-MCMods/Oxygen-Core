@@ -46,7 +46,7 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
      * 
      * @param button добавляемая кнопка
      */
-    public GUIButtonPanel addButton(GUIButton button) {  	    	
+    public GUIButtonPanel addEntry(GUIButton button) {  	    	
         int size;		
         button.initScreen(this.getScreen());    	
         if (!this.visibleButtons.contains(button)) { 
@@ -89,7 +89,7 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
         this.buttonsBuffer.clear();
         this.searchButtons.clear();
         if (this.hasScroller())
-            this.getScroller().resetPosition();
+            this.getScroller().reset();
     }
 
     /**
@@ -107,6 +107,8 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
 
     @Override
     public void draw(int mouseX, int mouseY) {   
+        if (this.isDebugMode())
+            drawRect(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), this.getDebugColor());
         if (this.isVisible()) {             	        	   	
             for (GUIButton button : this.visibleButtons)                	
                 button.draw(mouseX, mouseY);          	     
@@ -164,8 +166,8 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
             if (this.hasSearchField()) {               
                 if (this.getSearchField().keyTyped(typedChar, keyCode)) {
                     this.screen.searchButtonPanel(this);
-                    if (this.hasScroller() && this.getScroller().hasSlider())
-                        this.getScroller().getSlider().reset();
+                    if (this.hasScroller())
+                        this.getScroller().reset();
                 }
             }
         }

@@ -6,7 +6,8 @@ import net.minecraft.util.SoundEvent;
 public class SoundEventHelperClient {
 
     public static void playSoundClient(SoundEvent soundEvent, float volume, float pitch) {
-        ClientReference.getClientPlayer().playSound(soundEvent, volume, pitch);
+        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
+            ClientReference.getClientPlayer().playSound(soundEvent, volume, pitch);
     }
 
     public static void playSoundClient(SoundEvent soundEvent) {

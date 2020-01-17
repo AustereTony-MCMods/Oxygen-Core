@@ -147,7 +147,7 @@ public class GUIDropDownList extends GUISimpleElement<GUIDropDownList> {
         int i = 0, size;    	
         GUIDropDownElement dropDownElement;    	    		
         this.visibleElements.clear();    	
-        this.getScroller().resetPosition();   	    		
+        this.getScroller().reset();   	    		
         for (i = 0; i < this.getVisibleElementsAmount(); i++) {    		
             if (i < this.elementsBuffer.size()) {			
                 dropDownElement = this.elementsBuffer.get(i);  			            	            	

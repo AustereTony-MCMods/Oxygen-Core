@@ -16,7 +16,7 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
 
     public final static int FONT_HEIGHT = 9;
 
-    private boolean isDebugMode, isVisible, isStatBackgroundEnabled, isDynBackgroundEnabled, isTextShadowEnabled, hasTooltip, hasDisplayText;
+    private boolean isDebugMode, isStatBackgroundEnabled, isDynBackgroundEnabled, isTextShadowEnabled, hasTooltip, hasDisplayText;
 
     private String displayText, tooltipText;
 
@@ -68,21 +68,21 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
                 drawRect(0, 0, this.getWidth(), this.getHeight(), color);
             } 
             if (this.hasDisplayText()) {   
-                int textOffset = this.getTextAlignment() == EnumGUIAlignment.CENTER ? 
+                int textOffset = (int) (this.getTextAlignment() == EnumGUIAlignment.CENTER ? 
                         (this.getWidth() - this.textWidth(this.getDisplayText(), this.getTextScale())) / 2 + this.getTextOffset() : (this.getTextAlignment() == EnumGUIAlignment.LEFT ? 
-                                0 + this.getTextOffset() : this.getWidth() - this.textWidth(this.getDisplayText(), this.getTextScale()) - this.getTextOffset()); 
-                        GlStateManager.pushMatrix();           
-                        GlStateManager.translate(textOffset, (this.getHeight() - this.textHeight(this.getTextScale())) / 2, 0.0F);            
-                        GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);  
-                        int color;       		
-                        if (!this.isEnabled())               	
-                            color = this.getDisabledTextColor();           
-                        else if (this.isHovered() || this.isToggled())               	                	
-                            color = this.getHoveredTextColor();
-                        else               	
-                            color = this.getEnabledTextColor();                                           
-                        this.mc.fontRenderer.drawString(this.getDisplayText(), 0, 0, color, this.isTextShadowEnabled());
-                        GlStateManager.popMatrix();
+                                0 + this.getTextOffset() : this.getWidth() - this.textWidth(this.getDisplayText(), this.getTextScale()) - this.getTextOffset())); 
+                GlStateManager.pushMatrix();           
+                GlStateManager.translate(textOffset, (this.getHeight() - this.textHeight(this.getTextScale())) / 2, 0.0F);            
+                GlStateManager.scale(this.getTextScale(), this.getTextScale(), 0.0F);  
+                int color;       		
+                if (!this.isEnabled())               	
+                    color = this.getDisabledTextColor();           
+                else if (this.isHovered() || this.isToggled())               	                	
+                    color = this.getHoveredTextColor();
+                else               	
+                    color = this.getEnabledTextColor();                                           
+                this.mc.fontRenderer.drawString(this.getDisplayText(), 0, 0, color, this.isTextShadowEnabled());
+                GlStateManager.popMatrix();
             }    
             GlStateManager.popMatrix();
         }
@@ -107,34 +107,13 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         this.setHovered(this.isEnabled() && mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + (int) (this.getWidth() * this.getScale()) && mouseY < this.getY() + (int) (this.getHeight() * this.getScale()));   
     }
 
+    public T debugMode() {          
+        this.isDebugMode = true;
+        return (T) this;
+    }
+
     public boolean isDebugMode() {    	
         return this.isDebugMode;
-    }
-
-    /**
-     * Заливает рабочую область установленным цветом для отображения границ.
-     * 
-     * @return вызывающий объект
-     */
-    public T enableDebugMode() {  	
-        this.isDebugMode = true;    	
-        return (T) this;
-    } 
-
-    public boolean isVisible() {  	
-        return this.isVisible;
-    }
-
-    /**
-     * Определяет, будет ли отображаться элемент.
-     * 
-     * @param isVisible
-     * 
-     * @return вызывающий объект
-     */
-    public T setVisible(boolean isVisible) {  	
-        this.isVisible = isVisible;	
-        return (T) this;
     }
 
     public boolean isTextShadowEnabled() {  	
@@ -472,11 +451,11 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
     }
 
     public int textWidth(String text, float scaleFactor) {
-        return (int) ((float) this.mc.fontRenderer.getStringWidth(text) * scaleFactor);
+        return (int) (this.mc.fontRenderer.getStringWidth(text) * scaleFactor);
     }
 
     public int textHeight(float scaleFactor) {
-        return (int) ((float) FONT_HEIGHT * scaleFactor);
+        return (int) (this.mc.fontRenderer.FONT_HEIGHT * scaleFactor);
     }
 
     /**

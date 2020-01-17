@@ -6,9 +6,9 @@ public interface PresetClient {
 
     int getId();
 
-    String getDomain();
+    String getDirectory();
 
-    String getDisplayName();
+    String getName();
 
     long getVersionId();
 

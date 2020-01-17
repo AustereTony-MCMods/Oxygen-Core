@@ -12,7 +12,7 @@ import net.minecraft.network.INetHandler;
 
 public class CPSyncMainData extends Packet {
 
-    private long worldId, groupId;
+    private long worldId;
 
     private UUID playerUUID;
 
@@ -20,17 +20,15 @@ public class CPSyncMainData extends Packet {
 
     public CPSyncMainData() {}
 
-    public CPSyncMainData(long worldId, int maxPlayers, UUID playerUUID, long groupId) {
+    public CPSyncMainData(long worldId, int maxPlayers, UUID playerUUID) {
         this.worldId = worldId;
         this.maxPlayers = maxPlayers;
         this.playerUUID = playerUUID;
-        this.groupId = groupId;
     }
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
         buffer.writeLong(this.worldId);
-        buffer.writeLong(this.groupId);
         buffer.writeShort(this.maxPlayers);
         ByteBufUtils.writeUUID(this.playerUUID, buffer);
     }
@@ -39,10 +37,9 @@ public class CPSyncMainData extends Packet {
     public void read(ByteBuf buffer, INetHandler netHandler) {
         OxygenMain.LOGGER.info("Synchronized main data.");
         final long 
-        worldId = buffer.readLong(),
-        groupId = buffer.readLong();
+        worldId = buffer.readLong();
         final int maxPlayers = buffer.readShort();
         final UUID playerUUID = ByteBufUtils.readUUID(buffer);
-        OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().init(worldId, maxPlayers, playerUUID, groupId));
+        OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().initWorld(worldId, maxPlayers, playerUUID));
     }
 }
