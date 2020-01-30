@@ -20,6 +20,7 @@ import austeretony.oxygen_core.common.persistent.PersistentData;
 import austeretony.oxygen_core.common.persistent.PersistentDataManager;
 import austeretony.oxygen_core.server.OxygenManagerServer;
 import austeretony.oxygen_core.server.OxygenPlayerData;
+import austeretony.oxygen_core.server.battle.PlayerVersusPlayerValidator;
 import austeretony.oxygen_core.server.chat.ChatChannel;
 import austeretony.oxygen_core.server.preset.PresetServer;
 import austeretony.oxygen_core.server.request.RequestValidator;
@@ -35,7 +36,15 @@ public class OxygenHelperServer {
     }
 
     public static void registerRequestValidator(RequestValidator validator) {
-        OxygenManagerServer.instance().getRequestsManager().registerRequestValidator(validator);
+        OxygenManagerServer.instance().getValidatorsManager().registerRequestValidator(validator);
+    }
+
+    public static void registerRestrictedAttacksValidator(PlayerVersusPlayerValidator validator) {
+        OxygenManagerServer.instance().getValidatorsManager().registerRestrictedAttacksValidator(validator);
+    }   
+
+    public static void registerAllowedAttacksValidator(PlayerVersusPlayerValidator validator) {
+        OxygenManagerServer.instance().getValidatorsManager().registerAllowedAttacksValidator(validator);
     }
 
     public static void registerPersistentData(PersistentData data) {
@@ -113,15 +122,15 @@ public class OxygenHelperServer {
     }
 
     public static long getWorldId() {
-        return OxygenManagerServer.instance().getServerDataContainer().getWorldId();
+        return OxygenManagerServer.instance().getServerData().getWorldId();
     }
 
     public static int getMaxPlayers() {
-        return OxygenManagerServer.instance().getServerDataContainer().maxPlayers;
+        return OxygenManagerServer.instance().getServerData().maxPlayers;
     }
 
     public static String getDataFolder() {
-        return OxygenManagerServer.instance().getServerDataContainer().getDataFolder();
+        return OxygenManagerServer.instance().getServerData().getDataFolder();
     }
 
     public static OxygenPlayerData getOxygenPlayerData(UUID playerUUID) {

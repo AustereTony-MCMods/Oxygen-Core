@@ -12,6 +12,8 @@ import net.minecraft.network.INetHandler;
 
 public class CPSyncMainData extends Packet {
 
+    private String serverRegionId;
+
     private long worldId;
 
     private UUID playerUUID;
@@ -20,7 +22,8 @@ public class CPSyncMainData extends Packet {
 
     public CPSyncMainData() {}
 
-    public CPSyncMainData(long worldId, int maxPlayers, UUID playerUUID) {
+    public CPSyncMainData(String serverRegionId, long worldId, int maxPlayers, UUID playerUUID) {
+        this.serverRegionId = serverRegionId;
         this.worldId = worldId;
         this.maxPlayers = maxPlayers;
         this.playerUUID = playerUUID;
@@ -28,6 +31,7 @@ public class CPSyncMainData extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
+        ByteBufUtils.writeString(this.serverRegionId, buffer);
         buffer.writeLong(this.worldId);
         buffer.writeShort(this.maxPlayers);
         ByteBufUtils.writeUUID(this.playerUUID, buffer);
@@ -36,10 +40,14 @@ public class CPSyncMainData extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         OxygenMain.LOGGER.info("Synchronized main data.");
+        final String serverRegionId = ByteBufUtils.readString(buffer);
         final long 
         worldId = buffer.readLong();
         final int maxPlayers = buffer.readShort();
         final UUID playerUUID = ByteBufUtils.readUUID(buffer);
-        OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().initWorld(worldId, maxPlayers, playerUUID));
+        OxygenHelperClient.addRoutineTask(()->{
+            OxygenManagerClient.instance().getTimeManager().initServerTime(serverRegionId);
+            OxygenManagerClient.instance().initWorld(worldId, maxPlayers, playerUUID);
+        });
     }
 }

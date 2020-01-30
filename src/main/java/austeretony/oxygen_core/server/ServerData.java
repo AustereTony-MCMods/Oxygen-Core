@@ -8,12 +8,12 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 
 import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.server.api.TimeHelperServer;
 
-public class ServerDataContainer {
+public class ServerData {
 
     public String worldFolder;
 
@@ -52,9 +52,9 @@ public class ServerDataContainer {
                 exception.printStackTrace();
             }           
         } else {
-            this.worldId = Long.parseLong(OxygenMain.ID_DATE_FORMAT.format(new Date()));
+            this.worldId = Long.parseLong(OxygenMain.ID_DATE_FORMAT.format(TimeHelperServer.getZonedDateTime()));
             worldIdStr = String.valueOf(this.worldId);
-            OxygenMain.LOGGER.info("Created world id: {}.", worldIdStr);
+            OxygenMain.LOGGER.info("Created world id: {}", worldIdStr);
             try {               
                 Files.createDirectories(worldIdPath.getParent());             
                 try (PrintStream printStream = new PrintStream(new File(worldIdFilePathStr))) {

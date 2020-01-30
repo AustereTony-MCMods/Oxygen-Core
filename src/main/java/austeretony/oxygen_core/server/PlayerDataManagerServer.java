@@ -83,7 +83,7 @@ public class PlayerDataManagerServer {
         senderData = this.manager.getPlayerDataContainer().getPlayerData(senderUUID),
         targetData = this.manager.getPlayerDataContainer().getPlayerData(targetUUID);
         if ((targetData.getActivityStatus() != EnumActivityStatus.OFFLINE || PrivilegesProviderServer.getAsBoolean(senderUUID, EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id(), false))
-                && this.manager.getRequestsManager().validateRequest(senderUUID, targetUUID)) {
+                && this.manager.getValidatorsManager().validateRequest(senderUUID, targetUUID)) {
             this.addNotification(target, notification);
             this.informPlayer(sender, EnumOxygenStatusMessage.REQUEST_SENT);
         } else

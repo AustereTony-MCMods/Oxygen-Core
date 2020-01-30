@@ -40,7 +40,7 @@ public final class OxygenManagerServer {
 
     private final ItemCategoriesPresetServer itemCategoriesPreset = new ItemCategoriesPresetServer();
 
-    private final ServerDataContainer serverData = new ServerDataContainer();
+    private final ServerData serverData = new ServerData();
 
     private final PrivilegesManagerServer privilegesManager = new PrivilegesManagerServer();
 
@@ -50,9 +50,11 @@ public final class OxygenManagerServer {
 
     private final PlayerDataManagerServer playerDataManager;
 
-    private final RequestsManagerServer requestsManager = new RequestsManagerServer();
+    private final ValidatorsManagerServer validatorsManager = new ValidatorsManagerServer();
 
     private final CurrencyManagerServer currencyManager = new CurrencyManagerServer();
+
+    private final TimeManagerServer timeManager;
 
     private final ChatChannelsManagerServer chatChannelsManager;
 
@@ -70,6 +72,8 @@ public final class OxygenManagerServer {
         this.playerDataManager = new PlayerDataManagerServer(this);
         this.chatChannelsManager = new ChatChannelsManagerServer(this);
         this.presetsManager.registerPreset(this.itemCategoriesPreset);
+
+        this.timeManager = new TimeManagerServer(this);
     }
 
     private void registerPersistentData() {
@@ -118,7 +122,7 @@ public final class OxygenManagerServer {
         return this.itemCategoriesPreset;
     } 
 
-    public ServerDataContainer getServerDataContainer() {
+    public ServerData getServerData() {
         return this.serverData;
     } 
 
@@ -138,12 +142,16 @@ public final class OxygenManagerServer {
         return this.playerDataManager;
     }
 
-    public RequestsManagerServer getRequestsManager() {
-        return this.requestsManager;
+    public ValidatorsManagerServer getValidatorsManager() {
+        return this.validatorsManager;
     }
 
     public CurrencyManagerServer getCurrencyManager() {
         return this.currencyManager;
+    }
+
+    public TimeManagerServer getTimeManager() {
+        return this.timeManager;
     }
 
     public ChatChannelsManagerServer getChatChannelsManager() {
@@ -170,6 +178,7 @@ public final class OxygenManagerServer {
         UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
         ConfigManager.instance().syncConfigs(playerMP);
         OxygenMain.network().sendTo(new CPSyncMainData(
+                this.timeManager.getZoneId().getId(),
                 OxygenHelperServer.getWorldId(), 
                 OxygenHelperServer.getMaxPlayers(), 
                 playerUUID), playerMP);

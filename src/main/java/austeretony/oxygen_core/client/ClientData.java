@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import austeretony.oxygen_core.common.api.CommonReference;
 
-public class ClientDataContainer {
+public class ClientData {
 
     private long worldId;
 

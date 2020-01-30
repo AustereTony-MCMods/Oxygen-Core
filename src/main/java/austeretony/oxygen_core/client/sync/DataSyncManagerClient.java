@@ -37,11 +37,13 @@ public class DataSyncManagerClient {
         Set<Long> clientIds = handler.getIds();
         SynchronousEntry[] validEntries = new SynchronousEntry[ids.length];
         i = 0;
-        for (long entryId : ids)
-            if (!clientIds.contains(entryId))
-                needSync[i++] = entryId;    
-            else
+        for (long entryId : ids) {
+            if (!clientIds.contains(entryId)) {
+                if (i < 4090)//TODO 0.10.1 identifiers amount limiter
+                    needSync[i++] = entryId;    
+            } else
                 validEntries[j++] = handler.getEntry(entryId);
+        }
         handler.clearData();
         for (SynchronousEntry validEntry : validEntries) {
             if (validEntry == null) break;

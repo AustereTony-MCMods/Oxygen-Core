@@ -1,7 +1,5 @@
 package austeretony.oxygen_core.client;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +41,7 @@ public final class OxygenManagerClient {
 
     private final ItemCategoriesPresetClient itemCategoriesPreset = new ItemCategoriesPresetClient();
 
-    private final ClientDataContainer clientData = new ClientDataContainer();
+    private final ClientData clientData = new ClientData();
 
     private final ClientDataManager clientDataManager = new ClientDataManager();
 
@@ -69,17 +67,17 @@ public final class OxygenManagerClient {
 
     private final CurrencyManagerClient currencyManager = new CurrencyManagerClient();
 
-    private final Random random = new Random();
+    private final TimeManagerClient timeManager;
 
-    private final DateFormat dateFormat;
+    private final Random random = new Random();
 
     private OxygenManagerClient() {
         this.executionManager = new OxygenExecutionManager(EnumSide.CLIENT, 1, 1, 1, 1);
         this.ioManager = new OxygenIOManager(this.executionManager);
         this.persistentDataManager = new PersistentDataManager(this.executionManager, this.ioManager, OxygenConfig.CLIENT_DATA_SAVE_PERIOD_SECONDS.asInt());
         this.presetsManager.registerPreset(this.itemCategoriesPreset);
+        this.timeManager = new TimeManagerClient(this);
         CommonReference.registerEvent(this.keyHandler);
-        this.dateFormat = new SimpleDateFormat(OxygenConfig.DATE_FORMAT_PATTERN.asString());
     }
 
     private void registerPersistentData() {
@@ -127,7 +125,7 @@ public final class OxygenManagerClient {
         return this.itemCategoriesPreset;
     } 
 
-    public ClientDataContainer getClientDataContainer() {
+    public ClientData getClientData() {
         return this.clientData;
     } 
 
@@ -179,12 +177,12 @@ public final class OxygenManagerClient {
         return this.currencyManager;
     }
 
-    public Random getRandom() {
-        return this.random;
+    public TimeManagerClient getTimeManager() {
+        return this.timeManager;
     }
 
-    public DateFormat getDateFormat() {
-        return this.dateFormat;
+    public Random getRandom() {
+        return this.random;
     }
 
     public void init() {

@@ -8,9 +8,9 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 
 import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.server.api.TimeHelperServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -48,7 +48,7 @@ public abstract class AbstractPresetServer implements PresetServer {
                 exception.printStackTrace();
             }           
         } else {
-            this.versionId = Long.parseLong(OxygenMain.ID_DATE_FORMAT.format(new Date()));
+            this.versionId = Long.parseLong(OxygenMain.ID_DATE_FORMAT.format(TimeHelperServer.getZonedDateTime()));
             try {               
                 Files.createDirectories(path.getParent());             
                 try (PrintStream printStream = new PrintStream(new File(pathStr))) {

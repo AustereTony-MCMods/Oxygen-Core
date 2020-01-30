@@ -1,6 +1,5 @@
 package austeretony.oxygen_core.client.api;
 
-import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
@@ -89,10 +88,6 @@ public class OxygenHelperClient {
         return OxygenManagerClient.instance().getKeyHandler();
     }
 
-    public static DateFormat getDateFormat() {
-        return OxygenManagerClient.instance().getDateFormat();
-    }
-
     public static void syncData(int dataId) {
         OxygenManagerClient.instance().getDataSyncManager().syncData(dataId);
     }   
@@ -138,15 +133,15 @@ public class OxygenHelperClient {
     }
 
     public static long getWorldId() {
-        return OxygenManagerClient.instance().getClientDataContainer().getWorldId();
+        return OxygenManagerClient.instance().getClientData().getWorldId();
     }
 
     public static int getMaxPlayers() {
-        return OxygenManagerClient.instance().getClientDataContainer().getMaxPlayers();
+        return OxygenManagerClient.instance().getClientData().getMaxPlayers();
     }
 
     public static String getDataFolder() {
-        return OxygenManagerClient.instance().getClientDataContainer().getDataFolder();
+        return OxygenManagerClient.instance().getClientData().getDataFolder();
     }
 
     public static CurrencyProperties getCommonCurrencyProperties() {
@@ -162,7 +157,7 @@ public class OxygenHelperClient {
     }
 
     public static UUID getPlayerUUID() {
-        return OxygenManagerClient.instance().getClientDataContainer().getPlayerUUID();
+        return OxygenManagerClient.instance().getClientData().getPlayerUUID();
     }
 
     public static String getPlayerUsername() {

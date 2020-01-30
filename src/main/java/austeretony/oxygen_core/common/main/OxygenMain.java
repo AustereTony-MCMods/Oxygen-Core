@@ -1,7 +1,7 @@
 package austeretony.oxygen_core.common.main;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,8 +45,8 @@ import austeretony.oxygen_core.common.network.client.CPPrivilegeAction;
 import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
 import austeretony.oxygen_core.common.network.client.CPRoleAction;
 import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
-import austeretony.oxygen_core.common.network.client.CPSyncConfigs;
 import austeretony.oxygen_core.common.network.client.CPSyncAbsentData;
+import austeretony.oxygen_core.common.network.client.CPSyncConfigs;
 import austeretony.oxygen_core.common.network.client.CPSyncInstantData;
 import austeretony.oxygen_core.common.network.client.CPSyncMainData;
 import austeretony.oxygen_core.common.network.client.CPSyncNotification;
@@ -86,6 +86,8 @@ import austeretony.oxygen_core.server.currency.OxygenCoinsCurrencyProvider;
 import austeretony.oxygen_core.server.currency.OxygenShardsCurrencyProvider;
 import austeretony.oxygen_core.server.currency.OxygenVouchersCurrencyProvider;
 import austeretony.oxygen_core.server.event.OxygenEventsServer;
+import austeretony.oxygen_core.server.event.PlayerVersusPlayerEvents;
+import austeretony.oxygen_core.server.event.PrivilegesEventsServer;
 import austeretony.oxygen_core.server.instant.InstantDataRegistryServer;
 import austeretony.oxygen_core.server.item.ItemsBlackList;
 import austeretony.oxygen_core.server.network.NetworkRequestsRegistryServer;
@@ -111,7 +113,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.10.0", 
+    VERSION = "0.10.1", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -135,6 +137,8 @@ public class OxygenMain {
      * Trade - 10
      * Guilds - 11
      * Interaction - 12
+     * Regions - 13
+     * Daily Rewards - 14
      */
 
     //Shared Constants
@@ -169,7 +173,9 @@ public class OxygenMain {
     ABSORPTION_INSTANT_DATA_INDEX = 3,
     ACTIVE_EFFECTS_INSTANT_DATA_INDEX = 10;
 
-    public static final DateFormat ID_DATE_FORMAT = new SimpleDateFormat("yyMMddHHmmss");
+    public static final DateTimeFormatter
+    ID_DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMddHHmmss", Locale.ENGLISH),
+    DEBUG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd z", Locale.ENGLISH);
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -187,6 +193,10 @@ public class OxygenMain {
         OxygenManagerServer.create();
         CommonReference.registerEvent(new OxygenSoundEffects());
         CommonReference.registerEvent(new OxygenEventsServer());
+        if (OxygenConfig.VALIDATE_PVP.asBoolean())
+            CommonReference.registerEvent(new PlayerVersusPlayerEvents());
+        if (OxygenConfig.ENABLE_PRIVILEGES.asBoolean())
+            CommonReference.registerEvent(new PrivilegesEventsServer());
         OxygenHelperServer.registerSharedDataValue(ACTIVITY_STATUS_SHARED_DATA_ID, Byte.BYTES);
         OxygenHelperServer.registerSharedDataValue(DIMENSION_SHARED_DATA_ID, Integer.BYTES);
         for (int i = 0; i < MAX_ROLES_PER_PLAYER; i++)

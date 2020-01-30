@@ -29,7 +29,8 @@ public class CPSyncValidDataIds extends Packet {
 
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
-        final int dataId = buffer.readByte();
+        final int 
+        dataId = buffer.readByte();
         final long[] ids = new long[buffer.readShort()];
         for (int i = 0; i < ids.length; i++)
             ids[i] = buffer.readLong();

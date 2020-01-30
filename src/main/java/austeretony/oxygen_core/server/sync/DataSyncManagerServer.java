@@ -70,12 +70,10 @@ public class DataSyncManagerServer {
                     //
                     //diesieben07 from www.minecraftforge.net forum said server->client packet 
                     //max payload is 200MB, so Oxygen will sync specified data with single packet.
-                    //
-                    //(I’m curious how it will handle synchronization of offers and sales history over the past 30 days with a new player.)                
 
                     if (entriesAmount > 0) {
                         if (buffer.writerIndex() > 209715200) {
-                            OxygenMain.LOGGER.error("Data {} synchronization buffer exceed maximum packet payload ({}/209715200) for player {}, it will not be synchronized!",
+                            OxygenMain.LOGGER.error("Data {} synchronization buffer exceed maximum packet payload ({}/209715200 bytes) for player {}, it will not be synchronized!",
                                     dataId,
                                     buffer.writerIndex(),
                                     CommonReference.getName(playerMP));
