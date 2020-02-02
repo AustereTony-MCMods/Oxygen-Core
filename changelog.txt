@@ -1,3 +1,7 @@
+0.10.2b [2020-02-02]
++ Fixed synchronization failure of privilege system data in the privileges menu (for operators) after creating a new world.
++ The option to turn off sound effects now affects only additional menu effects - notification, purchase, etc.
+
 0.10.1b [2020-01-30]
 + Fixed data synchronization.
 + The outdated java time API has been replaced with the new java 1.8 time API.
