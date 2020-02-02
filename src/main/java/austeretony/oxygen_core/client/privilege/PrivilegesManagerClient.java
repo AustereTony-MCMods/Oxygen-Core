@@ -135,9 +135,13 @@ public class PrivilegesManagerClient {
 
             amount = buffer.readShort();
             PlayerSharedData sharedData;
+            boolean exist;
             for (i = 0; i < amount; i++) {
-                sharedData = PlayerSharedData.read(buffer);
-                this.players.put(sharedData.getPlayerUUID(), sharedData);
+                exist = buffer.readBoolean();
+                if (exist) {
+                    sharedData = PlayerSharedData.read(buffer);
+                    this.players.put(sharedData.getPlayerUUID(), sharedData);
+                }
             }
         } finally {
             if (buffer != null)

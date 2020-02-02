@@ -132,6 +132,7 @@ public class RoleImpl implements Role {
         roleObject.add(EnumPrivilegeFileKey.USERNAME_COLOR.name, new JsonPrimitive(OxygenUtils.formattingCode(this.getUsernameColor())));
         roleObject.add(EnumPrivilegeFileKey.PREFIX_COLOR.name, new JsonPrimitive(OxygenUtils.formattingCode(this.getPrefixColor())));
         roleObject.add(EnumPrivilegeFileKey.CHAT_COLOR.name, new JsonPrimitive(OxygenUtils.formattingCode(this.getChatColor())));
+
         JsonArray privilegesArray = new JsonArray();
         for (Privilege privilege : this.getPrivileges())
             privilegesArray.add(privilege.toJson());
@@ -148,6 +149,7 @@ public class RoleImpl implements Role {
         role.setUsernameColor(OxygenUtils.formattingFromCode(jsonObject.get(EnumPrivilegeFileKey.USERNAME_COLOR.name).getAsString()));
         role.setPrefixColor(OxygenUtils.formattingFromCode(jsonObject.get(EnumPrivilegeFileKey.PREFIX_COLOR.name).getAsString()));
         role.setChatColor(OxygenUtils.formattingFromCode(jsonObject.get(EnumPrivilegeFileKey.CHAT_COLOR.name).getAsString()));
+
         JsonArray privilegesArray = jsonObject.get(EnumPrivilegeFileKey.PRIVILEGES.name).getAsJsonArray();
         for (JsonElement privilegesElement : privilegesArray)
             role.addPrivilege(PrivilegeUtils.deserialize(privilegesElement.getAsJsonObject()));
@@ -164,6 +166,7 @@ public class RoleImpl implements Role {
         buffer.writeByte(this.getUsernameColor().ordinal());
         buffer.writeByte(this.getPrefixColor().ordinal());
         buffer.writeByte(this.getChatColor().ordinal());
+
         buffer.writeByte(this.getPrivileges().size());
         for (Privilege privilege : this.getPrivileges())
             privilege.write(buffer);
@@ -178,6 +181,7 @@ public class RoleImpl implements Role {
         role.setUsernameColor(TextFormatting.values()[buffer.readByte()]);
         role.setPrefixColor(TextFormatting.values()[buffer.readByte()]);
         role.setChatColor(TextFormatting.values()[buffer.readByte()]);
+
         int amount = buffer.readByte();
         for (int i = 0; i < amount; i++)
             role.addPrivilege(PrivilegeUtils.read(buffer));

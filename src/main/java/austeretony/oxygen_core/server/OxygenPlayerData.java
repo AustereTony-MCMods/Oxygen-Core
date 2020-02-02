@@ -126,7 +126,8 @@ public class OxygenPlayerData extends AbstractPersistentData {
     }
 
     public boolean isNetworkRequestAvailable(int id) {
-        return this.networkRequests.get(id).requestAvailable();
+        NetworkRequestEntry entry = this.networkRequests.get(id);
+        return entry != null && entry.requestAvailable();
     }
 
     public boolean checkTimeOut(int id) {

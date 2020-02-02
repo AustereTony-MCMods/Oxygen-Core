@@ -113,7 +113,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.10.1", 
+    VERSION = "0.10.2", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -262,7 +262,7 @@ public class OxygenMain {
         worldFolder = event.getServer().isSinglePlayer() ? CommonReference.getGameFolder() + "/saves/" + worldName : CommonReference.getGameFolder() + "/" + worldName;
         LOGGER.info("Initializing world: {}", worldName);
         OxygenManagerServer.instance().worldLoaded(worldFolder, event.getServer().getMaxPlayers());
-        PrivilegesLoaderServer.loadPrivilegeData();
+        PrivilegesLoaderServer.loadPrivilegeSystemData();
 
         LOGGER.info("Active common currency provider: <{}>", OxygenManagerServer.instance().getCurrencyManager().getCommonCurrencyProvider().getDisplayName());
         LOGGER.info("Loaded currency providers:");

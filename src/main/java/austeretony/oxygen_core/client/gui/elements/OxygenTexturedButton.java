@@ -2,7 +2,6 @@ package austeretony.oxygen_core.client.gui.elements;
 
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
@@ -23,8 +22,7 @@ public class OxygenTexturedButton extends GUISimpleElement<OxygenTexturedButton>
         this.texture = texture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
-        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
-            this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         if (!tooltip.isEmpty())
             this.initTooltip(tooltip, EnumBaseGUISetting.TOOLTIP_TEXT_COLOR.get().asInt(), EnumBaseGUISetting.TOOLTIP_BACKGROUND_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_TOOLTIP_SCALE.get().asFloat());

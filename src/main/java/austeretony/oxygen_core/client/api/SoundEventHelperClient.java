@@ -11,7 +11,7 @@ public class SoundEventHelperClient {
     }
 
     public static void playSoundClient(SoundEvent soundEvent) {
-        playSoundClient(soundEvent, 0.5F, 1.0F);
+        playSoundClient(soundEvent, 0.4F, 1.0F);
     }
 
     public static void playSoundClient(int id) {

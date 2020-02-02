@@ -1,7 +1,6 @@
 package austeretony.oxygen_core.client.gui.elements;
 
 import austeretony.alternateui.screen.core.GUISimpleElement;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,8 +29,7 @@ public class OxygenTextFormattingColorPicker extends GUISimpleElement<OxygenText
     public OxygenTextFormattingColorPicker(int xPosition, int yPosition) {
         this.setPosition(xPosition, yPosition);
         this.setSize(16 * 7, 7);
-        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
-            this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         this.enableFull();
     }

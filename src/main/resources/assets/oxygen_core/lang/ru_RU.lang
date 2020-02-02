@@ -6,6 +6,7 @@ key.oxygen_core.interact=Взаимодействовать
 oxygen_core.request.accept=Принять
 oxygen_core.request.reject=Отклонить
 
+oxygen_core.currency.money=Деньги
 oxygen_core.currency.coins=Монеты
 oxygen_core.currency.shards=Осколки
 oxygen_core.currency.vouchers=Ваучеры
@@ -159,6 +160,7 @@ oxygen_core.gui.download=Загрузка
 oxygen_core.gui.settings=Настройки
 oxygen_core.gui.search=Поиск
 oxygen_core.gui.refresh=Обновить
+oxygen_core.gui.create=Создать
 oxygen_core.gui.reset=Сбросить
 oxygen_core.gui.apply=Применить
 oxygen_core.gui.remove=Удалить

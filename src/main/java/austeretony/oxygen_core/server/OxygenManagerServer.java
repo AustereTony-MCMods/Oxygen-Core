@@ -165,6 +165,7 @@ public final class OxygenManagerServer {
     public void worldLoaded(String worldFolder, int maxPlayers) {
         this.serverData.createOrLoadWorldId(worldFolder, maxPlayers);
         this.presetsManager.init();
+
         OxygenHelperServer.loadPersistentDataAsync(this.sharedDataManager);
     }
 

@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
+import austeretony.oxygen_core.client.api.SoundEventHelperClient;
 import austeretony.oxygen_core.client.api.event.OxygenNotificationRecievedEvent;
 import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
 import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
@@ -38,9 +38,8 @@ public class NotificationManagerClient {
 
     public void addNotification(Notification notification) {
         this.notifications.put(notification.getId(), notification);
-        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
-            ClientReference.getClientPlayer().playSound(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 1.0F, 1.0F);
         if (notification.getType() == EnumNotification.REQUEST) {
+            SoundEventHelperClient.playSoundClient(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 0.5F, 1.0F);
             if (!EnumCoreClientSetting.HIDE_REQUESTS_OVERLAY.get().asBoolean())
                 this.latestNotification = notification.getId();
         }

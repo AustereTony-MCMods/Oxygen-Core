@@ -6,6 +6,7 @@ key.oxygen_core.interact=Interact
 oxygen_core.request.accept=Accept
 oxygen_core.request.reject=Reject
 
+oxygen_core.currency.money=Money
 oxygen_core.currency.coins=Coins
 oxygen_core.currency.shards=Shards
 oxygen_core.currency.vouchers=Vouchers

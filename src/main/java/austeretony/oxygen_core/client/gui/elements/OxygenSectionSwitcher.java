@@ -4,7 +4,6 @@ import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.OxygenGUITextures;
 import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
@@ -122,13 +121,12 @@ public class OxygenSectionSwitcher extends GUISimpleElement<OxygenSectionSwitche
                         this.sectionChangeListener.onChange(element.section);
                     if (this.screen.getWorkspace().getCurrentSection() != element.section)
                         element.section.open();
-                    if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
-                        this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
+                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
                     return true;
                 }
             }
         }       
-        if (flag && mouseButton == 0 && !this.isDragged() && EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean())
+        if (flag && mouseButton == 0 && !this.isDragged())
             this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.soundEvent, 0.5F, 1.0F);
         this.setDragged(flag && mouseButton == 0);      
         return false;

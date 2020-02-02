@@ -5,7 +5,6 @@ import austeretony.alternateui.screen.core.GUIBaseElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
 import austeretony.alternateui.util.GUISoundEffect;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
@@ -21,10 +20,8 @@ public class OxygenContextMenu extends GUIContextMenu {
 
     public OxygenContextMenu(OxygenContextMenuAction... actions) {
         super(0, 0);
-        if (EnumBaseClientSetting.ENABLE_SOUND_EFFECTS.get().asBoolean()) {
-            this.openSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_OPEN.soundEvent, 0.5F, 1.0F);
-            this.closeSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
-        }
+        this.openSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_OPEN.soundEvent, 0.5F, 1.0F);
+        this.closeSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
 
         this.elements = new OxygenContextMenuEntry[actions.length];
 

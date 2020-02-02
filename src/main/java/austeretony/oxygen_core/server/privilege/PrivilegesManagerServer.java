@@ -88,6 +88,19 @@ public class PrivilegesManagerServer {
         return null;
     }
 
+    public void addRoleToPlayerFast(UUID playerUUID, int roleId) {
+        PlayerRolesContainer rolesContainer;
+        if ((rolesContainer = this.players.get(playerUUID)) != null) {
+            if (rolesContainer.roles.size() < OxygenMain.MAX_ROLES_PER_PLAYER)
+                rolesContainer.roles.add(roleId);
+        } else {
+            rolesContainer = new PlayerRolesContainer();
+            rolesContainer.roles.add(roleId);
+            rolesContainer.setChatFormattingRoleId(roleId);
+            this.players.put(playerUUID, rolesContainer);
+        }
+    }
+
     public boolean addRoleToPlayer(UUID playerUUID, int roleId) {
         if (this.roles.containsKey(roleId)) {
             boolean added = false;
@@ -135,6 +148,12 @@ public class PrivilegesManagerServer {
             this.playersChanged();
         }
         return removed;
+    }
+
+    public void setPlayerChatFormattingRoleFast(UUID playerUUID, int roleId) {
+        PlayerRolesContainer rolesContainer;
+        if ((rolesContainer = this.players.get(playerUUID)) != null)
+            rolesContainer.setChatFormattingRoleId(roleId);
     }
 
     public void setPlayerChatFormattingRole(UUID playerUUID, int roleId) {
@@ -267,8 +286,15 @@ public class PrivilegesManagerServer {
                     role.write(buffer);
 
                 buffer.writeShort(this.getPlayers().size());
-                for (UUID playerUUID : this.getPlayers().keySet())
-                    OxygenHelperServer.getPlayerSharedData(playerUUID).write(buffer);
+                PlayerSharedData sharedData;
+                for (UUID playerUUID : this.getPlayers().keySet()) {
+                    sharedData = OxygenHelperServer.getPlayerSharedData(playerUUID);
+                    if (sharedData != null) {
+                        buffer.writeBoolean(true);
+                        sharedData.write(buffer);
+                    } else
+                        buffer.writeBoolean(false);
+                }
 
                 byte[] compressed = new byte[buffer.writerIndex()];
                 buffer.getBytes(0, compressed);
@@ -417,7 +443,7 @@ public class PrivilegesManagerServer {
     public void save() {
         if (this.rolesChanged) {
             this.rolesChanged = false;
-            PrivilegesLoaderServer.savePrivilegedRolesAsync();
+            PrivilegesLoaderServer.saveRolesAsync();
         }
         if (this.playersChanged) {
             this.playersChanged = false;
