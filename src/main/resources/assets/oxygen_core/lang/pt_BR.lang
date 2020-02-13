@@ -1,0 +1,235 @@
+key.oxygen_core.notifications=Abrir Menu de Notificações
+key.oxygen_core.accept=Aceitar Pedido
+key.oxygen_core.reject=Rejeitar Pedido
+key.oxygen_core.interact=Interagir
+
+oxygen_core.request.accept=Aceitar
+oxygen_core.request.reject=Rejeitar
+
+oxygen_core.currency.money=Dinheiro
+oxygen_core.currency.coins=Coins
+oxygen_core.currency.shards=Estilhaços
+oxygen_core.currency.vouchers=Cupons
+
+oxygen_core.gui.callback.settings=Configurações
+
+oxygen_core.gui.notifications.title=Notificações
+oxygen_core.gui.notifications.empty=Você não tem notificações ativas.
+
+oxygen_core.gui.privileges.title=Privilégios
+oxygen_core.gui.privileges.information=Informação
+oxygen_core.gui.privileges.roles=Cargos
+oxygen_core.gui.privileges.players=Jogadores
+oxygen_core.gui.privileges.disabled=Privilégios desativados.
+oxygen_core.gui.privileges.chatFormattingDisabled=Formatação de chat desativada.
+oxygen_core.gui.privileges.playerRoles=Seus Cargos
+oxygen_core.gui.privileges.chatFormatting=Formatação de Chat
+oxygen_core.gui.privileges.testMessage=Teste
+oxygen_core.gui.privileges.privileges=Privilégios
+oxygen_core.gui.privileges.defaultFormatting=Sem Formatação
+oxygen_core.gui.privileges.value=Valor:
+
+oxygen_core.gui.privileges.roleName=Nome
+oxygen_core.gui.privileges.roleId=Id (Prioridade)
+oxygen_core.gui.privileges.prefix=Prefixo
+oxygen_core.gui.privileges.roleNameColor=Cor do Nome do Cargo
+oxygen_core.gui.privileges.prefixColor=Cor do Prefixo
+oxygen_core.gui.privileges.usernameColor=Cor do Usuário
+oxygen_core.gui.privileges.chatColor=Cor do Chat
+
+oxygen_core.gui.privileges.callback.roleCreation=Criação de Cargos
+oxygen_core.gui.privileges.callback.editRole=Editar Cargo
+oxygen_core.gui.privileges.callback.addPrivilege=Adicionar Privilégio
+oxygen_core.gui.privileges.callback.removePrivilege=Remover Privilégio
+oxygen_core.gui.privileges.callback.removeRole=Remover Cargo
+oxygen_core.gui.privileges.callback.removeRole.request=O Cargo será removido.
+oxygen_core.gui.privileges.callback.removePrivilege.request=O Privilégio será removido.
+oxygen_core.gui.privileges.callback.addPlayerRole=Adicionar Cargo
+oxygen_core.gui.privileges.callback.removePlayerRole=Remover Cargo
+
+oxygen_core.gui.privileges.edit=Editar
+oxygen_core.gui.privileges.remove=Remover
+oxygen_core.gui.privileges.addPrivilege=Adicionar Privilégio
+oxygen_core.gui.privileges.removePrivilege=Remover Privilégio
+oxygen_core.gui.privileges.addRoleToPlayer=Adicionar Cargo
+oxygen_core.gui.privileges.removeRoleFromPlayer=Remover Cargo
+
+oxygen_core.gui.settings.title=Configurações
+oxygen_core.gui.settings.common=Comum
+oxygen_core.gui.settings.gui=Interface
+
+oxygen_core.gui.settings.module.base=Base
+oxygen_core.gui.settings.module.core=Core
+
+oxygen_core.gui.settings.option.hideOverlay=Esconder Sobreposição de Pedidos
+oxygen_core.gui.settings.option.interactWithRMB=Interagir com RMB
+oxygen_core.gui.settings.option.enableSoundEffects=Ativar Efeitos de Som
+oxygen_core.gui.settings.option.enableRarityColors=Ativar Raridade de Cores
+oxygen_core.gui.settings.option.enableItemsDurabilityBar=Ativar Durabilidade de Items
+
+oxygen_core.gui.settings.callback.setColor=Definir Cor
+oxygen_core.gui.settings.callback.setScale=Definir Tamanho
+oxygen_core.gui.settings.callback.setOffset=Definir Deslocamento
+oxygen_core.gui.settings.callback.setKey=Definir Tecla
+oxygen_core.gui.settings.argbColor=Cor ARGB
+oxygen_core.gui.settings.elementScale=Tamanho do Elemento
+oxygen_core.gui.settings.offset=Deslocamento
+oxygen_core.gui.settings.keyboardKey=Tecla do Teclado
+oxygen_core.gui.settings.scale=Teste
+oxygen_core.gui.settings.tooltip.screen=Tela
+oxygen_core.gui.settings.tooltip.callback=Callback
+oxygen_core.gui.settings.tooltip.base=Base
+oxygen_core.gui.settings.tooltip.additional=Adicional
+oxygen_core.gui.settings.tooltip.background=Fundo
+oxygen_core.gui.settings.tooltip.text=Texto
+oxygen_core.gui.settings.tooltip.element=Elemento
+oxygen_core.gui.settings.tooltip.enabled=Ativado
+oxygen_core.gui.settings.tooltip.disabled=Desativado
+oxygen_core.gui.settings.tooltip.hovered=Hovered
+
+oxygen_core.gui.settings.option.color=Cor
+oxygen_core.gui.settings.option.scale=Tamanho
+oxygen_core.gui.settings.option.misc=Variado
+oxygen_core.gui.settings.option.alignment=Alinhamento
+oxygen_core.gui.settings.option.offset=Deslocamento
+oxygen_core.gui.settings.option.oxygenMenu=Menu do Oxygen
+
+oxygen_core.gui.settings.option.screenFill=Preencher Tela
+oxygen_core.gui.settings.option.guiBackground=Fundo da GUI
+oxygen_core.gui.settings.option.button=Botão
+oxygen_core.gui.settings.option.element=Elemento
+oxygen_core.gui.settings.option.slider=Slider
+oxygen_core.gui.settings.option.text=Texto
+oxygen_core.gui.settings.option.textDark=Texto Escuro
+oxygen_core.gui.settings.option.textfield=Campo de Texto
+oxygen_core.gui.settings.option.overlayText=Sobreposição de Texto
+oxygen_core.gui.settings.option.tooltip=Tooltip
+oxygen_core.gui.settings.option.inactiveElement=Elemento Inativo
+oxygen_core.gui.settings.option.activeElement=Elemento Ativo
+oxygen_core.gui.settings.option.statusElement=Status do Elemento
+
+oxygen_core.gui.settings.option.subText=Sub Texto
+oxygen_core.gui.settings.option.titleText=Título
+oxygen_core.gui.settings.option.panelText=Texto do Painel
+oxygen_core.gui.settings.option.buttonText=Texto do Botão
+oxygen_core.gui.settings.option.tooltipText=Texto do Tooltip
+oxygen_core.gui.settings.option.overlay=Sobreposição
+
+oxygen_core.gui.settings.option.verticalGradient=Gradiente Vertical
+
+oxygen_core.gui.settings.option.alignmentNotificationsMenu=Menu de Notificações
+oxygen_core.gui.settings.option.alignmentSettingsMenu=Menu de Configurações
+oxygen_core.gui.settings.option.alignmentPrivilegesMenu=Menu de Privilégios
+
+oxygen_core.gui.settings.option.offsetRequestOverlay=Deslocamento Vertical de Sobreposição de Pedido
+
+oxygen_core.gui.settings.option.addNotificationsMenu=Menu de Notificações
+oxygen_core.gui.settings.option.addSettingsMenu=Menu de Configurações
+oxygen_core.gui.settings.option.addPrivilegesMenu=Menu de Privilégios
+
+oxygen_core.alignment.left=Esquerda
+oxygen_core.alignment.center=Centro
+oxygen_core.alignment.right=Direita
+
+oxygen_core.status.online=Online
+oxygen_core.status.away=Ausente
+oxygen_core.status.notDisturb=Não Perturbe
+oxygen_core.status.offline=Offline
+
+oxygen_core.rarity.normal=Normal
+oxygen_core.rarity.fine=Bom
+oxygen_core.rarity.superior=Superior
+oxygen_core.rarity.epic=Épico
+oxygen_core.rarity.legendary=Lendário
+
+oxygen_core.gui.minute=%s minuto
+oxygen_core.gui.minutes=%s minutos
+oxygen_core.gui.hour=%s hora
+oxygen_core.gui.hours=%s horas
+oxygen_core.gui.day=%s dia
+oxygen_core.gui.days=%s dias
+oxygen_core.gui.undef=indefinido
+oxygen_core.gui.expired=expirado
+
+oxygen_core.gui.lastActivityTime=ativo %s atrás
+
+oxygen_core.gui.online=Online
+oxygen_core.gui.download=Baixar
+oxygen_core.gui.settings=Configurações
+oxygen_core.gui.search=Buscar
+oxygen_core.gui.refresh=Recarregar
+oxygen_core.gui.create=Criar
+oxygen_core.gui.reset=Resetar
+oxygen_core.gui.apply=Aplicar
+oxygen_core.gui.remove=Remover
+oxygen_core.gui.edit=Editar
+oxygen_core.gui.hide=Esconder
+oxygen_core.gui.sort=Organizar
+oxygen_core.gui.priority=Prioridade
+oxygen_core.gui.name=Nome
+oxygen_core.gui.username=Usuário
+oxygen_core.gui.time=Tempo
+oxygen_core.gui.status=Status
+oxygen_core.gui.dimension=Dimensão
+oxygen_core.gui.description=Descrição
+oxygen_core.gui.note=Nota
+oxygen_core.gui.confirm=Confirmar
+oxygen_core.gui.cancel=Cancelar
+oxygen_core.gui.close=Fechar
+oxygen_core.gui.add=Adicionar
+oxygen_core.gui.player=Jogador
+oxygen_core.gui.offer=Oferta
+oxygen_core.gui.take=Levar
+oxygen_core.gui.pay=Pagar
+
+oxygen_core.gui.inventoryLoad=Inventário
+
+oxygen_core.message.command.oxygens.currency.balance=O Jogador <%s> possui da moeda com índice <%s> a seguinte quantidade: <%s>.
+oxygen_core.message.command.oxygens.currency.set=O Jogador <%s> teve definido <%s> unidades da moeda com índice <%s>.
+oxygen_core.message.command.oxygens.currency.add=O Jogador <%s> recebeu <%s> unidades da moeda com índice <%s>.
+oxygen_core.message.command.oxygens.currency.remove=O Jogador <%s> perdeu <%s> unidades da moeda com índice <%s>.
+
+oxygen_core.message.command.oxygens.role.add=Adicionou o cargo <%s> para o jogador <%s>.
+oxygen_core.message.command.oxygens.role.remove=Removeu o cargo <%s> do jogador <%s>.
+
+oxygen_core.message.command.oxygens.notification.sentTo=Notificação enviada para <%s>: %s
+
+oxygen_core.command.exception.wrongArg=Argumento errado: %s.
+
+oxygen_core.command.oxygenc.reloadSettings=Configurações do Client recarregadas.
+oxygen_core.command.oxygenc.reloadProperties=Propriedades do Client recarregadas.
+oxygen_core.command.oxygenc.currency.balance=Unidade Monetária <%s> do Client é: %s
+oxygen_core.command.oxygenc.privileges.getValue=Privilégio do Client <%s (%s)> é: %s
+
+oxygen_core.status.activityStatusChanged=Status de Atividade alterado
+oxygen_core.status.requestSent=Pedido enviado
+oxygen_core.status.requestReset=Pedido resetado
+oxygen_core.status.roleCreated=Cargo criado
+oxygen_core.status.roleEdited=Cargo editado
+oxygen_core.status.roleRemoved=Cargo removido
+oxygen_core.status.privilegeAdded=Privilégio adicionado
+oxygen_core.status.privilegeRemoved=Privilégio removido
+oxygen_core.status.roleAddedToPlayer=Cargo adicionado ao jogador
+oxygen_core.status.roleRemovedFromPlayer=Cargo removido do jogador
+oxygen_core.status.actionTimeOut=Tempo de Ação expirado
+
+dim.unknown.name=Dimensão Desconhecida
+dim.overworld.name=Overworld
+dim.the_nether.name=Nether
+dim.the_end.name=The End
+
+oxygen_core.category.common=Tudo
+oxygen_core.category.blocks=Blocos
+oxygen_core.category.blocks.building=Construção
+oxygen_core.category.blocks.decoration=Decoração
+oxygen_core.category.blocks.transportation=Transporte
+oxygen_core.category.blocks.redstone=Redstone
+oxygen_core.category.items=Itens
+oxygen_core.category.items.misc=Variados
+oxygen_core.category.items.food=Comida
+oxygen_core.category.items.tools=Ferramentas
+oxygen_core.category.items.combat=Combate
+oxygen_core.category.items.brewing=Fermentação
+oxygen_core.category.items.enchanting=Encantamentos
+
+oxygen_core.dimension.unknown=Desconhecida
