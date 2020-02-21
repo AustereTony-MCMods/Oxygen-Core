@@ -7,7 +7,6 @@ import java.io.IOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import austeretony.oxygen_core.common.inventory.InventoryHelper;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.util.ByteBufUtils;
 import austeretony.oxygen_core.common.util.StreamUtils;
@@ -35,7 +34,22 @@ public class ItemStackWrapper {
         this.capNBTStr = capNBTStr;
     }
 
+    @Deprecated
     public static ItemStackWrapper getFromStack(ItemStack itemStack) {
+        NBTTagCompound serialized = itemStack.serializeNBT();
+        String 
+        stackNBTStr = itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : "",
+                capNBTStr = serialized.hasKey("ForgeCaps") ? serialized.getCompoundTag("ForgeCaps").toString() : "";
+                return new ItemStackWrapper(
+                        Item.getIdFromItem(itemStack.getItem()), 
+                        itemStack.getItem().getRegistryName().toString(), 
+                        itemStack.getItemDamage(), 
+                        stackNBTStr, 
+                        capNBTStr);
+    }
+
+    //because this name looks better!
+    public static ItemStackWrapper of(ItemStack itemStack) {
         NBTTagCompound serialized = itemStack.serializeNBT();
         String 
         stackNBTStr = itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : "",
@@ -88,7 +102,16 @@ public class ItemStackWrapper {
     }
 
     public boolean isEquals(ItemStack itemStack) {
-        return InventoryHelper.isEquals(itemStack, this.itemId, this.damage, this.stackNBTStr, this.capNBTStr);     
+        if (itemStack.isEmpty())
+            return false;
+        NBTTagCompound serialized = itemStack.serializeNBT();
+        String 
+        stackNBT = itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : "",
+                capNBT = serialized.hasKey("ForgeCaps") ? serialized.getCompoundTag("ForgeCaps").toString() : "";
+                return Item.getIdFromItem(itemStack.getItem()) == this.itemId
+                        && itemStack.getItemDamage() == this.damage
+                        && ((this.stackNBTStr.isEmpty() && stackNBT.isEmpty()) || this.stackNBTStr.equals(stackNBT))
+                        && ((this.capNBTStr.isEmpty() && capNBT.isEmpty()) || this.capNBTStr.equals(capNBT));     
     }
 
     public void write(BufferedOutputStream bos) throws IOException {
@@ -152,6 +175,15 @@ public class ItemStackWrapper {
 
     public ItemStackWrapper copy() {
         return new ItemStackWrapper(this.itemId, this.registryName, this.damage, this.stackNBTStr, this.capNBTStr);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[Registry name: %s, damage: %s, NBT: %s, Capability: %s]",
+                this.registryName,
+                this.damage,
+                this.stackNBTStr,
+                this.capNBTStr);
     }
 
     @Override

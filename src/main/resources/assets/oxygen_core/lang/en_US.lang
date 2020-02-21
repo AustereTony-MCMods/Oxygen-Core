@@ -181,6 +181,7 @@ oxygen_core.gui.player=Player
 oxygen_core.gui.offer=Offer
 oxygen_core.gui.take=Take
 oxygen_core.gui.pay=Pay
+oxygen_core.gui.price=Price
 
 oxygen_core.gui.inventoryLoad=Inventory
 

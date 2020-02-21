@@ -24,7 +24,7 @@ public class SPAbsentDataIds extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.dataId);
+        buffer.writeShort(this.dataId);
         buffer.writeShort(this.amount);
         for (long entryId : this.ids) {
             if (entryId == 0L) break;
@@ -35,7 +35,7 @@ public class SPAbsentDataIds extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        final int dataId = buffer.readByte();
+        final int dataId = buffer.readShort();
         if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), dataId + 2000)) {
             final long[] ids = new long[buffer.readShort()];
             if (ids.length > 0 && buffer.readableBytes() > 0) {

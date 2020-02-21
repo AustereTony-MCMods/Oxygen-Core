@@ -22,7 +22,7 @@ public class CPSyncAbsentData extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.dataId);
+        buffer.writeShort(this.dataId);
         buffer.writeShort(this.entriesAmount);
         buffer.writeInt(this.rawEntries.length);
         buffer.writeBytes(this.rawEntries);
@@ -31,7 +31,7 @@ public class CPSyncAbsentData extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final int 
-        dataId = buffer.readByte(),
+        dataId = buffer.readShort(),
         entriesAmount = buffer.readShort();
         final byte[] rawEntries = new byte[buffer.readInt()];
         buffer.readBytes(rawEntries);

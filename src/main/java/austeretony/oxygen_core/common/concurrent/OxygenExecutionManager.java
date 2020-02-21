@@ -19,7 +19,7 @@ public class OxygenExecutionManager {
         return this.executors;
     }
 
-    public Future<?> addIOTask(Runnable task) {
+    public Future<?> addIOTask(final Runnable task) {
         return this.executors.getIOExecutorService().submit(()->{
             try {
                 task.run();
@@ -29,7 +29,7 @@ public class OxygenExecutionManager {
         });
     }
 
-    public Future<?> addNetworkTask(Runnable task) {
+    public Future<?> addNetworkTask(final Runnable task) {
         return this.executors.getNetworkExecutorService().submit(()->{
             try {
                 task.run();

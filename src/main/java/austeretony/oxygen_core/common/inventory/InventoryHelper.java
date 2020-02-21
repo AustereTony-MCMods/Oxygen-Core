@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+//TODO 0.11 Completely replace it with InventoryProvider system
+@Deprecated
 public class InventoryHelper {
 
     public static int getOccupiedSlotsAmount(EntityPlayer player) {

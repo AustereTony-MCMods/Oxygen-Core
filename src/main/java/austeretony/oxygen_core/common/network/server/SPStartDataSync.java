@@ -20,13 +20,13 @@ public class SPStartDataSync extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.dataId);
+        buffer.writeShort(this.dataId);
     }
 
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        final int dataId = buffer.readByte();
+        final int dataId = buffer.readShort();
         if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), dataId + 1000))
             OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getDataSyncManager().syncData(playerMP, dataId));     
     }

@@ -21,7 +21,7 @@ public class CPSyncValidDataIds extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.dataId);
+        buffer.writeShort(this.dataId);
         buffer.writeShort(this.ids.length);
         for (long id : this.ids)
             buffer.writeLong(id);
@@ -29,8 +29,7 @@ public class CPSyncValidDataIds extends Packet {
 
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
-        final int 
-        dataId = buffer.readByte();
+        final int dataId = buffer.readShort();
         final long[] ids = new long[buffer.readShort()];
         for (int i = 0; i < ids.length; i++)
             ids[i] = buffer.readLong();

@@ -1,7 +1,5 @@
 package austeretony.oxygen_core.common.network;
 
-import com.google.common.collect.HashBiMap;
-
 import austeretony.oxygen_core.common.main.OxygenMain;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,11 +8,11 @@ import net.minecraft.network.NetHandlerPlayServer;
 
 public abstract class Packet {
 
-    public static Packet create(HashBiMap<Integer, Class<? extends Packet>> packets, int id) {
+    public static Packet create(Class<? extends Packet> clazz) {
         try {
-            return packets.get(id).newInstance();
+            return clazz.newInstance();
         } catch (Exception exception) {
-            OxygenMain.LOGGER.error("Oxygen Network error. Failed to create packet with id <{}>", id);
+            OxygenMain.LOGGER.error("Oxygen Network error. Failed to create packet of <{}> class.", clazz.getCanonicalName());
         }
         return null;
     }

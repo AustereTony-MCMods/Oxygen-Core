@@ -3,8 +3,8 @@ package austeretony.oxygen_core.client.gui.elements;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
+import austeretony.oxygen_core.client.api.InventoryProviderClient;
 import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
-import austeretony.oxygen_core.common.inventory.InventoryHelper;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class OxygenInventoryLoad extends GUISimpleElement<OxygenInventoryLoad> {
@@ -74,14 +74,17 @@ public class OxygenInventoryLoad extends GUISimpleElement<OxygenInventoryLoad> {
     }
 
     public void setLoad(int occupiedSlots) {
+        int size = InventoryProviderClient.getPlayerInventory().getSize(ClientReference.getClientPlayer());
+
         this.occupied = occupiedSlots;
-        this.overloaded = occupiedSlots == this.mc.player.inventory.mainInventory.size();
-        this.setDisplayText(String.valueOf(occupiedSlots) + "/" + String.valueOf(this.mc.player.inventory.mainInventory.size()));
+        this.overloaded = occupiedSlots == size;
+
+        this.setDisplayText(String.format("%s/%s", occupiedSlots, size));
         this.setSize(this.textWidth(this.getDisplayText(), EnumBaseGUISetting.TEXT_SUB_SCALE.get().asFloat() - 0.05F), 6);
     }
 
     public void updateLoad() {
-        this.setLoad(InventoryHelper.getOccupiedSlotsAmount(this.mc.player));
+        this.setLoad(InventoryProviderClient.getPlayerInventory().getOccupiedSlotsAmount(ClientReference.getClientPlayer()));
     }
 
     public void decrementLoad(int value) {

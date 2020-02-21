@@ -183,6 +183,7 @@ oxygen_core.gui.player=Игрок
 oxygen_core.gui.offer=Предложить
 oxygen_core.gui.take=Забрать
 oxygen_core.gui.pay=Оплатить
+oxygen_core.gui.price=Стоимость
 
 oxygen_core.gui.inventoryLoad=Инвентарь
 

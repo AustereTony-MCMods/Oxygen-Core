@@ -1,10 +1,12 @@
 package austeretony.oxygen_core.common.network;
 
 import java.io.IOException;
-
-import com.google.common.collect.HashBiMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
+import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,9 +24,7 @@ public class Network {
 
     public final FMLEventChannel channel;
 
-    private final HashBiMap<Integer, Class<? extends Packet>> packets = HashBiMap.create();
-
-    private int id = Byte.MIN_VALUE;
+    private final List<Class<? extends Packet>> packets = new ArrayList<>();
 
     private Network(String channelName) {
         this.channelName = channelName;
@@ -37,7 +37,13 @@ public class Network {
     }
 
     public void registerPacket(Class<? extends Packet> packet) {
-        this.packets.put(this.id++, packet);
+        this.packets.add(packet);
+    }
+
+    public void sortPackets() {
+        OxygenMain.LOGGER.info("[Core] Network channel <{}> holds {} packets.", this.channelName, this.packets.size());
+        Collections.sort(this.packets, 
+                (c1, c2)->c1.getCanonicalName().toLowerCase().compareTo(c2.getCanonicalName().toLowerCase()));
     }
 
     @SubscribeEvent
@@ -52,8 +58,7 @@ public class Network {
 
     private FMLProxyPacket pack(Packet packet, INetHandler netHandler) {
         PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
-        int id = this.packets.inverse().get(packet.getClass());
-        packetBuffer.writeByte(id);
+        packetBuffer.writeByte((byte) this.packets.indexOf(packet.getClass()));
         packet.write(packetBuffer, netHandler);
         return new FMLProxyPacket(packetBuffer, this.channelName);
     }
@@ -62,7 +67,7 @@ public class Network {
         FMLProxyPacket proxyPacket = event.getPacket();
         if (this.channelName.equals(proxyPacket.channel()) 
                 && proxyPacket.payload().readableBytes() != 0) {
-            Packet packet = Packet.create(this.packets, proxyPacket.payload().readByte());
+            Packet packet = Packet.create(this.packets.get(proxyPacket.payload().readByte()));
             if (packet != null)
                 packet.read(proxyPacket.payload(), event.getHandler());
         }

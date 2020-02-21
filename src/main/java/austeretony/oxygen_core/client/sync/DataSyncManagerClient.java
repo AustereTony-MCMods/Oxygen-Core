@@ -20,8 +20,7 @@ public class DataSyncManagerClient {
     }
 
     public void syncData(int dataId) {
-        if (this.handlers.containsKey(dataId))
-            OxygenMain.network().sendToServer(new SPStartDataSync(dataId));
+        OxygenMain.network().sendToServer(new SPStartDataSync(dataId));
     }
 
     public DataSyncHandlerClient getHandler(int dataId) {
@@ -39,7 +38,7 @@ public class DataSyncManagerClient {
         i = 0;
         for (long entryId : ids) {
             if (!clientIds.contains(entryId)) {
-                if (i < 4090)//TODO 0.10.1 identifiers amount limiter
+                if (i < 4095)//0.10.1 identifiers amount limiter (4095 * Long.BYTES = 32760 of 32767 bytes)
                     needSync[i++] = entryId;    
             } else
                 validEntries[j++] = handler.getEntry(entryId);
@@ -60,7 +59,7 @@ public class DataSyncManagerClient {
         DataSyncHandlerClient<SynchronousEntry> handler = this.getHandler(dataId);
         ByteBuf buffer = null;
         try {
-            buffer = Unpooled.buffer(Short.MAX_VALUE / 4);
+            buffer = Unpooled.buffer(rawEntries.length);
             buffer.writeBytes(rawEntries);
 
             SynchronousEntry entry;

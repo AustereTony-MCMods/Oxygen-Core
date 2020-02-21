@@ -14,6 +14,7 @@ import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.api.OxygenGUIHelper;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
 import austeretony.oxygen_core.client.api.OxygenOverlayHandler;
+import austeretony.oxygen_core.client.api.InventoryProviderClient;
 import austeretony.oxygen_core.client.command.CommandOxygenClient;
 import austeretony.oxygen_core.client.command.CoreArgumentClient;
 import austeretony.oxygen_core.client.currency.OxygenCoinsCurrencyProperties;
@@ -38,6 +39,7 @@ import austeretony.oxygen_core.common.api.OxygenHelperCommon;
 import austeretony.oxygen_core.common.config.ConfigManager;
 import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.config.PrivilegesConfig;
+import austeretony.oxygen_core.common.inventory.VanillaPlayerInventoryProvider;
 import austeretony.oxygen_core.common.network.Network;
 import austeretony.oxygen_core.common.network.client.CPAddSharedData;
 import austeretony.oxygen_core.common.network.client.CPPlaySoundEvent;
@@ -73,10 +75,13 @@ import austeretony.oxygen_core.common.network.server.SPSetActivityStatus;
 import austeretony.oxygen_core.common.network.server.SPSetChatFormattingRole;
 import austeretony.oxygen_core.common.network.server.SPStartDataSync;
 import austeretony.oxygen_core.common.privilege.PrivilegeUtils;
+import austeretony.oxygen_core.common.scripting.DummyScriptingAdapter;
+import austeretony.oxygen_core.common.scripting.ScriptingProvider;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
 import austeretony.oxygen_core.server.OxygenManagerServer;
 import austeretony.oxygen_core.server.api.CurrencyHelperServer;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
+import austeretony.oxygen_core.server.api.InventoryProviderServer;
 import austeretony.oxygen_core.server.api.PrivilegesProviderServer;
 import austeretony.oxygen_core.server.api.event.OxygenWorldLoadedEvent;
 import austeretony.oxygen_core.server.command.CommandOxygenOperator;
@@ -113,7 +118,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.10.2", 
+    VERSION = "0.10.3", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -139,6 +144,7 @@ public class OxygenMain {
      * Interaction - 12
      * Regions - 13
      * Daily Rewards - 14
+     * Shop - 15
      */
 
     //Shared Constants
@@ -182,6 +188,7 @@ public class OxygenMain {
         ConfigManager.create();
         OxygenHelperCommon.registerConfig(new OxygenConfig());
         OxygenHelperCommon.registerConfig(new PrivilegesConfig());
+        ScriptingProvider.registerAdapter(new DummyScriptingAdapter());
         if (event.getSide() == Side.CLIENT)
             CommandOxygenClient.registerArgument(new CoreArgumentClient());
     }
@@ -215,6 +222,7 @@ public class OxygenMain {
         InstantDataRegistryServer.registerInstantData(new InstantDataAbsorption());
         InstantDataRegistryServer.registerInstantData(new InstantDataArmor());
         InstantDataRegistryServer.registerInstantData(new InstantDataPotionEffects());
+        InventoryProviderServer.registerPlayerInventoryProvider(new VanillaPlayerInventoryProvider());
         EnumOxygenPrivilege.register();
         if (event.getSide() == Side.CLIENT) {     
             OxygenManagerClient.create();
@@ -240,11 +248,13 @@ public class OxygenMain {
             OxygenHelperClient.registerInstantData(new InstantDataAbsorption());
             OxygenHelperClient.registerInstantData(new InstantDataArmor());
             OxygenHelperClient.registerInstantData(new InstantDataPotionEffects());
+            InventoryProviderClient.registerPlayerInventoryProvider(new VanillaPlayerInventoryProvider());
         }
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        this.network.sortPackets();
         ItemsBlackList.loadBlackLists();
         OxygenManagerServer.instance().getPresetsManager().loadPresets();
         if (event.getSide() == Side.CLIENT)

@@ -16,6 +16,7 @@ import austeretony.oxygen_core.common.persistent.PersistentDataManager;
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import austeretony.oxygen_core.server.api.event.OxygenWorldUnloadedEvent;
 import austeretony.oxygen_core.server.chat.ChatChannelsManagerServer;
+import austeretony.oxygen_core.server.inventory.InventoryManagerServer;
 import austeretony.oxygen_core.server.preset.ItemCategoriesPresetServer;
 import austeretony.oxygen_core.server.preset.PresetsManagerServer;
 import austeretony.oxygen_core.server.privilege.PrivilegesManagerServer;
@@ -53,6 +54,8 @@ public final class OxygenManagerServer {
     private final ValidatorsManagerServer validatorsManager = new ValidatorsManagerServer();
 
     private final CurrencyManagerServer currencyManager = new CurrencyManagerServer();
+
+    private final InventoryManagerServer inventoryManager = new InventoryManagerServer();
 
     private final TimeManagerServer timeManager;
 
@@ -148,6 +151,10 @@ public final class OxygenManagerServer {
 
     public CurrencyManagerServer getCurrencyManager() {
         return this.currencyManager;
+    }
+
+    public InventoryManagerServer getInventoryManager() {
+        return this.inventoryManager;
     }
 
     public TimeManagerServer getTimeManager() {

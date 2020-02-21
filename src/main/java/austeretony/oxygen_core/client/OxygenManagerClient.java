@@ -11,6 +11,7 @@ import austeretony.oxygen_core.client.chat.ChatMessagesManagerClient;
 import austeretony.oxygen_core.client.currency.CurrencyManagerClient;
 import austeretony.oxygen_core.client.input.OxygenKeyHandler;
 import austeretony.oxygen_core.client.instant.InstantDataManagerClient;
+import austeretony.oxygen_core.client.inventory.InventoryManagerClient;
 import austeretony.oxygen_core.client.preset.ItemCategoriesPresetClient;
 import austeretony.oxygen_core.client.preset.PresetsManagerClient;
 import austeretony.oxygen_core.client.privilege.PrivilegesManagerClient;
@@ -66,6 +67,8 @@ public final class OxygenManagerClient {
     private final OxygenClientSettingsManager clientSettingManager = new OxygenClientSettingsManager();
 
     private final CurrencyManagerClient currencyManager = new CurrencyManagerClient();
+
+    private final InventoryManagerClient inventoryManager = new InventoryManagerClient();
 
     private final TimeManagerClient timeManager;
 
@@ -175,6 +178,10 @@ public final class OxygenManagerClient {
 
     public CurrencyManagerClient getCurrencyManager() {
         return this.currencyManager;
+    }
+
+    public InventoryManagerClient getInventoryManager() {
+        return this.inventoryManager;
     }
 
     public TimeManagerClient getTimeManager() {
