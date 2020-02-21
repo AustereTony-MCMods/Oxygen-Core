@@ -1,3 +1,10 @@
+0.10.3b [2020-02-21]
++ Added basic API for using scripts. Using scripts will be optional, they will be supported by some modules. 
+Script support will be provided through adapters, which will allow using different scripting languages.
++ Updated API for working with player’s inventory. Support for custom providers for inventory is available, 
+which will ensure the compatibility of Oxygen services with custom inventory.
++ Minor fixes for netweork system and Oxygen synchronization system.
+
 0.10.2b [2020-02-02]
 + Fixed synchronization failure of privilege system data in the privileges menu (for operators) after creating a new world.
 + The option to turn off sound effects now affects only additional menu effects - notification, purchase, etc.
