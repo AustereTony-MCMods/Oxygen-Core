@@ -30,9 +30,10 @@ public class Network {
         this.channelName = channelName;
         this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName);
         this.channel.register(this);
+        OxygenMain.LOGGER.info("[Core] Network handler <{}> created.", this.channelName);
     }
 
-    public static Network createNetworkHandler(String channelName) {
+    public static Network create(String channelName) {
         return new Network(channelName);
     }
 

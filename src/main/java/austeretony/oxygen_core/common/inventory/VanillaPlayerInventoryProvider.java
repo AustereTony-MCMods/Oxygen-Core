@@ -146,6 +146,6 @@ public class VanillaPlayerInventoryProvider implements PlayerInventoryProvider {
     }
 
     public static int getSlotsForAmount(int amount, int maxStackSize) {
-        return (int) Math.floor((double) amount / (double) maxStackSize);
+        return amount / maxStackSize + (amount % maxStackSize == 0 ? 0 : 1);
     }
 }

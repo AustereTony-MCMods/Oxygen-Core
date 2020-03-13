@@ -35,7 +35,8 @@ public class TimeManagerClient {
             try {
                 zoneId = ZoneId.of(OxygenConfig.CLIENT_REGION_ID.asString());
             } catch (DateTimeException exception) {
-                OxygenMain.LOGGER.error("Client ZoneId parse failure! System default ZoneId will be used.", exception);
+                OxygenMain.LOGGER.error("[Core] Client ZoneId parse failure! System default ZoneId <{}> will be used.", zoneId.getId());
+                exception.printStackTrace();
             }
         }
         return zoneId;
@@ -63,7 +64,7 @@ public class TimeManagerClient {
 
     public void initServerTime(String serverRegionId) {
         this.serverZoneId = ZoneId.of(serverRegionId);
-        OxygenMain.LOGGER.info("Server zone-time data: {}", OxygenMain.DEBUG_DATE_TIME_FORMATTER.format(this.getServerZonedDateTime()));
+        OxygenMain.LOGGER.info("[Core] Server zone-time data: {}", OxygenMain.DEBUG_DATE_TIME_FORMATTER.format(this.getServerZonedDateTime()));
     }
 
     public ZoneId getServerZoneId() {

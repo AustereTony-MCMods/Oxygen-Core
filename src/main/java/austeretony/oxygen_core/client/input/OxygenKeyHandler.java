@@ -1,8 +1,8 @@
 package austeretony.oxygen_core.client.input;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import austeretony.oxygen_core.client.OxygenGUIManager;
 import austeretony.oxygen_core.client.OxygenManagerClient;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
@@ -20,19 +20,19 @@ public class OxygenKeyHandler {
 
     public OxygenKeyHandler() {
         if (OxygenConfig.ENABLE_NOTIFICATIONS_KEY.asBoolean() && !OxygenGUIHelper.isOxygenMenuEnabled())
-            ClientReference.registerKeyBinding(this.notificationsKeybinding = new KeyBinding("key.oxygen_core.notifications", Keyboard.KEY_N, "Oxygen"));
+            ClientReference.registerKeyBinding(this.notificationsKeybinding = new KeyBinding("key.oxygen_core.notifications", OxygenConfig.NOTIFICATIONS_MENU_KEY.asInt(), "Oxygen"));
         if (OxygenConfig.ENABLE_ACCEPT_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.acceptKeybinding = new KeyBinding("key.oxygen_core.accept", Keyboard.KEY_R, "Oxygen"));
+            ClientReference.registerKeyBinding(this.acceptKeybinding = new KeyBinding("key.oxygen_core.accept", OxygenConfig.ACCEPT_KEY.asInt(), "Oxygen"));
         if (OxygenConfig.ENABLE_REJECT_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.rejectKeybinding = new KeyBinding("key.oxygen_core.reject", Keyboard.KEY_X, "Oxygen"));
+            ClientReference.registerKeyBinding(this.rejectKeybinding = new KeyBinding("key.oxygen_core.reject", OxygenConfig.REJECT_KEY.asInt(), "Oxygen"));
         if (OxygenConfig.ENABLE_INTERACTION_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.interactKeybinding = new KeyBinding("key.oxygen_core.interact", Keyboard.KEY_F, "Oxygen"));
+            ClientReference.registerKeyBinding(this.interactKeybinding = new KeyBinding("key.oxygen_core.interact", OxygenConfig.INTERACTION_KEY.asInt(), "Oxygen"));
     }
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {        
         if (this.notificationsKeybinding != null && this.notificationsKeybinding.isPressed())
-            OxygenManagerClient.instance().getNotificationsManager().openNotificationsMenu();
+            OxygenGUIManager.openNotificationsMenu();
         if (this.acceptKeybinding != null && this.acceptKeybinding.isPressed())
             OxygenManagerClient.instance().getNotificationsManager().acceptRequestSynced();
         if (this.rejectKeybinding != null && this.rejectKeybinding.isPressed())

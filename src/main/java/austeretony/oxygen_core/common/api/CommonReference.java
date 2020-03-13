@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-import austeretony.oxygen_core.server.util.DefaultTeleporter;
+import austeretony.oxygen_core.common.util.DefaultTeleporter;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -24,7 +24,7 @@ public class OxygenExecutionManager {
             try {
                 task.run();
             } catch (Exception exception) {
-                OxygenMain.LOGGER.error("IO task execution failed.", exception);
+                OxygenMain.LOGGER.error("[Core] IO task execution failed.", exception);
             }
         });
     }
@@ -34,7 +34,7 @@ public class OxygenExecutionManager {
             try {
                 task.run();
             } catch (Exception exception) {
-                OxygenMain.LOGGER.error("Network task execution failed.", exception);
+                OxygenMain.LOGGER.error("[Core] Network task execution failed.", exception);
             }
         });
     }
@@ -44,7 +44,7 @@ public class OxygenExecutionManager {
             try {
                 task.run();
             } catch (Exception exception) {
-                OxygenMain.LOGGER.error("Routine task execution failed.", exception);
+                OxygenMain.LOGGER.error("[Core] Routine task execution failed.", exception);
             }
         });
     }

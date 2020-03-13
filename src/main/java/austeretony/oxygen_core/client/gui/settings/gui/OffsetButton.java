@@ -16,7 +16,7 @@ public class OffsetButton extends GUISimpleElement<OffsetButton> {
     public OffsetButton(int xPosition, int yPosition, SettingValue offsetSetting) {
         this.setPosition(xPosition, yPosition);
         this.setSize(8, 8);
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.setTextScale(EnumBaseGUISetting.TEXT_SUB_SCALE.get().asFloat());
         this.setTextDynamicColor(EnumBaseGUISetting.TEXT_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_HOVERED_COLOR.get().asInt());
         this.setDisplayText(offsetSetting.getUserValue());
@@ -32,7 +32,7 @@ public class OffsetButton extends GUISimpleElement<OffsetButton> {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {      
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);         
         if (flag && this.clickListener != null)
-            this.clickListener.onClick(mouseX, mouseY, mouseButton);                             
+            this.clickListener.mouseClick(mouseX, mouseY, mouseButton);                             
         return flag;
     }
 

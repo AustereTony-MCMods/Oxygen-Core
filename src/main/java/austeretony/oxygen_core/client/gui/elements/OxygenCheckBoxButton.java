@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
@@ -10,18 +12,19 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class OxygenCheckBoxButton extends GUISimpleElement<OxygenCheckBoxButton> {
 
-    private ClickListener clickListener;
+    @Nullable
+    private MouseClickListener clickListener;
 
     public OxygenCheckBoxButton(int xPosition, int yPosition) {
         this.setPosition(xPosition, yPosition);
         this.setSize(6, 6);
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_BASE_COLOR.get().asInt());
         this.setDynamicBackgroundColor(EnumBaseGUISetting.BUTTON_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_HOVERED_COLOR.get().asInt());
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.enableFull();
     }
 
-    public void setClickListener(ClickListener clickListener) {
+    public void setClickListener(MouseClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -31,7 +34,7 @@ public class OxygenCheckBoxButton extends GUISimpleElement<OxygenCheckBoxButton>
         if (flag) {      
             this.setToggled(!this.isToggled());
             if (this.clickListener != null)
-                this.clickListener.onClick(mouseX, mouseY, mouseButton);
+                this.clickListener.mouseClick(mouseX, mouseY, mouseButton);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);               
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);                                               
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())                    
@@ -76,8 +79,9 @@ public class OxygenCheckBoxButton extends GUISimpleElement<OxygenCheckBoxButton>
         }
     }
 
-    public static interface ClickListener {
+    @FunctionalInterface
+    public static interface MouseClickListener {
 
-        void onClick(int mouseX, int mouseY, int mouseButton);
+        void mouseClick(int mouseX, int mouseY, int mouseButton);
     }
 }

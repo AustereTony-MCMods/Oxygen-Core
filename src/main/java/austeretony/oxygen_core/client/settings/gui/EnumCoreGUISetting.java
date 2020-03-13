@@ -36,7 +36,7 @@ public enum EnumCoreGUISetting {
     }
 
     public static void register() {
-        for (EnumCoreGUISetting setting : EnumCoreGUISetting.values())
+        for (EnumCoreGUISetting setting : values())
             OxygenManagerClient.instance().getClientSettingManager().register(SettingValueUtils.getValue(setting.type, setting.key, setting.baseValue));
     }
 }

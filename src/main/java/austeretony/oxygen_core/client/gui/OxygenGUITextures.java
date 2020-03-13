@@ -13,5 +13,12 @@ public class OxygenGUITextures {
     SORT_UP_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/sort_up_icons.png"),
     SORT_DOWN_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/sort_down_icons.png"),
     CLOCK_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/clock_icons.png"),
-    RECYCLE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/recycle_icons.png");
+    RECYCLE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/recycle_icons.png"),
+    STAR_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/star_icons.png"),
+    LOCK_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/lock_icons.png"),
+    PLUS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/plus_icons.png"),
+    MINUS_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/minus_icons.png"),
+    NOTE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/note_icons.png"),
+    DOWNLOAD_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/download_icons.png"),
+    SHARE_ICONS = new ResourceLocation(OxygenMain.MODID, "textures/gui/share_icons.png");
 }

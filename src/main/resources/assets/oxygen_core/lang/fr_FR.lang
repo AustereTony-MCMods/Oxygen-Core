@@ -182,15 +182,13 @@ oxygen_core.gui.pay=Payer
 
 oxygen_core.gui.inventoryLoad=Inventaire
 
-oxygen_core.message.command.oxygens.currency.balance=Joueur <%s>, monnaie <%s>: <%s>.
-oxygen_core.message.command.oxygens.currency.set=Joueur <%s>, a maintenant <%s> de monnaie <%s>.
-oxygen_core.message.command.oxygens.currency.add=Joueur <%s> a recu <%s> de monnaie <%s>.
-oxygen_core.message.command.oxygens.currency.remove=Joueur <%s> a perdu <%s> de monnaie <%s>.
-
-oxygen_core.message.command.oxygens.role.add=Role <%s> ajouté à <%s>.
-oxygen_core.message.command.oxygens.role.remove=Role <%s> retiré de <%s>.
-
-oxygen_core.message.command.oxygens.notification.sentTo=Notification envoyé à <%s>: %s
+oxygen_core.message.command.oxygenop.currency.balance=Joueur <%s>, monnaie <%s>: <%s>.
+oxygen_core.message.command.oxygenop.currency.set=Joueur <%s>, a maintenant <%s> de monnaie <%s>.
+oxygen_core.message.command.oxygenop.currency.add=Joueur <%s> a recu <%s> de monnaie <%s>.
+oxygen_core.message.command.oxygenop.currency.remove=Joueur <%s> a perdu <%s> de monnaie <%s>.
+oxygen_core.message.command.oxygenop.role.add=Role <%s> ajouté à <%s>.
+oxygen_core.message.command.oxygenop.role.remove=Role <%s> retiré de <%s>.
+oxygen_core.message.command.oxygenop.notification.sentTo=Notification envoyé à <%s>: %s
 
 oxygen_core.command.exception.wrongArg=Erreur dans la commande: %s.
 
@@ -199,17 +197,17 @@ oxygen_core.command.oxygenc.reloadProperties=Propriétés du client rechargés.
 oxygen_core.command.oxygenc.currency.balance=La monnaie <%s> du client est: %s
 oxygen_core.command.oxygenc.privileges.getValue=Permission du client <%s (%s)> Valeur: %s
 
-oxygen_core.status.activityStatusChanged=Statut mis a jour
-oxygen_core.status.requestSent=Demande envoyee
-oxygen_core.status.requestReset=Demande recue
-oxygen_core.status.roleCreated=Role created
-oxygen_core.status.roleEdited=Role edited
-oxygen_core.status.roleRemoved=Role removed
-oxygen_core.status.privilegeAdded=Privilege added
-oxygen_core.status.privilegeRemoved=Privilege removed
-oxygen_core.status.roleAddedToPlayer=Role added to player
-oxygen_core.status.roleRemovedFromPlayer=Role removed from player
-oxygen_core.status.actionTimeOut=Action timeout
+oxygen_core.status.message.activityStatusChanged=Statut mis a jour
+oxygen_core.status.message.requestSent=Demande envoyee
+oxygen_core.status.message.requestReset=Demande recue
+oxygen_core.status.message.roleCreated=Role created
+oxygen_core.status.message.roleEdited=Role edited
+oxygen_core.status.message.roleRemoved=Role removed
+oxygen_core.status.message.privilegeAdded=Privilege added
+oxygen_core.status.message.privilegeRemoved=Privilege removed
+oxygen_core.status.message.roleAddedToPlayer=Role added to player
+oxygen_core.status.message.roleRemovedFromPlayer=Role removed from player
+oxygen_core.status.message.actionTimeOut=Action timeout
 
 dim.unknown.name=Monde inconnu
 dim.overworld.name=Monde

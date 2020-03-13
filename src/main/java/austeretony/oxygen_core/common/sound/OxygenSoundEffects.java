@@ -11,11 +11,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class OxygenSoundEffects {
 
-    private static final Map<Integer, SoundEventContainer> REGISTRY = new HashMap<>(10);
+    private static final Map<Integer, SoundEventContainer> REGISTRY = new HashMap<>(7);
 
     public static final SoundEventContainer 
-    INVENTORY = new SoundEventContainer(OxygenMain.MODID, "inventory"),
-    SELL = new SoundEventContainer(OxygenMain.MODID, "sell"),
+    INVENTORY_OPERATION = new SoundEventContainer(OxygenMain.MODID, "inventory_operation"),
+    RINGING_COINS = new SoundEventContainer(OxygenMain.MODID, "ringing_coins"),
     NOTIFICATION_RECEIVED = new SoundEventContainer(OxygenMain.MODID, "request_recieved"),
     BUTTON_CLICK = new SoundEventContainer(OxygenMain.MODID, "button_click"),
     CONTEXT_OPEN = new SoundEventContainer(OxygenMain.MODID, "context_open"),
@@ -25,37 +25,38 @@ public class OxygenSoundEffects {
     @SubscribeEvent
     public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().registerAll(
-                INVENTORY.soundEvent,
-                SELL.soundEvent,
-                NOTIFICATION_RECEIVED.soundEvent,
-                BUTTON_CLICK.soundEvent,
-                CONTEXT_OPEN.soundEvent,
-                CONTEXT_CLOSE.soundEvent,
-                DROP_DOWN_LIST_OPEN.soundEvent
-                );
+                INVENTORY_OPERATION.getSoundEvent(),
+                RINGING_COINS.getSoundEvent(),
+                NOTIFICATION_RECEIVED.getSoundEvent(),
+                BUTTON_CLICK.getSoundEvent(),
+                CONTEXT_OPEN.getSoundEvent(),
+                CONTEXT_CLOSE.getSoundEvent(),
+                DROP_DOWN_LIST_OPEN.getSoundEvent());
     }
 
     public static SoundEvent getSoundEvent(int id) {
-        return REGISTRY.get(id).soundEvent;
+        return REGISTRY.get(id).getSoundEvent();
     }
 
     public static class SoundEventContainer {
 
-        public final SoundEvent soundEvent;
+        private final SoundEvent soundEvent;
 
-        public final int id;
-
-        private static int count;
+        private final int id;
 
         public SoundEventContainer(String modId, String name) {
             ResourceLocation location = new ResourceLocation(modId, name);
             this.soundEvent = new SoundEvent(location).setRegistryName(location);
-            this.id = createId();
+            this.id = REGISTRY.size();
             REGISTRY.put(this.id, this);
         }
 
-        public static int createId() {
-            return count++;
+        public SoundEvent getSoundEvent() {
+            return this.soundEvent;
+        }
+
+        public int getId() {
+            return this.id;
         }
     }
 }

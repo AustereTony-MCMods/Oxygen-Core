@@ -45,11 +45,14 @@ public class ConfigValueImpl<T extends TypedValue> implements ConfigValue<T> {
     }
 
     @Override
-    public void init(JsonObject jsonObject) {
-        if (!this.exist(jsonObject))
+    public boolean init(JsonObject jsonObject) {
+        boolean created = false;
+        if (!this.exist(jsonObject)) {
             this.save(jsonObject);
-        else                
+            created = true;
+        } else                
             this.value.fromJson(this.getValue(jsonObject));
+        return created;
     }
 
     @Override

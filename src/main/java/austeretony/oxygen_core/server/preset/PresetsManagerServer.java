@@ -27,13 +27,13 @@ public class PresetsManagerServer {
 
     public void loadPresets() {
         OxygenHelperServer.addIOTask(()->{
-            OxygenMain.LOGGER.info("Presets loading started...");
+            OxygenMain.LOGGER.info("[Core] Presets loading started...");
             String folder = CommonReference.getGameFolder() + "/config/oxygen/data/server/";
             for (PresetServer preset : this.presets)
                 if (preset.load(folder + "presets/" + preset.getDirectory() + "/"))
-                    OxygenMain.LOGGER.info("Preset <{}> loaded successfully.", preset.getName());
+                    OxygenMain.LOGGER.info("[Core] Preset <{}> loaded successfully.", preset.getName());
                 else
-                    OxygenMain.LOGGER.error("Failed to load preset <{}>.", preset.getName());
+                    OxygenMain.LOGGER.error("[Core] Failed to load preset <{}>.", preset.getName());
         });          
     }
 

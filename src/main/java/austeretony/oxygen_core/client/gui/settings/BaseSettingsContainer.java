@@ -18,9 +18,10 @@ public class BaseSettingsContainer implements ElementsContainer {
 
     //common
 
-    private OxygenCheckBoxButton interactWithRMBButton, enableSoundEffects, enableRarityColors, enableItemsDurabilityBar;
+    private OxygenCheckBoxButton interactWithRMBButton, enableSoundEffects, enableRarityColors, enableItemsDurabilityBar, enableStatusMessages;
 
     //interface
+
     private ColorButton 
     fillScreenColor, fillCallbackColor,
     guiBaseBackgroundColor, guiAdditionalBackgroundColor, 
@@ -119,6 +120,18 @@ public class BaseSettingsContainer implements ElementsContainer {
 
         this.enableItemsDurabilityBar.setClickListener((mouseX, mouseY, mouseButton)->{
             EnumBaseClientSetting.ENABLE_ITEMS_DURABILITY_BAR.get().setValue(String.valueOf(this.enableItemsDurabilityBar.isToggled()));
+            OxygenManagerClient.instance().getClientSettingManager().changed();
+        });
+
+        //enable status messages
+        framework.addElement(new OxygenTextLabel(78, 74, ClientReference.localize("oxygen_core.gui.settings.option.enableStatusMessages"), EnumBaseGUISetting.TEXT_SUB_SCALE.get().asFloat() - 0.1F, EnumBaseGUISetting.TEXT_DARK_ENABLED_COLOR.get().asInt()));
+
+        framework.addElement(this.enableStatusMessages = new OxygenCheckBoxButton(68, 69));
+
+        this.enableStatusMessages.setToggled(EnumBaseClientSetting.ENABLE_STATUS_MESSAGES.get().asBoolean());
+
+        this.enableStatusMessages.setClickListener((mouseX, mouseY, mouseButton)->{
+            EnumBaseClientSetting.ENABLE_STATUS_MESSAGES.get().setValue(String.valueOf(this.enableStatusMessages.isToggled()));
             OxygenManagerClient.instance().getClientSettingManager().changed();
         });
     }
@@ -373,7 +386,7 @@ public class BaseSettingsContainer implements ElementsContainer {
             this.setColorCallback.open(this.inactiveTextColor);
         });
 
-        //status element color //TODO
+        //status element color
         framework.addElement(new OxygenTextLabel(135, 40, ClientReference.localize("oxygen_core.gui.settings.option.statusElement"), EnumBaseGUISetting.TEXT_SUB_SCALE.get().asFloat() - 0.1F, EnumBaseGUISetting.TEXT_DARK_ENABLED_COLOR.get().asInt()));
 
         framework.addElement(this.statusElementColor = new ColorButton(135, 42, EnumBaseGUISetting.STATUS_ELEMENT_COLOR.get(), ClientReference.localize("oxygen_core.gui.settings.tooltip.element")));
@@ -504,6 +517,10 @@ public class BaseSettingsContainer implements ElementsContainer {
         this.enableItemsDurabilityBar.setToggled(true);
         EnumBaseClientSetting.ENABLE_ITEMS_DURABILITY_BAR.get().reset();
 
+        //enable status messages
+        this.enableStatusMessages.setToggled(true);
+        EnumBaseClientSetting.ENABLE_STATUS_MESSAGES.get().reset();
+
         OxygenManagerClient.instance().getClientSettingManager().changed();
     }
 
@@ -613,10 +630,10 @@ public class BaseSettingsContainer implements ElementsContainer {
 
         //status element color
         EnumBaseGUISetting.STATUS_ELEMENT_COLOR.get().reset();
-        this.inactiveElementColor.setButtonColor(EnumBaseGUISetting.STATUS_ELEMENT_COLOR.get().asInt());
+        this.statusElementColor.setButtonColor(EnumBaseGUISetting.STATUS_ELEMENT_COLOR.get().asInt());
 
         EnumBaseGUISetting.STATUS_TEXT_COLOR.get().reset();
-        this.inactiveTextColor.setButtonColor(EnumBaseGUISetting.STATUS_TEXT_COLOR.get().asInt());    
+        this.statusTextColor.setButtonColor(EnumBaseGUISetting.STATUS_TEXT_COLOR.get().asInt());    
 
         //text scale
         EnumBaseGUISetting.TEXT_SCALE.get().reset();
@@ -647,7 +664,6 @@ public class BaseSettingsContainer implements ElementsContainer {
         this.overlayScale.setDisplayText(EnumBaseGUISetting.OVERLAY_SCALE.get().getUserValue());
 
         //background vertical gradient
-
         this.verticalGradientButton.setToggled(false);
         EnumBaseGUISetting.VERTICAL_GRADIENT.get().reset();
     }

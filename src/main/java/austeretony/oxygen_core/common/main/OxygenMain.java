@@ -3,7 +3,6 @@ package austeretony.oxygen_core.common.main;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import austeretony.oxygen_core.client.OxygenManagerClient;
@@ -11,10 +10,10 @@ import austeretony.oxygen_core.client.OxygenStatusMessagesHandler;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
+import austeretony.oxygen_core.client.api.InventoryProviderClient;
 import austeretony.oxygen_core.client.api.OxygenGUIHelper;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
 import austeretony.oxygen_core.client.api.OxygenOverlayHandler;
-import austeretony.oxygen_core.client.api.InventoryProviderClient;
 import austeretony.oxygen_core.client.command.CommandOxygenClient;
 import austeretony.oxygen_core.client.command.CoreArgumentClient;
 import austeretony.oxygen_core.client.currency.OxygenCoinsCurrencyProperties;
@@ -23,7 +22,7 @@ import austeretony.oxygen_core.client.currency.OxygenVouchersCurrencyProperties;
 import austeretony.oxygen_core.client.event.OxygenEventsClient;
 import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
 import austeretony.oxygen_core.client.gui.overlay.RequestOverlay;
-import austeretony.oxygen_core.client.gui.privileges.PrivilegesScreen;
+import austeretony.oxygen_core.client.gui.privileges.information.PrivilegesScreen;
 import austeretony.oxygen_core.client.gui.settings.BaseSettingsContainer;
 import austeretony.oxygen_core.client.gui.settings.CoreSettingsContainer;
 import austeretony.oxygen_core.client.gui.settings.SettingsScreen;
@@ -42,10 +41,12 @@ import austeretony.oxygen_core.common.config.PrivilegesConfig;
 import austeretony.oxygen_core.common.inventory.VanillaPlayerInventoryProvider;
 import austeretony.oxygen_core.common.network.Network;
 import austeretony.oxygen_core.common.network.client.CPAddSharedData;
+import austeretony.oxygen_core.common.network.client.CPDefaultPrivilegeOperation;
 import austeretony.oxygen_core.common.network.client.CPPlaySoundEvent;
-import austeretony.oxygen_core.common.network.client.CPPrivilegeAction;
+import austeretony.oxygen_core.common.network.client.CPPlayerRolesChanged;
 import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
 import austeretony.oxygen_core.common.network.client.CPRoleAction;
+import austeretony.oxygen_core.common.network.client.CPRolePrivilegeOperation;
 import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
 import austeretony.oxygen_core.common.network.client.CPSyncAbsentData;
 import austeretony.oxygen_core.common.network.client.CPSyncConfigs;
@@ -56,32 +57,34 @@ import austeretony.oxygen_core.common.network.client.CPSyncObservedPlayersData;
 import austeretony.oxygen_core.common.network.client.CPSyncPlayerRoles;
 import austeretony.oxygen_core.common.network.client.CPSyncPreset;
 import austeretony.oxygen_core.common.network.client.CPSyncPresetsVersions;
-import austeretony.oxygen_core.common.network.client.CPSyncPrivilegesData;
+import austeretony.oxygen_core.common.network.client.CPSyncPrivilegesManagementData;
 import austeretony.oxygen_core.common.network.client.CPSyncRolesData;
 import austeretony.oxygen_core.common.network.client.CPSyncSharedData;
 import austeretony.oxygen_core.common.network.client.CPSyncValidDataIds;
 import austeretony.oxygen_core.common.network.client.CPSyncWatchedValue;
 import austeretony.oxygen_core.common.network.server.SPAbsentDataIds;
-import austeretony.oxygen_core.common.network.server.SPAddPrivilege;
-import austeretony.oxygen_core.common.network.server.SPCreateRole;
-import austeretony.oxygen_core.common.network.server.SPManagePlayerRoles;
-import austeretony.oxygen_core.common.network.server.SPRemovePrivilege;
+import austeretony.oxygen_core.common.network.server.SPDefaultPrivilegeOperation;
+import austeretony.oxygen_core.common.network.server.SPPlayerRoleOperation;
 import austeretony.oxygen_core.common.network.server.SPRemoveRole;
 import austeretony.oxygen_core.common.network.server.SPRequestPresetSync;
 import austeretony.oxygen_core.common.network.server.SPRequestPrivilegesData;
 import austeretony.oxygen_core.common.network.server.SPRequestReply;
 import austeretony.oxygen_core.common.network.server.SPRequestSharedDataSync;
+import austeretony.oxygen_core.common.network.server.SPRoleOperation;
+import austeretony.oxygen_core.common.network.server.SPRolePrivilegeOperation;
 import austeretony.oxygen_core.common.network.server.SPSetActivityStatus;
 import austeretony.oxygen_core.common.network.server.SPSetChatFormattingRole;
 import austeretony.oxygen_core.common.network.server.SPStartDataSync;
 import austeretony.oxygen_core.common.privilege.PrivilegeUtils;
-import austeretony.oxygen_core.common.scripting.DummyScriptingAdapter;
 import austeretony.oxygen_core.common.scripting.ScriptingProvider;
+import austeretony.oxygen_core.common.scripting.adapter.DummyScriptingAdapter;
+import austeretony.oxygen_core.common.scripting.adapter.ECMAScriptAdapter;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
+import austeretony.oxygen_core.common.util.OxygenUtils;
 import austeretony.oxygen_core.server.OxygenManagerServer;
 import austeretony.oxygen_core.server.api.CurrencyHelperServer;
-import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import austeretony.oxygen_core.server.api.InventoryProviderServer;
+import austeretony.oxygen_core.server.api.OxygenHelperServer;
 import austeretony.oxygen_core.server.api.PrivilegesProviderServer;
 import austeretony.oxygen_core.server.api.event.OxygenWorldLoadedEvent;
 import austeretony.oxygen_core.server.command.CommandOxygenOperator;
@@ -96,7 +99,6 @@ import austeretony.oxygen_core.server.event.PrivilegesEventsServer;
 import austeretony.oxygen_core.server.instant.InstantDataRegistryServer;
 import austeretony.oxygen_core.server.item.ItemsBlackList;
 import austeretony.oxygen_core.server.network.NetworkRequestsRegistryServer;
-import austeretony.oxygen_core.server.privilege.PrivilegesLoaderServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -118,17 +120,18 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.10.3", 
+    VERSION = "0.11.0", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
 
-    public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final Logger LOGGER = OxygenUtils.getLogger("common", "oxygen", "Oxygen");
 
     private static Network network;
 
     /*
      * Indexes:
+     * 
      * Core - 0
      * Teleportation - 1 
      * Groups - 2
@@ -139,18 +142,23 @@ public class OxygenMain {
      * Player Interaction - 7
      * Mail - 8
      * Chat - 9
-     * Trade - 10
+     * Market (Trade) - 10
      * Guilds - 11
      * Interaction - 12
      * Regions - 13
      * Daily Rewards - 14
      * Shop - 15
+     * Essentials - 16
      */
 
     //Shared Constants
 
     public static final int 
     OXYGEN_CORE_MOD_INDEX = 0,
+
+    NOTIFICATIONS_SCREEN_ID = 0,
+    SETTINGS_SCREEN_ID = 1,
+    PRIVILEGES_SCREEN_ID = 2,
 
     SIMPLE_NOTIFICATION_ID = 0,
 
@@ -161,8 +169,8 @@ public class OxygenMain {
     DEFAULT_ROLE_INDEX = - 1,
     MAX_ROLES_PER_PLAYER = 5,
 
-    REQUEST_PRESETS_REQUEST_ID = 0,
-    REQUEST_SHARED_DATA_REQUEST_ID = 1,
+    PRESETS_SYNC_REQUEST_ID = 0,
+    SHARED_DATA_SYNC_REQUEST_ID = 1,
     REQUEST_REPLY_REQUEST_ID = 2,
     SET_ACTIVITY_STATUS_REQUEST_ID = 3,
     MANAGE_PRIVILEGES_REQUEST_ID = 4,
@@ -188,7 +196,6 @@ public class OxygenMain {
         ConfigManager.create();
         OxygenHelperCommon.registerConfig(new OxygenConfig());
         OxygenHelperCommon.registerConfig(new PrivilegesConfig());
-        ScriptingProvider.registerAdapter(new DummyScriptingAdapter());
         if (event.getSide() == Side.CLIENT)
             CommandOxygenClient.registerArgument(new CoreArgumentClient());
     }
@@ -200,7 +207,7 @@ public class OxygenMain {
         OxygenManagerServer.create();
         CommonReference.registerEvent(new OxygenSoundEffects());
         CommonReference.registerEvent(new OxygenEventsServer());
-        if (OxygenConfig.VALIDATE_PVP.asBoolean())
+        if (OxygenConfig.ENABLE_PVP_MANAGER.asBoolean())
             CommonReference.registerEvent(new PlayerVersusPlayerEvents());
         if (OxygenConfig.ENABLE_PRIVILEGES.asBoolean())
             CommonReference.registerEvent(new PrivilegesEventsServer());
@@ -209,8 +216,8 @@ public class OxygenMain {
         for (int i = 0; i < MAX_ROLES_PER_PLAYER; i++)
             OxygenHelperServer.registerSharedDataValue(i + ROLES_SHARED_DATA_STARTING_INDEX, Byte.BYTES);
         CommandOxygenOperator.registerArgument(new CoreArgumentOperator());
-        NetworkRequestsRegistryServer.registerRequest(REQUEST_PRESETS_REQUEST_ID, 100000);
-        NetworkRequestsRegistryServer.registerRequest(REQUEST_SHARED_DATA_REQUEST_ID, 1000);
+        NetworkRequestsRegistryServer.registerRequest(PRESETS_SYNC_REQUEST_ID, 10000);
+        NetworkRequestsRegistryServer.registerRequest(SHARED_DATA_SYNC_REQUEST_ID, 1000);
         NetworkRequestsRegistryServer.registerRequest(REQUEST_REPLY_REQUEST_ID, 1000);
         NetworkRequestsRegistryServer.registerRequest(SET_ACTIVITY_STATUS_REQUEST_ID, 1000);
         NetworkRequestsRegistryServer.registerRequest(MANAGE_PRIVILEGES_REQUEST_ID, 1000);
@@ -223,6 +230,9 @@ public class OxygenMain {
         InstantDataRegistryServer.registerInstantData(new InstantDataArmor());
         InstantDataRegistryServer.registerInstantData(new InstantDataPotionEffects());
         InventoryProviderServer.registerPlayerInventoryProvider(new VanillaPlayerInventoryProvider());
+        ScriptingProvider.registerAdapter(new DummyScriptingAdapter());
+        if (OxygenConfig.ENABLE_ECMASCRIPT_ADAPTER.asBoolean())
+            ScriptingProvider.registerAdapter(new ECMAScriptAdapter());
         EnumOxygenPrivilege.register();
         if (event.getSide() == Side.CLIENT) {     
             OxygenManagerClient.create();
@@ -257,8 +267,6 @@ public class OxygenMain {
         this.network.sortPackets();
         ItemsBlackList.loadBlackLists();
         OxygenManagerServer.instance().getPresetsManager().loadPresets();
-        if (event.getSide() == Side.CLIENT)
-            OxygenManagerClient.instance().init();
     }
 
     @EventHandler
@@ -270,16 +278,16 @@ public class OxygenMain {
         String 
         worldName = event.getServer().getFolderName(),
         worldFolder = event.getServer().isSinglePlayer() ? CommonReference.getGameFolder() + "/saves/" + worldName : CommonReference.getGameFolder() + "/" + worldName;
-        LOGGER.info("Initializing world: {}", worldName);
-        OxygenManagerServer.instance().worldLoaded(worldFolder, event.getServer().getMaxPlayers());
-        PrivilegesLoaderServer.loadPrivilegeSystemData();
+        LOGGER.info("[Core] Initializing world: {}", worldName);
+        OxygenManagerServer.instance().worldLoaded(worldFolder);
+        OxygenManagerServer.instance().getPrivilegesContainer().worldLoaded();
 
-        LOGGER.info("Active common currency provider: <{}>", OxygenManagerServer.instance().getCurrencyManager().getCommonCurrencyProvider().getDisplayName());
-        LOGGER.info("Loaded currency providers:");
+        LOGGER.info("[Core] Active common currency provider: <{}>", OxygenManagerServer.instance().getCurrencyManager().getCommonCurrencyProvider().getDisplayName());
+        LOGGER.info("[Core] Loaded currency providers:");
         CurrencyHelperServer.getCurrencyProviders()
         .stream()
         .sorted((p1, p2)->p1.getIndex() - p2.getIndex())
-        .forEach((provider)->LOGGER.info(" - index: <{}>, name: <{}>", provider.getIndex(), provider.getDisplayName()));
+        .forEach((provider)->LOGGER.info("[Core]  - index: <{}>, name: <{}>", provider.getIndex(), provider.getDisplayName()));
 
         MinecraftForge.EVENT_BUS.post(new OxygenWorldLoadedEvent());
     }
@@ -287,7 +295,8 @@ public class OxygenMain {
     public static void addDefaultPrivileges() {
         if (PrivilegesProviderServer.getRole(OPERATOR_ROLE_ID).getPrivilege(EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id()) == null) {
             PrivilegesProviderServer.getRole(OPERATOR_ROLE_ID).addPrivilege(PrivilegeUtils.getPrivilege(EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id(), true));
-            LOGGER.info("Default Operator role privileges added.");
+            OxygenManagerServer.instance().getPrivilegesContainer().markChanged();
+            LOGGER.info("[Core] Default Operator role privileges added.");
         }
     }
 
@@ -299,7 +308,7 @@ public class OxygenMain {
     }
 
     private void initNetwork() {
-        network = Network.createNetworkHandler(MODID);
+        network = Network.create(MODID);
 
         network.registerPacket(CPSyncConfigs.class);
         network.registerPacket(CPSyncMainData.class);
@@ -318,9 +327,11 @@ public class OxygenMain {
         network.registerPacket(CPSyncWatchedValue.class);
         network.registerPacket(CPAddSharedData.class);
         network.registerPacket(CPRemoveSharedData.class);
-        network.registerPacket(CPSyncPrivilegesData.class);
+        network.registerPacket(CPSyncPrivilegesManagementData.class);
         network.registerPacket(CPRoleAction.class);
-        network.registerPacket(CPPrivilegeAction.class);
+        network.registerPacket(CPRolePrivilegeOperation.class);
+        network.registerPacket(CPPlayerRolesChanged.class);
+        network.registerPacket(CPDefaultPrivilegeOperation.class);
         network.registerPacket(CPSyncInstantData.class);
 
         network.registerPacket(SPRequestReply.class);
@@ -330,11 +341,11 @@ public class OxygenMain {
         network.registerPacket(SPRequestSharedDataSync.class);
         network.registerPacket(SPSetChatFormattingRole.class);
         network.registerPacket(SPRequestPrivilegesData.class);
-        network.registerPacket(SPCreateRole.class);
+        network.registerPacket(SPRoleOperation.class);
         network.registerPacket(SPRemoveRole.class);
-        network.registerPacket(SPAddPrivilege.class);
-        network.registerPacket(SPRemovePrivilege.class);
-        network.registerPacket(SPManagePlayerRoles.class);
+        network.registerPacket(SPRolePrivilegeOperation.class);
+        network.registerPacket(SPDefaultPrivilegeOperation.class);
+        network.registerPacket(SPPlayerRoleOperation.class);
     }
 
     public static Network network() {

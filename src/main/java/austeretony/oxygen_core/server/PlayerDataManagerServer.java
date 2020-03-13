@@ -28,10 +28,6 @@ public class PlayerDataManagerServer {
         this.manager = manager;
     }
 
-    public void informPlayer(EntityPlayerMP playerMP, EnumOxygenStatusMessage status) {
-        OxygenHelperServer.sendStatusMessage(playerMP, OxygenMain.OXYGEN_CORE_MOD_INDEX, status.ordinal());
-    }
-
     public void playerLoggedIn(EntityPlayerMP playerMP) {
         UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
         OxygenPlayerData playerData = this.manager.getPlayerDataContainer().getPlayerData(playerUUID);
@@ -85,9 +81,9 @@ public class PlayerDataManagerServer {
         if ((targetData.getActivityStatus() != EnumActivityStatus.OFFLINE || PrivilegesProviderServer.getAsBoolean(senderUUID, EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id(), false))
                 && this.manager.getValidatorsManager().validateRequest(senderUUID, targetUUID)) {
             this.addNotification(target, notification);
-            this.informPlayer(sender, EnumOxygenStatusMessage.REQUEST_SENT);
+            this.manager.sendStatusMessage(sender, EnumOxygenStatusMessage.REQUEST_SENT);
         } else
-            this.informPlayer(sender, EnumOxygenStatusMessage.REQUEST_RESET);
+            this.manager.sendStatusMessage(sender, EnumOxygenStatusMessage.REQUEST_RESET);
     }
 
     public void processRequestReply(EntityPlayer player, EnumRequestReply reply, long id) {
@@ -102,7 +98,7 @@ public class PlayerDataManagerServer {
             playerData.setChanged(true);
             this.manager.getSharedDataManager().updateActivityStatus(playerMP, status);
 
-            this.informPlayer(playerMP, EnumOxygenStatusMessage.ACTIVITY_STATUS_CHANGED);
+            this.manager.sendStatusMessage(playerMP, EnumOxygenStatusMessage.ACTIVITY_STATUS_CHANGED);
         }
     }
 

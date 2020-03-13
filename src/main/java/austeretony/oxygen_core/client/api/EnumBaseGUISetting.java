@@ -88,7 +88,7 @@ public enum EnumBaseGUISetting {
     }
 
     public static void register() {
-        for (EnumBaseGUISetting setting : EnumBaseGUISetting.values())
+        for (EnumBaseGUISetting setting : values())
             OxygenManagerClient.instance().getClientSettingManager().register(SettingValueUtils.getValue(setting.type, setting.key, setting.baseValue));
     }
 }

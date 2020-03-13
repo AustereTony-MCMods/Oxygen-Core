@@ -12,7 +12,8 @@ public enum EnumBaseClientSetting {
     INTERACT_WITH_RMB("misc_interact_with_rmb", EnumValueType.BOOLEAN, String.valueOf(false)),
     ENABLE_SOUND_EFFECTS("misc_enable_sound_effects", EnumValueType.BOOLEAN, String.valueOf(true)),
     ENABLE_RARITY_COLORS("misc_enable_rarity_colors", EnumValueType.BOOLEAN, String.valueOf(true)),
-    ENABLE_ITEMS_DURABILITY_BAR("misc_enable_items_durability_bar", EnumValueType.BOOLEAN, String.valueOf(true));
+    ENABLE_ITEMS_DURABILITY_BAR("misc_enable_items_durability_bar", EnumValueType.BOOLEAN, String.valueOf(true)),
+    ENABLE_STATUS_MESSAGES("misc_enable_status_messages", EnumValueType.BOOLEAN, String.valueOf(true));
 
     private final String key, baseValue;
 
@@ -33,7 +34,7 @@ public enum EnumBaseClientSetting {
     }
 
     public static void register() {
-        for (EnumBaseClientSetting setting : EnumBaseClientSetting.values())
+        for (EnumBaseClientSetting setting : values())
             OxygenManagerClient.instance().getClientSettingManager().register(SettingValueUtils.getValue(setting.type, setting.key, setting.baseValue));
     }
 }

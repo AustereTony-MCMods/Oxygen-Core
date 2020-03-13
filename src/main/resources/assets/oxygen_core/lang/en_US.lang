@@ -16,47 +16,59 @@ oxygen_core.gui.callback.settings=Settings
 oxygen_core.gui.notifications.title=Notifications
 oxygen_core.gui.notifications.empty=You have no active notifications.
 
-oxygen_core.gui.privileges.title=Privileges
-oxygen_core.gui.privileges.information=Information
-oxygen_core.gui.privileges.roles=Roles
+oxygen_core.gui.privileges.privileges=Privileges
 oxygen_core.gui.privileges.players=Players
+oxygen_core.gui.privileges.roles=Roles
+oxygen_core.gui.privileges.defaultPrivileges=Default Priviliges
 oxygen_core.gui.privileges.disabled=Privileges disabled.
 oxygen_core.gui.privileges.chatFormattingDisabled=Chat formatting disabled.
-oxygen_core.gui.privileges.playerRoles=Your Roles
 oxygen_core.gui.privileges.chatFormatting=Chat Formatting
-oxygen_core.gui.privileges.testMessage=Test
-oxygen_core.gui.privileges.privileges=Privileges
 oxygen_core.gui.privileges.defaultFormatting=No Formatting
-oxygen_core.gui.privileges.value=Value:
+oxygen_core.gui.privileges.testMessage=Test
 
-oxygen_core.gui.privileges.roleName=Name
-oxygen_core.gui.privileges.roleId=Id (Priority)
-oxygen_core.gui.privileges.prefix=Prefix
-oxygen_core.gui.privileges.roleNameColor=Role Name Color
-oxygen_core.gui.privileges.prefixColor=Prefix Color
-oxygen_core.gui.privileges.usernameColor=Username Color
-oxygen_core.gui.privileges.chatColor=Chat Color
+oxygen_core.gui.privileges.information.playerRoles=Your Roles
 
-oxygen_core.gui.privileges.callback.roleCreation=Role Creation
-oxygen_core.gui.privileges.callback.editRole=Edit Role
-oxygen_core.gui.privileges.callback.addPrivilege=Add Privilege
-oxygen_core.gui.privileges.callback.removePrivilege=Remove Privilege
-oxygen_core.gui.privileges.callback.removeRole=Remove Role
-oxygen_core.gui.privileges.callback.removeRole.request=Role will be removed.
-oxygen_core.gui.privileges.callback.removePrivilege.request=Privilege will be removed.
-oxygen_core.gui.privileges.callback.addPlayerRole=Add Role
-oxygen_core.gui.privileges.callback.removePlayerRole=Remove Role
+oxygen_core.gui.privileges.management.title=Privileges Management
+oxygen_core.gui.privileges.management.defaultPrivileges=Default Privileges
+oxygen_core.gui.privileges.management.players=Players
+oxygen_core.gui.privileges.management.edit=Edit
+oxygen_core.gui.privileges.management.remove=Remove
+oxygen_core.gui.privileges.management.addPrivilege=Add Privilege
+oxygen_core.gui.privileges.management.removePrivilege=Remove Privilege
+oxygen_core.gui.privileges.management.addRoleToPlayer=Add Role
+oxygen_core.gui.privileges.management.removeRoleFromPlayer=Remove Role
 
-oxygen_core.gui.privileges.edit=Edit
-oxygen_core.gui.privileges.remove=Remove
-oxygen_core.gui.privileges.addPrivilege=Add Privilege
-oxygen_core.gui.privileges.removePrivilege=Remove Privilege
-oxygen_core.gui.privileges.addRoleToPlayer=Add Role
-oxygen_core.gui.privileges.removeRoleFromPlayer=Remove Role
+oxygen_core.gui.privileges.management.button.createRole=Create Role
+oxygen_core.gui.privileges.management.button.addDefaultPrivilege=Add Privilege
+
+oxygen_core.gui.privileges.management.callback.value=Value:
+oxygen_core.gui.privileges.management.callback.privilegeId=Privilege Id:
+oxygen_core.gui.privileges.management.callback.roleName=Name
+oxygen_core.gui.privileges.management.callback.roleId=Id (Priority)
+oxygen_core.gui.privileges.management.callback.prefix=Prefix
+oxygen_core.gui.privileges.management.callback.roleNameColor=Role Name Color
+oxygen_core.gui.privileges.management.callback.prefixColor=Prefix Color
+oxygen_core.gui.privileges.management.callback.usernameColor=Username Color
+oxygen_core.gui.privileges.management.callback.chatColor=Chat Color
+
+oxygen_core.gui.privileges.management.callback.roleCreation=Role Creation
+oxygen_core.gui.privileges.management.callback.editRole=Edit Role
+oxygen_core.gui.privileges.management.callback.addPrivilege=Add Privilege
+oxygen_core.gui.privileges.management.callback.addDefaultPrivilege=Add Default Privilege
+oxygen_core.gui.privileges.management.callback.removeRole=Remove Role
+oxygen_core.gui.privileges.management.callback.removeRole.request=Role will be removed.
+oxygen_core.gui.privileges.management.callback.removePrivilege=Remove Privilege
+oxygen_core.gui.privileges.management.callback.removeDefaultPrivilege=Remove Default Privilege
+oxygen_core.gui.privileges.management.callback.removePrivilege.request=Privilege will be removed.
+oxygen_core.gui.privileges.management.callback.addPlayerRole=Add Role
+oxygen_core.gui.privileges.management.callback.removePlayerRole=Remove Player Role
+oxygen_core.gui.privileges.management.callback.removePlayerRole.request=Role will be removed from player.
 
 oxygen_core.gui.settings.title=Settings
 oxygen_core.gui.settings.common=Common
 oxygen_core.gui.settings.gui=Interface
+
+oxygen_core.gui.settings.button.resetSettings=Reset Module Settings
 
 oxygen_core.gui.settings.module.base=Base
 oxygen_core.gui.settings.module.core=Core
@@ -66,6 +78,7 @@ oxygen_core.gui.settings.option.interactWithRMB=Interact with RMB
 oxygen_core.gui.settings.option.enableSoundEffects=Enable Sound Effects
 oxygen_core.gui.settings.option.enableRarityColors=Enable Rarity Colors
 oxygen_core.gui.settings.option.enableItemsDurabilityBar=Enable Items Durability Bar
+oxygen_core.gui.settings.option.enableStatusMessages=Enable Status Messages
 
 oxygen_core.gui.settings.callback.setColor=Set Color
 oxygen_core.gui.settings.callback.setScale=Set Scale
@@ -151,6 +164,7 @@ oxygen_core.gui.days=%s days
 oxygen_core.gui.undef=undefined
 oxygen_core.gui.expired=expired
 
+oxygen_core.gui.inventoryLoad=Inventory
 oxygen_core.gui.lastActivityTime=activity %s ago
 
 oxygen_core.gui.online=Online
@@ -182,18 +196,16 @@ oxygen_core.gui.offer=Offer
 oxygen_core.gui.take=Take
 oxygen_core.gui.pay=Pay
 oxygen_core.gui.price=Price
+oxygen_core.gui.rank=Rank
+oxygen_core.gui.flag=Flag
 
-oxygen_core.gui.inventoryLoad=Inventory
-
-oxygen_core.message.command.oxygens.currency.balance=Player <%s> currency with index <%s> amount is <%s>.
-oxygen_core.message.command.oxygens.currency.set=Player <%s> set <%s> currency units with index <%s>.
-oxygen_core.message.command.oxygens.currency.add=Player <%s> recieved <%s> currency units with index <%s>.
-oxygen_core.message.command.oxygens.currency.remove=Player <%s> lost <%s> currency units with index <%s>.
-
-oxygen_core.message.command.oxygens.role.add=Added role <%s> to player <%s>.
-oxygen_core.message.command.oxygens.role.remove=Removed role <%s> from player <%s>.
-
-oxygen_core.message.command.oxygens.notification.sentTo=Notification sent to <%s>: %s
+oxygen_core.message.command.oxygenop.currency.balance=Player <%s> currency with index <%s> amount is <%s>.
+oxygen_core.message.command.oxygenop.currency.set=Player <%s> set <%s> currency units with index <%s>.
+oxygen_core.message.command.oxygenop.currency.add=Player <%s> recieved <%s> currency units with index <%s>.
+oxygen_core.message.command.oxygenop.currency.remove=Player <%s> lost <%s> currency units with index <%s>.
+oxygen_core.message.command.oxygenop.role.add=Added role <%s> to player <%s>.
+oxygen_core.message.command.oxygenop.role.remove=Removed role <%s> from player <%s>.
+oxygen_core.message.command.oxygenop.notification.sentTo=Notification sent to <%s>: %s
 
 oxygen_core.command.exception.wrongArg=Wrong argument: %s.
 
@@ -201,23 +213,24 @@ oxygen_core.command.oxygenc.reloadSettings=Client settings reloaded.
 oxygen_core.command.oxygenc.reloadProperties=Client properties reloaded.
 oxygen_core.command.oxygenc.currency.balance=Client currency <%s> balance is: %s
 oxygen_core.command.oxygenc.privileges.getValue=Client privilege <%s (%s)> value: %s
+oxygen_core.command.oxygenc.itemStackSerialized=Item <%s> serialized successfully.
 
-oxygen_core.status.activityStatusChanged=Activity status changed
-oxygen_core.status.requestSent=Request sent
-oxygen_core.status.requestReset=Request reset
-oxygen_core.status.roleCreated=Role created
-oxygen_core.status.roleEdited=Role edited
-oxygen_core.status.roleRemoved=Role removed
-oxygen_core.status.privilegeAdded=Privilege added
-oxygen_core.status.privilegeRemoved=Privilege removed
-oxygen_core.status.roleAddedToPlayer=Role added to player
-oxygen_core.status.roleRemovedFromPlayer=Role removed from player
-oxygen_core.status.actionTimeOut=Action timeout
+oxygen_core.status.message.activityStatusChanged=Activity status changed
+oxygen_core.status.message.requestSent=Request sent
+oxygen_core.status.message.requestReset=Request reset
+oxygen_core.status.message.roleCreated=Role created
+oxygen_core.status.message.roleEdited=Role edited
+oxygen_core.status.message.roleRemoved=Role removed
+oxygen_core.status.message.privilegeAdded=Privilege added
+oxygen_core.status.message.privilegeRemoved=Privilege removed
+oxygen_core.status.message.defaultPrivilegeAdded=Default privilege added
+oxygen_core.status.message.defaultPrivilegeRemoved=Default privilege removed
+oxygen_core.status.message.roleAddedToPlayer=Role added to player
+oxygen_core.status.message.roleRemovedFromPlayer=Role removed from player
 
-dim.unknown.name=Unknown Dimension
-dim.overworld.name=Overworld
-dim.the_nether.name=Nether
-dim.the_end.name=The End
+oxygen_core.status.message.actionTimeOut=Action timeout
+oxygen_core.status.message.inventoryFull=Inventory Full
+oxygen_core.status.message.mailboxFull=Mailbox Full
 
 oxygen_core.category.common=All
 oxygen_core.category.blocks=Blocks

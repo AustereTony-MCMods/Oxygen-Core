@@ -4,7 +4,6 @@ import austeretony.oxygen_core.client.OxygenManagerClient;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
-import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
 import austeretony.oxygen_core.client.settings.gui.EnumCoreGUISetting;
 import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.notification.Notification;
@@ -22,8 +21,7 @@ public class RequestOverlay implements Overlay {
 
     String acceptKeyName, rejectKeyName, acceptStr, rejectStr, requestStr;
 
-    int x, y, baseOverlayTextColor, additionalOverlayTextColor, baseBackgroundColor, additionalBackgroundColor, acceptKeyNameWidth, 
-    rejectKeyNameWidth, acceptKeyFrameWidth, rejectKeyFrameWidth, frameHeight;
+    int x, y, baseOverlayTextColor, additionalOverlayTextColor, baseBackgroundColor, additionalBackgroundColor, acceptKeyNameWidth, rejectKeyNameWidth;
 
     boolean acceptKeyEnabled, rejectKeyEnabled;
 
@@ -66,21 +64,16 @@ public class RequestOverlay implements Overlay {
         this.additionalBackgroundColor = EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt();
 
         this.acceptKeyEnabled = OxygenConfig.ENABLE_ACCEPT_KEY.asBoolean();
-        this.acceptKeyName = this.acceptKeyEnabled ? OxygenHelperClient.getKeyHandler().getAcceptKeybinding().getDisplayName() : "/oxygenc core -request -accept";
+        this.acceptKeyName = this.acceptKeyEnabled ? String.format("[%s]", OxygenHelperClient.getKeyHandler().getAcceptKeybinding().getDisplayName()) : "/oxygenc core -request -accept";
 
         this.rejectKeyEnabled = OxygenConfig.ENABLE_REJECT_KEY.asBoolean();
-        this.rejectKeyName = this.rejectKeyEnabled ? OxygenHelperClient.getKeyHandler().getRejectKeybinding().getDisplayName() : "/oxygenc core -request -reject";
+        this.rejectKeyName = this.rejectKeyEnabled ? String.format("[%s]", OxygenHelperClient.getKeyHandler().getRejectKeybinding().getDisplayName()) : "/oxygenc core -request -reject";
 
         this.acceptStr = ClientReference.localize("oxygen_core.request.accept");
         this.rejectStr = ClientReference.localize("oxygen_core.request.reject");
 
         this.acceptKeyNameWidth = this.mc.fontRenderer.getStringWidth(this.acceptKeyName);
-        this.rejectKeyNameWidth = this.mc.fontRenderer.getStringWidth(this.rejectKeyName);
-
-        this.acceptKeyFrameWidth = this.acceptKeyNameWidth + 6;
-        this.rejectKeyFrameWidth = this.rejectKeyNameWidth + 6;
-
-        this.frameHeight = 12;      
+        this.rejectKeyNameWidth = this.mc.fontRenderer.getStringWidth(this.rejectKeyName);   
     }
 
     @Override
@@ -92,17 +85,13 @@ public class RequestOverlay implements Overlay {
 
         this.mc.fontRenderer.drawString(this.requestStr, 0, 0, this.additionalOverlayTextColor, true);
 
-        if (this.acceptKeyEnabled) {
-            OxygenGUIUtils.drawKeyFrame(0, 12, this.acceptKeyFrameWidth, this.frameHeight, this.baseBackgroundColor, this.additionalBackgroundColor);
-            this.mc.fontRenderer.drawString(this.acceptStr, 10 + this.acceptKeyNameWidth, 15, this.baseOverlayTextColor, true);
-        }
-        this.mc.fontRenderer.drawString(this.acceptKeyName, 3, 15, this.additionalOverlayTextColor, true);
+        if (this.acceptKeyEnabled)
+            this.mc.fontRenderer.drawString(this.acceptStr, 6 + this.acceptKeyNameWidth, 15, this.baseOverlayTextColor, true);
+        this.mc.fontRenderer.drawString(this.acceptKeyName, 2, 15, this.additionalOverlayTextColor, true);
 
-        if (this.rejectKeyEnabled) {
-            OxygenGUIUtils.drawKeyFrame(0, 26, this.rejectKeyFrameWidth, this.frameHeight, this.baseBackgroundColor, this.additionalBackgroundColor);
-            this.mc.fontRenderer.drawString(this.rejectStr, 10 + this.rejectKeyNameWidth, 29, this.baseOverlayTextColor, true);
-        }
-        this.mc.fontRenderer.drawString(this.rejectKeyName, 3, 29, this.additionalOverlayTextColor, true);
+        if (this.rejectKeyEnabled)
+            this.mc.fontRenderer.drawString(this.rejectStr, 6 + this.rejectKeyNameWidth, 29, this.baseOverlayTextColor, true);
+        this.mc.fontRenderer.drawString(this.rejectKeyName, 2, 29, this.additionalOverlayTextColor, true);
 
         this.mc.fontRenderer.drawString("(" + String.valueOf((this.notification.getExpirationTimeStamp() - System.currentTimeMillis()) / 1000) + ")", 0, 43, this.additionalOverlayTextColor, true);
 

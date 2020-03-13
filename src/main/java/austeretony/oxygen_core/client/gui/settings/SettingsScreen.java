@@ -39,7 +39,7 @@ public class SettingsScreen extends AbstractGUIScreen {
             alignment = EnumGUIAlignment.CENTER;
             break;
         }
-        return new GUIWorkspace(this, 200, 228).setAlignment(alignment, 0, 0);
+        return new GUIWorkspace(this, 200, 216).setAlignment(alignment, 0, 0);
     }
 
     @Override

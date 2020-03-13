@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
@@ -10,7 +12,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class OxygenTexturedButton extends GUISimpleElement<OxygenTexturedButton> {
 
-    private ClickListener clickListener;
+    @Nullable
+    private MouseClickListener clickListener;
 
     private final ResourceLocation texture;
 
@@ -22,14 +25,14 @@ public class OxygenTexturedButton extends GUISimpleElement<OxygenTexturedButton>
         this.texture = texture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         if (!tooltip.isEmpty())
             this.initTooltip(tooltip, EnumBaseGUISetting.TOOLTIP_TEXT_COLOR.get().asInt(), EnumBaseGUISetting.TOOLTIP_BACKGROUND_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_TOOLTIP_SCALE.get().asFloat());
         this.enableFull();
     }
 
-    public void setClickListener(ClickListener clickListener) {
+    public void setClickListener(MouseClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -95,7 +98,7 @@ public class OxygenTexturedButton extends GUISimpleElement<OxygenTexturedButton>
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);         
         if (flag) {      
             if (this.clickListener != null)
-                this.clickListener.onClick(mouseX, mouseY, mouseButton);
+                this.clickListener.mouseClick(mouseX, mouseY, mouseButton);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);               
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);                                               
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())                    
@@ -104,8 +107,9 @@ public class OxygenTexturedButton extends GUISimpleElement<OxygenTexturedButton>
         return flag;
     }
 
-    public static interface ClickListener {
+    @FunctionalInterface
+    public static interface MouseClickListener {
 
-        void onClick(int mouseX, int mouseY, int mouseButton);
+        void mouseClick(int mouseX, int mouseY, int mouseButton);
     }
 }

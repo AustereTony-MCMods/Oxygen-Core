@@ -12,7 +12,7 @@ public abstract class Packet {
         try {
             return clazz.newInstance();
         } catch (Exception exception) {
-            OxygenMain.LOGGER.error("Oxygen Network error. Failed to create packet of <{}> class.", clazz.getCanonicalName());
+            OxygenMain.LOGGER.error("[Core] Oxygen Network error. Failed to create packet of <{}> class.", clazz.getCanonicalName());
         }
         return null;
     }

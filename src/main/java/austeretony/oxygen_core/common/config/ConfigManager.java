@@ -47,25 +47,25 @@ public final class ConfigManager {
             if (Files.exists(path)) {
                 try {    
                     configObject = JsonUtils.getExternalJsonData(config.getExternalPath()).getAsJsonObject();
-                    configObject.add("version", new JsonPrimitive(OxygenMain.VERSION_CUSTOM));
-                    config.load(configObject);
+                    configObject.add("version", new JsonPrimitive(config.getVersion()));
+                    if (config.load(configObject))
+                        JsonUtils.createExternalJsonFile(config.getExternalPath(), configObject);
                     config.write(this.compressedConfigs);
-                    JsonUtils.createExternalJsonFile(config.getExternalPath(), configObject);
-                    OxygenMain.LOGGER.info("Loaded config for <{}>.", config.getDomain());
+                    OxygenMain.LOGGER.info("[Core] Loaded config for <{}>.", config.getDomain());
                 } catch (IOException | NullPointerException exception) {  
-                    OxygenMain.LOGGER.error("Config file for <{}> damaged!", config.getDomain(), exception);
+                    OxygenMain.LOGGER.error("[Core] Config file for <{}> damaged!", config.getDomain(), exception);
                 }       
             } else {                
                 try {               
                     Files.createDirectories(path.getParent());                                
                     configObject = new JsonObject();
-                    configObject.add("version", new JsonPrimitive(OxygenMain.VERSION_CUSTOM));
+                    configObject.add("version", new JsonPrimitive(config.getVersion()));
                     config.save(configObject);
                     config.write(this.compressedConfigs);
                     JsonUtils.createExternalJsonFile(config.getExternalPath(), configObject);
-                    OxygenMain.LOGGER.info("Created config for <{}>.", config.getDomain());
+                    OxygenMain.LOGGER.info("[Core] Created config for <{}>.", config.getDomain());
                 } catch (IOException exception) {   
-                    OxygenMain.LOGGER.error("Failed to create config for <>!", config.getDomain());
+                    OxygenMain.LOGGER.error("[Core] Failed to create config for <>!", config.getDomain());
                     exception.printStackTrace();
                 }     
             }

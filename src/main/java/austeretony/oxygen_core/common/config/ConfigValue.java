@@ -13,7 +13,7 @@ public interface ConfigValue<T extends TypedValue> {
 
     T get();
 
-    void init(JsonObject jsonObject);
+    boolean init(JsonObject jsonObject);
 
     void save(JsonObject jsonObject);
 

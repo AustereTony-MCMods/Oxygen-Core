@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.common.EnumActivityStatus;
 import austeretony.oxygen_core.common.PlayerSharedData;
 import austeretony.oxygen_core.common.api.CommonReference;
@@ -55,12 +57,22 @@ public class SharedDataManagerServer extends AbstractPersistentData {
         return this.sharedData.values();
     }
 
+    @Nullable
     public PlayerSharedData getSharedData(int index) {
         return this.sharedData.get(this.access.get(index));
     }
 
+    @Nullable
     public PlayerSharedData getSharedData(UUID playerUUID) {
         return this.sharedData.get(playerUUID);
+    }
+
+    @Nullable
+    public PlayerSharedData getSharedData(String username) {
+        for (PlayerSharedData sharedData : this.sharedData.values())
+            if (sharedData.getUsername().equals(username))
+                return sharedData;
+        return null;
     }
 
     public void addObservedPlayer(UUID observer, UUID observed) {
@@ -87,17 +99,6 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     public ObservedPlayersContainer getObservedPlayersContainer(UUID playerUUID) {
         return this.observedPlayers.get(playerUUID);
-    }
-
-    public UUID getPlayerUUIDByUsername(String username) {
-        return this.getSharedDataByUsername(username).getPlayerUUID();
-    }
-
-    public PlayerSharedData getSharedDataByUsername(String username) {
-        for (PlayerSharedData sharedData : this.sharedData.values())
-            if (sharedData.getUsername().equals(username))
-                return sharedData;
-        return null;
     }
 
     public void createSharedDataEntry(EntityPlayerMP playerMP) {
@@ -195,7 +196,7 @@ public class SharedDataManagerServer extends AbstractPersistentData {
 
     @Override
     public String getDisplayName() {
-        return "players_shared_data";
+        return "core:shared_data_server";
     }
 
     @Override
@@ -226,7 +227,7 @@ public class SharedDataManagerServer extends AbstractPersistentData {
             sharedData = PlayerSharedData.read(bis);
             this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
         }
-        OxygenMain.LOGGER.info("Loaded {} players shared data entries.", amount);
+        OxygenMain.LOGGER.info("[Core] Loaded {} players shared data entries.", amount);
 
         amount = StreamUtils.readInt(bis);
         UUID playerUUID;

@@ -2,8 +2,10 @@ package austeretony.oxygen_core.client.api;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.client.OxygenManagerClient;
-import austeretony.oxygen_core.client.privilege.RoleDataClient;
+import austeretony.oxygen_core.client.privilege.RoleData;
 import austeretony.oxygen_core.common.privilege.Privilege;
 import austeretony.oxygen_core.common.privilege.Role;
 import austeretony.oxygen_core.common.value.TypedValueBoolean;
@@ -14,18 +16,26 @@ import austeretony.oxygen_core.common.value.TypedValueString;
 
 public class PrivilegesProviderClient {
 
-    public static RoleDataClient getRoleData(int roleId) {
-        return OxygenManagerClient.instance().getPrivilegesManager().getRoleData(roleId);
+    @Nullable
+    public static RoleData getRoleData(int roleId) {
+        return OxygenManagerClient.instance().getPrivilegesContainer().getRoleData(roleId);
     }
 
     public static Set<Integer> getPlayerRolesIds() {
-        return OxygenManagerClient.instance().getPrivilegesManager().getPlayerRolesIds();
+        return OxygenManagerClient.instance().getPrivilegesContainer().getClientPlayerRolesIds();
     }
 
+    @Nullable
+    public static Role getPlayerRole(int roleId) {
+        return OxygenManagerClient.instance().getPrivilegesContainer().getClientPlayerRole(roleId);
+    }
+
+    @Nullable
     public static Role getPriorityPlayerRole() {
         return OxygenManagerClient.instance().getPrivilegesManager().getPriorityPlayerRole();
     }
 
+    @Nullable
     public static Privilege getPriorityPlayerPrivilege(int privilegeId) {
         return OxygenManagerClient.instance().getPrivilegesManager().getPriorityPlayerPrivilege(privilegeId);
     }

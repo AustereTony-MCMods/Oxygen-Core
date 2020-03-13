@@ -6,7 +6,7 @@ import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.elements.OxygenCheckBoxButton;
 import austeretony.oxygen_core.client.gui.elements.OxygenDropDownList;
-import austeretony.oxygen_core.client.gui.elements.OxygenDropDownList.OxygenDropDownListEntry;
+import austeretony.oxygen_core.client.gui.elements.OxygenDropDownList.OxygenDropDownListWrapperEntry;
 import austeretony.oxygen_core.client.gui.elements.OxygenTextLabel;
 import austeretony.oxygen_core.client.gui.settings.gui.OffsetButton;
 import austeretony.oxygen_core.client.gui.settings.gui.callback.SetColorCallback;
@@ -141,12 +141,12 @@ public class CoreSettingsContainer implements ElementsContainer {
             break;
         }
         framework.addElement(this.alignmentPrivilegesMenu = new OxygenDropDownList(68, 73, 55, currAlignmentStr));
-        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
-        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
-        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
+        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
+        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
+        this.alignmentPrivilegesMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
 
-        this.alignmentPrivilegesMenu.<OxygenDropDownListEntry<Integer>>setClickListener((element)->{
-            EnumCoreGUISetting.PRIVILEGES_MENU_ALIGNMENT.get().setValue(String.valueOf(element.index));
+        this.alignmentPrivilegesMenu.<OxygenDropDownListWrapperEntry<Integer>>setElementClickListener((element)->{
+            EnumCoreGUISetting.PRIVILEGES_MENU_ALIGNMENT.get().setValue(String.valueOf(element.getWrapped()));
             OxygenManagerClient.instance().getClientSettingManager().changed();
         });
 
@@ -169,12 +169,12 @@ public class CoreSettingsContainer implements ElementsContainer {
             break;
         }
         framework.addElement(this.alignmentSettingsMenu = new OxygenDropDownList(68, 54, 55, currAlignmentStr));
-        this.alignmentSettingsMenu.addElement(new OxygenDropDownListEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
-        this.alignmentSettingsMenu.addElement(new OxygenDropDownListEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
-        this.alignmentSettingsMenu.addElement(new OxygenDropDownListEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
+        this.alignmentSettingsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
+        this.alignmentSettingsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
+        this.alignmentSettingsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
 
-        this.alignmentSettingsMenu.<OxygenDropDownListEntry<Integer>>setClickListener((element)->{
-            EnumCoreGUISetting.SETTINGS_MENU_ALIGNMENT.get().setValue(String.valueOf(element.index));
+        this.alignmentSettingsMenu.<OxygenDropDownListWrapperEntry<Integer>>setElementClickListener((element)->{
+            EnumCoreGUISetting.SETTINGS_MENU_ALIGNMENT.get().setValue(String.valueOf(element.getWrapped()));
             OxygenManagerClient.instance().getClientSettingManager().changed();
         });
 
@@ -197,12 +197,12 @@ public class CoreSettingsContainer implements ElementsContainer {
             break;
         }
         framework.addElement(this.alignmentNotificationsMenu = new OxygenDropDownList(68, 35, 55, currAlignmentStr));
-        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
-        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
-        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
+        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(- 1, ClientReference.localize("oxygen_core.alignment.left")));
+        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(0, ClientReference.localize("oxygen_core.alignment.center")));
+        this.alignmentNotificationsMenu.addElement(new OxygenDropDownListWrapperEntry<Integer>(1, ClientReference.localize("oxygen_core.alignment.right")));
 
-        this.alignmentNotificationsMenu.<OxygenDropDownListEntry<Integer>>setClickListener((element)->{
-            EnumCoreGUISetting.NOTIFICATIONS_MENU_ALIGNMENT.get().setValue(String.valueOf(element.index));
+        this.alignmentNotificationsMenu.<OxygenDropDownListWrapperEntry<Integer>>setElementClickListener((element)->{
+            EnumCoreGUISetting.NOTIFICATIONS_MENU_ALIGNMENT.get().setValue(String.valueOf(element.getWrapped()));
             OxygenManagerClient.instance().getClientSettingManager().changed();
         });
 

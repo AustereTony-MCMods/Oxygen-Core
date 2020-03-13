@@ -15,6 +15,12 @@ public class OxygenConfig extends AbstractConfig {
     ENABLE_ACCEPT_KEY = ConfigValueUtils.getValue("client", "enable_accept_key", true),
     ENABLE_REJECT_KEY = ConfigValueUtils.getValue("client", "enable_reject_key", true),
     ENABLE_INTERACTION_KEY = ConfigValueUtils.getValue("client", "enable_interaction_key", true),
+    NOTIFICATIONS_MENU_KEY = ConfigValueUtils.getValue("client", "notifications_menu_key", 49),
+    SETTINGS_MENU_KEY = ConfigValueUtils.getValue("client", "settings_menu_key", 30),
+    PRIVILEGES_MENU_KEY = ConfigValueUtils.getValue("client", "privileges_menu_key", 19),
+    ACCEPT_KEY = ConfigValueUtils.getValue("client", "accept_key", 19),
+    REJECT_KEY = ConfigValueUtils.getValue("client", "reject_key", 45),
+    INTERACTION_KEY = ConfigValueUtils.getValue("client", "interaction_key", 33),
     DATE_TIME_FORMATTER_PATTERN = ConfigValueUtils.getValue("client", "date_time_formatter_pattern", "d MM yyyy"),
 
     SERVER_REGION_ID = ConfigValueUtils.getValue("server", "region_id", ""),
@@ -24,11 +30,13 @@ public class OxygenConfig extends AbstractConfig {
     SERVER_DATA_SAVE_PERIOD_SECONDS = ConfigValueUtils.getValue("server", "data_save_period_seconds", 120),
     SYNC_CONFIGS = ConfigValueUtils.getValue("server", "sync_configs", true),
     ENABLE_PRIVILEGES = ConfigValueUtils.getValue("server", "enable_privileges", true, true),
-    VALIDATE_PVP = ConfigValueUtils.getValue("server", "validate_pvp", false),
+    ENABLE_PVP_MANAGER = ConfigValueUtils.getValue("server", "enable_pvp_manager", false),
     SYNC_ENTITIES_HEALTH = ConfigValueUtils.getValue("server", "sync_entities_health", true),
     SYNC_ENTITIES_ABSORPTION_VALUE = ConfigValueUtils.getValue("server", "sync_entities_absorption_value", true),
     SYNC_ENTITIES_ARMOR_VALUE = ConfigValueUtils.getValue("server", "sync_entities_armor_value", true),
-    SYNC_ENTITIES_ACTIVE_EFFECTS = ConfigValueUtils.getValue("server", "sync_entities_active_effects", true);
+    SYNC_ENTITIES_ACTIVE_EFFECTS = ConfigValueUtils.getValue("server", "sync_entities_active_effects", true),
+    ENABLE_ECMASCRIPT_ADAPTER = ConfigValueUtils.getValue("server", "enable_ecmascript_adapter", false),
+    ADVANCED_LOGGING = ConfigValueUtils.getValue("server", "advanced_logging", true);
 
     @Override
     public String getDomain() {
@@ -36,8 +44,13 @@ public class OxygenConfig extends AbstractConfig {
     }
 
     @Override
+    public String getVersion() {
+        return OxygenMain.VERSION_CUSTOM;
+    }
+
+    @Override
     public String getExternalPath() {
-        return CommonReference.getGameFolder() + "/config/oxygen/oxygen.json";
+        return CommonReference.getGameFolder() + "/config/oxygen/core.json";
     }
 
     @Override
@@ -48,6 +61,12 @@ public class OxygenConfig extends AbstractConfig {
         values.add(ENABLE_ACCEPT_KEY);
         values.add(ENABLE_REJECT_KEY);
         values.add(ENABLE_INTERACTION_KEY);
+        values.add(NOTIFICATIONS_MENU_KEY);
+        values.add(SETTINGS_MENU_KEY);
+        values.add(PRIVILEGES_MENU_KEY);
+        values.add(ACCEPT_KEY);
+        values.add(REJECT_KEY);
+        values.add(INTERACTION_KEY);
         values.add(DATE_TIME_FORMATTER_PATTERN);
 
         values.add(SERVER_REGION_ID);
@@ -57,10 +76,12 @@ public class OxygenConfig extends AbstractConfig {
         values.add(SERVER_DATA_SAVE_PERIOD_SECONDS);
         values.add(SYNC_CONFIGS);
         values.add(ENABLE_PRIVILEGES);
-        values.add(VALIDATE_PVP);
+        values.add(ENABLE_PVP_MANAGER);
         values.add(SYNC_ENTITIES_HEALTH);
         values.add(SYNC_ENTITIES_ARMOR_VALUE);
         values.add(SYNC_ENTITIES_ABSORPTION_VALUE);
         values.add(SYNC_ENTITIES_ACTIVE_EFFECTS);
+        values.add(ENABLE_ECMASCRIPT_ADAPTER);
+        values.add(ADVANCED_LOGGING);
     }
 }

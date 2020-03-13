@@ -66,14 +66,14 @@ public class DataSyncManagerServer {
                         }
                     }
 
-                    //Note 0.10.0: Removed data sync with fragmentation.
+                    //Note 0.10: Removed data sync with fragmentation.
                     //
                     //diesieben07 from www.minecraftforge.net forum said server -> client packet 
                     //max payload is 200MB, so Oxygen will sync specified data with single packet.
 
                     if (entriesAmount > 0) {
                         if (buffer.writerIndex() > 209715200) {
-                            OxygenMain.LOGGER.error("Data {} synchronization buffer exceeds maximum packet payload ({}/209715200 bytes) for player {}, it will not be synchronized!",
+                            OxygenMain.LOGGER.error("[Core] Data {} synchronization buffer exceeds maximum packet payload ({}/209715200 bytes) for player {}, it will not be synchronized!",
                                     dataId,
                                     buffer.writerIndex(),
                                     CommonReference.getName(playerMP));

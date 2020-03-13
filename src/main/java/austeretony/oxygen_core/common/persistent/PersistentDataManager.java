@@ -39,7 +39,7 @@ public class PersistentDataManager {
 
     public void registerPersistentData(PersistentData data) {
         this.containers.add(data);
-        OxygenMain.LOGGER.info("Registered <{}> persistent data.", data.getDisplayName());
+        OxygenMain.LOGGER.info("[Core] Registered <{}> persistent data.", data.getDisplayName());
     }
 
     public void registerPersistentData(Runnable task) {
@@ -47,12 +47,12 @@ public class PersistentDataManager {
     }
 
     public void worldUnloaded() {
-        OxygenMain.LOGGER.info("Forcing persistent data save on world unload...");
+        OxygenMain.LOGGER.info("[Core] Forcing persistent data save on world unload...");
         for (PersistentData data : this.containers) {
             if (data.isChanged()) {
                 data.setChanged(false);
                 this.ioManager.savePersistentDataAsync(data);
-                OxygenMain.LOGGER.info("Persistent data <{}> saved.", data.getDisplayName());
+                OxygenMain.LOGGER.info("[Core] Persistent data <{}> saved.", data.getDisplayName());
             }
         }
         for (Runnable r : this.tasks)

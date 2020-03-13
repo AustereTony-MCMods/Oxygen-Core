@@ -123,7 +123,7 @@ public class RoleImpl implements Role {
     }
 
     @Override
-    public JsonObject serialize() {
+    public JsonObject toJson() {
         JsonObject roleObject = new JsonObject();
         roleObject.add(EnumPrivilegeFileKey.ID.name, new JsonPrimitive(this.getId()));
         roleObject.add(EnumPrivilegeFileKey.NAME.name, new JsonPrimitive(this.getName()));
@@ -134,13 +134,16 @@ public class RoleImpl implements Role {
         roleObject.add(EnumPrivilegeFileKey.CHAT_COLOR.name, new JsonPrimitive(OxygenUtils.formattingCode(this.getChatColor())));
 
         JsonArray privilegesArray = new JsonArray();
-        for (Privilege privilege : this.getPrivileges())
-            privilegesArray.add(privilege.toJson());
+        this.getPrivileges()
+        .stream()
+        .sorted((p1, p2)->p1.getId() - p2.getId())
+        .forEach((privilege)->privilegesArray.add(privilege.toJson()));         
         roleObject.add(EnumPrivilegeFileKey.PRIVILEGES.name, privilegesArray);
+
         return roleObject;
     }
 
-    public static RoleImpl deserialize(JsonObject jsonObject) {
+    public static RoleImpl fromJson(JsonObject jsonObject) {
         RoleImpl role = new RoleImpl(
                 jsonObject.get(EnumPrivilegeFileKey.NAME.name).getAsString(),
                 jsonObject.get(EnumPrivilegeFileKey.ID.name).getAsInt(),
@@ -151,9 +154,10 @@ public class RoleImpl implements Role {
         role.setChatColor(OxygenUtils.formattingFromCode(jsonObject.get(EnumPrivilegeFileKey.CHAT_COLOR.name).getAsString()));
 
         JsonArray privilegesArray = jsonObject.get(EnumPrivilegeFileKey.PRIVILEGES.name).getAsJsonArray();
-        for (JsonElement privilegesElement : privilegesArray)
-            role.addPrivilege(PrivilegeUtils.deserialize(privilegesElement.getAsJsonObject()));
-        OxygenMain.LOGGER.info("Loaded role <{}> ({}).", role.getName(), role.getId());
+        for (JsonElement privilegeElement : privilegesArray)
+            role.addPrivilege(PrivilegeUtils.fromJson(privilegeElement.getAsJsonObject()));
+        OxygenMain.LOGGER.info("[Core] Loaded role <{}> ({}).", role.getName(), role.getId());
+
         return role;
     }
 
@@ -185,6 +189,7 @@ public class RoleImpl implements Role {
         int amount = buffer.readByte();
         for (int i = 0; i < amount; i++)
             role.addPrivilege(PrivilegeUtils.read(buffer));
+
         return role;
     }
 }

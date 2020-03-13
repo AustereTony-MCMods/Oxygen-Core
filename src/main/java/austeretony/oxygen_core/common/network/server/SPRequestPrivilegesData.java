@@ -20,6 +20,6 @@ public class SPRequestPrivilegesData extends Packet {
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
         if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.MANAGE_PRIVILEGES_REQUEST_ID))
-            OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getPrivilegesManager().syncPrivilegesData(playerMP));
+            OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getPrivilegesContainer().syncManagementData(playerMP));
     }
 }

@@ -1,26 +1,26 @@
 package austeretony.oxygen_core.client.gui.menu;
 
-import org.lwjgl.input.Keyboard;
-
+import austeretony.oxygen_core.client.OxygenGUIManager;
 import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.gui.privileges.PrivilegesScreen;
 import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
+import austeretony.oxygen_core.common.config.OxygenConfig;
+import austeretony.oxygen_core.common.main.OxygenMain;
 
 public class PrivilegesMenuEntry implements OxygenMenuEntry {
 
     @Override
     public int getId() {
-        return 2;
+        return OxygenMain.PRIVILEGES_SCREEN_ID;
     }
 
     @Override
     public String getLocalizedName() {
-        return ClientReference.localize("oxygen_core.gui.privileges.title");
+        return ClientReference.localize("oxygen_core.gui.privileges.privileges");
     }
 
     @Override
     public int getKeyCode() {
-        return Keyboard.KEY_R;
+        return OxygenConfig.PRIVILEGES_MENU_KEY.asInt();
     }
 
     @Override
@@ -30,6 +30,6 @@ public class PrivilegesMenuEntry implements OxygenMenuEntry {
 
     @Override
     public void open() {
-        ClientReference.displayGuiScreen(new PrivilegesScreen());
+        OxygenGUIManager.openPrivilegesMenu();
     }
 }

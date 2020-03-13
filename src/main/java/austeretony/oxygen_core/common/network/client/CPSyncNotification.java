@@ -23,9 +23,8 @@ public class CPSyncNotification extends Packet {
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
         buffer.writeByte(this.notification.getArguments().length);
-        if (this.notification.getArguments().length > 0)
-            for (String arg : this.notification.getArguments()) 
-                ByteBufUtils.writeString(arg, buffer);
+        for (String arg : this.notification.getArguments()) 
+            ByteBufUtils.writeString(arg, buffer);
         buffer.writeByte(this.notification.getType().ordinal());
         buffer.writeByte(this.notification.getIndex());
         buffer.writeLong(this.notification.getId());
@@ -36,9 +35,8 @@ public class CPSyncNotification extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final String[] args = new String[buffer.readByte()];
-        if (args.length > 0)
-            for (int i = 0; i < args.length; i++)
-                args[i] = ByteBufUtils.readString(buffer);
+        for (int i = 0; i < args.length; i++)
+            args[i] = ByteBufUtils.readString(buffer);
         final NotificationClient notification = new NotificationClient(
                 EnumNotification.values()[buffer.readByte()], 
                 buffer.readByte(),

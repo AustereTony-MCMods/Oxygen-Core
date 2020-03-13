@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.button.GUIButton;
 import austeretony.alternateui.screen.button.GUISlider;
@@ -10,7 +12,8 @@ import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 
 public class OxygenScrollablePanel extends GUIButtonPanel {
 
-    private ClickListener clickListener;
+    @Nullable
+    private ElementClickListener elementClickListener;
 
     private GUIButton previousButton;
 
@@ -31,8 +34,8 @@ public class OxygenScrollablePanel extends GUIButtonPanel {
         this.enableFull();
     }
 
-    public <T> void setClickListener(ClickListener<T> listener) {
-        this.clickListener = listener;
+    public <T> void setElementClickListener(ElementClickListener<T> listener) {
+        this.elementClickListener = listener;
     }
 
     @Override
@@ -49,8 +52,8 @@ public class OxygenScrollablePanel extends GUIButtonPanel {
                 this.getContextMenu().mouseClicked(mouseX, mouseY, mouseButton);
             for (GUIButton button : this.visibleButtons) {
                 if (button.mouseClicked(mouseX, mouseY, mouseButton)) { 
-                    if (this.clickListener != null) {
-                        this.clickListener.onClick(this.previousButton, button, mouseX, mouseY, mouseButton);
+                    if (this.elementClickListener != null) {
+                        this.elementClickListener.click(this.previousButton, button, mouseX, mouseY, mouseButton);
                         this.previousButton = button;
                     }
                 }
@@ -67,8 +70,9 @@ public class OxygenScrollablePanel extends GUIButtonPanel {
         this.previousButton = button;
     }
 
-    public static interface ClickListener<T> {
+    @FunctionalInterface
+    public static interface ElementClickListener<T> {
 
-        void onClick(T previous, T clicked, int mouseX, int mouseY, int mouseButton);
+        void click(T previous, T clicked, int mouseX, int mouseY, int mouseButton);
     }
 }

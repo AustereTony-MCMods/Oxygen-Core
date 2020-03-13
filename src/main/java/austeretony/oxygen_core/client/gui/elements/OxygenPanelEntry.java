@@ -5,7 +5,7 @@ import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.OxygenGUIUtils;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class OxygenPanelEntry<T> extends OxygenIndexedPanelEntry<T> {
+public class OxygenPanelEntry<T> extends OxygenWrapperPanelEntry<T> {
 
     private boolean drawBackground;
 

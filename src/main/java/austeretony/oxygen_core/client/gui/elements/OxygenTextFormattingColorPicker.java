@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
@@ -22,20 +24,21 @@ public class OxygenTextFormattingColorPicker extends GUISimpleElement<OxygenText
         }
     }
 
-    private ColorPickListener listener;
+    @Nullable
+    private ColorPickListener colorPickListener;
 
     private int pickedIndex = - 1;
 
     public OxygenTextFormattingColorPicker(int xPosition, int yPosition) {
         this.setPosition(xPosition, yPosition);
         this.setSize(16 * 7, 7);
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         this.enableFull();
     }
 
     public void setColorPickListener(ColorPickListener listener) {
-        this.listener = listener;
+        this.colorPickListener = listener;
     }
 
     @Override
@@ -78,8 +81,8 @@ public class OxygenTextFormattingColorPicker extends GUISimpleElement<OxygenText
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);         
         if (flag) {
             this.pickedIndex = (mouseX - this.getX()) / 7;
-            if (this.listener != null)
-                this.listener.onColorPicked(this.pickedIndex);      
+            if (this.colorPickListener != null)
+                this.colorPickListener.pick(this.pickedIndex);      
         }
         return flag;
     }
@@ -92,8 +95,9 @@ public class OxygenTextFormattingColorPicker extends GUISimpleElement<OxygenText
         this.pickedIndex = index;
     }
 
+    @FunctionalInterface
     public static interface ColorPickListener {
 
-        void onColorPicked(int index);
+        void pick(int colorIndex);
     }
 }

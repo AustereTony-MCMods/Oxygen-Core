@@ -14,6 +14,7 @@ public class WatchedValue {
 
     private volatile boolean changed;
 
+    @Nullable
     private Initializer initializer;
 
     public WatchedValue(int id, int bufferCapacity) {
@@ -144,6 +145,7 @@ public class WatchedValue {
             this.buffer[i] = buffer[i];
     }
 
+    @FunctionalInterface
     public static interface Initializer {
 
         void init(UUID playerUUID, WatchedValue value);

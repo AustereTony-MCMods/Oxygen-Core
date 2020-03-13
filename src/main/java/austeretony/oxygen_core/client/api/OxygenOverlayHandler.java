@@ -15,7 +15,7 @@ public class OxygenOverlayHandler {
             event.setCanceled(!Minecraft.getMinecraft().inGameHasFocus);
         if (event.getType() == ElementType.TEXT) {
             for (Overlay overlay : OxygenManagerClient.instance().getGUIManager().getOverlays())
-                if (overlay.valid() && (ClientReference.getMinecraft().inGameHasFocus || overlay.drawWhileInGUI()))
+                if ((ClientReference.getMinecraft().inGameHasFocus || overlay.drawWhileInGUI()) && overlay.valid())
                     overlay.draw(event.getPartialTicks());
         }
     }

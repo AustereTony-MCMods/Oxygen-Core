@@ -9,8 +9,8 @@ import austeretony.oxygen_core.client.OxygenManagerClient;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 import austeretony.oxygen_core.client.gui.OxygenGUITextures;
-import austeretony.oxygen_core.client.gui.elements.OxygenButton;
 import austeretony.oxygen_core.client.gui.elements.OxygenCallbackBackgroundFiller;
+import austeretony.oxygen_core.client.gui.elements.OxygenKeyButton;
 import austeretony.oxygen_core.client.gui.elements.OxygenNumberField;
 import austeretony.oxygen_core.client.gui.elements.OxygenTextLabel;
 import austeretony.oxygen_core.client.gui.elements.OxygenTexturedButton;
@@ -32,7 +32,7 @@ public class SetScaleCallback extends AbstractGUICallback {
 
     private OxygenTexturedButton applyButton, resetButton;
 
-    private OxygenButton confirmButton, cancelButton;
+    private OxygenKeyButton confirmButton, cancelButton;
 
     //cache
 
@@ -62,11 +62,8 @@ public class SetScaleCallback extends AbstractGUICallback {
         this.addElement(this.resetButton = new OxygenTexturedButton(96, 27, 5, 5, OxygenGUITextures.CROSS_ICONS, 5, 5, ClientReference.localize("oxygen_core.gui.reset")));         
         this.resetButton.setClickListener((mouseX, mouseY, mouseButton)->this.resetColor());
 
-        this.addElement(this.confirmButton = new OxygenButton(15, this.getHeight() - 12, 40, 10, ClientReference.localize("oxygen_core.gui.confirm")).disable());
-        this.confirmButton.setKeyPressListener(Keyboard.KEY_R, ()->this.confirm());
-
-        this.addElement(this.cancelButton = new OxygenButton(this.getWidth() - 55, this.getHeight() - 12, 40, 10, ClientReference.localize("oxygen_core.gui.cancel")));
-        this.cancelButton.setKeyPressListener(Keyboard.KEY_X, ()->this.close());
+        this.addElement(this.confirmButton = new OxygenKeyButton(15, this.getHeight() - 10, ClientReference.localize("oxygen_core.gui.confirm"), Keyboard.KEY_R, this::confirm).disable());
+        this.addElement(this.cancelButton = new OxygenKeyButton(this.getWidth() - 55, this.getHeight() - 10, ClientReference.localize("oxygen_core.gui.cancel"), Keyboard.KEY_X, this::close));
     }
 
     private void applyColor() {
@@ -75,7 +72,7 @@ public class SetScaleCallback extends AbstractGUICallback {
         try {
             scale = Float.parseFloat(this.newScaleStr);
         } catch (NumberFormatException exception) {
-            OxygenMain.LOGGER.error("Invalid scale value!", exception);
+            OxygenMain.LOGGER.error("[Core] Invalid scale value!", exception);
             this.setWarning(true);
         }   
 

@@ -30,29 +30,57 @@ public final class OxygenManagerClient {
 
     private static OxygenManagerClient instance;
 
+    //main
+
+    private final TimeManagerClient timeManager;
+
+    private final ClientData clientData = new ClientData();
+
     private final OxygenExecutionManager executionManager;
 
     private final OxygenIOManager ioManager;
 
     private final PersistentDataManager persistentDataManager;
 
+    private final Random random = new Random();
+
+    private final OxygenKeyHandler keyHandler = new OxygenKeyHandler();
+
+    //privileges
+
+    private final PrivilegesContainerClient privilegesContainer;
+
+    private final PrivilegesManagerClient privilegesManager;
+
+    //common data & sync
+
+    private final SharedDataManagerClient sharedDataManager = new SharedDataManagerClient();
+
+    private final SharedDataSyncManagerClient sharedDataSyncManager = new SharedDataSyncManagerClient();
+
     private final DataSyncManagerClient dataSyncManager = new DataSyncManagerClient();
+
+    //oxygen player data
+
+    private final ClientDataManager clientDataManager = new ClientDataManager();
+
+    //economy
+
+    private final CurrencyManagerClient currencyManager = new CurrencyManagerClient();
+
+    //inventory
+
+    private final InventoryManagerClient inventoryManager = new InventoryManagerClient();
+
+    //presets
 
     private final PresetsManagerClient presetsManager = new PresetsManagerClient();
 
     private final ItemCategoriesPresetClient itemCategoriesPreset = new ItemCategoriesPresetClient();
 
-    private final ClientData clientData = new ClientData();
-
-    private final ClientDataManager clientDataManager = new ClientDataManager();
-
-    private final PrivilegesManagerClient privilegesManager = new PrivilegesManagerClient();
+    //other
 
     private final NotificationManagerClient notificationsManager = new NotificationManagerClient();
-
-    private final SharedDataManagerClient sharedDataManager = new SharedDataManagerClient();
-
-    private final SharedDataSyncManagerClient sharedDataSyncManager = new SharedDataSyncManagerClient();
 
     private final OxygenGUIManager guiManager = new OxygenGUIManager();
 
@@ -62,25 +90,19 @@ public final class OxygenManagerClient {
 
     private final ChatMessagesManagerClient chatMessagesManager = new ChatMessagesManagerClient();
 
-    private final OxygenKeyHandler keyHandler = new OxygenKeyHandler();
-
     private final OxygenClientSettingsManager clientSettingManager = new OxygenClientSettingsManager();
 
-    private final CurrencyManagerClient currencyManager = new CurrencyManagerClient();
-
-    private final InventoryManagerClient inventoryManager = new InventoryManagerClient();
-
-    private final TimeManagerClient timeManager;
-
-    private final Random random = new Random();
-
     private OxygenManagerClient() {
+        this.timeManager = new TimeManagerClient(this);
         this.executionManager = new OxygenExecutionManager(EnumSide.CLIENT, 1, 1, 1, 1);
         this.ioManager = new OxygenIOManager(this.executionManager);
         this.persistentDataManager = new PersistentDataManager(this.executionManager, this.ioManager, OxygenConfig.CLIENT_DATA_SAVE_PERIOD_SECONDS.asInt());
-        this.presetsManager.registerPreset(this.itemCategoriesPreset);
-        this.timeManager = new TimeManagerClient(this);
         CommonReference.registerEvent(this.keyHandler);
+
+        this.privilegesContainer = new PrivilegesContainerClient(this);
+        this.privilegesManager = new PrivilegesManagerClient(this);
+
+        this.presetsManager.registerPreset(this.itemCategoriesPreset);        
     }
 
     private void registerPersistentData() {
@@ -88,8 +110,7 @@ public final class OxygenManagerClient {
     }
 
     private void scheduleRepeatableProcesses() {
-        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(
-                ()->this.notificationsManager.process(), 1L, 1L, TimeUnit.SECONDS);
+        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(this.notificationsManager::process, 1L, 1L, TimeUnit.SECONDS);
     }
 
     public static void create() {
@@ -104,6 +125,14 @@ public final class OxygenManagerClient {
         return instance;
     }
 
+    public TimeManagerClient getTimeManager() {
+        return this.timeManager;
+    }
+
+    public ClientData getClientData() {
+        return this.clientData;
+    } 
+
     public OxygenExecutionManager getExecutionManager() {
         return this.executionManager;
     }
@@ -116,9 +145,37 @@ public final class OxygenManagerClient {
         return this.persistentDataManager;
     } 
 
+    public Random getRandom() {
+        return this.random;
+    }
+
+    public OxygenKeyHandler getKeyHandler() {
+        return this.keyHandler;
+    }
+
+    public PrivilegesContainerClient getPrivilegesContainer() {
+        return this.privilegesContainer;
+    }
+
+    public PrivilegesManagerClient getPrivilegesManager() {
+        return this.privilegesManager;
+    }
+
+    public SharedDataManagerClient getSharedDataManager() {
+        return this.sharedDataManager;
+    }
+
+    public SharedDataSyncManagerClient getSharedDataSyncManager() {
+        return this.sharedDataSyncManager;
+    }
+
     public DataSyncManagerClient getDataSyncManager() {
         return this.dataSyncManager;
     } 
+
+    public ClientDataManager getClientDataManager() {
+        return this.clientDataManager;
+    }
 
     public PresetsManagerClient getPresetsManager() {
         return this.presetsManager;
@@ -128,28 +185,16 @@ public final class OxygenManagerClient {
         return this.itemCategoriesPreset;
     } 
 
-    public ClientData getClientData() {
-        return this.clientData;
-    } 
-
-    public ClientDataManager getClientDataManager() {
-        return this.clientDataManager;
+    public CurrencyManagerClient getCurrencyManager() {
+        return this.currencyManager;
     }
 
-    public PrivilegesManagerClient getPrivilegesManager() {
-        return this.privilegesManager;
+    public InventoryManagerClient getInventoryManager() {
+        return this.inventoryManager;
     }
 
     public NotificationManagerClient getNotificationsManager() {
         return this.notificationsManager;
-    }
-
-    public SharedDataManagerClient getSharedDataManager() {
-        return this.sharedDataManager;
-    }
-
-    public SharedDataSyncManagerClient getSharedDataSyncManager() {
-        return this.sharedDataSyncManager;
     }
 
     public OxygenGUIManager getGUIManager() {
@@ -168,40 +213,19 @@ public final class OxygenManagerClient {
         return this.chatMessagesManager;
     }
 
-    public OxygenKeyHandler getKeyHandler() {
-        return this.keyHandler;
-    }
-
     public OxygenClientSettingsManager getClientSettingManager() {
         return this.clientSettingManager;
     }
 
-    public CurrencyManagerClient getCurrencyManager() {
-        return this.currencyManager;
-    }
-
-    public InventoryManagerClient getInventoryManager() {
-        return this.inventoryManager;
-    }
-
-    public TimeManagerClient getTimeManager() {
-        return this.timeManager;
-    }
-
-    public Random getRandom() {
-        return this.random;
-    }
-
-    public void init() {
-        this.currencyManager.loadProperties();
-    }
-
-    public void initWorld(long worldId, int maxPlayers, UUID playerUUID) {
+    public void worldLoaded(long worldId, int maxPlayers, UUID playerUUID) {
         this.reset();
         this.clientSettingManager.loadSettings();
         this.clientData.init(worldId, maxPlayers, playerUUID);
-        ClientReference.delegateToClientThread(()->MinecraftForge.EVENT_BUS.post(new OxygenClientInitEvent()));
-        OxygenMain.LOGGER.info("Client initialized.");
+        ClientReference.delegateToClientThread(()->{
+            this.currencyManager.loadProperties();
+            MinecraftForge.EVENT_BUS.post(new OxygenClientInitEvent());
+        });
+        OxygenMain.LOGGER.info("[Core] Client initialized.");
     }
 
     private void reset() {

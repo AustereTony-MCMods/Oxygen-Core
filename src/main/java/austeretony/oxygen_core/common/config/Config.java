@@ -12,11 +12,13 @@ public interface Config {
 
     String getDomain();
 
+    String getVersion();
+
     String getExternalPath();
 
     void getValues(List<ConfigValue> values);
 
-    void load(JsonObject configObject);
+    boolean load(JsonObject configObject);
 
     void save(JsonObject configObject);
 

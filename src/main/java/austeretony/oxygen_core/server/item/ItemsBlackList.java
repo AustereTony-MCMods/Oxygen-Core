@@ -24,7 +24,7 @@ import net.minecraft.util.ResourceLocation;
 
 public final class ItemsBlackList {
 
-    private static final List<ItemsBlackList> BLACKLISTS = new ArrayList<>(5);
+    private static final List<ItemsBlackList> BLACKLISTS = new ArrayList<>(3);
 
     private final String domain;
 
@@ -54,9 +54,9 @@ public final class ItemsBlackList {
                 JsonArray jsonArray = JsonUtils.getExternalJsonData(pathStr).getAsJsonArray();
                 for (JsonElement element : jsonArray)
                     this.items.add(new ResourceLocation(element.getAsString()));
-                OxygenMain.LOGGER.info("Loaded items blacklist for <{}>.", this.domain);
+                OxygenMain.LOGGER.info("[Core] Loaded items blacklist for <{}>.", this.domain);
             } catch (IOException exception) {  
-                OxygenMain.LOGGER.info("Items blacklist for <{}> damaged!", this.domain);
+                OxygenMain.LOGGER.info("[Core] Items blacklist for <{}> damaged!", this.domain);
                 exception.printStackTrace();
             }       
         } else {                
@@ -65,7 +65,7 @@ public final class ItemsBlackList {
                 try (PrintStream printStream = new PrintStream(new File(pathStr))) {
                     printStream.print("[]");
                 } 
-                OxygenMain.LOGGER.info("Created empty items blacklist file for <{}>.", this.domain);
+                OxygenMain.LOGGER.info("[Core] Created empty items blacklist file for <{}>.", this.domain);
             } catch (IOException exception) {      
                 exception.printStackTrace();
             }                     

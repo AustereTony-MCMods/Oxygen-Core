@@ -1,10 +1,13 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.text.GUITextBoxField;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 
 public class OxygenTextBoxField extends GUITextBoxField {
 
+    @Nullable
     private InputListener inputListener;
 
     public OxygenTextBoxField(int xPosition, int yPosition, int width, int height, int maxStringLength) {
@@ -25,12 +28,13 @@ public class OxygenTextBoxField extends GUITextBoxField {
     public boolean keyTyped(char keyChar, int keyCode) {
         boolean flag = super.keyTyped(keyChar, keyCode);
         if (flag && this.inputListener != null)
-            this.inputListener.onInput(keyChar, keyCode);
+            this.inputListener.keyTyped(keyChar, keyCode);
         return flag;
     }
 
+    @FunctionalInterface
     public static interface InputListener {
 
-        void onInput(char keyChar, int keyCode);
+        void keyTyped(char keyChar, int keyCode);
     }
 }

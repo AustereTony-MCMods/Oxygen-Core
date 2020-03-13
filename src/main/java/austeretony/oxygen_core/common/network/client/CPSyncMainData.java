@@ -39,7 +39,7 @@ public class CPSyncMainData extends Packet {
 
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
-        OxygenMain.LOGGER.info("Synchronized main data.");
+        OxygenMain.LOGGER.info("[Core] Synchronized main data.");
         final String serverRegionId = ByteBufUtils.readString(buffer);
         final long 
         worldId = buffer.readLong();
@@ -47,7 +47,7 @@ public class CPSyncMainData extends Packet {
         final UUID playerUUID = ByteBufUtils.readUUID(buffer);
         OxygenHelperClient.addRoutineTask(()->{
             OxygenManagerClient.instance().getTimeManager().initServerTime(serverRegionId);
-            OxygenManagerClient.instance().initWorld(worldId, maxPlayers, playerUUID);
+            OxygenManagerClient.instance().worldLoaded(worldId, maxPlayers, playerUUID);
         });
     }
 }

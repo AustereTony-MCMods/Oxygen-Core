@@ -16,56 +16,68 @@ oxygen_core.gui.callback.settings=Настройки
 oxygen_core.gui.notifications.title=Уведомления
 oxygen_core.gui.notifications.empty=У вас нет активных уведомлений.
 
-oxygen_core.gui.privileges.title=Привилегии
-oxygen_core.gui.privileges.information=Информация
-oxygen_core.gui.privileges.roles=Роли
-oxygen_core.gui.privileges.players=Игроки
-oxygen_core.gui.privileges.disabled=Привилегии отключены.
-oxygen_core.gui.privileges.chatFormattingDisabled=Форматирование чата отключено.
-oxygen_core.gui.privileges.playerRoles=Ваши Роли
-oxygen_core.gui.privileges.chatFormatting=Форматирование Чата
-oxygen_core.gui.privileges.testMessage=Тест
-oxygen_core.gui.privileges.privileges=Привилегии
-oxygen_core.gui.privileges.defaultFormatting=Без Форматирования
-oxygen_core.gui.privileges.value=Значение:
+oxygen_core.gui.privileges.privileges=Privileges
+oxygen_core.gui.privileges.players=Players
+oxygen_core.gui.privileges.roles=Roles
+oxygen_core.gui.privileges.defaultPrivileges=Default Priviliges
+oxygen_core.gui.privileges.disabled=Privileges disabled.
+oxygen_core.gui.privileges.chatFormattingDisabled=Chat formatting disabled.
+oxygen_core.gui.privileges.chatFormatting=Chat Formatting
+oxygen_core.gui.privileges.defaultFormatting=No Formatting
+oxygen_core.gui.privileges.testMessage=Test
 
-oxygen_core.gui.privileges.roleName=Название 
-oxygen_core.gui.privileges.roleId=Идентификатор (Приоритет)
-oxygen_core.gui.privileges.prefix=Префикс
-oxygen_core.gui.privileges.roleNameColor=Цвет Названия Роли
-oxygen_core.gui.privileges.prefixColor=Цвет Префикса
-oxygen_core.gui.privileges.usernameColor=Цвет Ника
-oxygen_core.gui.privileges.chatColor=Цвет Чата
+oxygen_core.gui.privileges.information.playerRoles=Your Roles
 
-oxygen_core.gui.privileges.callback.roleCreation=Создание Роли
-oxygen_core.gui.privileges.callback.editRole=Редактирование Роли
-oxygen_core.gui.privileges.callback.addPrivilege=Добавление Привилегии
-oxygen_core.gui.privileges.callback.removePrivilege=Удаление Привилегии
-oxygen_core.gui.privileges.callback.removeRole=Удаление Роли
-oxygen_core.gui.privileges.callback.removeRole.request=Роль будет удалена.
-oxygen_core.gui.privileges.callback.removePrivilege.request=Привилегия будет удалена.
-oxygen_core.gui.privileges.callback.addPlayerRole=Добавление Роли
-oxygen_core.gui.privileges.callback.removePlayerRole=Удаление Роли
+oxygen_core.gui.privileges.management.title=Управление Привилегиями
+oxygen_core.gui.privileges.management.defaultPrivileges=базовые Привилегии
+oxygen_core.gui.privileges.management.players=Игроки
+oxygen_core.gui.privileges.management.edit=Редактировать
+oxygen_core.gui.privileges.management.remove=Удалить
+oxygen_core.gui.privileges.management.addPrivilege=Доб. Привилегию
+oxygen_core.gui.privileges.management.removePrivilege=Удал. Привилешию
+oxygen_core.gui.privileges.management.addRoleToPlayer=Добавить Роль
+oxygen_core.gui.privileges.management.removeRoleFromPlayer=Убрать Роль
 
-oxygen_core.gui.privileges.edit=Редактировать
-oxygen_core.gui.privileges.remove=Удалить
-oxygen_core.gui.privileges.addPrivilege=Добавить Привилегию
-oxygen_core.gui.privileges.removePrivilege=Удалить Привилегию
-oxygen_core.gui.privileges.addRoleToPlayer=Добавить Роль
-oxygen_core.gui.privileges.removeRoleFromPlayer=Убрать Роль
+oxygen_core.gui.privileges.management.button.createRole=Создать Роль
+oxygen_core.gui.privileges.management.button.addDefaultPrivilege=Добавить Привилегию
+
+oxygen_core.gui.privileges.management.callback.value=Значение:
+oxygen_core.gui.privileges.management.callback.privilegeId=Идентификатор Привилегии:
+oxygen_core.gui.privileges.management.callback.roleName=Название
+oxygen_core.gui.privileges.management.callback.roleId=Идентификатор (Приоритет)
+oxygen_core.gui.privileges.management.callback.prefix=Префикс
+oxygen_core.gui.privileges.management.callback.roleNameColor=Цвет Названия Роли
+oxygen_core.gui.privileges.management.callback.prefixColor=Цвет Префикса
+oxygen_core.gui.privileges.management.callback.usernameColor=Цвет Ника
+oxygen_core.gui.privileges.management.callback.chatColor=Цвет Сообщений в Чате
+
+oxygen_core.gui.privileges.management.callback.roleCreation=Создание Роли
+oxygen_core.gui.privileges.management.callback.editRole=Редактирование Роли
+oxygen_core.gui.privileges.management.callback.addPrivilege=Добавление Привилегии
+oxygen_core.gui.privileges.management.callback.addDefaultPrivilege=Добавление Базовой Привилегии
+oxygen_core.gui.privileges.management.callback.removeRole=Удаление Роли
+oxygen_core.gui.privileges.management.callback.removeRole.request=Роль будет удалена.
+oxygen_core.gui.privileges.management.callback.removePrivilege=Удаление Привилегии
+oxygen_core.gui.privileges.management.callback.removeDefaultPrivilege=Удаление Базовой Привилегии
+oxygen_core.gui.privileges.management.callback.removePrivilege.request=Привилегия будет удалена.
+oxygen_core.gui.privileges.management.callback.addPlayerRole=Добавление Роли Игроку 
+oxygen_core.gui.privileges.management.callback.removePlayerRole=Удаление Роли Игрока
+oxygen_core.gui.privileges.management.callback.removePlayerRole.request=Игрок лишится роли.
 
 oxygen_core.gui.settings.title=Настройки
 oxygen_core.gui.settings.common=Общие
 oxygen_core.gui.settings.gui=Интерфейс
 
-oxygen_core.gui.settings.module.base=Base
-oxygen_core.gui.settings.module.core=Core
+oxygen_core.gui.settings.button.resetSettings=Сбросить Настройки Модуля
+
+oxygen_core.gui.settings.module.base=Базовые
 
 oxygen_core.gui.settings.option.hideOverlay=Скрыть Оверлэй Запросов
 oxygen_core.gui.settings.option.interactWithRMB=Взаимодействие ПКМ
 oxygen_core.gui.settings.option.enableSoundEffects=Звуковые Эффекты
 oxygen_core.gui.settings.option.enableRarityColors=Цвета Качества
 oxygen_core.gui.settings.option.enableItemsDurabilityBar=Полоска Состояния Предметов
+oxygen_core.gui.settings.option.enableStatusMessages=Сообщения о Статусе Операции
 
 oxygen_core.gui.settings.callback.setColor=Настройка Цвета
 oxygen_core.gui.settings.callback.setScale=Настройка Размера
@@ -153,6 +165,7 @@ oxygen_core.gui.days=%s дней
 oxygen_core.gui.undef=неизвестно
 oxygen_core.gui.expired=истекло
 
+oxygen_core.gui.inventoryLoad=Инвентарь
 oxygen_core.gui.lastActivityTime=активность %s назад
 
 oxygen_core.gui.online=В сети
@@ -184,18 +197,16 @@ oxygen_core.gui.offer=Предложить
 oxygen_core.gui.take=Забрать
 oxygen_core.gui.pay=Оплатить
 oxygen_core.gui.price=Стоимость
+oxygen_core.gui.rank=Ранг
+oxygen_core.gui.flag=Флаг
 
-oxygen_core.gui.inventoryLoad=Инвентарь
-
-oxygen_core.message.command.oxygens.currency.balance=Запас валюты игрока <%s> под индексом <%s> составляет <%s>.
-oxygen_core.message.command.oxygens.currency.set=Игроку <%s> установлено <%s> единиц валюты с индексом <%s>.
-oxygen_core.message.command.oxygens.currency.add=Игрок <%s> получил <%s> единиц валюты с индексом <%s>.
-oxygen_core.message.command.oxygens.currency.remove=Игрок <%s> отерял <%s> единиц валюты с индексом <%s>.
-
-oxygen_core.message.command.oxygens.role.add=Добавлена роль <%s> игроку <%s>.
-oxygen_core.message.command.oxygens.role.remove=Убрана роль <%s> у игрока <%s>.
-
-oxygen_core.message.command.oxygens.notification.sentTo=Отправлено уведомление <%s>: %s
+oxygen_core.message.command.oxygenop.currency.balance=Запас валюты игрока <%s> под индексом <%s> составляет <%s>.
+oxygen_core.message.command.oxygenop.currency.set=Игроку <%s> установлено <%s> единиц валюты с индексом <%s>.
+oxygen_core.message.command.oxygenop.currency.add=Игрок <%s> получил <%s> единиц валюты с индексом <%s>.
+oxygen_core.message.command.oxygenop.currency.remove=Игрок <%s> отерял <%s> единиц валюты с индексом <%s>.
+oxygen_core.message.command.oxygenop.role.add=Добавлена роль <%s> игроку <%s>.
+oxygen_core.message.command.oxygenop.role.remove=Убрана роль <%s> у игрока <%s>.
+oxygen_core.message.command.oxygenop.notification.sentTo=Отправлено уведомление <%s>: %s
 
 oxygen_core.command.exception.wrongArg=Неверный аргумент: %s.
 
@@ -203,18 +214,24 @@ oxygen_core.command.oxygenc.reloadSettings=Настойки клиента пе�
 oxygen_core.command.oxygenc.reloadProperties=Дополнительные настройки (свойства) перезагружены.
 oxygen_core.command.oxygenc.currency.balance=Клиентский баланс валюты <%s> равен %s
 oxygen_core.command.oxygenc.privileges.getValue=Клиентское значение привилегии <%s (%s)> равно: %s
+oxygen_core.command.oxygenc.itemStackSerialized=Предмет <%s> успешно сериализован.
 
-oxygen_core.status.activityStatusChanged=Статус активности изменён
-oxygen_core.status.requestSent=Запрос отправлен
-oxygen_core.status.requestReset=Запрос сброшен
-oxygen_core.status.roleCreated=Роль создана
-oxygen_core.status.roleEdited=Роль отредактирована
-oxygen_core.status.roleRemoved=Роль удалена
-oxygen_core.status.privilegeAdded=Привилегия добавлена
-oxygen_core.status.privilegeRemoved=Привилегия удалена
-oxygen_core.status.roleAddedToPlayer=Роль добавлена игроку
-oxygen_core.status.roleRemovedFromPlayer=Роль убрана у игрока
-oxygen_core.status.actionTimeOut=Время выполнения истекло
+oxygen_core.status.message.activityStatusChanged=Статус активности изменён
+oxygen_core.status.message.requestSent=Запрос отправлен
+oxygen_core.status.message.requestReset=Запрос сброшен
+oxygen_core.status.message.roleCreated=Роль создана
+oxygen_core.status.message.roleEdited=Роль отредактирована
+oxygen_core.status.message.roleRemoved=Роль удалена
+oxygen_core.status.message.privilegeAdded=Привилегия добавлена
+oxygen_core.status.message.privilegeRemoved=Привилегия удалена
+oxygen_core.status.message.defaultPrivilegeAdded=Базовая привилегия добавлена
+oxygen_core.status.message.defaultPrivilegeRemoved=Базовая привилегия удалена
+oxygen_core.status.message.roleAddedToPlayer=Роль добавлена игроку
+oxygen_core.status.message.roleRemovedFromPlayer=Роль убрана у игрока
+
+oxygen_core.status.message.actionTimeOut=Время выполнения истекло
+oxygen_core.status.message.inventoryFull=Инвентарь заполнен
+oxygen_core.status.message.mailboxFull=Почтовый ящик заполнен
 
 oxygen_core.category.common=Всё
 oxygen_core.category.blocks=Блоки
@@ -231,3 +248,6 @@ oxygen_core.category.items.brewing=Алхимия
 oxygen_core.category.items.enchanting=Зачаровывание
 
 oxygen_core.dimension.unknown=Неизвестно
+Overworld=Верхний Мир
+Nether=Нижний Мир
+The End=Край

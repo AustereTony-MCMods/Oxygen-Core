@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
@@ -11,7 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class OxygenSorter extends GUISimpleElement<OxygenSorter> {
 
-    private ClickListener clickListener;
+    @Nullable
+    private SortingListener sortingListener;
 
     private EnumSorting currentSorting;
 
@@ -19,7 +22,7 @@ public class OxygenSorter extends GUISimpleElement<OxygenSorter> {
         this.setPosition(xPosition, yPosition);
         this.setSize(3, 3);
         this.currentSorting = sorting;
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         if (!tooltip.isEmpty())
             this.initTooltip(tooltip, EnumBaseGUISetting.TOOLTIP_TEXT_COLOR.get().asInt(), EnumBaseGUISetting.TOOLTIP_BACKGROUND_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_TOOLTIP_SCALE.get().asFloat());
@@ -32,8 +35,8 @@ public class OxygenSorter extends GUISimpleElement<OxygenSorter> {
         this(xPosition, yPosition, EnumSorting.INACTIVE, tooltip);
     }
 
-    public void setClickListener(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    public void setSortingListener(SortingListener clickListener) {
+        this.sortingListener = clickListener;
     }
 
     public void reset() {
@@ -132,8 +135,8 @@ public class OxygenSorter extends GUISimpleElement<OxygenSorter> {
             else
                 this.currentSorting = EnumSorting.DOWN;
             this.setToggled(true);
-            if (this.clickListener != null)
-                this.clickListener.onClick(this.currentSorting);
+            if (this.sortingListener != null)
+                this.sortingListener.sort(this.currentSorting);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);               
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);                                               
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())                    
@@ -153,8 +156,9 @@ public class OxygenSorter extends GUISimpleElement<OxygenSorter> {
         DOWN;
     }
 
-    public static interface ClickListener {
+    @FunctionalInterface
+    public static interface SortingListener {
 
-        void onClick(EnumSorting sorting);
+        void sort(EnumSorting sorting);
     }
 }

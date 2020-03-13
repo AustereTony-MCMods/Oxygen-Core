@@ -29,7 +29,8 @@ public class TimeManagerServer {
             try {
                 zoneId = ZoneId.of(OxygenConfig.SERVER_REGION_ID.asString());
             } catch (DateTimeException exception) {
-                OxygenMain.LOGGER.error("Server ZoneId parse failure! System default ZoneId will be used.", exception);
+                OxygenMain.LOGGER.error("[Core] Server ZoneId parse failure! System default ZoneId <{}> will be used.", zoneId.getId());
+                exception.printStackTrace();
             }
         }
         return zoneId;

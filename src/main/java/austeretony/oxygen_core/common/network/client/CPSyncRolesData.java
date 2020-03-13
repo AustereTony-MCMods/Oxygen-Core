@@ -24,6 +24,6 @@ public class CPSyncRolesData extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final ByteBuf buf = buffer.copy();
-        OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().getPrivilegesManager().rolesDataReceived(buf));
+        OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().getPrivilegesContainer().rolesDataReceived(buf));
     }
 }

@@ -79,7 +79,7 @@ public class OxygenExecutors {
     }
 
     public void shutdownServices() {
-        OxygenMain.LOGGER.info("Initiated <{}> executors shutdown. Tasks: {}/{}/{}.", 
+        OxygenMain.LOGGER.info("[Core] Initiated <{}> executors shutdown. Tasks: {}/{}/{}.", 
                 this.side, this.ioTasksQueue.size(), this.networkTasksQueue.size(), this.routineTasksQueue.size());
 
         this.schedulerService.shutdown();
@@ -95,11 +95,11 @@ public class OxygenExecutors {
         try {
             boolean executed = this.schedulerService.awaitTermination(10L, TimeUnit.SECONDS);
             if (executed)
-                OxygenMain.LOGGER.info("Successfully executed scheduler tasks at <{}>.", this.side);
+                OxygenMain.LOGGER.info("[Core] Successfully executed scheduler tasks at <{}>.", this.side);
             else
-                OxygenMain.LOGGER.info("Failed to execute scheduler tasks at <{}>.", this.side);
+                OxygenMain.LOGGER.info("[Core] Failed to execute scheduler tasks at <{}>.", this.side);
         } catch (InterruptedException exception) {
-            OxygenMain.LOGGER.info("<{}> main thread was interrupteed! Failed to execute scheduler tasks.", this.side);
+            OxygenMain.LOGGER.info("[Core] <{}> main thread was interrupteed! Failed to execute scheduler tasks.", this.side);
         }
     }
 
@@ -107,11 +107,11 @@ public class OxygenExecutors {
         try {
             boolean executed = this.ioService.awaitTermination(10L, TimeUnit.SECONDS);
             if (executed)
-                OxygenMain.LOGGER.info("Successfully executed io tasks at <{}>.", this.side);
+                OxygenMain.LOGGER.info("[Core] Successfully executed io tasks at <{}>.", this.side);
             else
-                OxygenMain.LOGGER.info("Failed to execute io tasks at <{}>.", this.side);
+                OxygenMain.LOGGER.info("[Core] Failed to execute io tasks at <{}>.", this.side);
         } catch (InterruptedException exception) {
-            OxygenMain.LOGGER.info("<{}> main thread was interrupteed! Failed to execute io tasks.", this.side);
+            OxygenMain.LOGGER.info("[Core] <{}> main thread was interrupteed! Failed to execute io tasks.", this.side);
         }
     }
 }

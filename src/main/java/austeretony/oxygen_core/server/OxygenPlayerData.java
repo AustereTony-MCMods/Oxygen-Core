@@ -198,7 +198,7 @@ public class OxygenPlayerData extends AbstractPersistentData {
                     iterator.remove();
         }
 
-        for (CurrencyProvider provider : OxygenManagerServer.instance().getCurrencyManager().getCurrencyProviders())
+        for (CurrencyProvider provider : CurrencyHelperServer.getCurrencyProviders())
             if (provider.forceSync())
                 CurrencyHelperServer.addCurrency(this.playerUUID, 0L, provider.getIndex());
 
@@ -251,7 +251,7 @@ public class OxygenPlayerData extends AbstractPersistentData {
 
     @Override
     public String getDisplayName() {
-        return "core_player_data";
+        return "core:player_data";
     }
 
     @Override

@@ -184,15 +184,13 @@ oxygen_core.gui.pay=Pagar
 
 oxygen_core.gui.inventoryLoad=Inventário
 
-oxygen_core.message.command.oxygens.currency.balance=O Jogador <%s> possui da moeda com índice <%s> a seguinte quantidade: <%s>.
-oxygen_core.message.command.oxygens.currency.set=O Jogador <%s> teve definido <%s> unidades da moeda com índice <%s>.
-oxygen_core.message.command.oxygens.currency.add=O Jogador <%s> recebeu <%s> unidades da moeda com índice <%s>.
-oxygen_core.message.command.oxygens.currency.remove=O Jogador <%s> perdeu <%s> unidades da moeda com índice <%s>.
-
-oxygen_core.message.command.oxygens.role.add=Adicionou o cargo <%s> para o jogador <%s>.
-oxygen_core.message.command.oxygens.role.remove=Removeu o cargo <%s> do jogador <%s>.
-
-oxygen_core.message.command.oxygens.notification.sentTo=Notificação enviada para <%s>: %s
+oxygen_core.message.command.oxygenop.currency.balance=O Jogador <%s> possui da moeda com índice <%s> a seguinte quantidade: <%s>.
+oxygen_core.message.command.oxygenop.currency.set=O Jogador <%s> teve definido <%s> unidades da moeda com índice <%s>.
+oxygen_core.message.command.oxygenop.currency.add=O Jogador <%s> recebeu <%s> unidades da moeda com índice <%s>.
+oxygen_core.message.command.oxygenop.currency.remove=O Jogador <%s> perdeu <%s> unidades da moeda com índice <%s>.
+oxygen_core.message.command.oxygenop.role.add=Adicionou o cargo <%s> para o jogador <%s>.
+oxygen_core.message.command.oxygenop.role.remove=Removeu o cargo <%s> do jogador <%s>.
+oxygen_core.message.command.oxygenop.notification.sentTo=Notificação enviada para <%s>: %s
 
 oxygen_core.command.exception.wrongArg=Argumento errado: %s.
 
@@ -201,17 +199,17 @@ oxygen_core.command.oxygenc.reloadProperties=Propriedades do Client recarregadas
 oxygen_core.command.oxygenc.currency.balance=Unidade Monetária <%s> do Client é: %s
 oxygen_core.command.oxygenc.privileges.getValue=Privilégio do Client <%s (%s)> é: %s
 
-oxygen_core.status.activityStatusChanged=Status de Atividade alterado
-oxygen_core.status.requestSent=Pedido enviado
-oxygen_core.status.requestReset=Pedido resetado
-oxygen_core.status.roleCreated=Cargo criado
-oxygen_core.status.roleEdited=Cargo editado
-oxygen_core.status.roleRemoved=Cargo removido
-oxygen_core.status.privilegeAdded=Privilégio adicionado
-oxygen_core.status.privilegeRemoved=Privilégio removido
-oxygen_core.status.roleAddedToPlayer=Cargo adicionado ao jogador
-oxygen_core.status.roleRemovedFromPlayer=Cargo removido do jogador
-oxygen_core.status.actionTimeOut=Tempo de Ação expirado
+oxygen_core.status.message.activityStatusChanged=Status de Atividade alterado
+oxygen_core.status.message.requestSent=Pedido enviado
+oxygen_core.status.message.requestReset=Pedido resetado
+oxygen_core.status.message.roleCreated=Cargo criado
+oxygen_core.status.message.roleEdited=Cargo editado
+oxygen_core.status.message.roleRemoved=Cargo removido
+oxygen_core.status.message.privilegeAdded=Privilégio adicionado
+oxygen_core.status.message.privilegeRemoved=Privilégio removido
+oxygen_core.status.message.roleAddedToPlayer=Cargo adicionado ao jogador
+oxygen_core.status.message.roleRemovedFromPlayer=Cargo removido do jogador
+oxygen_core.status.message.actionTimeOut=Tempo de Ação expirado
 
 dim.unknown.name=Dimensão Desconhecida
 dim.overworld.name=Overworld

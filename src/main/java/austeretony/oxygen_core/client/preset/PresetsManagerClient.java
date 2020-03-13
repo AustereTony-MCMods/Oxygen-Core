@@ -19,25 +19,25 @@ public class PresetsManagerClient {
 
     public void presetsVersionsReceived(long[] data) {
         OxygenHelperClient.addIOTask(()->{
-            OxygenMain.LOGGER.info("Presets loading started...");
+            OxygenMain.LOGGER.info("[Core] Presets loading started...");
             String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + data[0] + "/";
             for (PresetClient preset : this.presets) {
                 if (preset.loadVersionId(folder + "/presets/" + preset.getDirectory() + "/"))
-                    OxygenMain.LOGGER.info("Preset <{}> version id loaded successfully.", preset.getName());
+                    OxygenMain.LOGGER.info("[Core] Preset <{}> version id loaded successfully.", preset.getName());
                 else
-                    OxygenMain.LOGGER.error("Failed to load preset <{}> version id.", preset.getName());
+                    OxygenMain.LOGGER.error("[Core] Failed to load preset <{}> version id.", preset.getName());
             }
             int index = 1;
             for (PresetClient preset : this.presets) {
                 if (preset.getVersionId() != data[index++]) {
                     OxygenMain.network().sendToServer(new SPRequestPresetSync(preset.getId()));
-                    OxygenMain.LOGGER.info("Preset <{}> is outdated, sync requested.", preset.getName());
+                    OxygenMain.LOGGER.info("[Core] Preset <{}> is outdated, sync requested.", preset.getName());
                 } else {
-                    OxygenMain.LOGGER.info("Preset <{}> is up-to-date, loading...", preset.getName());
+                    OxygenMain.LOGGER.info("[Core] Preset <{}> is up-to-date, loading...", preset.getName());
                     if (preset.load(folder + "/presets/" + preset.getDirectory() + "/"))
-                        OxygenMain.LOGGER.info("Preset <{}> loaded successfully.", preset.getName());
+                        OxygenMain.LOGGER.info("[Core] Preset <{}> loaded successfully.", preset.getName());
                     else
-                        OxygenMain.LOGGER.error("Failed to load preset <{}>.", preset.getName());                        
+                        OxygenMain.LOGGER.error("[Core] Failed to load preset <{}>.", preset.getName());                        
                 }
             }  
         });  
@@ -50,19 +50,19 @@ public class PresetsManagerClient {
             String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + worldId + "/";
             for (PresetClient preset : this.presets)
                 if (preset.getId() == presetId) {
-                    OxygenMain.LOGGER.info("Received raw preset <{}> data, processing...", preset.getName());
+                    OxygenMain.LOGGER.info("[Core] Received raw preset <{}> data, processing...", preset.getName());
                     preset.read(buffer);
                     OxygenHelperClient.addIOTask(()->{
                         if (preset.save(folder + "/presets/" + preset.getDirectory() + "/"))
-                            OxygenMain.LOGGER.info("Preset <{}> saved successfully.", preset.getName());
+                            OxygenMain.LOGGER.info("[Core] Preset <{}> saved successfully.", preset.getName());
                         else
-                            OxygenMain.LOGGER.error("Failed to save preset <{}>.", preset.getName());
+                            OxygenMain.LOGGER.error("[Core] Failed to save preset <{}>.", preset.getName());
                         if (preset.reloadAfterSave()) {
-                            OxygenMain.LOGGER.info("Reloading preset <{}>...", preset.getName());
+                            OxygenMain.LOGGER.info("[Core] Reloading preset <{}>...", preset.getName());
                             if (preset.load(folder + "/presets/" + preset.getDirectory() + "/"))
-                                OxygenMain.LOGGER.info("Preset <{}> loaded successfully.", preset.getName());
+                                OxygenMain.LOGGER.info("[Core] Preset <{}> loaded successfully.", preset.getName());
                             else
-                                OxygenMain.LOGGER.error("Failed to load preset <{}>.", preset.getName());  
+                                OxygenMain.LOGGER.error("[Core] Failed to load preset <{}>.", preset.getName());  
                         }
                     });
                 }

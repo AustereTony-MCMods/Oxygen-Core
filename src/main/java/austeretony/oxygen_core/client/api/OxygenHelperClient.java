@@ -3,7 +3,9 @@ package austeretony.oxygen_core.client.api;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import austeretony.oxygen_core.client.OxygenManagerClient;
@@ -96,20 +98,20 @@ public class OxygenHelperClient {
         OxygenManagerClient.instance().getSharedDataSyncManager().syncSharedData(id);
     }  
 
-    public static void addIOTask(Runnable task) {
-        OxygenManagerClient.instance().getExecutionManager().addIOTask(task);
+    public static Future<?> addIOTask(Runnable task) {
+        return getExecutionManager().addIOTask(task);
     }    
 
-    public static void addNetworkTask(Runnable task) {
-        OxygenManagerClient.instance().getExecutionManager().addNetworkTask(task);
+    public static Future<?> addNetworkTask(Runnable task) {
+        return getExecutionManager().addNetworkTask(task);
     }    
 
-    public static void addRoutineTask(Runnable task) {
-        OxygenManagerClient.instance().getExecutionManager().addRoutineTask(task);
+    public static Future<?> addRoutineTask(Runnable task) {
+        return getExecutionManager().addRoutineTask(task);
     }    
 
-    public static void scheduleTask(Runnable task, long delay, TimeUnit unit) {
-        OxygenManagerClient.instance().getExecutionManager().scheduleTask(task, delay, unit);
+    public static ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit unit) {
+        return getExecutionManager().scheduleTask(task, delay, unit);
     }
 
     public static void loadPersistentData(PersistentData data) {

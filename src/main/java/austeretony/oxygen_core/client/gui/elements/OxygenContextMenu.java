@@ -20,8 +20,8 @@ public class OxygenContextMenu extends GUIContextMenu {
 
     public OxygenContextMenu(OxygenContextMenuAction... actions) {
         super(0, 0);
-        this.openSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_OPEN.soundEvent, 0.5F, 1.0F);
-        this.closeSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
+        this.openSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_OPEN.getSoundEvent(), 0.5F, 1.0F);
+        this.closeSound = new GUISoundEffect(OxygenSoundEffects.CONTEXT_CLOSE.getSoundEvent(), 0.5F, 1.0F);
 
         this.elements = new OxygenContextMenuEntry[actions.length];
 

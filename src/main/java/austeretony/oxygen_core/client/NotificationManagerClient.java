@@ -8,7 +8,6 @@ import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.OxygenHelperClient;
 import austeretony.oxygen_core.client.api.SoundEventHelperClient;
 import austeretony.oxygen_core.client.api.event.OxygenNotificationRecievedEvent;
-import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
 import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.network.server.SPRequestReply;
@@ -24,10 +23,6 @@ public class NotificationManagerClient {
 
     private volatile long latestNotification;
 
-    public void openNotificationsMenu() {
-        ClientReference.displayGuiScreen(new NotificationsScreen());
-    }
-
     public Map<Long, Notification> getNotifications() {
         return this.notifications;
     }
@@ -39,7 +34,7 @@ public class NotificationManagerClient {
     public void addNotification(Notification notification) {
         this.notifications.put(notification.getId(), notification);
         if (notification.getType() == EnumNotification.REQUEST) {
-            SoundEventHelperClient.playSoundClient(OxygenSoundEffects.NOTIFICATION_RECEIVED.soundEvent, 0.5F, 1.0F);
+            SoundEventHelperClient.playSoundClient(OxygenSoundEffects.NOTIFICATION_RECEIVED.getSoundEvent(), 0.5F, 1.0F);
             if (!EnumCoreClientSetting.HIDE_REQUESTS_OVERLAY.get().asBoolean())
                 this.latestNotification = notification.getId();
         }

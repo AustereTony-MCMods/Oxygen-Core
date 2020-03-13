@@ -3,6 +3,8 @@ package austeretony.oxygen_core.client.gui.elements;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
@@ -22,7 +24,8 @@ public class OxygenUsernameField extends OxygenTextField {
 
     private int elementsAmount, baseColorHex, additionalColorHex;
 
-    private UsernameSelectListener selectListener;
+    @Nullable
+    private UsernameSelectListener usernameSelectListener;
 
     private boolean active;
 
@@ -34,7 +37,7 @@ public class OxygenUsernameField extends OxygenTextField {
     }
 
     public void setUsernameSelectListener(UsernameSelectListener listener) {
-        this.selectListener = listener;
+        this.usernameSelectListener = listener;
     }
 
     public void load() {
@@ -98,8 +101,8 @@ public class OxygenUsernameField extends OxygenTextField {
                     this.setText(element.getDisplayText());
                     this.setDragged(false);   
                     element.setHovered(false);                      
-                    if (this.selectListener != null)
-                        this.selectListener.onSelect(OxygenHelperClient.getPlayerSharedData(element.getDisplayText()));
+                    if (this.usernameSelectListener != null)
+                        this.usernameSelectListener.select(OxygenHelperClient.getPlayerSharedData(element.getDisplayText()));
                     this.active = false;
                 }
             }
@@ -142,9 +145,10 @@ public class OxygenUsernameField extends OxygenTextField {
         return flag;
     }
 
+    @FunctionalInterface
     public static interface UsernameSelectListener {
 
-        void onSelect(PlayerSharedData selectedData);
+        void select(PlayerSharedData selectedData);
     }
 
     public static class UsernameFieldEntry extends GUISimpleElement<UsernameFieldEntry> {

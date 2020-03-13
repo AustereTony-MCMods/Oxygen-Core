@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.common.EnumValueType;
 
 public class PrivilegeRegistry {
@@ -18,6 +20,7 @@ public class PrivilegeRegistry {
         REGISTRY.put(id, new PrivilegeRegistryEntry(name, id, type));
     }
 
+    @Nullable
     public static PrivilegeRegistryEntry getRegistryEntry(int id) {
         return REGISTRY.get(id);
     }

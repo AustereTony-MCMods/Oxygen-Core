@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.common.main.OxygenMain;
 import austeretony.oxygen_core.common.util.MathUtils;
 import austeretony.oxygen_core.common.watcher.WatchedValue;
@@ -16,7 +18,7 @@ public class CurrencyManagerServer {
 
     private CurrencyProvider commonProvider;
 
-    private final Map<Integer, CurrencyProvider> providers = new HashMap<>(5);
+    private final Map<Integer, CurrencyProvider> providers = new HashMap<>(3);
 
     public void registerCurrencyProvider(CurrencyProvider provider) {
         if (provider.getIndex() == OxygenMain.COMMON_CURRENCY_INDEX)
@@ -35,6 +37,7 @@ public class CurrencyManagerServer {
         return this.commonProvider;
     }
 
+    @Nullable
     public CurrencyProvider getCurrencyProvider(int index) {
         if (index == OxygenMain.COMMON_CURRENCY_INDEX)
             return this.commonProvider;

@@ -194,6 +194,18 @@ public class GUIButtonPanel extends GUIAdvancedElement<GUIButtonPanel> {
                 this.getScroller().getSlider().setSlidebarNotDragged(); 	  		
     }
 
+    @Override
+    public void update() {
+        for (GUIButton button : this.visibleButtons)            
+            button.update();
+    }
+
+    @Override
+    public void updateCursorCounter() {
+        for (GUIButton button : this.visibleButtons)            
+            button.updateCursorCounter();
+    }
+
     public int getButtonWidth() {		
         return this.buttonWidth;
     }

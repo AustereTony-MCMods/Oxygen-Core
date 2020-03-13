@@ -1,17 +1,17 @@
 {
-  "inventory": { 
+  "inventory_operation": { 
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:inventory"
+        "name": "oxygen_core:inventory_operation"
       }
     ]
   },
-  "sell": { 
+  "ringing_coins": { 
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:sell"
+        "name": "oxygen_core:ringing_coins"
       }
     ]
   },

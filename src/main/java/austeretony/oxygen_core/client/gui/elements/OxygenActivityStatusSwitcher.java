@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
@@ -17,6 +19,7 @@ public class OxygenActivityStatusSwitcher extends GUISimpleElement<OxygenActivit
 
     private final ActivityStatusSwitcherEntry[] elements;
 
+    @Nullable
     private ActivityStatusChangeListener statusChangeListener;
 
     private final int width, height;
@@ -150,22 +153,23 @@ public class OxygenActivityStatusSwitcher extends GUISimpleElement<OxygenActivit
                         OxygenHelperClient.getPlayerSharedData().setByte(OxygenMain.ACTIVITY_STATUS_SHARED_DATA_ID, element.activityStatus.ordinal());
                     }
                     if (this.statusChangeListener != null)
-                        this.statusChangeListener.onChange(element.activityStatus);
+                        this.statusChangeListener.activityStatusChanged(element.activityStatus);
                     this.current = this.previous = element.activityStatus.ordinal();
-                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
+                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.getSoundEvent(), 0.5F, 1.0F);
                     return true;
                 }
             }
         }       
         if (flag && mouseButton == 0 && !this.isDragged())
-            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.soundEvent, 0.5F, 1.0F);
+            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.getSoundEvent(), 0.5F, 1.0F);
         this.setDragged(flag && mouseButton == 0);      
         return false;
     }
 
+    @FunctionalInterface
     public static interface ActivityStatusChangeListener {
 
-        void onChange(EnumActivityStatus newStatus);
+        void activityStatusChanged(EnumActivityStatus newStatus);
     }
 
     public static class ActivityStatusSwitcherEntry extends GUISimpleElement<ActivityStatusSwitcherEntry> {

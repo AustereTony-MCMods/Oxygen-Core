@@ -27,10 +27,9 @@ public class SPSetChatFormattingRole extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.SET_ACTIVITY_STATUS_REQUEST_ID)) {
+        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.MANAGE_PRIVILEGES_REQUEST_ID)) {
             final int roleId = buffer.readByte();
-            if (roleId >= OxygenMain.DEFAULT_ROLE_INDEX && roleId <= Byte.MAX_VALUE)
-                OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getPrivilegesManager().setPlayerChatFormattingRole(CommonReference.getPersistentUUID(playerMP), roleId));
+            OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getPrivilegesManager().setPlayerChatFormattingRole(CommonReference.getPersistentUUID(playerMP), roleId));
         }
     }
 }

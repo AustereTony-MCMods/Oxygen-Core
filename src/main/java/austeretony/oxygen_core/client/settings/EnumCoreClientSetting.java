@@ -36,7 +36,7 @@ public enum EnumCoreClientSetting {
     }
 
     public static void register() {
-        for (EnumCoreClientSetting setting : EnumCoreClientSetting.values())
+        for (EnumCoreClientSetting setting : values())
             OxygenManagerClient.instance().getClientSettingManager().register(SettingValueUtils.getValue(setting.type, setting.key, setting.baseValue));
     }
 }

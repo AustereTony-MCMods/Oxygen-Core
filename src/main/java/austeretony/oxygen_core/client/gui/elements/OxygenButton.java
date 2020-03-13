@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.oxygen_core.client.api.ClientReference;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
@@ -9,8 +11,10 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class OxygenButton extends GUISimpleElement<OxygenButton> {
 
+    @Nullable
     private ClickListener clickListener;
 
+    @Nullable
     private KeyPressListener keyPressListener;
 
     private int keyCode;
@@ -23,7 +27,7 @@ public class OxygenButton extends GUISimpleElement<OxygenButton> {
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_BASE_COLOR.get().asInt());
         this.setDynamicBackgroundColor(EnumBaseGUISetting.BUTTON_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_HOVERED_COLOR.get().asInt());
         this.setTextDynamicColor(EnumBaseGUISetting.TEXT_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_HOVERED_COLOR.get().asInt());
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.enableFull();
     }
 
@@ -44,7 +48,7 @@ public class OxygenButton extends GUISimpleElement<OxygenButton> {
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);         
         if (flag) {      
             if (this.clickListener != null)
-                this.clickListener.onClick(mouseX, mouseY, mouseButton);
+                this.clickListener.mouseClick(mouseX, mouseY, mouseButton);
             this.screen.handleElementClick(this.screen.getWorkspace().getCurrentSection(), this);               
             this.screen.getWorkspace().getCurrentSection().handleElementClick(this.screen.getWorkspace().getCurrentSection(), this, mouseButton);                                               
             if (this.screen.getWorkspace().getCurrentSection().hasCurrentCallback())                    
@@ -58,7 +62,7 @@ public class OxygenButton extends GUISimpleElement<OxygenButton> {
         if (this.isEnabled() 
                 && this.keyPressListener != null 
                 && keyCode == this.keyCode)
-            this.keyPressListener.onKeyPress();
+            this.keyPressListener.keyPressed();
         return false;
     }
 
@@ -103,13 +107,15 @@ public class OxygenButton extends GUISimpleElement<OxygenButton> {
         }
     }
 
+    @FunctionalInterface
     public static interface ClickListener {
 
-        void onClick(int mouseX, int mouseY, int mouseButton);
+        void mouseClick(int mouseX, int mouseY, int mouseButton);
     }
 
+    @FunctionalInterface
     public static interface KeyPressListener {
 
-        void onKeyPress();
+        void keyPressed();
     }
 }

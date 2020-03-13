@@ -19,7 +19,7 @@ public class ColorButton extends GUISimpleElement<ColorButton> {
     public ColorButton(int xPosition, int yPosition, SettingValue colorSetting, String tooltip) {
         this.setPosition(xPosition, yPosition);
         this.setSize(7, 7);
-        this.setSound(OxygenSoundEffects.BUTTON_CLICK.soundEvent);
+        this.setSound(OxygenSoundEffects.BUTTON_CLICK.getSoundEvent());
         this.setStaticBackgroundColor(EnumBaseGUISetting.BACKGROUND_ADDITIONAL_COLOR.get().asInt());
         this.setDynamicBackgroundColor(EnumBaseGUISetting.BUTTON_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.BUTTON_HOVERED_COLOR.get().asInt());
         this.setTextScale(EnumBaseGUISetting.TEXT_SUB_SCALE.get().asFloat());
@@ -42,7 +42,7 @@ public class ColorButton extends GUISimpleElement<ColorButton> {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {      
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);         
         if (flag && this.clickListener != null)
-            this.clickListener.onClick(mouseX, mouseY, mouseButton);                       
+            this.clickListener.mouseClick(mouseX, mouseY, mouseButton);                       
         return flag;
     }
 

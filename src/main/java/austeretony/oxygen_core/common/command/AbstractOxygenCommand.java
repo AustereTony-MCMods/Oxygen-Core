@@ -1,19 +1,25 @@
 package austeretony.oxygen_core.common.command;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class AbstractOxygenCommand extends CommandBase {
 
     public final String commandName;
 
-    public final Set<ArgumentExecutor> executors = new HashSet<>();
+    public final Set<ArgumentExecutor> executors = new HashSet<>(10);
 
     public AbstractOxygenCommand(String commandName) {
         this.commandName = commandName;
@@ -29,7 +35,7 @@ public abstract class AbstractOxygenCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/" + this.commandName + " <arg> (parameters...)";
+        return String.format("/%s <arg> (params...)", this.commandName);
     }
 
     @Override
@@ -49,7 +55,20 @@ public abstract class AbstractOxygenCommand extends CommandBase {
         executor.process(server, sender, args);
     }
 
-    private ArgumentExecutor findExecutor(String arg) {
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, this.executors.stream().map(ArgumentExecutor::getName).collect(Collectors.toList()));
+        else if (args.length > 1) {
+            ArgumentExecutor executor = this.findExecutor(args[0]);
+            if (executor != null)
+                return executor.getTabCompletions(server, sender, args, targetPos);
+        }
+        return Collections.<String>emptyList();
+    }
+
+    @Nullable
+    protected ArgumentExecutor findExecutor(String arg) {
         for (ArgumentExecutor executor : this.executors)
             if (executor.getName().equals(arg))
                 return executor;

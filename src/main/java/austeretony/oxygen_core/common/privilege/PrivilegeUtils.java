@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.common.privilege;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 
 import austeretony.oxygen_core.common.EnumValueType;
@@ -33,7 +35,8 @@ public class PrivilegeUtils {
         return new PrivilegeImpl(new TypedValueString(value), id);
     }
 
-    public static Privilege deserialize(JsonObject jsonObject) {
+    @Nullable
+    public static Privilege fromJson(JsonObject jsonObject) {
         EnumValueType type = EnumValueType.values()[jsonObject.get(EnumPrivilegeFileKey.TYPE.name).getAsInt()];
         int id = jsonObject.get(EnumPrivilegeFileKey.ID.name).getAsInt();
         switch (type) {
@@ -53,6 +56,7 @@ public class PrivilegeUtils {
         return null;
     }
 
+    @Nullable
     public static Privilege read(ByteBuf buffer) {
         int id = buffer.readShort();
         switch (EnumValueType.values()[buffer.readByte()]) {

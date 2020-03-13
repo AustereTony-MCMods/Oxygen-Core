@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -20,11 +22,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemStackWrapper {
 
-    public final String registryName, stackNBTStr, capNBTStr;
+    private final String registryName, stackNBTStr, capNBTStr;
 
-    public final int itemId, damage;
+    private final int itemId, damage;
 
-    private ItemStack cachedStack;
+    //cache
+
+    protected ItemStack cachedStack;
 
     private ItemStackWrapper(int itemId, String registryName, int damage, String stackNBTStr, String capNBTStr) {
         this.itemId = itemId;
@@ -34,21 +38,29 @@ public class ItemStackWrapper {
         this.capNBTStr = capNBTStr;
     }
 
-    @Deprecated
-    public static ItemStackWrapper getFromStack(ItemStack itemStack) {
-        NBTTagCompound serialized = itemStack.serializeNBT();
-        String 
-        stackNBTStr = itemStack.hasTagCompound() ? itemStack.getTagCompound().toString() : "",
-                capNBTStr = serialized.hasKey("ForgeCaps") ? serialized.getCompoundTag("ForgeCaps").toString() : "";
-                return new ItemStackWrapper(
-                        Item.getIdFromItem(itemStack.getItem()), 
-                        itemStack.getItem().getRegistryName().toString(), 
-                        itemStack.getItemDamage(), 
-                        stackNBTStr, 
-                        capNBTStr);
+    @Nonnull
+    public String getRegistryName() {
+        return this.registryName;
     }
 
-    //because this name looks better!
+    public int getItemId() {
+        return this.itemId;
+    }
+
+    public int getItemDamage() {
+        return this.damage;
+    }
+
+    @Nonnull
+    public String getStackNBT() {
+        return this.stackNBTStr;
+    }
+
+    @Nonnull
+    public String getCapabilityNBT() {
+        return this.capNBTStr;
+    }
+
     public static ItemStackWrapper of(ItemStack itemStack) {
         NBTTagCompound serialized = itemStack.serializeNBT();
         String 
@@ -62,6 +74,7 @@ public class ItemStackWrapper {
                         capNBTStr);
     }
 
+    @Nonnull
     public ItemStack getItemStack() {
         NBTTagCompound 
         stackTagCompound = null,
@@ -71,7 +84,7 @@ public class ItemStackWrapper {
             try {
                 stackTagCompound = JsonToNBT.getTagFromJson(this.stackNBTStr);
             } catch (NBTException exception) {
-                OxygenMain.LOGGER.error("ItemStack NBT parsing failure! Item: {}", item.getRegistryName());
+                OxygenMain.LOGGER.error("[Core] ItemStack NBT parsing failure! Item: {}", item.getRegistryName());
                 exception.printStackTrace();    
             }
         }
@@ -79,7 +92,7 @@ public class ItemStackWrapper {
             try {
                 capTagCompound = JsonToNBT.getTagFromJson(this.capNBTStr);
             } catch (NBTException exception) {
-                OxygenMain.LOGGER.error("ItemStack Forge Capabilities NBT parsing failure! Item: {}", item.getRegistryName());
+                OxygenMain.LOGGER.error("[Core] ItemStack Forge Capabilities NBT parsing failure! Item: {}", item.getRegistryName());
                 exception.printStackTrace();    
             }
         }
@@ -88,6 +101,7 @@ public class ItemStackWrapper {
         return itemStack;
     }
 
+    @Nonnull
     public ItemStack getCachedItemStack() {
         if (this.cachedStack == null)
             this.cachedStack = this.getItemStack();
@@ -179,7 +193,7 @@ public class ItemStackWrapper {
 
     @Override
     public String toString() {
-        return String.format("[Registry name: %s, damage: %s, NBT: %s, Capability: %s]",
+        return String.format("[registry name: %s, damage: %d, stack NBT: %s, capability NBT: %s]",
                 this.registryName,
                 this.damage,
                 this.stackNBTStr,

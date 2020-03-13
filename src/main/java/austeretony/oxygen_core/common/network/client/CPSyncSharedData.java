@@ -21,7 +21,7 @@ public class CPSyncSharedData extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.id);
+        buffer.writeShort(this.id);
         buffer.writeBytes(this.compressed);
     }    
 

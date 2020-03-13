@@ -27,7 +27,7 @@ public class SPRequestPresetSync extends Packet {
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.REQUEST_PRESETS_REQUEST_ID)) {
+        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.PRESETS_SYNC_REQUEST_ID)) {
             final int presetId = buffer.readByte();
             OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getPresetsManager().syncPreset(playerMP, presetId));
         }

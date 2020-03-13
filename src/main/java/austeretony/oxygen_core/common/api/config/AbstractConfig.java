@@ -24,9 +24,12 @@ public abstract class AbstractConfig implements Config {
     }
 
     @Override
-    public void load(JsonObject configObject) {
+    public boolean load(JsonObject configObject) {
+        boolean updated = false;
         for (ConfigValue value : this.values)
-            value.init(configObject);
+            if (value.init(configObject) && updated == false)
+                updated = true;
+        return updated;
     }
 
     @Override
@@ -47,6 +50,6 @@ public abstract class AbstractConfig implements Config {
         for (ConfigValue value : this.values)
             if (value.needSync())
                 value.read(buffer);   
-        OxygenMain.LOGGER.info("Synchronized config for <{}>.", this.getDomain());
+        OxygenMain.LOGGER.info("[Core] Synchronized config for <{}>.", this.getDomain());
     }
 }

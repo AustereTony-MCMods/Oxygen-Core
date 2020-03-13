@@ -21,14 +21,14 @@ public class SPRequestSharedDataSync extends Packet {
 
     @Override
     public void write(ByteBuf buffer, INetHandler netHandler) {
-        buffer.writeByte(this.id);
+        buffer.writeShort(this.id);
     }
 
     @Override
     public void read(ByteBuf buffer, INetHandler netHandler) {
         final EntityPlayerMP playerMP = getEntityPlayerMP(netHandler);
-        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.REQUEST_SHARED_DATA_REQUEST_ID)) {
-            final int id = buffer.readByte();
+        if (OxygenHelperServer.isNetworkRequestAvailable(CommonReference.getPersistentUUID(playerMP), OxygenMain.SHARED_DATA_SYNC_REQUEST_ID)) {
+            final int id = buffer.readShort();
             OxygenHelperServer.addRoutineTask(()->OxygenManagerServer.instance().getSharedDataManager().syncSharedData(playerMP, id));
         }
     }

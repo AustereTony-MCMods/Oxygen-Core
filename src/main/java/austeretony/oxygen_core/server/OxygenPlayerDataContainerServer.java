@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.server.api.OxygenHelperServer;
 
 public class OxygenPlayerDataContainerServer {
@@ -15,6 +17,7 @@ public class OxygenPlayerDataContainerServer {
         return this.players.values();
     }
 
+    @Nullable
     public OxygenPlayerData getPlayerData(UUID playerUUID) {
         return this.players.get(playerUUID);
     }
@@ -25,8 +28,9 @@ public class OxygenPlayerDataContainerServer {
         return playerData;
     }
 
-    public void removePlayerData(UUID playerUUID) {
-        this.players.remove(playerUUID);
+    @Nullable
+    public OxygenPlayerData removePlayerData(UUID playerUUID) {
+        return this.players.remove(playerUUID);
     }
 
     public void save() {

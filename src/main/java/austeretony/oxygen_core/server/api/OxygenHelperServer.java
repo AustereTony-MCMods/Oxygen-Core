@@ -3,7 +3,9 @@ package austeretony.oxygen_core.server.api;
 import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import austeretony.oxygen_core.common.EnumActivityStatus;
@@ -82,23 +84,23 @@ public class OxygenHelperServer {
     }    
 
     public static ScheduledExecutorService getSchedulerExecutorService() {
-        return OxygenManagerServer.instance().getExecutionManager().getExecutors().getSchedulerExecutorService();
+        return getExecutionManager().getExecutors().getSchedulerExecutorService();
     }  
 
-    public static void addIOTask(Runnable task) {
-        OxygenManagerServer.instance().getExecutionManager().addIOTask(task);
+    public static Future<?> addIOTask(Runnable task) {
+        return getExecutionManager().addIOTask(task);
     }    
 
-    public static void addNetworkTask(Runnable task) {
-        OxygenManagerServer.instance().getExecutionManager().addNetworkTask(task);
+    public static Future<?> addNetworkTask(Runnable task) {
+        return getExecutionManager().addNetworkTask(task);
     }    
 
-    public static void addRoutineTask(Runnable task) {
-        OxygenManagerServer.instance().getExecutionManager().addRoutineTask(task);
+    public static Future<?> addRoutineTask(Runnable task) {
+        return getExecutionManager().addRoutineTask(task);
     }    
 
-    public static void scheduleTask(Runnable task, long delay, TimeUnit unit) {
-        OxygenManagerServer.instance().getExecutionManager().scheduleTask(task, delay, unit);
+    public static ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit unit) {
+        return getExecutionManager().scheduleTask(task, delay, unit);
     }
 
     public static void loadPersistentData(PersistentData data) {
@@ -125,10 +127,6 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getServerData().getWorldId();
     }
 
-    public static int getMaxPlayers() {
-        return OxygenManagerServer.instance().getServerData().maxPlayers;
-    }
-
     public static String getDataFolder() {
         return OxygenManagerServer.instance().getServerData().getDataFolder();
     }
@@ -145,18 +143,6 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getPlayerDataContainer().getPlayerData(playerUUID).getActivityStatus() == EnumActivityStatus.OFFLINE;
     }
 
-    public static int getPlayerIndex(UUID playerUUID) {
-        return OxygenManagerServer.instance().getSharedDataManager().getSharedData(playerUUID).getIndex();
-    }
-
-    public static UUID getPlayerUUID(int index) {
-        return getPlayerSharedData(index).getPlayerUUID();
-    }
-
-    public static UUID getPlayerUUID(String username) {
-        return OxygenManagerServer.instance().getSharedDataManager().getPlayerUUIDByUsername(username);
-    }
-
     public static PlayerSharedData getPlayerSharedData(int index) {
         return OxygenManagerServer.instance().getSharedDataManager().getSharedData(index);
     }
@@ -166,7 +152,19 @@ public class OxygenHelperServer {
     }
 
     public static PlayerSharedData getPlayerSharedData(String username) {
-        return OxygenManagerServer.instance().getSharedDataManager().getSharedDataByUsername(username);
+        return OxygenManagerServer.instance().getSharedDataManager().getSharedData(username);
+    }
+
+    public static UUID getPlayerUUID(int index) {
+        return getPlayerSharedData(index).getPlayerUUID();
+    }
+
+    public static UUID getPlayerUUID(String username) {
+        return getPlayerSharedData(username).getPlayerUUID();
+    }
+
+    public static int getPlayerIndex(UUID playerUUID) {
+        return getPlayerSharedData(playerUUID).getIndex();
     }
 
     public static void sendPlayerSharedData(EntityPlayerMP playerMP, EntityPlayerMP target) {
@@ -209,7 +207,7 @@ public class OxygenHelperServer {
         return OxygenManagerServer.instance().getSharedDataManager().getOnlinePlayersUUIDs().contains(playerUUID);
     }
 
-    public static void sendStatusMessage(EntityPlayerMP playerMP, int modIndex, int messageIndex) {
+    public static void sendStatusMessage(EntityPlayerMP playerMP, int modIndex, int messageIndex, String... args) {
         OxygenMain.network().sendTo(new CPShowStatusMessage(modIndex, messageIndex), playerMP);
     }
 

@@ -8,7 +8,7 @@ import austeretony.oxygen_core.common.network.server.SPRequestSharedDataSync;
 
 public class SharedDataSyncManagerClient {
 
-    private final Map<Integer, SharedDataSyncListener> handlers = new HashMap<>(10);
+    private final Map<Integer, SharedDataSyncListener> handlers = new HashMap<>(5);
 
     public void registerSyncListener(int id, SharedDataSyncListener listener) {
         this.handlers.put(id, listener);

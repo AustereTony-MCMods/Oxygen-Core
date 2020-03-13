@@ -57,7 +57,7 @@ public class ByteBufUtils {
                 try {
                     itemStack.getItem().readNBTShareTag(itemStack, JsonToNBT.getTagFromJson(nbtStr));
                 } catch (NBTException exception) {
-                    OxygenMain.LOGGER.error("ItemStack {} NBT parsing failure!", itemStack.toString());
+                    OxygenMain.LOGGER.error("[Core] ItemStack {} NBT parsing failure!", itemStack.toString());
                     exception.printStackTrace();
                 }
             }

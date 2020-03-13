@@ -27,7 +27,7 @@ public class PrivilegesEventsServer {
 
                     TextFormatting defColor = TextFormatting.values()[PrivilegesConfig.DEFAULT_CHAT_COLOR.asInt()];
 
-                    if (PrivilegesConfig.SHOW_PREFIX.asBoolean() && !role.getPrefix().isEmpty())
+                    if (!role.getPrefix().isEmpty())
                         prefix = role.getPrefixColor() + role.getPrefix() + TextFormatting.RESET;
 
                     username = role.getUsernameColor() + CommonReference.getName(event.getPlayer()) + TextFormatting.RESET;
@@ -44,7 +44,7 @@ public class PrivilegesEventsServer {
                 } else {
                     StringBuilder formattedUsername = new StringBuilder();
 
-                    if (PrivilegesConfig.SHOW_PREFIX.asBoolean() && !role.getPrefix().isEmpty()) {
+                    if (!role.getPrefix().isEmpty()) {
                         formattedUsername.append(role.getPrefixColor());
                         formattedUsername.append("[");
                         formattedUsername.append(role.getPrefix());

@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Future;
+
+import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
@@ -27,12 +30,13 @@ public class OxygenClientSettingsManager {
         this.settings.put(setting.getKey(), setting);
     }
 
+    @Nullable
     public SettingValue getSettingValue(String key) {
         return this.settings.get(key);
     }
 
-    public void loadSettings() {
-        OxygenHelperClient.addIOTask(()->this.load());
+    public Future<?> loadSettings() {
+        return OxygenHelperClient.addIOTask(this::load);
     }
 
     private void load() {
@@ -45,9 +49,9 @@ public class OxygenClientSettingsManager {
                 for (SettingValue setting : this.settings.values())
                     setting.load(settingsObject);
                 JsonUtils.createExternalJsonFile(pathStr, settingsObject);
-                OxygenMain.LOGGER.info("Client setting loaded.");
+                OxygenMain.LOGGER.info("[Core] Client setting loaded.");
             } catch (IOException | NullPointerException exception) {  
-                OxygenMain.LOGGER.error("Client settings file damaged!", exception);
+                OxygenMain.LOGGER.error("[Core] Client settings file damaged!", exception);
             }       
         } else {                
             try {               
@@ -56,9 +60,9 @@ public class OxygenClientSettingsManager {
                 for (SettingValue setting : this.settings.values())
                     setting.save(settingsObject);
                 JsonUtils.createExternalJsonFile(pathStr, settingsObject);
-                OxygenMain.LOGGER.info("Client setting file created.");
+                OxygenMain.LOGGER.info("[Core] Client setting file created.");
             } catch (IOException exception) {   
-                OxygenMain.LOGGER.error("Failed to create client settings file!");
+                OxygenMain.LOGGER.error("[Core] Failed to create client settings file!");
                 exception.printStackTrace();
             }     
         }
@@ -81,7 +85,7 @@ public class OxygenClientSettingsManager {
                             setting.save(settingsObject);
                         JsonUtils.createExternalJsonFile(pathStr, settingsObject);
                     } catch (IOException | NullPointerException exception) {  
-                        OxygenMain.LOGGER.error("Client settings file damaged!", exception);
+                        OxygenMain.LOGGER.error("[Core] Client settings file damaged!", exception);
                     }       
                 }
             }

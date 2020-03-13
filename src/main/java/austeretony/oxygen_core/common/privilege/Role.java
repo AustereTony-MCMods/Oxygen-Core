@@ -33,7 +33,7 @@ public interface Role {
 
     Privilege removePrivilege(int privilegeId);
 
-    JsonObject serialize();
+    JsonObject toJson();
 
     void write(ByteBuf buffer);
 }

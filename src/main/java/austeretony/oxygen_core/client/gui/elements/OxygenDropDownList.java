@@ -3,6 +3,8 @@ package austeretony.oxygen_core.client.gui.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
 import austeretony.alternateui.util.EnumGUIAlignment;
@@ -14,9 +16,10 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
 
-    private final List<OxygenDropDownListEntry> elements = new ArrayList<>(5);
+    private final List<OxygenDropDownListWrapperEntry> elements = new ArrayList<>(5);
 
-    private ClickListener clickListener;
+    @Nullable
+    private ElementClickListener elementClickListener;
 
     public OxygenDropDownList(int xPosition, int yPosition, int width, String displayText) {     
         this.setPosition(xPosition, yPosition);      
@@ -29,15 +32,15 @@ public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
         this.enableFull();
     }
 
-    public <T> void setClickListener(ClickListener<T> listener) {
-        this.clickListener = listener;
+    public <T> void setElementClickListener(ElementClickListener<T> listener) {
+        this.elementClickListener = listener;
     }
 
-    public List<OxygenDropDownListEntry> getElements() {
+    public List<OxygenDropDownListWrapperEntry> getElements() {
         return this.elements;
     }
 
-    public void addElement(OxygenDropDownListEntry element) {
+    public void addElement(OxygenDropDownListWrapperEntry element) {
         element.initScreen(this.getScreen());
         element.setPosition(this.getX(), this.getY() + this.getHeight() * (this.elements.size() + 1));                
         element.setSize(this.getWidth(), this.getHeight());   
@@ -109,7 +112,7 @@ public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
             GlStateManager.popMatrix();      
 
             if (this.isDragged())               
-                for (OxygenDropDownListEntry element : this.elements)                 
+                for (OxygenDropDownListWrapperEntry element : this.elements)                 
                     element.draw(mouseX, mouseY); 
         }
     }
@@ -119,7 +122,7 @@ public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
         if (this.isEnabled()) {
             this.setHovered(mouseX >= this.getX() && mouseY >= this.getY() && mouseX <= this.getX() + (int) (this.getScale() * this.getWidth()) && mouseY < this.getY() + (int) (this.getScale() * (this.isDragged() ? this.getHeight() * (this.elements.size() + 1) : this.getHeight())));   
             if (this.isDragged())  
-                for (OxygenDropDownListEntry element : this.elements)
+                for (OxygenDropDownListWrapperEntry element : this.elements)
                     element.mouseOver(mouseX, mouseY);         
         }
     }
@@ -128,35 +131,36 @@ public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {      
         boolean flag = super.mouseClicked(mouseX, mouseY, mouseButton);                         
         if (flag && mouseButton == 0) {                  
-            for (OxygenDropDownListEntry element : this.elements) {                           
+            for (OxygenDropDownListWrapperEntry element : this.elements) {                           
                 if (element.mouseClicked(mouseX, mouseY, mouseButton)) {                                                                
                     this.setDisplayText(element.getDisplayText());                              
                     this.setDragged(false);   
                     element.setHovered(false);                      
-                    if (this.clickListener != null)
-                        this.clickListener.onClick(element);
-                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
+                    if (this.elementClickListener != null)
+                        this.elementClickListener.click(element);
+                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.getSoundEvent(), 0.5F, 1.0F);
                     return true;
                 }
             }
         }       
         if (flag && mouseButton == 0 && !this.isDragged())
-            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.soundEvent, 0.5F, 1.0F);
+            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.getSoundEvent(), 0.5F, 1.0F);
         this.setDragged(flag && mouseButton == 0);      
         return false;
     }
 
-    public static interface ClickListener<T> {
+    @FunctionalInterface
+    public static interface ElementClickListener<T> {
 
-        void onClick(T clicked);
+        void click(T clicked);
     }
 
-    public static class OxygenDropDownListEntry<T> extends GUISimpleElement<OxygenDropDownListEntry> {
+    public static class OxygenDropDownListWrapperEntry<T> extends GUISimpleElement<OxygenDropDownListWrapperEntry> {
 
-        public final T index;
+        protected final T wrapped;
 
-        public OxygenDropDownListEntry(T index, String displayText) {
-            this.index = index;
+        public OxygenDropDownListWrapperEntry(T wrapped, String displayText) {
+            this.wrapped = wrapped;
             this.setDisplayText(displayText);
             this.setStaticBackgroundColor(EnumBaseGUISetting.ELEMENT_HOVERED_COLOR.get().asInt());
             this.setTextDynamicColor(EnumBaseGUISetting.TEXT_ENABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_DISABLED_COLOR.get().asInt(), EnumBaseGUISetting.TEXT_HOVERED_COLOR.get().asInt());
@@ -193,6 +197,10 @@ public class OxygenDropDownList extends GUISimpleElement<OxygenDropDownList> {
             GlStateManager.popMatrix();
 
             GlStateManager.popMatrix();
+        }
+
+        public T getWrapped() {
+            return this.wrapped;
         }
     }
 }

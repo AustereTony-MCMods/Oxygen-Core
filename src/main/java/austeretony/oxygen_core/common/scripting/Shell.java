@@ -10,5 +10,5 @@ public interface Shell {
     Object get(String name);
 
     @Nullable
-    Object evaluate(String script, String fileName);
+    Object evaluate(String script, String fileName, boolean debug);
 }

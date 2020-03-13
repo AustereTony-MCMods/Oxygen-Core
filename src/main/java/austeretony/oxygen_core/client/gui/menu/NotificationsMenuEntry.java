@@ -1,16 +1,16 @@
 package austeretony.oxygen_core.client.gui.menu;
 
-import org.lwjgl.input.Keyboard;
-
+import austeretony.oxygen_core.client.OxygenGUIManager;
 import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
 import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
+import austeretony.oxygen_core.common.config.OxygenConfig;
+import austeretony.oxygen_core.common.main.OxygenMain;
 
 public class NotificationsMenuEntry implements OxygenMenuEntry {
 
     @Override
     public int getId() {
-        return 0;
+        return OxygenMain.NOTIFICATIONS_SCREEN_ID;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class NotificationsMenuEntry implements OxygenMenuEntry {
 
     @Override
     public int getKeyCode() {
-        return Keyboard.KEY_N;
+        return OxygenConfig.NOTIFICATIONS_MENU_KEY.asInt();
     }
 
     @Override
@@ -30,6 +30,6 @@ public class NotificationsMenuEntry implements OxygenMenuEntry {
 
     @Override
     public void open() {
-        ClientReference.displayGuiScreen(new NotificationsScreen());
+        OxygenGUIManager.openNotificationsMenu();
     }
 }

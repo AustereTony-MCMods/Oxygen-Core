@@ -62,18 +62,18 @@ public class CurrencyManagerClient {
         if (Files.exists(path)) {
             try {
                 properties.deserialize(JsonUtils.getExternalJsonData(pathStr).getAsJsonObject());
-                OxygenMain.LOGGER.info("Loaded currency properties with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.info("[Core] Loaded currency properties with index: <{}>.", properties.getIndex());
             } catch (IOException exception) {
-                OxygenMain.LOGGER.error("Failed to load currency properties with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.error("[Core] Failed to load currency properties with index: <{}>.", properties.getIndex());
                 exception.printStackTrace();
             }
         } else {
             try {               
                 Files.createDirectories(path.getParent());                                
                 JsonUtils.createExternalJsonFile(pathStr, properties.serialize());
-                OxygenMain.LOGGER.info("Created currency properties file with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.info("[Core] Created currency properties file with index: <{}>.", properties.getIndex());
             } catch (IOException exception) {   
-                OxygenMain.LOGGER.error("Failed to create currency properties file with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.error("[Core] Failed to create currency properties file with index: <{}>.", properties.getIndex());
                 exception.printStackTrace();
             }     
         }
@@ -86,9 +86,9 @@ public class CurrencyManagerClient {
             try {
                 properties.setIcon(ClientReference.getMinecraft().getTextureManager().getDynamicTextureLocation("currency_" + properties.getIndex(), 
                         new DynamicTexture(ImageIO.read(new File(pathStr)))));
-                OxygenMain.LOGGER.info("Loaded currency icon with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.info("[Core] Loaded currency icon with index: <{}>.", properties.getIndex());
             } catch (IOException exception) {
-                OxygenMain.LOGGER.error("Failed to load currency icon with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.error("[Core] Failed to load currency icon with index: <{}>.", properties.getIndex());
                 exception.printStackTrace();
             }        
         } else {
@@ -102,11 +102,11 @@ public class CurrencyManagerClient {
                 }
                 if (icon != null) {
                     ImageIO.write(icon, "png", path.toFile());
-                    OxygenMain.LOGGER.info("Created currency icon with index: <{}>.", properties.getIndex());
+                    OxygenMain.LOGGER.info("[Core] Created currency icon with index: <{}>.", properties.getIndex());
                 } else
-                    OxygenMain.LOGGER.error("Failed to load currency icon with index: <{}>. External icon creation failed.", properties.getIndex());
+                    OxygenMain.LOGGER.error("[Core] Failed to load currency icon with index: <{}>. External icon creation failed.", properties.getIndex());
             } catch (IOException exception) {   
-                OxygenMain.LOGGER.error("Failed to create currency icon with index: <{}>.", properties.getIndex());
+                OxygenMain.LOGGER.error("[Core] Failed to create currency icon with index: <{}>.", properties.getIndex());
                 exception.printStackTrace();
             }     
         }

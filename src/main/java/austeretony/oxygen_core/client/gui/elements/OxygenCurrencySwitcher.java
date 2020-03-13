@@ -24,7 +24,7 @@ public class OxygenCurrencySwitcher extends OxygenDropDownList {
             this.addElement(new OxygenCurrencySwitcherEntry(properties));
     }
 
-    public class OxygenCurrencySwitcherEntry extends OxygenDropDownListEntry<CurrencyProperties> {
+    public class OxygenCurrencySwitcherEntry extends OxygenDropDownListWrapperEntry<CurrencyProperties> {
 
         public OxygenCurrencySwitcherEntry(CurrencyProperties properties) {
             super(properties, properties.getLocalizedName());
@@ -53,8 +53,8 @@ public class OxygenCurrencySwitcher extends OxygenDropDownList {
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
                 GlStateManager.enableBlend(); 
-                this.mc.getTextureManager().bindTexture(this.index.getIcon());
-                GUIAdvancedElement.drawCustomSizedTexturedRect(2 + this.index.getXOffset(), (this.getHeight() - this.index.getIconHeight()) / 2 + this.index.getYOffset(), 0, 0, this.index.getIconWidth(), this.index.getIconHeight(), this.index.getIconWidth(), this.index.getIconHeight());            
+                this.mc.getTextureManager().bindTexture(this.getWrapped().getIcon());
+                GUIAdvancedElement.drawCustomSizedTexturedRect(2 + this.wrapped.getXOffset(), (this.getHeight() - this.wrapped.getIconHeight()) / 2 + this.wrapped.getYOffset(), 0, 0, this.wrapped.getIconWidth(), this.wrapped.getIconHeight(), this.wrapped.getIconWidth(), this.wrapped.getIconHeight());            
                 GlStateManager.disableBlend();
 
                 GlStateManager.pushMatrix();            

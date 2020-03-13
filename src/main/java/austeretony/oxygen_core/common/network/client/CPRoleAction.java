@@ -33,8 +33,6 @@ public class CPRoleAction extends Packet {
         final Role role = RoleImpl.read(buffer);
         switch (action) {
         case CREATED:
-            OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().getPrivilegesManager().roleCreated(role));
-            break;
         case EDITED:
             OxygenHelperClient.addRoutineTask(()->OxygenManagerClient.instance().getPrivilegesManager().roleCreated(role));
             break;

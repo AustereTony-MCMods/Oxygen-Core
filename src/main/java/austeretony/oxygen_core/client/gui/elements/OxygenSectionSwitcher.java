@@ -1,5 +1,7 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.core.AbstractGUISection;
 import austeretony.alternateui.screen.core.GUIAdvancedElement;
 import austeretony.alternateui.screen.core.GUISimpleElement;
@@ -14,6 +16,7 @@ public class OxygenSectionSwitcher extends GUISimpleElement<OxygenSectionSwitche
 
     private final OxygenSectionsSwitcherEntry[] elements;
 
+    @Nullable
     private SectionChangeListener sectionChangeListener;
 
     public OxygenSectionSwitcher(int xPosition, int yPosition, AbstractGUISection... sections) {           
@@ -118,23 +121,24 @@ public class OxygenSectionSwitcher extends GUISimpleElement<OxygenSectionSwitche
                     this.setDragged(false);   
                     element.setHovered(false);                      
                     if (this.sectionChangeListener != null)
-                        this.sectionChangeListener.onChange(element.section);
+                        this.sectionChangeListener.change(element.section);
                     if (this.screen.getWorkspace().getCurrentSection() != element.section)
                         element.section.open();
-                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.soundEvent, 0.5F, 1.0F);
+                    this.mc.player.playSound(OxygenSoundEffects.CONTEXT_CLOSE.getSoundEvent(), 0.5F, 1.0F);
                     return true;
                 }
             }
         }       
         if (flag && mouseButton == 0 && !this.isDragged())
-            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.soundEvent, 0.5F, 1.0F);
+            this.mc.player.playSound(OxygenSoundEffects.DROP_DOWN_LIST_OPEN.getSoundEvent(), 0.5F, 1.0F);
         this.setDragged(flag && mouseButton == 0);      
         return false;
     }
 
+    @FunctionalInterface
     public static interface SectionChangeListener {
 
-        void onChange(AbstractGUISection newSection);
+        void change(AbstractGUISection newSection);
     }
 
     public static class OxygenSectionsSwitcherEntry extends GUISimpleElement<OxygenSectionsSwitcherEntry> {

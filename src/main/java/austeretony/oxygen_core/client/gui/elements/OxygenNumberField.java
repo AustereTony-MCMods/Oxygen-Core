@@ -1,10 +1,13 @@
 package austeretony.oxygen_core.client.gui.elements;
 
+import javax.annotation.Nullable;
+
 import austeretony.alternateui.screen.text.GUINumberField;
 import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
 
 public class OxygenNumberField extends GUINumberField {
 
+    @Nullable
     private InputListener inputListener;
 
     public OxygenNumberField(int xPosition, int yPosition, int width, String displayText, long maxNumber, boolean decimal, int decimalDigitsAmount, boolean positive) {
@@ -29,6 +32,7 @@ public class OxygenNumberField extends GUINumberField {
         return flag;
     }
 
+    @FunctionalInterface
     public static interface InputListener {
 
         void keyTyped(char keyChar, int keyCode);

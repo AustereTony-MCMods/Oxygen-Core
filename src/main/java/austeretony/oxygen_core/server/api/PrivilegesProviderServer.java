@@ -3,6 +3,8 @@ package austeretony.oxygen_core.server.api;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.privilege.Privilege;
 import austeretony.oxygen_core.common.privilege.Role;
@@ -15,22 +17,27 @@ import austeretony.oxygen_core.server.OxygenManagerServer;
 
 public class PrivilegesProviderServer {
 
+    @Nullable
     public static Role getRole(int roleId) {
-        return OxygenManagerServer.instance().getPrivilegesManager().getRole(roleId);
+        return OxygenManagerServer.instance().getPrivilegesContainer().getRole(roleId);
     }
 
+    @Nullable
     public static Set<Integer> getPlayerRolesIds(UUID playerUUID) {
-        return OxygenManagerServer.instance().getPrivilegesManager().getPlayerRolesIds(playerUUID);
+        return OxygenManagerServer.instance().getPrivilegesContainer().getPlayerRolesIds(playerUUID);
     }
 
+    @Nullable
     public static Role getChatFormattingPlayerRole(UUID playerUUID) {
         return OxygenManagerServer.instance().getPrivilegesManager().getChatFormattingPlayerRole(playerUUID);
     }
 
+    @Nullable
     public static Role getPriorityPlayerRole(UUID playerUUID) {
         return OxygenManagerServer.instance().getPrivilegesManager().getPriorityPlayerRole(playerUUID);
     }
 
+    @Nullable
     public static Privilege getPriorityPlayerPrivilege(UUID playerUUID, int privilegeId) {
         return OxygenManagerServer.instance().getPrivilegesManager().getPriorityPlayerPrivilege(playerUUID, privilegeId);
     }

@@ -14,15 +14,19 @@ public enum EnumOxygenStatusMessage {
     ROLE_REMOVED("roleRemoved"),
     PRIVILEGE_ADDED("privilegeAdded"),
     PRIVILEGE_REMOVED("privilegeRemoved"),
+    DEFAULT_PRIVILEGE_ADDED("defaultPrivilegeAdded"),
+    DEFAULT_PRIVILEGE_REMOVED("defaultPrivilegeRemoved"),
     ROLE_ADDED_TO_PLAYER("roleAddedToPlayer"),
     ROLE_REMOVED_FROM_PLAYER("roleRemovedFromPlayer"),
-    
-    ACTION_TIMEOUT("actionTimeOut");
+
+    ACTION_TIMEOUT("actionTimeOut"),
+    INVENTORY_FULL("inventoryFull"),
+    MAILBOX_FULL("mailboxFull");
 
     private final String status;
 
     EnumOxygenStatusMessage(String status) {
-        this.status = "oxygen_core.status." + status;
+        this.status = "oxygen_core.status.message." + status;
     }
 
     public String localized() {

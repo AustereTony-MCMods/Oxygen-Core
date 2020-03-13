@@ -56,7 +56,7 @@ public class SharedDataManagerClient {
                 this.observedPlayers.add(sharedData.getPlayerUUID());
                 this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
             }
-            OxygenMain.LOGGER.info("Synchronized {} observed shared data entries.", amount);
+            OxygenMain.LOGGER.info("[Core] Synchronized {} observed shared data entries.", amount);
         } finally {
             if (buffer != null)
                 buffer.release();
@@ -92,14 +92,14 @@ public class SharedDataManagerClient {
                 }
             }
             int 
-            id = buffer.readByte(),
+            id = buffer.readShort(),
             amount = buffer.readShort();
             for (int i = 0; i < amount; i++) {
                 sharedData = PlayerSharedData.read(buffer);
                 this.access.put(sharedData.getIndex(), sharedData.getPlayerUUID());
                 this.sharedData.put(sharedData.getPlayerUUID(), sharedData);
             }
-            OxygenMain.LOGGER.info("Synchronized {} shared data entries.", amount);
+            OxygenMain.LOGGER.info("[Core] Synchronized {} shared data entries.", amount);
             OxygenManagerClient.instance().getSharedDataSyncManager().sharedDataReceived(id);
         } finally {
             if (buffer != null)

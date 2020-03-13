@@ -476,6 +476,15 @@ public class GUISimpleElement<T extends GUIBaseElement> extends GUIBaseElement<T
         return (T) this;
     }
 
+    /**
+     * Управляет состоянием элемента.
+     */
+    public T enableFull(boolean flag) {
+        this.setEnabled(flag);
+        this.setVisible(flag);
+        return (T) this;
+    }
+
     public static void drawRect(int xStart, int yStart, int xEnd, int yEnd, int color) {	
         int j1;
         if (xStart < xEnd) {       	
