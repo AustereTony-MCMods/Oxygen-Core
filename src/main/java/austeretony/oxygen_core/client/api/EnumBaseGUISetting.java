@@ -23,9 +23,9 @@ public enum EnumBaseGUISetting {
     ELEMENT_DISABLED_COLOR("color_element_disabled", EnumValueType.HEX, Integer.toHexString(0x96040404)),
     ELEMENT_HOVERED_COLOR("color_element_hovered", EnumValueType.HEX, Integer.toHexString(0x96303030)),
 
-    SLIDER_ENABLED_COLOR("color_slider_enabled", EnumValueType.HEX, Integer.toHexString(0xff222222)),
-    SLIDER_DISABLED_COLOR("color_slider_disabled", EnumValueType.HEX, Integer.toHexString(0xff141414)),
-    SLIDER_HOVERED_COLOR("color_slider_hovered", EnumValueType.HEX, Integer.toHexString(0xff444444)),
+    SLIDER_ENABLED_COLOR("color_slider_enabled", EnumValueType.HEX, Integer.toHexString(0xff303030)),
+    SLIDER_DISABLED_COLOR("color_slider_disabled", EnumValueType.HEX, Integer.toHexString(0xff202020)),
+    SLIDER_HOVERED_COLOR("color_slider_hovered", EnumValueType.HEX, Integer.toHexString(0xff454545)),
 
     TEXT_ENABLED_COLOR("color_text_enabled", EnumValueType.HEX, Integer.toHexString(0xffcccccc)),
     TEXT_DISABLED_COLOR("color_text_disabled", EnumValueType.HEX, Integer.toHexString(0xff999999)),

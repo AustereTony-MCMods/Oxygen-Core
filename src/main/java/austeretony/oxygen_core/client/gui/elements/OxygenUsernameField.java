@@ -67,10 +67,10 @@ public class OxygenUsernameField extends OxygenTextField {
             drawRect(0, this.getHeight(), this.getWidth(), (this.getHeight() + 1) * (this.elementsAmount + 1), this.baseColorHex);
 
             //frame
-            OxygenGUIUtils.drawRect(0.0D, this.getHeight() + 1.0D, 0.4D, (this.getHeight() + 1.0D) * (this.elementsAmount + 1) - 0.4D, this.additionalColorHex);
-            OxygenGUIUtils.drawRect(this.getWidth() - 0.4D, this.getHeight() + 1.0D, this.getWidth(), (this.getHeight() + 1.0D) * (this.elementsAmount + 1) - 0.4D, this.additionalColorHex);
-            OxygenGUIUtils.drawRect(0.0D, this.getHeight() + 0.4D, this.getWidth(), this.getHeight() + 1.0D, this.additionalColorHex);
-            OxygenGUIUtils.drawRect(0.0D, (this.getHeight() + 1.0D) * (this.elementsAmount + 1), this.getWidth(), (this.getHeight() + 1.0D) * (this.elementsAmount + 1) + 0.4D, this.additionalColorHex);
+            OxygenGUIUtils.drawRect(0.0D, this.getHeight(), 0.4D, this.getHeight() * (this.elementsAmount + 1) - 0.4D, this.additionalColorHex);
+            OxygenGUIUtils.drawRect(this.getWidth() - 0.4D, this.getHeight(), this.getWidth(), this.getHeight() * (this.elementsAmount + 1) - 0.4D, this.additionalColorHex);
+            OxygenGUIUtils.drawRect(0.0D, this.getHeight() + 0.4D, this.getWidth(), this.getHeight(), this.additionalColorHex);
+            OxygenGUIUtils.drawRect(0.0D, this.getHeight() * (this.elementsAmount + 1), this.getWidth(), this.getHeight() * (this.elementsAmount + 1) + 0.4D, this.additionalColorHex);
 
             GlStateManager.popMatrix();
 
@@ -132,7 +132,7 @@ public class OxygenUsernameField extends OxygenTextField {
                         break;
                     formatted = username.toLowerCase();
                     if (formatted.startsWith(typed)) {
-                        this.elements[index] = new UsernameFieldEntry(this.getX(), this.getY() + (this.getHeight() + 1) * (index + 1), this.getWidth(), this.getHeight(), username);
+                        this.elements[index] = new UsernameFieldEntry(this.getX(), this.getY() + this.getHeight() * (index + 1), this.getWidth(), this.getHeight(), username);
                         this.bind(this.elements[index]);
                         index++;
                     }
