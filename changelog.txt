@@ -1,3 +1,34 @@
+0.11.0b [2020-03-19]
++ Added the ability to set default privileges globally for all players. This duplicates the ability to 
+  configure through configuration files.
++ Privilege management moved to a separate menu. You can open the menu with the command "/oxygen core -privileges -management".
++ Added ECMAScript script adapter for JavaScript. Disabled by default, can be enabled through the config.
++ Added extended logging of Oxygen events to a file. Logs are stored in the ".minecraft/logs/oxygen/common/" folder.
++ Improved configuration loading, now files will be overwritten only if the configuration is updated.
++ Updated GUI design.
++ Added configuration options:
+ Client [Core]
+ - "notifications_menu_key" [int] - identifier of the notification menu key
+ - "settings_menu_key" [int] - identifier of the settings menu key
+ - "privileges_menu_key" [int] - identifier of the privilege menu key
+ - "accept_key" [int] - identifier of the key to accept the request
+ - "reject_key" [int] - identifier of the request cancel key
+ - "interaction_key" [int] - identifier of the interaction key
+
+ Server [Core]
+ - "enable_ecmascript_adapter" [boolean] - if "true", the ECMAScript scripting engine for JavaScript will be activated
+ - "advanced_logging" [boolean] - if "true", extended logging of all Oxygen events will be activated
+ 
++ Added commands:
+ Server - Operators [/oxygenop]
+ - Run the script from the chat: /oxygenop core -script -chat <script text>
+ - Run the script from the file: /oxygenop core -script -file <file name>
+ 
+ Client [/oxygenc]
+ - Get the identifier of the aimed entity: /oxygenc core -entity -get-id
+ - Get the UUID of aimed entity: /oxygenc core -entity -get-uuid
+ - Get item data in hand in JSON format: /oxygenc core -item -to-json
+
 0.10.3b [2020-02-21]
 + Added basic API for using scripts. Using scripts will be optional, they will be supported by some modules. 
 Script support will be provided through adapters, which will allow using different scripting languages.
