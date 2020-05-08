@@ -1,0 +1,250 @@
+#Chinese Translated By ahdg,lian20,Lingdong,NEWLY_1129514
+key.oxygen_core.notifications=打开通知菜单
+key.oxygen_core.accept=接受请求
+key.oxygen_core.reject=拒绝请求
+key.oxygen_core.interact=交互
+ 
+oxygen_core.request.accept=接受
+oxygen_core.request.reject=拒绝
+ 
+oxygen_core.currency.money=货币
+oxygen_core.currency.coins=硬币
+oxygen_core.currency.shards=碎片
+oxygen_core.currency.vouchers=代金卷
+ 
+oxygen_core.gui.callback.settings=设置
+ 
+oxygen_core.gui.notifications.title=通知
+oxygen_core.gui.notifications.empty=你没有新通知。
+ 
+oxygen_core.gui.privileges.privileges=权限
+oxygen_core.gui.privileges.players=玩家
+oxygen_core.gui.privileges.roles=角色组
+oxygen_core.gui.privileges.defaultPrivileges=默认权限
+oxygen_core.gui.privileges.disabled=权限已禁用。
+oxygen_core.gui.privileges.chatFormattingDisabled=聊天格式已禁用。
+oxygen_core.gui.privileges.chatFormatting=聊天格式
+oxygen_core.gui.privileges.defaultFormatting=无格式
+oxygen_core.gui.privileges.testMessage=测试文字
+
+oxygen_core.gui.privileges.information.playerRoles=您的角色组
+
+oxygen_core.gui.privileges.management.title=权限管理
+oxygen_core.gui.privileges.management.defaultPrivileges=默认权限
+oxygen_core.gui.privileges.management.players=玩家
+oxygen_core.gui.privileges.management.edit=编辑
+oxygen_core.gui.privileges.management.remove=移除
+oxygen_core.gui.privileges.management.addPrivilege=添加权限
+oxygen_core.gui.privileges.management.removePrivilege=移除权限
+oxygen_core.gui.privileges.management.addRoleToPlayer=添加角色组
+oxygen_core.gui.privileges.management.removeRoleFromPlayer=移除角色组
+
+oxygen_core.gui.privileges.management.button.createRole=创建角色组
+oxygen_core.gui.privileges.management.button.addDefaultPrivilege=添加权限
+
+oxygen_core.gui.privileges.management.callback.value=值:
+oxygen_core.gui.privileges.management.callback.privilegeId=权限 Id:
+oxygen_core.gui.privileges.management.callback.roleName=名称
+oxygen_core.gui.privileges.management.callback.roleId=Id (权重)
+oxygen_core.gui.privileges.management.callback.prefix=聊天前缀
+oxygen_core.gui.privileges.management.callback.roleNameColor=角色组 名称 颜色
+oxygen_core.gui.privileges.management.callback.prefixColor=聊天前缀颜色
+oxygen_core.gui.privileges.management.callback.usernameColor=玩家名颜色
+oxygen_core.gui.privileges.management.callback.chatColor=聊天内容颜色
+
+oxygen_core.gui.privileges.management.callback.roleCreation=角色组已创建
+oxygen_core.gui.privileges.management.callback.editRole=编辑角色组
+oxygen_core.gui.privileges.management.callback.addPrivilege=增添权限
+oxygen_core.gui.privileges.management.callback.addDefaultPrivilege=添加默认权限
+oxygen_core.gui.privileges.management.callback.removeRole=移除角色组
+oxygen_core.gui.privileges.management.callback.removeRole.request=角色组将被移除。
+oxygen_core.gui.privileges.management.callback.removePrivilege=移除权限
+oxygen_core.gui.privileges.management.callback.removeDefaultPrivilege=移除默认权限
+oxygen_core.gui.privileges.management.callback.removePrivilege.request=权限将被移除。
+oxygen_core.gui.privileges.management.callback.addPlayerRole=添加角色组
+oxygen_core.gui.privileges.management.callback.removePlayerRole=移除玩家的角色组
+oxygen_core.gui.privileges.management.callback.removePlayerRole.request=角色组将从玩家权限组中移除。
+ 
+oxygen_core.gui.settings.title=设置
+oxygen_core.gui.settings.common=常规设定
+oxygen_core.gui.settings.gui=界面设定
+ 
+oxygen_core.gui.settings.button.resetSettings=重置模块设置
+oxygen_core.gui.settings.module.base=基础
+oxygen_core.gui.settings.module.core=核心
+ 
+oxygen_core.gui.settings.option.hideOverlay=隐藏请求界面
+oxygen_core.gui.settings.option.interactWithRMB=用RMB沟通
+oxygen_core.gui.settings.option.enableSoundEffects=启用音效
+oxygen_core.gui.settings.option.enableRarityColors=启用特殊颜色
+oxygen_core.gui.settings.option.enableItemsDurabilityBar=启用物品耐久栏
+ 
+oxygen_core.gui.settings.callback.setColor=设置颜色
+oxygen_core.gui.settings.callback.setScale=设置文字比例
+oxygen_core.gui.settings.callback.setOffset=设置偏移量
+oxygen_core.gui.settings.callback.setKey=设置按键
+oxygen_core.gui.settings.argbColor=ARGB (RGB色彩表+透明度)
+oxygen_core.gui.settings.elementScale=条目比例
+oxygen_core.gui.settings.offset=偏移量
+oxygen_core.gui.settings.keyboardKey=键位
+oxygen_core.gui.settings.scale=测试文字
+oxygen_core.gui.settings.tooltip.screen=界面
+oxygen_core.gui.settings.tooltip.callback=系统回复
+oxygen_core.gui.settings.tooltip.base=基础
+oxygen_core.gui.settings.tooltip.additional=额外
+oxygen_core.gui.settings.tooltip.background=背景
+oxygen_core.gui.settings.tooltip.text=文本
+oxygen_core.gui.settings.tooltip.element=条目
+oxygen_core.gui.settings.tooltip.enabled=启用
+oxygen_core.gui.settings.tooltip.disabled=禁用
+oxygen_core.gui.settings.tooltip.hovered=悬浮框
+ 
+oxygen_core.gui.settings.option.color=颜色
+oxygen_core.gui.settings.option.scale=比例
+oxygen_core.gui.settings.option.misc=杂项
+oxygen_core.gui.settings.option.alignment=界面位置设定
+oxygen_core.gui.settings.option.offset=偏移量
+oxygen_core.gui.settings.option.oxygenMenu=Oxygen菜单
+ 
+oxygen_core.gui.settings.option.screenFill=背景填充
+oxygen_core.gui.settings.option.guiBackground=GUI 背景
+oxygen_core.gui.settings.option.button=按钮
+oxygen_core.gui.settings.option.element=元素
+oxygen_core.gui.settings.option.slider=滑块
+oxygen_core.gui.settings.option.text=文本
+oxygen_core.gui.settings.option.textDark=暗文本
+oxygen_core.gui.settings.option.textfield=文本域
+oxygen_core.gui.settings.option.overlayText=覆盖文本
+oxygen_core.gui.settings.option.tooltip=工具提示框
+oxygen_core.gui.settings.option.inactiveElement=无效条目配置
+oxygen_core.gui.settings.option.activeElement=有效条目配置
+oxygen_core.gui.settings.option.statusElement=条目配置状态
+ 
+oxygen_core.gui.settings.option.subText=子标题
+oxygen_core.gui.settings.option.titleText=主标题
+oxygen_core.gui.settings.option.panelText=面板文本
+oxygen_core.gui.settings.option.buttonText=按钮文本
+oxygen_core.gui.settings.option.tooltipText=工具提示文本
+oxygen_core.gui.settings.option.overlay=覆盖
+ 
+oxygen_core.gui.settings.option.verticalGradient=垂直渐变
+ 
+oxygen_core.gui.settings.option.alignmentNotificationsMenu=[消息菜单]
+oxygen_core.gui.settings.option.alignmentSettingsMenu=[设置菜单]
+oxygen_core.gui.settings.option.alignmentPrivilegesMenu=[权限菜单]
+ 
+oxygen_core.gui.settings.option.offsetRequestOverlay=请求菜单的垂直偏移
+ 
+oxygen_core.gui.settings.option.addNotificationsMenu=[消息菜单]
+oxygen_core.gui.settings.option.addSettingsMenu=[设置菜单]
+oxygen_core.gui.settings.option.addPrivilegesMenu=[权限菜单]
+ 
+oxygen_core.alignment.left=左对齐
+oxygen_core.alignment.center=居中
+oxygen_core.alignment.right=右对齐
+ 
+oxygen_core.status.online=在线
+oxygen_core.status.away=离开
+oxygen_core.status.notDisturb=请勿打扰
+oxygen_core.status.offline=离线
+ 
+oxygen_core.rarity.normal=普通
+oxygen_core.rarity.fine=优良
+oxygen_core.rarity.superior=高等
+oxygen_core.rarity.epic=史诗
+oxygen_core.rarity.legendary=传奇
+ 
+oxygen_core.gui.minute=%s 分钟
+oxygen_core.gui.minutes=%s 分钟
+oxygen_core.gui.hour=%s 小时
+oxygen_core.gui.hours=%s 小时
+oxygen_core.gui.day=%s 天
+oxygen_core.gui.days=%s 天
+oxygen_core.gui.undef=下划线
+oxygen_core.gui.expired=到期
+ 
+oxygen_core.gui.inventoryLoad=背包
+oxygen_core.gui.lastActivityTime=在 %s 秒前在线
+ 
+oxygen_core.gui.online=上线
+oxygen_core.gui.download=下载
+oxygen_core.gui.settings=设置
+oxygen_core.gui.search=搜索
+oxygen_core.gui.refresh=刷新
+oxygen_core.gui.create=创建
+oxygen_core.gui.reset=重置
+oxygen_core.gui.apply=应用
+oxygen_core.gui.remove=移除
+oxygen_core.gui.edit=编辑
+oxygen_core.gui.hide=隐藏
+oxygen_core.gui.sort=Sort分类
+oxygen_core.gui.priority=Priority重点
+oxygen_core.gui.name=名称
+oxygen_core.gui.username=用户名
+oxygen_core.gui.time=时间
+oxygen_core.gui.status=状态
+oxygen_core.gui.dimension=世界
+oxygen_core.gui.description=描述
+oxygen_core.gui.note=Note标记
+oxygen_core.gui.confirm=确认
+oxygen_core.gui.cancel=取消
+oxygen_core.gui.close=关闭
+oxygen_core.gui.add=添加
+oxygen_core.gui.player=玩家
+oxygen_core.gui.offer=提供
+oxygen_core.gui.take=拿取
+oxygen_core.gui.pay=支付
+oxygen_core.gui.price=价格
+oxygen_core.gui.rank=排名
+oxygen_core.gui.flag=节点
+ 
+oxygen_core.message.command.oxygenop.currency.balance=玩家 <%s> 的余额为  <%s> <%s>.
+oxygen_core.message.command.oxygenop.currency.set=玩家 <%s> 设置 <%s> 的余额数值至 <%s>.
+oxygen_core.message.command.oxygenop.currency.add=玩家 <%s> 收到来自 <%s> 的汇款 <%s>.
+oxygen_core.message.command.oxygenop.currency.remove=玩家 <%s> 失去 <%s> <%s>.
+ 
+oxygen_core.message.command.oxygenop.role.add=添加角色 <%s> 给玩家 <%s>.
+oxygen_core.message.command.oxygenop.role.remove=移除角色 <%s> 从 <%s> 的库.
+ 
+oxygen_core.message.command.oxygenop.notification.sentTo=信息发送至 <%s>: %s
+ 
+oxygen_core.command.exception.wrongArg=错误的数据类型: %s.
+ 
+oxygen_core.command.oxygenc.reloadSettings=客户端设置重新加载.
+oxygen_core.command.oxygenc.reloadProperties=客户端属性重新加载.
+oxygen_core.command.oxygenc.currency.balance=客户端当前 <%s> 的余额: %s
+oxygen_core.command.oxygenc.privileges.getValue=客户端权限 <%s (%s)> 值: %s
+oxygen_core.command.oxygenc.itemStackSerialized=物品 <%s> 成功序列化。
+ 
+oxygen_core.status.activityStatusChanged=活动状态已变更
+oxygen_core.status.requestSent=请求已发送
+oxygen_core.status.requestReset=请求已重置
+oxygen_core.status.roleCreated=角色已创建
+oxygen_core.status.roleEdited=角色已编辑
+oxygen_core.status.roleRemoved=角色已移除
+oxygen_core.status.privilegeAdded=权限已添加
+oxygen_core.status.privilegeRemoved=权限已移除
+oxygen_core.status.message.defaultPrivilegeAdded=默认权限已被添加
+oxygen_core.status.message.defaultPrivilegeRemoved=默认权限已被移除
+oxygen_core.status.message.roleAddedToPlayer=角色组已被添加至该玩家的权限组
+oxygen_core.status.message.roleRemovedFromPlayer=角色组已从玩家权限组中移除
+
+oxygen_core.status.message.actionTimeOut=操作超时
+oxygen_core.status.message.inventoryFull=背包已满
+oxygen_core.status.message.mailboxFull=邮箱已满
+ 
+oxygen_core.category.common=全部
+oxygen_core.category.blocks=方块
+oxygen_core.category.blocks.building=建筑方块
+oxygen_core.category.blocks.decoration=装饰性方块
+oxygen_core.category.blocks.transportation=交通运输
+oxygen_core.category.blocks.redstone=红石
+oxygen_core.category.items=物品
+oxygen_core.category.items.misc=杂项
+oxygen_core.category.items.food=食品
+oxygen_core.category.items.tools=工具
+oxygen_core.category.items.combat=战斗
+oxygen_core.category.items.brewing=酿造
+oxygen_core.category.items.enchanting=附魔
+ 
+oxygen_core.dimension.unknown=未知
