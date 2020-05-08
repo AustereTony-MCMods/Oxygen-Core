@@ -58,7 +58,7 @@ public class GUISettingsSection extends AbstractGUISection {
         this.addElement(new OxygenDefaultBackgroundWithButtonsFiller(0, 0, this.getWidth(), this.getHeight()));
         this.addElement(new OxygenTextLabel(4, 12, ClientReference.localize("oxygen_core.gui.settings.title"), EnumBaseGUISetting.TEXT_TITLE_SCALE.get().asFloat(), EnumBaseGUISetting.TEXT_ENABLED_COLOR.get().asInt()));
 
-        this.addElement(this.sectionsPanel = new OxygenScrollablePanel(this.screen, 6, 16, 60, 10, 1, MathUtils.greaterOfTwo(10, SettingsScreen.CONTAINERS.size()), 10, EnumBaseGUISetting.TEXT_SCALE.get().asFloat(), false));   
+        this.addElement(this.sectionsPanel = new OxygenScrollablePanel(this.screen, 6, 16, 60, 10, 1, MathUtils.greaterOfTwo(12, SettingsScreen.CONTAINERS.size()), 12, EnumBaseGUISetting.TEXT_SCALE.get().asFloat(), false));   
 
         this.sectionsPanel.<OxygenPanelEntry<Integer>>setElementClickListener((previous, clicked, mouseX, mouseY, mouseButton)->{
             if (previous != clicked) {
@@ -92,9 +92,11 @@ public class GUISettingsSection extends AbstractGUISection {
             framework.disableFull();
         }
 
-        this.addElement(this.resetSettingsButton = new OxygenKeyButton(0, this.getY() + this.getHeight() + this.screen.guiTop - 8, ClientReference.localize("oxygen_core.gui.settings.button.resetSettings"), Keyboard.KEY_X, this::resetSettings).disable());     
-
+        this.addElement(this.resetSettingsButton = new OxygenKeyButton(0, this.getY() + this.getHeight() + this.screen.guiTop - 8, ClientReference.localize("oxygen_core.gui.settings.button.resetSettings"), Keyboard.KEY_X, this::resetSettings).disable());             
         this.addElement(new OxygenSectionSwitcher(this.getWidth() - 4, 4, this, this.screen.getCommonSettingsSection()));
+
+        this.sectionsPanel.getScroller().updateRowsAmount(
+                MathUtils.clamp(this.sectionsPanel.buttonsBuffer.size(), 12, MathUtils.greaterOfTwo(this.sectionsPanel.buttonsBuffer.size(), 12)));
     }
 
     private void calculateButtonsHorizontalPosition() {

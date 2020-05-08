@@ -3,6 +3,8 @@ key.oxygen_core.accept=Accept Request
 key.oxygen_core.reject=Reject Request
 key.oxygen_core.interact=Interact
 
+oxygen_core.sender.sys=System
+
 oxygen_core.request.accept=Accept
 oxygen_core.request.reject=Reject
 

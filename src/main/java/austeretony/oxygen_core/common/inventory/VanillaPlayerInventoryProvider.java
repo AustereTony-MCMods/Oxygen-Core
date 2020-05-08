@@ -54,13 +54,13 @@ public class VanillaPlayerInventoryProvider implements PlayerInventoryProvider {
         int 
         emptySlots = this.getEmptySlotsAmount(player),
         slotsNeed = getSlotsForAmount(amount, maxStackSize);
-        if (emptySlots >= slotsNeed) {
+        if (emptySlots >= slotsNeed)
             return true;
-        } else if (amount < maxStackSize) {
+        else if (amount < maxStackSize) {
             int 
             stored = this.getEqualItemAmount(player, stackWrapper),
             modStored = stored % maxStackSize;
-            return amount + modStored <= maxStackSize;
+            return stored != 0 && amount + modStored <= maxStackSize;
         }
         return false;
     }

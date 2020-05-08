@@ -2,6 +2,7 @@ package austeretony.oxygen_core.common.main;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.apache.logging.log4j.Logger;
 
@@ -120,7 +121,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.11.0", 
+    VERSION = "0.11.1", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -141,14 +142,16 @@ public class OxygenMain {
      * Friends List - 6
      * Player Interaction - 7
      * Mail - 8
-     * Chat - 9
+     * Chat - 9 (WIP)
      * Market (Trade) - 10
-     * Guilds - 11
-     * Interaction - 12
-     * Regions - 13
+     * Guilds - 11 (WIP)
+     * Interaction - 12 (WIP)
+     * Regions - 13 (WIP)
      * Daily Rewards - 14
-     * Shop - 15
-     * Essentials - 16
+     * Shop - 15 
+     * Essentials - 16 (WIP)
+     * Store - 17 (WIP)
+     * Duels - 18 (WIP)
      */
 
     //Shared Constants
@@ -190,6 +193,10 @@ public class OxygenMain {
     public static final DateTimeFormatter
     ID_DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMddHHmmss", Locale.ENGLISH),
     DEBUG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd z", Locale.ENGLISH);
+
+    public static final String SYSTEM_SENDER = "oxygen_core.sender.sys";
+
+    public static final UUID SYSTEM_UUID = UUID.fromString("d10d07f6-ae3c-4ec6-a055-1160c4cf848a");
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

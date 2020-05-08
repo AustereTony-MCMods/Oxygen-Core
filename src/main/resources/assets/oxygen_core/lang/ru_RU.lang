@@ -3,6 +3,8 @@ key.oxygen_core.accept=Принять Запрос
 key.oxygen_core.reject=Оклонить Запрос
 key.oxygen_core.interact=Взаимодействовать
 
+oxygen_core.sender.sys=Система
+
 oxygen_core.request.accept=Принять
 oxygen_core.request.reject=Отклонить
 

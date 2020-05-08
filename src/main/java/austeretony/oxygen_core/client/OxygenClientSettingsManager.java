@@ -72,23 +72,21 @@ public class OxygenClientSettingsManager {
         this.changed = true;
     }
 
-    public void save() {
-        OxygenHelperClient.addIOTask(()->{
-            if (this.changed) {
-                this.changed = false;
-                String pathStr = OxygenHelperCommon.getConfigFolder() + "data/client/settings/settings.json";
-                Path path =  Paths.get(pathStr);
-                if (Files.exists(path)) {
-                    try {    
-                        JsonObject settingsObject = new JsonObject();
-                        for (SettingValue setting : this.settings.values())
-                            setting.save(settingsObject);
-                        JsonUtils.createExternalJsonFile(pathStr, settingsObject);
-                    } catch (IOException | NullPointerException exception) {  
-                        OxygenMain.LOGGER.error("[Core] Client settings file damaged!", exception);
-                    }       
-                }
+    void save() {
+        if (this.changed) {
+            this.changed = false;
+            String pathStr = OxygenHelperCommon.getConfigFolder() + "data/client/settings/settings.json";
+            Path path =  Paths.get(pathStr);
+            if (Files.exists(path)) {
+                try {    
+                    JsonObject settingsObject = new JsonObject();
+                    for (SettingValue setting : this.settings.values())
+                        setting.save(settingsObject);
+                    JsonUtils.createExternalJsonFile(pathStr, settingsObject);
+                } catch (IOException | NullPointerException exception) {  
+                    OxygenMain.LOGGER.error("[Core] Client settings file damaged!", exception);
+                }       
             }
-        });
+        }
     }
 }

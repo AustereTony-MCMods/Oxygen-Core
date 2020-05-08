@@ -13,6 +13,8 @@ public class OxygenPlayerDataContainerServer {
 
     private final Map<UUID, OxygenPlayerData> players = new ConcurrentHashMap<>();
 
+    protected OxygenPlayerDataContainerServer() {}
+
     public Collection<OxygenPlayerData> getPlayersData() {
         return this.players.values();
     }
@@ -33,7 +35,7 @@ public class OxygenPlayerDataContainerServer {
         return this.players.remove(playerUUID);
     }
 
-    public void save() {
+    void save() {
         for (OxygenPlayerData playerData : this.players.values()) {
             if (playerData.isChanged()) {
                 playerData.setChanged(false);

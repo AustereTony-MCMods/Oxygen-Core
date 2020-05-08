@@ -106,7 +106,7 @@ public final class OxygenManagerClient {
     }
 
     private void registerPersistentData() {
-        OxygenHelperClient.registerPersistentData(()->this.clientSettingManager.save());
+        OxygenHelperClient.registerPersistentData(this.clientSettingManager::save);
     }
 
     private void scheduleRepeatableProcesses() {

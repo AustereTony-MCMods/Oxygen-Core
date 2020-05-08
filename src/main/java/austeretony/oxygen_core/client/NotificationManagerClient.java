@@ -23,6 +23,8 @@ public class NotificationManagerClient {
 
     private volatile long latestNotification;
 
+    protected NotificationManagerClient() {}
+
     public Map<Long, Notification> getNotifications() {
         return this.notifications;
     }
@@ -57,19 +59,22 @@ public class NotificationManagerClient {
         this.latestNotification = 0L;
     }
 
-    public void process() {
-        OxygenHelperClient.addRoutineTask(()->{
+    void process() {
+        final Runnable task = ()->{
             Iterator<Notification> iterator = this.notifications.values().iterator();
             Notification notification;
             while (iterator.hasNext()) {
                 notification = iterator.next();
-                if (notification.isExpired()) {
-                    if (notification.getId() == this.latestNotification)
-                        this.latestNotification = 0L;
-                    iterator.remove();
+                if (notification != null) {
+                    if (notification.isExpired()) {
+                        if (notification.getId() == this.latestNotification)
+                            this.latestNotification = 0L;
+                        iterator.remove();
+                    }
                 }
             }
-        });
+        };
+        OxygenHelperClient.addRoutineTask(task);
     }
 
     public void acceptRequestSynced() {

@@ -102,7 +102,7 @@ public class PlayerDataManagerServer {
         }
     }
 
-    protected void process() {
+    void process() {
         OxygenHelperServer.addRoutineTask(()->{
             for (UUID playerUUID : this.manager.getSharedDataManager().getOnlinePlayersUUIDs())
                 this.manager.getPlayerDataContainer().getPlayerData(playerUUID).process();

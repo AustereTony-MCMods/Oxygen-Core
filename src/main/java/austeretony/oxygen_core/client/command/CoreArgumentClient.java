@@ -177,7 +177,7 @@ public class CoreArgumentClient implements ArgumentExecutor {
             else if (args[1].equals("-request"))
                 return CommandBase.getListOfStringsMatchingLastWord(args, "-accept", "-reject");
             else if (args[1].equals("-entity"))
-                return CommandBase.getListOfStringsMatchingLastWord(args, "-get-id");
+                return CommandBase.getListOfStringsMatchingLastWord(args, "-get-id", "-get-uuid");
             else if (args[1].equals("-item"))
                 return CommandBase.getListOfStringsMatchingLastWord(args, "-to-json");
         }

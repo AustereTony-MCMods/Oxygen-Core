@@ -26,7 +26,7 @@ public class CPSyncNotification extends Packet {
         for (String arg : this.notification.getArguments()) 
             ByteBufUtils.writeString(arg, buffer);
         buffer.writeByte(this.notification.getType().ordinal());
-        buffer.writeByte(this.notification.getIndex());
+        buffer.writeShort(this.notification.getIndex());
         buffer.writeLong(this.notification.getId());
         buffer.writeShort(this.notification.getExpireTimeSeconds());
         ByteBufUtils.writeString(this.notification.getDescription(), buffer);
@@ -39,7 +39,7 @@ public class CPSyncNotification extends Packet {
             args[i] = ByteBufUtils.readString(buffer);
         final NotificationClient notification = new NotificationClient(
                 EnumNotification.values()[buffer.readByte()], 
-                buffer.readByte(),
+                buffer.readShort(),
                 buffer.readLong(),
                 buffer.readShort(), 
                 ByteBufUtils.readString(buffer),
