@@ -1,5 +1,6 @@
 package austeretony.alternateui.screen.core;
 
+import austeretony.alternateui.util.AlternateUIReference;
 import austeretony.alternateui.util.EnumGUIAlignment;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

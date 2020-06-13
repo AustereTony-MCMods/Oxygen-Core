@@ -121,7 +121,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.11.1", 
+    VERSION = "0.11.3", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -150,7 +150,7 @@ public class OxygenMain {
      * Daily Rewards - 14
      * Shop - 15 
      * Essentials - 16 (WIP)
-     * Store - 17 (WIP)
+     * Store - 17
      * Duels - 18 (WIP)
      */
 

@@ -1,4 +1,4 @@
-package austeretony.alternateui.screen.core;
+package austeretony.alternateui.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;

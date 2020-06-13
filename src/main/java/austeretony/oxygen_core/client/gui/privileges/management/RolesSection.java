@@ -190,7 +190,7 @@ public class RolesSection extends AbstractGUISection {
         this.rolePlayersPanel.enableFull();
 
         //role name
-        this.currentRoleNameLabel.setDisplayText(role.getName());
+        this.currentRoleNameLabel.setDisplayText(role.getNameColor() + role.getName());
 
         //privileges
         List<Privilege> privileges = new ArrayList<>(role.getPrivileges());

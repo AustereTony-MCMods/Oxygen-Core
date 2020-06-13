@@ -18,17 +18,17 @@ oxygen_core.gui.callback.settings=Настройки
 oxygen_core.gui.notifications.title=Уведомления
 oxygen_core.gui.notifications.empty=У вас нет активных уведомлений.
 
-oxygen_core.gui.privileges.privileges=Privileges
-oxygen_core.gui.privileges.players=Players
-oxygen_core.gui.privileges.roles=Roles
-oxygen_core.gui.privileges.defaultPrivileges=Default Priviliges
-oxygen_core.gui.privileges.disabled=Privileges disabled.
-oxygen_core.gui.privileges.chatFormattingDisabled=Chat formatting disabled.
-oxygen_core.gui.privileges.chatFormatting=Chat Formatting
-oxygen_core.gui.privileges.defaultFormatting=No Formatting
-oxygen_core.gui.privileges.testMessage=Test
+oxygen_core.gui.privileges.privileges=Привилегии
+oxygen_core.gui.privileges.players=Игроки
+oxygen_core.gui.privileges.roles=Роли
+oxygen_core.gui.privileges.defaultPrivileges=Привилегии по Умолчанию
+oxygen_core.gui.privileges.disabled=Привилегии отключены.
+oxygen_core.gui.privileges.chatFormattingDisabled=Форматирование чата отключено.
+oxygen_core.gui.privileges.chatFormatting=Форматирование Чата
+oxygen_core.gui.privileges.defaultFormatting=Без Форматирования
+oxygen_core.gui.privileges.testMessage=Тест
 
-oxygen_core.gui.privileges.information.playerRoles=Your Roles
+oxygen_core.gui.privileges.information.playerRoles=Ваши Роли
 
 oxygen_core.gui.privileges.management.title=Управление Привилегиями
 oxygen_core.gui.privileges.management.defaultPrivileges=базовые Привилегии
@@ -124,7 +124,7 @@ oxygen_core.gui.settings.option.statusElement=Статус
 
 oxygen_core.gui.settings.option.subText=Доп. Текст
 oxygen_core.gui.settings.option.titleText=Заголовок
-oxygen_core.gui.settings.option.panelText=Текста Панели
+oxygen_core.gui.settings.option.panelText=Текст Панели
 oxygen_core.gui.settings.option.buttonText=Текст Кнопок
 oxygen_core.gui.settings.option.tooltipText=Текст Тултипа
 oxygen_core.gui.settings.option.overlay=Оверлэй
@@ -141,9 +141,9 @@ oxygen_core.gui.settings.option.addNotificationsMenu=Меню Уведомлен
 oxygen_core.gui.settings.option.addSettingsMenu=Меню Настроек
 oxygen_core.gui.settings.option.addPrivilegesMenu=Меню Привилегий
 
-oxygen_core.alignment.left=Лево
-oxygen_core.alignment.center=Центр
-oxygen_core.alignment.right=Право
+oxygen_core.alignment.left=Слева
+oxygen_core.alignment.center=По Центру
+oxygen_core.alignment.right=Справа
 
 oxygen_core.request.friendRequest=%s отправил вам запрос в друзья.
 

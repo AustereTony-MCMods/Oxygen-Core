@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import austeretony.alternateui.screen.core.GUISimpleElement;
+import austeretony.alternateui.util.UIUtils;
 import net.minecraft.client.renderer.GlStateManager;
 
 /**
@@ -52,56 +53,7 @@ public class GUITextBoxLabel extends GUISimpleElement<GUITextBoxLabel> {
 
     @Override
     public GUITextBoxLabel setDisplayText(String displayText) {  
-        this.lines.clear(); 
-        int width = this.getWidth() - 3;
-        StringBuilder builder = new StringBuilder();    
-        int 
-        index = 0, 
-        wordStartIndex = 0;
-        boolean
-        rechedLimit = false,
-        wordProcessing = false;
-        char prevSymbol = '0';
-        String line;
-        for (char symbol : displayText.toCharArray()) {
-            if ((this.textHeight(this.getTextScale()) + this.lineOffset) * this.lines.size() >= this.getHeight())
-                break;
-            if (symbol != ' ') {
-                wordProcessing = true;
-                if (prevSymbol == ' ')
-                    wordStartIndex = index;
-            }
-            if (symbol == '\n') {
-                this.lines.add(builder.toString());
-                builder.delete(0, builder.length());
-                index = 0;
-                continue;
-            }
-            if (this.textWidth(builder.toString() + String.valueOf(symbol), this.getTextScale()) <= width)
-                builder.append(symbol);
-            else {
-                if (symbol == '.' 
-                        || symbol == ',' 
-                        || symbol == '!'
-                        || symbol == '?')
-                    builder.append(symbol);
-                if (wordProcessing) {
-                    this.lines.add(builder.toString().substring(0, wordStartIndex));
-                    builder.delete(0, wordStartIndex);
-                } else {
-                    this.lines.add(builder.toString());
-                    builder.delete(0, builder.length());
-                }
-                if (symbol != ' ')
-                    builder.append(symbol);
-                index = builder.length() - 1;
-            }
-            wordProcessing = false;
-            prevSymbol = symbol;
-            index++;
-        }
-        if (builder.length() != 0)
-            this.lines.add(builder.toString());
+        UIUtils.divideText(this.lines, displayText, this.getWidth() - 4, this.getHeight(), this.getTextScale(), this.lineOffset);
         return this;
     }
 

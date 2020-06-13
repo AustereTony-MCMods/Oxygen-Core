@@ -6,6 +6,7 @@ import java.util.Set;
 import austeretony.alternateui.screen.browsing.GUIScroller;
 import austeretony.alternateui.screen.contextmenu.GUIContextMenu;
 import austeretony.alternateui.screen.text.GUITextField;
+import austeretony.alternateui.util.AlternateUIReference;
 import austeretony.alternateui.util.GUISoundEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundEvent;

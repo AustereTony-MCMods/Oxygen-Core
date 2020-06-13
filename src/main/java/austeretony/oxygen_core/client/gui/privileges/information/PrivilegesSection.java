@@ -116,7 +116,7 @@ public class PrivilegesSection extends AbstractGUISection {
         this.rolePrivilegesLabel.enableFull();
         this.rolePrivilegesPanel.enableFull();
 
-        this.currentRoleNameLabel.setDisplayText(role.getName());
+        this.currentRoleNameLabel.setDisplayText(role.getNameColor() + role.getName());
 
         List<Privilege> privileges = new ArrayList(role.getPrivileges());
 
