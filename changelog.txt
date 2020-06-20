@@ -1,3 +1,13 @@
+0.11.3b [2020-06-13]
++ Fix for API Oxygen Menu
++ Support for Oxygen: Store
+
+0.11.2b [2020-06-07]
++ Added localizations: Chinese, Polish and French
+
+0.11.1b [2020-08-05]
++ Fixed incompatibility with InGame Info XML
+
 0.11.0b [2020-03-19]
 + Added the ability to set default privileges globally for all players. This duplicates the ability to 
   configure through configuration files.
