@@ -36,6 +36,15 @@ import austeretony.oxygen_core.common.InstantDataMaxHealth;
 import austeretony.oxygen_core.common.InstantDataPotionEffects;
 import austeretony.oxygen_core.common.api.CommonReference;
 import austeretony.oxygen_core.common.api.OxygenHelperCommon;
+import austeretony.oxygen_core.common.condition.ConditionsRegistry;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.ConditionWorldIsDaytime;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerDimension;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerExperience;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHaveItem;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHealth;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHeldItem;
+import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerUsername;
+import austeretony.oxygen_core.common.condition.conditions.oxygen.ConditionPlayerCurrency;
 import austeretony.oxygen_core.common.config.ConfigManager;
 import austeretony.oxygen_core.common.config.OxygenConfig;
 import austeretony.oxygen_core.common.config.PrivilegesConfig;
@@ -121,7 +130,7 @@ public class OxygenMain {
     public static final String 
     MODID = "oxygen_core", 
     NAME = "Oxygen Core", 
-    VERSION = "0.11.3", 
+    VERSION = "0.11.4", 
     VERSION_CUSTOM = VERSION + ":beta:0",
     GAME_VERSION = "1.12.2",
     VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
@@ -240,6 +249,14 @@ public class OxygenMain {
         ScriptingProvider.registerAdapter(new DummyScriptingAdapter());
         if (OxygenConfig.ENABLE_ECMASCRIPT_ADAPTER.asBoolean())
             ScriptingProvider.registerAdapter(new ECMAScriptAdapter());
+        ConditionsRegistry.registerCondition("minecraft:worldIsDaytime", ConditionWorldIsDaytime.class);
+        ConditionsRegistry.registerCondition("minecraft:playerDimension", ConditionPlayerDimension.class);
+        ConditionsRegistry.registerCondition("minecraft:playerHealthAmount", ConditionPlayerHealth.class);
+        ConditionsRegistry.registerCondition("minecraft:playerExperienceLevel", ConditionPlayerExperience.class);
+        ConditionsRegistry.registerCondition("minecraft:playerHaveItem", ConditionPlayerHaveItem.class);
+        ConditionsRegistry.registerCondition("minecraft:playerHeldItem", ConditionPlayerHeldItem.class);
+        ConditionsRegistry.registerCondition("minecraft:playerUsername", ConditionPlayerUsername.class);
+        ConditionsRegistry.registerCondition("oxygen_core:playerCurrencyAmount", ConditionPlayerCurrency.class);
         EnumOxygenPrivilege.register();
         if (event.getSide() == Side.CLIENT) {     
             OxygenManagerClient.create();

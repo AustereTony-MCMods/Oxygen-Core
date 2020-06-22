@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import austeretony.oxygen_core.common.EnumActivityStatus;
 import austeretony.oxygen_core.common.api.CommonReference;
@@ -70,8 +71,10 @@ public class OxygenPlayerData extends AbstractPersistentData {
     }
 
     public void init() {
-        for (WatchedValue value : this.watchedValues.values())
-            value.init(this.playerUUID);
+        OxygenHelperServer.getSchedulerExecutorService().schedule(()->{
+            for (WatchedValue value : this.watchedValues.values())
+                value.init(this.playerUUID);
+        }, 3L, TimeUnit.SECONDS);
     }
 
     public UUID getPlayerUUID() {
@@ -200,7 +203,7 @@ public class OxygenPlayerData extends AbstractPersistentData {
 
         for (CurrencyProvider provider : CurrencyHelperServer.getCurrencyProviders())
             if (provider.forceSync())
-                CurrencyHelperServer.addCurrency(this.playerUUID, 0L, provider.getIndex());
+                this.getWatchedValue(provider.getIndex()).setChanged(true);
 
         EntityPlayerMP playerMP = CommonReference.playerByUUID(this.playerUUID);
         if (playerMP == null) return;
@@ -251,7 +254,7 @@ public class OxygenPlayerData extends AbstractPersistentData {
 
     @Override
     public String getDisplayName() {
-        return "core:player_data";
+        return "core:player_data_server";
     }
 
     @Override

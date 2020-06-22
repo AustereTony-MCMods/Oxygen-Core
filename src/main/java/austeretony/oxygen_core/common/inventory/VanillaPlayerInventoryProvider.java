@@ -67,7 +67,7 @@ public class VanillaPlayerInventoryProvider implements PlayerInventoryProvider {
 
     @Override
     public void addItem(EntityPlayer player, ItemStackWrapper stackWrapper, int amount) {
-        Runnable task = ()->{
+        final Runnable task = ()->{
             ItemStack itemStack = stackWrapper.getItemStack();
             int maxStackSize = itemStack.getMaxStackSize();
             if (amount <= maxStackSize) {
@@ -96,7 +96,7 @@ public class VanillaPlayerInventoryProvider implements PlayerInventoryProvider {
 
     @Override
     public void removeItem(EntityPlayer player, ItemStackWrapper stackWrapper, int amount) {
-        Runnable task = ()->{
+        final Runnable task = ()->{
             int 
             i = amount,
             stackSize;

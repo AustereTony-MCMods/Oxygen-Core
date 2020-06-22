@@ -193,7 +193,7 @@ public class ItemStackWrapper {
 
     @Override
     public String toString() {
-        return String.format("[registry name: %s, damage: %d, stack NBT: %s, capability NBT: %s]",
+        return String.format("ItemStackWrapper[registry name: %s, damage: %d, stack NBT: %s, capability NBT: %s]",
                 this.registryName,
                 this.damage,
                 this.stackNBTStr,
