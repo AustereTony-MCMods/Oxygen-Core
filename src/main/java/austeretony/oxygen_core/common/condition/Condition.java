@@ -8,15 +8,13 @@ public interface Condition {
 
     String getId();
 
+    boolean test(EntityPlayer player, ComparisonOperator comparison);
+
     void setExpression(String expression);
 
-    String getExpression();
+    void setOperator(ComparisonOperator operation);
 
-    boolean valid(EntityPlayer player);
-
-    void setOperation(EnumComparisonOperation operation);
-
-    EnumComparisonOperation getOperation();
+    ComparisonOperator getOperator();
 
     void parse(String valueStr, @Nullable String[] args);
 }

@@ -1,6 +1,6 @@
 package austeretony.oxygen_core.client.sync;
 
-import java.util.Set;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -10,15 +10,11 @@ public interface DataSyncHandlerClient<T extends SynchronousEntry> {
 
     int getDataId();
 
-    Class<T> getDataContainerClass();
+    Class<T> getSynchronousEntryClass();
 
-    Set<Long> getIds();
+    Map<Long, T> getDataMap();
 
-    void clearData();
-
-    T getEntry(long entryId);
-
-    void addEntry(T entry);
+    void clear();
 
     void save();
 

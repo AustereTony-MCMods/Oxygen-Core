@@ -1,41 +1,32 @@
 package austeretony.oxygen_core.client;
 
-import java.time.Clock;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import austeretony.oxygen_core.common.config.OxygenConfig;
+import austeretony.oxygen_core.common.config.CoreConfig;
 import austeretony.oxygen_core.common.main.OxygenMain;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 public class TimeManagerClient {
 
-    private final OxygenManagerClient manager;
-
     private final DateTimeFormatter dateTimeFormatter;
-
     private final ZoneId zoneId;
-
     private final Clock clock;
-
     private ZoneId serverZoneId;
 
-    public TimeManagerClient(OxygenManagerClient manager) {
-        this.manager = manager;
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern(OxygenConfig.DATE_TIME_FORMATTER_PATTERN.asString());
-        this.zoneId = initZoneId();
-        this.clock = Clock.system(this.zoneId);
+    public TimeManagerClient() {
+        serverZoneId = zoneId = initZoneId();
+        dateTimeFormatter = DateTimeFormatter.ofPattern(CoreConfig.DATE_TIME_FORMATTER_PATTERN.asString()).withZone(zoneId);
+        clock = Clock.system(zoneId);
     }
 
     private static ZoneId initZoneId() {
         ZoneId zoneId = ZoneId.systemDefault();
-        if (!OxygenConfig.CLIENT_REGION_ID.asString().isEmpty()) {
+        if (!CoreConfig.CLIENT_REGION_ID.asString().isEmpty()) {
             try {
-                zoneId = ZoneId.of(OxygenConfig.CLIENT_REGION_ID.asString());
+                zoneId = ZoneId.of(CoreConfig.CLIENT_REGION_ID.asString());
             } catch (DateTimeException exception) {
-                OxygenMain.LOGGER.error("[Core] Client ZoneId parse failure! System default ZoneId <{}> will be used.", zoneId.getId());
+                OxygenMain.logError(1, "[Core] Client ZoneId parse failure! System default ZoneId <{}> will be used.",
+                        zoneId.getId());
                 exception.printStackTrace();
             }
         }
@@ -43,35 +34,44 @@ public class TimeManagerClient {
     }
 
     public DateTimeFormatter getDateTimeFormatter() {
-        return this.dateTimeFormatter;
+        return dateTimeFormatter;
     }
 
     public ZoneId getZoneId() {
-        return this.zoneId;
+        return zoneId;
     }
 
     public Clock getClock() {
-        return this.clock;
+        return clock;
     }
 
     public Instant getInstant() {
-        return this.clock.instant();
+        return clock.instant();
     }
 
     public ZonedDateTime getZonedDateTime() {
-        return ZonedDateTime.now(this.clock);
+        return ZonedDateTime.now(clock);
+    }
+
+    public ZonedDateTime getZonedDateTime(long epochMilli) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), getZoneId());
     }
 
     public void initServerTime(String serverRegionId) {
-        this.serverZoneId = ZoneId.of(serverRegionId);
-        OxygenMain.LOGGER.info("[Core] Server zone-time data: {}", OxygenMain.DEBUG_DATE_TIME_FORMATTER.format(this.getServerZonedDateTime()));
+        serverZoneId = ZoneId.of(serverRegionId);
+        OxygenMain.logInfo(1, "[Core] Server zone-time data: {}",
+                OxygenMain.DEBUG_DATE_TIME_FORMATTER.format(getServerZonedDateTime()));
     }
 
     public ZoneId getServerZoneId() {
-        return this.serverZoneId;
+        return serverZoneId;
     }
 
     public ZonedDateTime getServerZonedDateTime() {
-        return ZonedDateTime.now(this.serverZoneId);
+        return ZonedDateTime.now(serverZoneId);
+    }
+
+    public ZonedDateTime getServerZonedDateTime(long epochMilli) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), getServerZoneId());
     }
 }

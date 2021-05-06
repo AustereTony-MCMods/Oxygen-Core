@@ -1,35 +1,28 @@
 package austeretony.oxygen_core.server;
 
-import java.time.Clock;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-import austeretony.oxygen_core.common.config.OxygenConfig;
+import austeretony.oxygen_core.common.config.CoreConfig;
 import austeretony.oxygen_core.common.main.OxygenMain;
+
+import java.time.*;
 
 public class TimeManagerServer {
 
-    private final OxygenManagerServer manager;
-
     private final ZoneId zoneId;
-
     private final Clock clock;
 
-    public TimeManagerServer(OxygenManagerServer manager) {
-        this.manager = manager;
-        this.zoneId = initZoneId();
-        this.clock = Clock.system(this.zoneId);
+    public TimeManagerServer() {
+        zoneId = initZoneId();
+        clock = Clock.system(zoneId);
     }
 
     private static ZoneId initZoneId() {
         ZoneId zoneId = ZoneId.systemDefault();
-        if (!OxygenConfig.SERVER_REGION_ID.asString().isEmpty()) {
+        if (!CoreConfig.SERVER_REGION_ID.asString().isEmpty()) {
             try {
-                zoneId = ZoneId.of(OxygenConfig.SERVER_REGION_ID.asString());
+                zoneId = ZoneId.of(CoreConfig.SERVER_REGION_ID.asString());
             } catch (DateTimeException exception) {
-                OxygenMain.LOGGER.error("[Core] Server ZoneId parse failure! System default ZoneId <{}> will be used.", zoneId.getId());
+                OxygenMain.logError(1, "[Core] Server ZoneId parse failure! System default ZoneId <{}> will be used.",
+                        zoneId.getId());
                 exception.printStackTrace();
             }
         }
@@ -37,18 +30,22 @@ public class TimeManagerServer {
     }
 
     public ZoneId getZoneId() {
-        return this.zoneId;
+        return zoneId;
     }
 
     public Clock getClock() {
-        return this.clock;
+        return clock;
     }
 
     public Instant getInstant() {
-        return this.clock.instant();
+        return clock.instant();
     }
 
     public ZonedDateTime getZonedDateTime() {
-        return ZonedDateTime.now(this.clock);
+        return ZonedDateTime.now(clock);
+    }
+
+    public ZonedDateTime getZonedDateTime(long epochMilli) {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), getZoneId());
     }
 }

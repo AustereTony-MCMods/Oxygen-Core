@@ -1,9 +1,11 @@
 package austeretony.oxygen_core.server.sync;
 
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 import austeretony.oxygen_core.common.sync.SynchronousEntry;
+
+import javax.annotation.Nonnull;
 
 public interface DataSyncHandlerServer<T extends SynchronousEntry> {
 
@@ -11,7 +13,6 @@ public interface DataSyncHandlerServer<T extends SynchronousEntry> {
 
     boolean allowSync(UUID playerUUID);
 
-    Set<Long> getIds(UUID playerUUID);
-
-    T getEntry(UUID playerUUID, long entryId);
+    @Nonnull
+    Map<Long, T> getDataMap(UUID playerUUID);
 }

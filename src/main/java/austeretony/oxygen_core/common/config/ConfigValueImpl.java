@@ -1,21 +1,21 @@
 package austeretony.oxygen_core.common.config;
 
+import austeretony.oxygen_core.common.util.value.TypedValue;
+import austeretony.oxygen_core.common.util.value.ValueType;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import austeretony.oxygen_core.common.value.TypedValue;
 import io.netty.buffer.ByteBuf;
 
-public class ConfigValueImpl<T extends TypedValue> implements ConfigValue<T> {
+public class ConfigValueImpl<T> implements ConfigValue<TypedValue<T>> {
 
-    protected final T value;
-
+    protected final TypedValue<T>  value;
     public final String category, key;
-
     public final boolean sync;
 
-    public ConfigValueImpl(T value, String category, String key, boolean sync) {
-        this.value = value;
+    public ConfigValueImpl(ValueType type, T def, String category, String key, boolean sync) {
+        value = ValueType.createValue(type);
+        value.setValue(def);
         this.category = category;
         this.key = key;
         this.sync = sync;
@@ -23,57 +23,57 @@ public class ConfigValueImpl<T extends TypedValue> implements ConfigValue<T> {
 
     @Override
     public String getCategory() {
-        return this.category;
+        return category;
     }
 
     @Override
     public String getKey() {
-        return this.key;
+        return key;
     }
 
     @Override
-    public T get() {
-        return this.value;
+    public TypedValue<T> get() {
+        return value;
     }
 
     private JsonElement getValue(JsonObject jsonObject) {
-        return jsonObject.get(this.category).getAsJsonObject().get(this.key);
+        return jsonObject.get(category).getAsJsonObject().get(key);
     }
 
     public boolean exist(JsonObject jsonObject) {
-        return jsonObject.has(this.category) && jsonObject.get(this.category).getAsJsonObject().has(this.key);
+        return jsonObject.has(category) && jsonObject.get(category).getAsJsonObject().has(key);
     }
 
     @Override
     public boolean init(JsonObject jsonObject) {
         boolean created = false;
-        if (!this.exist(jsonObject)) {
-            this.save(jsonObject);
+        if (!exist(jsonObject)) {
+            save(jsonObject);
             created = true;
-        } else                
-            this.value.fromJson(this.getValue(jsonObject));
+        } else
+            value.fromJson(getValue(jsonObject));
         return created;
     }
 
     @Override
     public void save(JsonObject jsonObject) {
-        if (!jsonObject.has(this.category))
-            jsonObject.add(this.category, new JsonObject());
-        jsonObject.get(this.category).getAsJsonObject().add(this.key, this.value.toJson());
+        if (!jsonObject.has(category))
+            jsonObject.add(category, new JsonObject());
+        jsonObject.get(category).getAsJsonObject().add(key, value.toJson());
     }
 
     @Override
     public boolean needSync() {
-        return this.sync;
+        return sync;
     }
 
     @Override
     public void write(ByteBuf buffer) {
-        this.value.write(buffer);
+        value.write(buffer);
     }
 
     @Override
     public void read(ByteBuf buffer) {
-        this.value.read(buffer);
+        value.read(buffer);
     }
 }

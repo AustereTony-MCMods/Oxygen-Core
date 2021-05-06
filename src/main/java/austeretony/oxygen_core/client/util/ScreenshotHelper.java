@@ -7,15 +7,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import austeretony.oxygen_core.client.api.ClientReference;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 
 public class ScreenshotHelper {
 
     public static BufferedImage createScreenshot(int width, int height) {
-        return resize(prepareImage(ClientReference.getMinecraft().displayWidth, ClientReference.getMinecraft().displayHeight, 
-                ClientReference.getMinecraft().getFramebuffer()), width, height);
+        return resize(prepareImage(MinecraftClient.getMinecraft().displayWidth, MinecraftClient.getMinecraft().displayHeight,
+                MinecraftClient.getMinecraft().getFramebuffer()), width, height);
     }
 
     public static BufferedImage prepareImage(int width, int height, Framebuffer frameBuffer) {   	

@@ -2,15 +2,20 @@ package austeretony.oxygen_core.common.persistent;
 
 public abstract class AbstractPersistentData implements PersistentData {
 
-    private volatile boolean changed;
+    protected volatile boolean changed;
 
     @Override
     public boolean isChanged() {
-        return this.changed;
+        return changed;
     }
 
     @Override
-    public void setChanged(boolean flag) { 
-        this.changed = flag;
+    public void markChanged() {
+        changed = true;
+    }
+
+    @Override
+    public void resetChangedMark() {
+        changed = false;
     }
 }

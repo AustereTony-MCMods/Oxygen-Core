@@ -1,47 +1,63 @@
 package austeretony.oxygen_core.server.event;
 
+import austeretony.oxygen_core.common.config.CoreConfig;
 import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.common.util.MinecraftCommon;
 import austeretony.oxygen_core.server.OxygenManagerServer;
-import austeretony.oxygen_core.server.api.event.OxygenPrivilegesLoadedEvent;
-import net.minecraft.entity.player.EntityPlayer;
+import austeretony.oxygen_core.server.api.OxygenServer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class OxygenEventsServer {
 
     @SubscribeEvent
-    public void onPrivilegesLoaded(OxygenPrivilegesLoadedEvent event) {
-        OxygenMain.addDefaultPrivileges();
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            OxygenManagerServer.instance().serverTick();
+        }
     }
 
     @SubscribeEvent
-    public void onPlayerLogIn(PlayerLoggedInEvent event) {        
+    public void onPlayerLogIn(PlayerEvent.PlayerLoggedInEvent event) {
         OxygenManagerServer.instance().playerLoggedIn((EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
-    public void onPlayerLogOut(PlayerLoggedOutEvent event) {
+    public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
         OxygenManagerServer.instance().playerLoggedOut((EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
-    public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
-        OxygenManagerServer.instance().playerChangedDimension((EntityPlayerMP) event.player, event.fromDim, event.toDim);
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        OxygenServer.updateSharedValue(MinecraftCommon.getEntityUUID(event.player), OxygenMain.SHARED_DIMENSION, event.toDim);
     }
 
     @SubscribeEvent
-    public void onPlayerStartTracking(PlayerEvent.StartTracking event) {
-        if (event.getTarget() instanceof EntityPlayer)//TODO 0.10 - make it applicable for all EntityLivingBase when an Damage Overlay module will be created
-            OxygenManagerServer.instance().playerStartTracking((EntityPlayerMP) event.getEntityPlayer(), event.getTarget());
+    public void onPlayerAttackedPlayer(AttackEntityEvent event) {
+        if (!CoreConfig.ENABLE_PVP_MANAGER.asBoolean()) return;
+        if (event.getEntityPlayer() instanceof EntityPlayerMP && event.getTarget() instanceof EntityPlayerMP) {
+            EntityPlayerMP attacker = (EntityPlayerMP) event.getEntityPlayer();
+            EntityPlayerMP victim = (EntityPlayerMP) event.getTarget();
+            if (!OxygenManagerServer.instance().getPVPManager().canPlayerAttack(attacker, victim)) {
+                event.setCanceled(true);
+            }
+        }
     }
 
     @SubscribeEvent
-    public void onPlayerStopTracking(PlayerEvent.StopTracking event) {
-        if (event.getTarget() instanceof EntityPlayer)//TODO 0.10 - make it applicable for all EntityLivingBase when an Damage Overlay module will be created
-            OxygenManagerServer.instance().playerStopTracking((EntityPlayerMP) event.getEntityPlayer(), event.getTarget());
+    public void onPlayerAttackedByPlayer(LivingAttackEvent event) {
+        if (!CoreConfig.ENABLE_PVP_MANAGER.asBoolean()) return;
+        if (event.getEntityLiving() instanceof EntityPlayerMP
+                && event.getSource().getTrueSource() != null && event.getSource().getTrueSource() instanceof EntityPlayerMP) {
+            EntityPlayerMP attacker = (EntityPlayerMP) event.getSource().getTrueSource();
+            EntityPlayerMP victim = (EntityPlayerMP) event.getEntityLiving();
+            if (!OxygenManagerServer.instance().getPVPManager().canPlayerAttack(attacker, victim)) {
+                event.setCanceled(true);
+            }
+        }
     }
 }

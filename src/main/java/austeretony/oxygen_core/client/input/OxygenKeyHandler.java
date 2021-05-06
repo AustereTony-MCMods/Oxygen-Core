@@ -1,66 +1,61 @@
 package austeretony.oxygen_core.client.input;
 
-import org.lwjgl.input.Mouse;
-
-import austeretony.oxygen_core.client.OxygenGUIManager;
-import austeretony.oxygen_core.client.OxygenManagerClient;
-import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
-import austeretony.oxygen_core.client.api.InteractionHelper;
-import austeretony.oxygen_core.client.api.OxygenGUIHelper;
-import austeretony.oxygen_core.common.config.OxygenConfig;
+import austeretony.oxygen_core.client.gui.menu.OxygenMenuHelper;
+import austeretony.oxygen_core.client.util.MinecraftClient;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.MouseInputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-public class OxygenKeyHandler {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
-    private KeyBinding notificationsKeybinding, acceptKeybinding, rejectKeybinding, interactKeybinding;
+public final class OxygenKeyHandler {
 
-    public OxygenKeyHandler() {
-        if (OxygenConfig.ENABLE_NOTIFICATIONS_KEY.asBoolean() && !OxygenGUIHelper.isOxygenMenuEnabled())
-            ClientReference.registerKeyBinding(this.notificationsKeybinding = new KeyBinding("key.oxygen_core.notifications", OxygenConfig.NOTIFICATIONS_MENU_KEY.asInt(), "Oxygen"));
-        if (OxygenConfig.ENABLE_ACCEPT_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.acceptKeybinding = new KeyBinding("key.oxygen_core.accept", OxygenConfig.ACCEPT_KEY.asInt(), "Oxygen"));
-        if (OxygenConfig.ENABLE_REJECT_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.rejectKeybinding = new KeyBinding("key.oxygen_core.reject", OxygenConfig.REJECT_KEY.asInt(), "Oxygen"));
-        if (OxygenConfig.ENABLE_INTERACTION_KEY.asBoolean())
-            ClientReference.registerKeyBinding(this.interactKeybinding = new KeyBinding("key.oxygen_core.interact", OxygenConfig.INTERACTION_KEY.asInt(), "Oxygen"));
+    private static final Map<Integer, KeyBindEntry> REGISTRY_MAP = new HashMap<>();
+
+    private final BiMap<Integer, KeyBinding> keyBindingMap = HashBiMap.create();
+
+    public static void registerKeyBind(int id, String name, String category, @Nonnull Supplier<Integer> keyCodeSupplier,
+                                       @Nonnull Supplier<Boolean> validationSupplier, boolean checkMenuEnabled,
+                                       @Nonnull Runnable task) {
+        REGISTRY_MAP.put(id, new KeyBindEntry(id, name, category, keyCodeSupplier, validationSupplier, checkMenuEnabled, task));
+    }
+
+    public static Map<Integer, KeyBindEntry> getRegistry() {
+        return REGISTRY_MAP;
+    }
+
+    public void registerKeyBindings() {
+        REGISTRY_MAP.values()
+                .stream()
+                .filter(e -> e.getValidationSupplier().get() && (!e.checkMenuEnabled() || !OxygenMenuHelper.isMenuEnabled()))
+                .forEach(e -> {
+                    KeyBinding keyBinding = new KeyBinding(e.getName(), e.getKeyCodeSupplier().get(), e.getCategory());
+                    MinecraftClient.registerKeyBinding(keyBinding);
+                    keyBindingMap.put(e.getId(), keyBinding);
+                });
     }
 
     @SubscribeEvent
-    public void onKeyInput(KeyInputEvent event) {        
-        if (this.notificationsKeybinding != null && this.notificationsKeybinding.isPressed())
-            OxygenGUIManager.openNotificationsMenu();
-        if (this.acceptKeybinding != null && this.acceptKeybinding.isPressed())
-            OxygenManagerClient.instance().getNotificationsManager().acceptRequestSynced();
-        if (this.rejectKeybinding != null && this.rejectKeybinding.isPressed())
-            OxygenManagerClient.instance().getNotificationsManager().rejectRequestSynced();
-        if (this.interactKeybinding != null && this.interactKeybinding.isPressed())
-            InteractionHelper.processInteractions();
+    public void onKeyInput(InputEvent.KeyInputEvent event) {
+        for (KeyBinding keyBinding : keyBindingMap.values()) {
+            if (keyBinding.isPressed()) {
+                int id = keyBindingMap.inverse().getOrDefault(keyBinding, -1);
+                KeyBindEntry entry = REGISTRY_MAP.get(id);
+                if (entry != null) {
+                    entry.getTask().run();
+                }
+            }
+        }
     }
 
-    @SubscribeEvent
-    public void onMouseInput(MouseInputEvent event) { 
-        if (Mouse.getEventButton() == 1 && Mouse.getEventButtonState())
-            if (EnumBaseClientSetting.INTERACT_WITH_RMB.get().asBoolean())
-                InteractionHelper.processInteractions();
-    }
-
-    public KeyBinding getNotificationsKeybinding() {
-        return this.notificationsKeybinding;
-    }
-
-    public KeyBinding getAcceptKeybinding() {
-        return this.acceptKeybinding;
-    }
-
-    public KeyBinding getRejectKeybinding() {
-        return this.rejectKeybinding;
-    }
-
-    public KeyBinding getInteractionKeybinding() {
-        return this.interactKeybinding;
+    @Nullable
+    public KeyBinding getKeyBinding(int id) {
+        return keyBindingMap.get(id);
     }
 }

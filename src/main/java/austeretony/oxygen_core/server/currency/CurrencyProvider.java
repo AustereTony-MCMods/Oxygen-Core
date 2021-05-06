@@ -1,18 +1,29 @@
 package austeretony.oxygen_core.server.currency;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface CurrencyProvider {
 
-    String getDisplayName();
+    String getName();
 
     int getIndex();
 
-    boolean forceSync();
+    CurrencySource getSource();
 
-    long getCurrency(UUID playerUUID);
+    boolean isForcedSync();
 
-    void setCurrency(UUID playerUUID, long value);
+    @Nullable
+    Long getBalance(UUID playerUUID, String username);
 
-    void updated(UUID playerUUID);
+    @Nullable
+    Long setBalance(UUID playerUUID, String username, long value);
+
+    @Nullable
+    Long incrementBalance(UUID playerUUID, String username, long increment);
+
+    @Nullable
+    Long decrementBalance(UUID playerUUID, String username, long decrement);
+
+    void updated(UUID playerUUID, String username, @Nullable Long balance);
 }

@@ -1,8 +1,8 @@
 package austeretony.oxygen_core.common.config;
 
+import austeretony.oxygen_core.common.util.value.TypedValue;
 import com.google.gson.JsonObject;
 
-import austeretony.oxygen_core.common.value.TypedValue;
 import io.netty.buffer.ByteBuf;
 
 public interface ConfigValue<T extends TypedValue> {
@@ -24,22 +24,26 @@ public interface ConfigValue<T extends TypedValue> {
     void read(ByteBuf buffer);
 
     default boolean asBoolean() {
-        return (Boolean) this.get().getValue();
+        return get().asBoolean();
     }
 
     default int asInt() {
-        return (Integer) this.get().getValue();
+        return get().asInt();
     }
 
     default long asLong() {
-        return (Long) this.get().getValue();
+        return get().asLong();
     }
 
     default float asFloat() {
-        return (Float) this.get().getValue();
+        return get().asFloat();
+    }
+
+    default double asDouble() {
+        return get().asDouble();
     }
 
     default String asString() {
-        return (String) this.get().getValue();
+        return get().asString();
     }
 }

@@ -1,57 +1,57 @@
 {
-  "inventory_operation": { 
+  "misc_inventory_operation": { 
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:inventory_operation"
+        "name": "oxygen_core:misc_inventory_operation"
       }
     ]
   },
-  "ringing_coins": { 
+  "misc_ringing_coins": { 
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:ringing_coins"
+        "name": "oxygen_core:misc_ringing_coins"
       }
     ]
   },
-  "request_recieved": { 
+  "ui_request_received": {
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:request_recieved"
+        "name": "oxygen_core:ui_request_received"
       }
     ]
   },
-  "button_click": { 
+  "ui_button_click": {
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:button_click"
+        "name": "oxygen_core:ui_button_click"
       }
     ]
   },
-  "context_open": { 
+  "ui_context_menu_open": {
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:context_open"
+        "name": "oxygen_core:ui_context_menu_open"
       }
     ]
   },
-  "context_close": { 
+  "ui_context_menu_close": {
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:context_close"
+        "name": "oxygen_core:ui_context_menu_close"
       }
     ]
   },
-  "drop_down_list_open": { 
+  "ui_drop_down_list_open": {
     "category": "player", 
     "sounds": [
       {
-        "name": "oxygen_core:drop_down_list_open"
+        "name": "oxygen_core:ui_drop_down_list_open"
       }
     ]
   }

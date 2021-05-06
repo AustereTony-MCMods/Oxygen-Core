@@ -1,19 +1,37 @@
 package austeretony.oxygen_core.common.notification;
 
-import austeretony.oxygen_core.common.process.TemporaryProcess;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
-public interface Notification extends TemporaryProcess {
+import javax.annotation.Nonnull;
+import java.util.UUID;
 
-    EnumNotification getType();
+public interface Notification {
 
-    String getDescription();
+    int getId();
 
+    @Nonnull
+    NotificationType getType();
+
+    @Nonnull
+    NotificationMode getMode();
+
+    @Nonnull
+    String getMessage();
+
+    @Nonnull
     String[] getArguments();
 
-    int getIndex();
+    @Nonnull
+    UUID getUUID();
+
+    long getExpirationTimeMillis();
 
     void accepted(EntityPlayer player);
 
     void rejected(EntityPlayer player);
+
+    void expired(EntityPlayer player);
+
+    void write(ByteBuf buffer);
 }

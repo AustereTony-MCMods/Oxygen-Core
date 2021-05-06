@@ -3,8 +3,7 @@ package austeretony.oxygen_core.common.condition;
 public abstract class AbstractCondition implements Condition {
 
     protected String expression;
-
-    protected EnumComparisonOperation operation;
+    protected ComparisonOperator operator;
 
     public AbstractCondition() {}
 
@@ -14,22 +13,17 @@ public abstract class AbstractCondition implements Condition {
     }
 
     @Override
-    public String getExpression() {
-        return this.expression;
+    public void setOperator(ComparisonOperator operation) {
+        this.operator = operation;
     }
 
     @Override
-    public void setOperation(EnumComparisonOperation operation) {
-        this.operation = operation;
-    }
-
-    @Override
-    public EnumComparisonOperation getOperation() {
-        return this.operation;
+    public ComparisonOperator getOperator() {
+        return operator;
     }
 
     @Override
     public String toString() {
-        return this.expression;
+        return expression;
     }
 }

@@ -32,66 +32,6 @@ public class MathUtils {
             return value > max ? max : value;
     }
 
-    //*** lesserOfTwo
-
-    public static int lesserOfTwo(int first, int second) {
-        if (first < second)
-            return first;
-        else
-            return second;
-    }
-
-    public static long lesserOfTwo(long first, long second) {
-        if (first < second)
-            return first;
-        else
-            return second;
-    }
-
-    public static float lesserOfTwo(float first, float second) {
-        if (first < second)
-            return first;
-        else
-            return second;
-    }
-
-    public static double lesserOfTwo(double first, double second) {
-        if (first < second)
-            return first;
-        else
-            return second;
-    }
-
-    //*** greaterOfTwo
-
-    public static int greaterOfTwo(int first, int second) {
-        if (first > second)
-            return first;
-        else
-            return second;
-    }
-
-    public static long greaterOfTwo(long first, long second) {
-        if (first > second)
-            return first;
-        else
-            return second;
-    }
-
-    public static float greaterOfTwo(float first, float second) {
-        if (first > second)
-            return first;
-        else
-            return second;
-    }
-
-    public static double greaterOfTwo(double first, double second) {
-        if (first > second)
-            return first;
-        else
-            return second;
-    }
-
     //*** percentValueOf
 
     public static int percentValueOf(int value, int percent) {

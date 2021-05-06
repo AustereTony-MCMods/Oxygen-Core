@@ -4,9 +4,11 @@ import java.util.UUID;
 
 public interface PlayerInteractionMenuEntry {
 
-    String getLocalizedName();
+    int getId();
+
+    String getDisplayName(UUID playerUUID);
 
     boolean isValid(UUID playerUUID);
 
-    void execute(UUID playerUUID);
+    boolean process(UUID playerUUID);
 }

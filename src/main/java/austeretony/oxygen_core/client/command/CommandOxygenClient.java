@@ -4,24 +4,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 import austeretony.oxygen_core.common.command.AbstractOxygenCommand;
-import austeretony.oxygen_core.common.command.ArgumentExecutor;
+import austeretony.oxygen_core.common.command.CommandArgument;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
 public class CommandOxygenClient extends AbstractOxygenCommand {
 
-    private static final Set<ArgumentExecutor> ARGUMENTS = new HashSet<>();
+    private static final Set<CommandArgument> ARGUMENTS = new HashSet<>();
 
     public CommandOxygenClient(String commandName) {
         super(commandName);
     }
 
-    public static void registerArgument(ArgumentExecutor executor) {
+    public static void registerArgument(CommandArgument executor) {
         ARGUMENTS.add(executor);
     }
 
     @Override
-    public void getArgumentExecutors(Set<ArgumentExecutor> executors) {
+    public void getArgumentExecutors(Set<CommandArgument> executors) {
         executors.addAll(ARGUMENTS);
     }
 

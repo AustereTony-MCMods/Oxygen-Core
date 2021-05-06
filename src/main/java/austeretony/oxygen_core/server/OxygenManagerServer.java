@@ -1,251 +1,402 @@
 package austeretony.oxygen_core.server;
 
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import austeretony.oxygen_core.common.api.CommonReference;
-import austeretony.oxygen_core.common.concurrent.OxygenExecutionManager;
+import austeretony.oxygen_core.common.chat.StatusMessageType;
 import austeretony.oxygen_core.common.config.ConfigManager;
-import austeretony.oxygen_core.common.config.OxygenConfig;
-import austeretony.oxygen_core.common.main.EnumOxygenStatusMessage;
-import austeretony.oxygen_core.common.main.EnumSide;
+import austeretony.oxygen_core.common.config.CoreConfig;
+import austeretony.oxygen_core.common.exception.OxygenRuntimeException;
+import austeretony.oxygen_core.common.inventory.InventoryProvider;
+import austeretony.oxygen_core.common.inventory.PlayerMainInventoryProvider;
 import austeretony.oxygen_core.common.main.OxygenMain;
-import austeretony.oxygen_core.common.network.client.CPSyncMainData;
-import austeretony.oxygen_core.common.persistent.OxygenIOManager;
+import austeretony.oxygen_core.common.network.packets.client.CPSendStatusMessage;
+import austeretony.oxygen_core.common.privileges.PrivilegesManager;
+import austeretony.oxygen_core.common.util.CallingThread;
+import austeretony.oxygen_core.common.util.MinecraftCommon;
+import austeretony.oxygen_core.common.network.packets.client.CPSyncMainData;
 import austeretony.oxygen_core.common.persistent.PersistentDataManager;
-import austeretony.oxygen_core.server.api.OxygenHelperServer;
-import austeretony.oxygen_core.server.api.event.OxygenWorldUnloadedEvent;
-import austeretony.oxygen_core.server.chat.ChatChannelsManagerServer;
-import austeretony.oxygen_core.server.inventory.InventoryManagerServer;
-import austeretony.oxygen_core.server.preset.ItemCategoriesPresetServer;
+import austeretony.oxygen_core.server.api.OxygenServer;
+import austeretony.oxygen_core.server.currency.CurrencyManagerServer;
+import austeretony.oxygen_core.server.currency.CurrencyProvider;
+import austeretony.oxygen_core.server.currency.CurrencySource;
+import austeretony.oxygen_core.server.event.OxygenPlayerEvent;
+import austeretony.oxygen_core.server.event.OxygenServerEvent;
+import austeretony.oxygen_core.server.network.NetworkManagerServer;
+import austeretony.oxygen_core.server.network.operations.NetworkOperationsManagerServer;
+import austeretony.oxygen_core.server.notification.NotificationsManagerServer;
+import austeretony.oxygen_core.server.player.shared.SharedDataManagerServer;
 import austeretony.oxygen_core.server.preset.PresetsManagerServer;
-import austeretony.oxygen_core.server.privilege.PrivilegesContainerServer;
-import austeretony.oxygen_core.server.privilege.PrivilegesManagerServer;
+import austeretony.oxygen_core.server.pvp.PVPManagerServer;
 import austeretony.oxygen_core.server.sync.DataSyncManagerServer;
-import net.minecraft.entity.Entity;
+import austeretony.oxygen_core.server.sync.observed.ObservedEntitiesDataSyncManagerServer;
+import austeretony.oxygen_core.server.sync.watcher.WatcherManagerServer;
+import austeretony.oxygen_core.server.operation.OperationsManagerServer;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+
+import javax.annotation.Nonnull;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import java.util.concurrent.*;
 
 public final class OxygenManagerServer {
 
     private static OxygenManagerServer instance;
 
-    //main
-
-    private final TimeManagerServer timeManager;
-
-    private final ServerData serverData = new ServerData();
-
-    private final OxygenExecutionManager executionManager;
-
-    private final OxygenIOManager ioManager;
+    private final ExecutorService executor;
+    private final ScheduledExecutorService scheduler;
 
     private final PersistentDataManager persistentDataManager;
+    private final TimeManagerServer timeManager;
+    private final DataSyncManagerServer syncManager;
+    private final NetworkManagerServer networkManager;
+    private final TimeoutManagerServer timeoutManager;
+    private final NetworkOperationsManagerServer networkOperationsManager;
 
-    private final Random random = new Random();
+    private final SharedDataManagerServer sharedDataManager;
+    private final PlayerDataManagerServer playersDataManager;
+    private final CurrencyManagerServer currencyManager;
 
-    //privileges
+    private final WatcherManagerServer watcherManager;
+    private final PresetsManagerServer presetsManager;
+    private final ItemsBlacklistsManagerServer itemsBlacklistManager;
+    private final ObservedEntitiesDataSyncManagerServer observedEntitiesDataSyncManager;
 
-    private final PrivilegesContainerServer privilegesContainer;
+    private final PrivilegesManager privilegesManager;
+    private final NotificationsManagerServer notificationsManager;
+    private final PVPManagerServer pvpManager;
 
-    private final PrivilegesManagerServer privilegesManager;
+    private final OperationsManagerServer operationsManager;
 
-    //common data & sync
+    @Nonnull
+    private InventoryProvider inventoryProvider;
 
-    private final SharedDataManagerServer sharedDataManager = new SharedDataManagerServer();
-
-    private final DataSyncManagerServer dataSyncManager = new DataSyncManagerServer();
-
-    //oxygen player data
-
-    private final OxygenPlayerDataContainerServer playerDataContainer = new OxygenPlayerDataContainerServer();
-
-    private final PlayerDataManagerServer playerDataManager;
-
-    //economy
-
-    private final CurrencyManagerServer currencyManager = new CurrencyManagerServer();
-
-    //inventory
-
-    private final InventoryManagerServer inventoryManager = new InventoryManagerServer();
-
-    //presets
-
-    private final PresetsManagerServer presetsManager = new PresetsManagerServer();
-
-    private final ItemCategoriesPresetServer itemCategoriesPreset = new ItemCategoriesPresetServer();
-
-    //other
-
-    private final ValidatorsManagerServer validatorsManager = new ValidatorsManagerServer();
-
-    private final ChatChannelsManagerServer chatChannelsManager;
+    private String worldId;
+    private long tick;
 
     private OxygenManagerServer() {
-        this.timeManager = new TimeManagerServer(this);
-        this.executionManager = new OxygenExecutionManager(
-                EnumSide.SERVER, 
-                OxygenConfig.IO_THREADS_AMOUNT.asInt(), 
-                1,
-                OxygenConfig.ROUTINE_THREADS_AMOUNT.asInt(), 
-                OxygenConfig.SCHEDULER_THREADS_AMOUNT.asInt());
-        this.ioManager = new OxygenIOManager(this.executionManager);
-        this.persistentDataManager = new PersistentDataManager(this.executionManager, this.ioManager, OxygenConfig.SERVER_DATA_SAVE_PERIOD_SECONDS.asInt());      
+        executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                .setNameFormat("Oxygen #%d Server")
+                .setDaemon(true)
+                .build());
+        scheduler = Executors.newScheduledThreadPool(1,
+                new ThreadFactoryBuilder()
+                        .setNameFormat("Oxygen Scheduler #%d Server")
+                        .setDaemon(true)
+                        .build());
 
-        this.privilegesContainer = new PrivilegesContainerServer(this);
-        this.privilegesManager = new PrivilegesManagerServer(this);
-        this.playerDataManager = new PlayerDataManagerServer(this);
-        this.presetsManager.registerPreset(this.itemCategoriesPreset);
+        persistentDataManager = new PersistentDataManager(CoreConfig.PERSISTENT_DATA_SAVE_PERIOD_SECONDS.asInt(),
+                scheduler, executor);
+        timeManager = new TimeManagerServer();
+        syncManager = new DataSyncManagerServer();
+        networkManager = new NetworkManagerServer();
+        timeoutManager = new TimeoutManagerServer();
+        networkOperationsManager = new NetworkOperationsManagerServer();
 
-        this.chatChannelsManager = new ChatChannelsManagerServer(this);
-    }
+        sharedDataManager = new SharedDataManagerServer();
+        persistentDataManager.registerPersistentData(sharedDataManager);
+        playersDataManager = new PlayerDataManagerServer();
+        persistentDataManager.registerPersistentData(playersDataManager::save);
 
-    private void registerPersistentData() {
-        OxygenHelperServer.registerPersistentData(this.sharedDataManager);
-        OxygenHelperServer.registerPersistentData(this.playerDataContainer::save);
-    }
+        currencyManager = new CurrencyManagerServer();
+        persistentDataManager.registerPersistentData(currencyManager::save);
 
-    private void scheduleRepeatableProcesses() {
-        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(this.privilegesContainer::save, 1L, 1L, TimeUnit.MINUTES);
-        this.executionManager.getExecutors().getSchedulerExecutorService().scheduleAtFixedRate(this.playerDataManager::process, 1L, 1L, TimeUnit.SECONDS);
-    }
+        watcherManager = new WatcherManagerServer();
+        presetsManager = new PresetsManagerServer();
+        itemsBlacklistManager = new ItemsBlacklistsManagerServer();
+        observedEntitiesDataSyncManager = new ObservedEntitiesDataSyncManagerServer();
+        scheduleTask(observedEntitiesDataSyncManager::update, 1L, TimeUnit.SECONDS);
 
-    public static void create() {
-        if (instance == null) {
-            instance = new OxygenManagerServer();
-            instance.registerPersistentData();
-            instance.scheduleRepeatableProcesses();
-        }
+        privilegesManager = new PrivilegesManager();
+        notificationsManager = new NotificationsManagerServer();
+        scheduleTask(notificationsManager::update, 1L, TimeUnit.SECONDS);
+        pvpManager = new PVPManagerServer();
+
+        operationsManager = new OperationsManagerServer();
+
+        inventoryProvider = new PlayerMainInventoryProvider();
     }
 
     public static OxygenManagerServer instance() {
+        if (instance == null) {
+            instance = new OxygenManagerServer();
+        }
         return instance;
     }
 
-    public TimeManagerServer getTimeManager() {
-        return this.timeManager;
+    public ExecutorService getExecutor() {
+        return executor;
     }
 
-    public ServerData getServerData() {
-        return this.serverData;
-    } 
-
-    public OxygenExecutionManager getExecutionManager() {
-        return this.executionManager;
+    public ScheduledExecutorService getScheduler() {
+        return scheduler;
     }
 
-    public OxygenIOManager getIOManager() {
-        return this.ioManager;
+    public Future<?> addTask(final @Nonnull Runnable task) {
+        return executor.submit(wrapTaskRunnable(task));
+    }
+
+    public <T> Future<T> addTask(final @Nonnull Callable<T> task) {
+        return executor.submit(wrapTaskCallable(task));
+    }
+
+    public ScheduledFuture<?> addTask(final @Nonnull Runnable task, long delay, @Nonnull TimeUnit timeUnit) {
+        return scheduler.schedule(wrapTaskRunnable(task), delay, timeUnit);
+    }
+
+    public <T> ScheduledFuture<T> addTask(final @Nonnull Callable<T> task, long delay, @Nonnull TimeUnit timeUnit) {
+        return scheduler.schedule(wrapTaskCallable(task), delay, timeUnit);
+    }
+
+    public ScheduledFuture<?> scheduleTask(final @Nonnull Runnable task, long delay, @Nonnull TimeUnit timeUnit) {
+        return scheduler.scheduleAtFixedRate(wrapTaskRunnable(task), delay, delay, timeUnit);
+    }
+
+    private Runnable wrapTaskRunnable(final @Nonnull Runnable task) {
+        return () -> {
+            try {
+                task.run();
+            } catch (OxygenRuntimeException exception) {
+                throw new RuntimeException(exception.getMessage(), exception.getCause());
+            } catch (Exception exception) {
+                OxygenMain.logError(1, "[Core] Task execution failed.", exception);
+            }
+        };
+    }
+
+    private <T> Callable<T> wrapTaskCallable(final @Nonnull Callable<T> task) {
+        return () -> {
+            try {
+                return task.call();
+            } catch (OxygenRuntimeException exception) {
+                throw new RuntimeException(exception.getMessage(), exception.getCause());
+            } catch (Exception exception) {
+                OxygenMain.logError(1, "[Core] Task execution failed.", exception);
+            }
+            return null;
+        };
+    }
+
+    public String getWorldId() {
+        return worldId;
+    }
+
+    public long getTick() {
+        return tick;
+    }
+
+    public String getDataFolder() {
+        return MinecraftCommon.getGameFolder() + "/oxygen/worlds/" + worldId + "/server";
     }
 
     public PersistentDataManager getPersistentDataManager() {
-        return this.persistentDataManager;
-    } 
-
-    public Random getRandom() {
-        return this.random;
+        return persistentDataManager;
     }
 
-    public PrivilegesContainerServer getPrivilegesContainer() {
-        return this.privilegesContainer;
+    public TimeManagerServer getTimeManager() {
+        return timeManager;
     }
 
-    public PrivilegesManagerServer getPrivilegesManager() {
-        return this.privilegesManager;
+    public DataSyncManagerServer getSyncManager() {
+        return syncManager;
+    }
+
+    public NetworkManagerServer getNetworkManager() {
+        return networkManager;
+    }
+
+    public TimeoutManagerServer getTimeoutManager() {
+        return timeoutManager;
+    }
+
+    public NetworkOperationsManagerServer getNetworkOperationsManager() {
+        return networkOperationsManager;
     }
 
     public SharedDataManagerServer getSharedDataManager() {
-        return this.sharedDataManager;
+        return sharedDataManager;
     }
 
-    public DataSyncManagerServer getDataSyncManager() {
-        return this.dataSyncManager;
-    } 
-
-    public OxygenPlayerDataContainerServer getPlayerDataContainer() {
-        return this.playerDataContainer;
-    }
-
-    public PlayerDataManagerServer getPlayerDataManager() {
-        return this.playerDataManager;
+    public PlayerDataManagerServer getPlayersDataManager() {
+        return playersDataManager;
     }
 
     public CurrencyManagerServer getCurrencyManager() {
-        return this.currencyManager;
+        return currencyManager;
     }
 
-    public InventoryManagerServer getInventoryManager() {
-        return this.inventoryManager;
+    public WatcherManagerServer getWatcherManager() {
+        return watcherManager;
     }
 
     public PresetsManagerServer getPresetsManager() {
-        return this.presetsManager;
-    } 
-
-    public ItemCategoriesPresetServer getItemCategoriesPreset() {
-        return this.itemCategoriesPreset;
-    } 
-
-    public ValidatorsManagerServer getValidatorsManager() {
-        return this.validatorsManager;
+        return presetsManager;
     }
 
-    public ChatChannelsManagerServer getChatChannelsManager() {
-        return this.chatChannelsManager;
+    public ItemsBlacklistsManagerServer getItemsBlacklistManager() {
+        return itemsBlacklistManager;
     }
 
-    public void worldLoaded(String worldFolder) {
-        this.serverData.createOrLoadWorldId(worldFolder);
-        this.presetsManager.init();
-
-        OxygenHelperServer.loadPersistentDataAsync(this.sharedDataManager);
+    public ObservedEntitiesDataSyncManagerServer getObservedEntitiesDataSyncManager() {
+        return observedEntitiesDataSyncManager;
     }
 
-    public void worldUnloaded() {
-        this.privilegesContainer.save();
-        this.persistentDataManager.worldUnloaded();
-        this.playerDataContainer.save();
-        MinecraftForge.EVENT_BUS.post(new OxygenWorldUnloadedEvent());
+    public PrivilegesManager getPrivilegesManager() {
+        return privilegesManager;
+    }
+
+    public NotificationsManagerServer getNotificationsManager() {
+        return notificationsManager;
+    }
+
+    public PVPManagerServer getPVPManager() {
+        return pvpManager;
+    }
+
+    public OperationsManagerServer getOperationsManager() {
+        return operationsManager;
+    }
+
+    @Nonnull
+    public InventoryProvider getPlayerInventoryProvider() {
+        return inventoryProvider;
+    }
+
+    public void setPlayerInventoryProvider(@Nonnull InventoryProvider provider) {
+        inventoryProvider = provider;
+    }
+
+    public void serverStarting(String worldFolder) {
+        final Runnable task = () -> {
+            createOrLoadWorldId(worldFolder);
+            presetsManager.loadPresets();
+            OxygenServer.loadPersistentData(sharedDataManager);
+            MinecraftCommon.delegateToServerThread(
+                    () -> {
+                        MinecraftCommon.postEvent(new OxygenServerEvent.Starting());
+                    });
+        };
+        addTask(task);
+    }
+
+    public void serverTick() {
+        tick++;
+        if (tick % 20L == 0L) {
+            for (EntityPlayerMP playerMP : MinecraftCommon.getServer().getPlayerList().getPlayers()) {
+                UUID playerUUID = MinecraftCommon.getEntityUUID(playerMP);
+                String username = MinecraftCommon.getEntityName(playerMP);
+                for (CurrencyProvider provider : OxygenServer.getCurrencyProviders()) {
+                    if (provider.isForcedSync()
+                            && provider.getSource() != CurrencySource.DATA_BASE) {
+                        currencyManager.queryBalance(playerUUID, username, provider.getIndex(),
+                                balance -> {
+                                    if (balance != null) {
+                                        watcherManager.updateValue(playerUUID, provider.getIndex(), balance);
+                                    }
+                                },
+                                CallingThread.MINECRAFT);
+                    }
+                }
+                watcherManager.syncData(playerMP);
+            }
+        }
+    }
+
+    public void serverStopping(Side side) {
+        if (side == Side.SERVER) { // dedicated server only
+            shutdownExecutors();
+        }
+        persistentDataManager.serverStopping();
+        MinecraftCommon.postEvent(new OxygenServerEvent.Stopping());
     }
 
     public void playerLoggedIn(EntityPlayerMP playerMP) {
-        UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-        ConfigManager.instance().syncConfigs(playerMP);
-        OxygenMain.network().sendTo(new CPSyncMainData(
-                this.timeManager.getZoneId().getId(),
-                OxygenHelperServer.getWorldId(), 
-                CommonReference.getServer().getMaxPlayers(), 
-                playerUUID), playerMP);
-        if (OxygenConfig.ENABLE_PRIVILEGES.asBoolean()) {
-            this.privilegesContainer.syncPrivilegesData(playerMP);
-            this.privilegesManager.syncPlayerPrivileges(playerUUID);
-        }
-        this.presetsManager.syncVersions(playerMP);
-        this.playerDataManager.playerLoggedIn(playerMP);
+        final Runnable task = () -> {
+            UUID playerUUID = MinecraftCommon.getEntityUUID(playerMP);
+            boolean operator = OxygenServer.isPlayerOperator(playerMP);
+            ConfigManager.instance().syncConfigs(playerMP);
+            OxygenMain.network().sendTo(new CPSyncMainData(timeManager.getZoneId().getId(), worldId,
+                    MinecraftCommon.getServer().getMaxPlayers(), playerUUID, operator), playerMP);
+
+            presetsManager.syncVersions(playerMP);
+            sharedDataManager.playerLoggedIn(playerMP);
+            playersDataManager.playerLoggedIn(playerUUID);
+            currencyManager.playerLoggedIn(playerUUID, MinecraftCommon.getEntityName(playerMP));
+            observedEntitiesDataSyncManager.playerLoggedIn(playerMP);
+            MinecraftCommon.delegateToServerThread(
+                    () -> {
+                        MinecraftCommon.postEvent(new OxygenPlayerEvent.LoggedIn(playerMP));
+                    });
+        };
+        addTask(task);
     }
 
     public void playerLoggedOut(EntityPlayerMP playerMP) {
-        UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-        this.playerDataManager.playerLoggedOut(playerMP);
+        final Runnable task = () -> {
+            UUID playerUUID = MinecraftCommon.getEntityUUID(playerMP);
+            sharedDataManager.playerLoggedOut(playerUUID);
+            networkManager.playerLoggedOut(playerUUID);
+            timeoutManager.playerLoggedOut(playerUUID);
+            watcherManager.playerLoggedOut(playerUUID);
+            observedEntitiesDataSyncManager.playerLoggedOut(playerMP);
+            MinecraftCommon.delegateToServerThread(
+                    () -> {
+                        MinecraftCommon.postEvent(new OxygenPlayerEvent.LoggedOut(playerMP));
+                    });
+        };
+        addTask(task);
     }
 
-    public void playerChangedDimension(EntityPlayerMP playerMP, int fromDim, int toDim) {
-        UUID playerUUID = CommonReference.getPersistentUUID(playerMP);
-        if (OxygenHelperServer.isPlayerOnline(playerUUID)) 
-            this.sharedDataManager.updateDimension(playerUUID, toDim);
+    private void createOrLoadWorldId(String worldFolder) {
+        String pathStr = worldFolder + "/oxygen/world_id.txt";
+        Path path = Paths.get(pathStr);
+        if (Files.exists(path)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(pathStr))) {
+                worldId = reader.readLine().trim();
+                OxygenMain.logInfo(1, "[Core] Loaded world id: {}", worldId);
+            } catch (IOException exception) {
+                OxygenMain.logError(1, "[Core] World id loading failed.", exception);
+            }
+        } else {
+            worldId = "world_" + OxygenMain.ID_DATE_FORMAT.format(timeManager.getZonedDateTime());
+            OxygenMain.logInfo(1, "[Core] Created world id: {}", worldId);
+            try {
+                Files.createDirectories(path.getParent());
+                try (PrintStream printStream = new PrintStream(new File(pathStr))) {
+                    printStream.println(worldId);
+                }
+            } catch (IOException exception) {
+                OxygenMain.logError(1,"[Core] World id saving failed.", exception);
+            }
+        }
     }
 
-    public void playerStartTracking(EntityPlayerMP playerMP, Entity target) {
-        this.playerDataManager.playerStartTracking(playerMP, target);
+    private void shutdownExecutors() {
+        shutdownService(scheduler, "scheduler");
+        shutdownService(currencyManager.getDBExecutor(), "currency_db_executor");
+        shutdownService(executor, "executor");
     }
 
-    public void playerStopTracking(EntityPlayerMP playerMP, Entity target) {
-        this.playerDataManager.playerStopTracking(playerMP, target);
+    private void shutdownService(ExecutorService service, String description) {
+        service.shutdown();
+        try {
+            boolean executed = executor.awaitTermination(5L, TimeUnit.SECONDS);
+            if (executed) {
+                OxygenMain.logInfo(1, "[Core] Successfully executed tasks on service shutdown: {}", description);
+            } else {
+                OxygenMain.logInfo(1, "[Core] Failed to execute tasks on service shutdown: {}", description);
+            }
+        } catch (InterruptedException exception) {
+            OxygenMain.logError(1, "[Core] Main thread was interrupted! Failed to execute on service shutdown: {}",
+                    description);
+            exception.printStackTrace();
+        }
     }
 
-    public void sendStatusMessage(EntityPlayerMP playerMP, EnumOxygenStatusMessage message, String... args) {
-        OxygenHelperServer.sendStatusMessage(playerMP, OxygenMain.OXYGEN_CORE_MOD_INDEX, message.ordinal(), args);
+    public void sendStatusMessage(EntityPlayerMP playerMP, int modIndex, StatusMessageType type,
+                                  String message, String... args) {
+        OxygenMain.network().sendTo(new CPSendStatusMessage(modIndex, type, message, args), playerMP);
     }
 }

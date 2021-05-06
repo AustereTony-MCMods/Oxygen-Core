@@ -14,7 +14,7 @@ public interface Config {
 
     String getVersion();
 
-    String getExternalPath();
+    String getFileName();
 
     void getValues(List<ConfigValue> values);
 

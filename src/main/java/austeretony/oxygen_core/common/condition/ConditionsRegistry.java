@@ -1,6 +1,5 @@
 package austeretony.oxygen_core.common.condition;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

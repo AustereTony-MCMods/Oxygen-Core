@@ -1,55 +1,87 @@
 package austeretony.oxygen_core.client.preset;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-
-import austeretony.oxygen_core.client.api.ClientReference;
+import austeretony.oxygen_core.client.api.OxygenClient;
+import austeretony.oxygen_core.common.api.OxygenCommon;
 import austeretony.oxygen_core.common.main.OxygenMain;
+import austeretony.oxygen_core.common.preset.Preset;
 import austeretony.oxygen_core.common.util.ByteBufUtils;
-import austeretony.oxygen_core.common.util.JsonUtils;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.StringUtils;
 
-public class ItemCategoriesPresetClient extends AbstractPresetClient {
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
-    public static final ItemCategory COMMON_CATEGORY = new ItemCategory("oxygen_core.category.common");
+public class ItemCategoriesPresetClient implements Preset {
 
-    static {
-        COMMON_CATEGORY.subCategories.add(new ItemSubCategoryCommon("oxygen_core.category.common"));
+    public static final String
+            COMMON_CATEGORY_NAME = "...",
+            COMMON_SUB_CATEGORY_NAME = "...";
+    public static final ItemsSubCategory COMMON = new ItemsSubCategory(COMMON_SUB_CATEGORY_NAME);
+
+    private long version;
+    private final Multimap<String, ItemsSubCategory> categoriesMap = HashMultimap.create();
+
+    @Nonnull
+    public Map<String, Collection<ItemsSubCategory>> getCategoriesMap() {
+        return categoriesMap.asMap();
     }
 
-    private final List<ItemCategory> categories = new ArrayList<>(5);
-
-    private boolean verified;
-
-    public boolean isVerified() {
-        return this.verified;
+    @Nonnull
+    public List<String> getSortedCategories() {
+        return categoriesMap.keySet()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
-    public List<ItemCategory> getCategories() {
-        return this.categories;
+    @Nonnull
+    public List<ItemsSubCategory> getSortedSubCategories(String categoryName) {
+        return categoriesMap.get(categoryName)
+                .stream()
+                .sorted(Comparator.comparing(ItemsSubCategory::getName))
+                .collect(Collectors.toList());
+    }
+
+    public boolean isValidForCategory(String categoryName, String subCategoryName, ResourceLocation registryName) {
+        String registryNameStr = registryName.toString();
+        Collection<ItemsSubCategory> subCategories = categoriesMap.get(categoryName);
+        for (ItemsSubCategory subCategory : subCategories) {
+            if ((subCategoryName.equals(COMMON_SUB_CATEGORY_NAME) || subCategory.getName().equals(subCategoryName))
+                    && subCategory.getItems().contains(registryNameStr)) {
+                return true;
+            }
+        }
+        return categoryName.equals(COMMON_CATEGORY_NAME);
+    }
+
+    public boolean isValidForCategory(String categoryName, String subCategoryName, Item item) {
+        ResourceLocation registryName = item.getRegistryName();
+        if (registryName == null) return false;
+        return isValidForCategory(categoryName, subCategoryName, registryName);
+    }
+
+    public boolean isValidForCategory(String categoryName, String subCategoryName, ItemStack itemStack) {
+        return isValidForCategory(categoryName, subCategoryName, itemStack.getItem());
+    }
+
+    public boolean isCommonCategory(String name) {
+        return name.equals(COMMON_CATEGORY_NAME);
     }
 
     @Override
     public int getId() {
-        return OxygenMain.ITEM_CATEGORIES_PRESET_ID;
-    }
-
-    @Override
-    public String getDirectory() {
-        return "core/item categories";
+        return OxygenMain.PRESET_ITEM_CATEGORIES;
     }
 
     @Override
@@ -58,181 +90,125 @@ public class ItemCategoriesPresetClient extends AbstractPresetClient {
     }
 
     @Override
-    public boolean load(String folder) {
-        String pathStr = folder + "/item_categories.json";
-        Path path = Paths.get(pathStr);     
-        if (Files.exists(path)) {
-            this.categories.clear();
-            try {      
-                this.categories.add(COMMON_CATEGORY);
-                for (JsonElement categoryEntry : JsonUtils.getExternalJsonData(pathStr).getAsJsonArray())
-                    this.categories.add(ItemCategory.deserialize(categoryEntry.getAsJsonObject()));
-                this.sortCategories();
-                this.verified = true;
-                return true;
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }       
-        }
-        return false;
-    }
-
-    private void sortCategories() {
-        Collections.sort(this.categories, (c1, c2)->(c1.localizedName().compareTo(c2.localizedName())));
+    public long getVersion() {
+        return version;
     }
 
     @Override
-    public boolean saveToFolder(String folder) {
-        String pathStr = folder + "/item_categories.json";
-        Path path = Paths.get(pathStr);
-        if (!Files.exists(path)) {
-            try {                   
-                Files.createDirectories(path.getParent());              
-            } catch (IOException exception) {               
-                exception.printStackTrace();
+    public void loadVersion(String worldId) {
+        version = PresetsManagerClient.loadVersion(getName(), worldId);
+    }
+
+    @Override
+    public void load(String worldId) {
+        categoriesMap.clear();
+        String folder = OxygenCommon.getConfigFolder() + "/data/client/worlds/" + worldId + "/presets/"
+                + getName() + "/categories/";
+        File file = new File(folder);
+        if (file.exists()) {
+            loadFromFolder(file);
+        }
+    }
+
+    private void loadFromFolder(File folder) {
+        File[] files = folder.listFiles();
+        if (files == null) return;
+        for (File file : files) {
+            if (!file.isDirectory() && file.getName().endsWith(".txt")) {
+                loadFromFile(file);
             }
         }
+    }
+
+    private void loadFromFile(File file) {
+        String category = StringUtils.remove(file.getName(), ".txt");
         try {
-            JsonArray config = new JsonArray();
-            for (ItemCategory category : this.categories)
-                config.add(category.serialize());  
-            JsonUtils.createExternalJsonFile(pathStr, config);
-            return true;
-        } catch (IOException exception) {      
+            List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+            ItemsSubCategory subCategory = null;
+            for (String l : lines) {
+                String line = l.trim();
+                if (line.isEmpty() || line.startsWith("#")) continue;
+
+                if (line.startsWith(">")) {
+                    if (subCategory != null) {
+                        categoriesMap.put(category, subCategory);
+                    }
+
+                    subCategory = new ItemsSubCategory(line.substring(1).trim());
+                    continue;
+                }
+
+                if (subCategory != null) {
+                    subCategory.getItems().add(line);
+                }
+            }
+            if (subCategory != null) {
+                categoriesMap.put(category, subCategory);
+            }
+        } catch (Exception exception) {
+            OxygenMain.logError(1, "[Core] Failed to load preset <{}> data: category <{}>", getName(), category);
             exception.printStackTrace();
         }
-        return false;
     }
 
     @Override
-    public boolean reloadAfterSave() {
-        return true;
+    public void save() {
+        saveVersion();
+        saveData();
     }
 
-    @Override
-    public void reset() {
-        this.categories.clear();
+    private void saveVersion() {
+        PresetsManagerClient.saveVersion(getName(), version);
     }
 
-    @Override
-    public void readFromBuf(ByteBuf buffer) {
-        int amount = buffer.readByte();
-        for (int i = 0; i < amount; i++)
-            this.categories.add(ItemCategory.read(buffer));
-    }
+    private void saveData() {
+        String folderStr = OxygenCommon.getConfigFolder() + "/data/client/worlds/" + OxygenClient.getWorldId() + "/presets/"
+                + getName() + "/categories/";
+        try {
+            Files.createDirectories(Paths.get(folderStr));
 
-    public static class ItemCategory {
+            for (Map.Entry<String, Collection<ItemsSubCategory>> entry : categoriesMap.asMap().entrySet()) {
+                String category = entry.getKey();
+                List<String> lines = new ArrayList<>();
 
-        public final String name;
+                entry.getValue()
+                        .stream()
+                        .sorted(Comparator.comparing(ItemsSubCategory::getName))
+                        .forEach(subCategory -> {
+                            lines.add("");
+                            lines.add(">" + subCategory.getName());
+                            lines.add("");
 
-        protected final List<ItemSubCategory> subCategories = new ArrayList<>(5);
+                            subCategory.getItems()
+                                    .stream()
+                                    .sorted(String::compareTo)
+                                    .forEach(lines::add);
+                        });
 
-        public ItemCategory(String name) {
-            this.name = name;
-        }
-
-        public List<ItemSubCategory> getSubCategories() {
-            return this.subCategories;
-        }
-
-        public boolean isValid(ItemSubCategory subCategory, ResourceLocation registryName) {
-            if (!this.subCategories.contains(subCategory))
-                return false;
-            return subCategory.isValid(registryName);
-        }
-
-        public String localizedName() {
-            return ClientReference.localize(this.name);
-        }
-
-        private void sortSubCategories() {
-            Collections.sort(this.subCategories, (c1, c2)->(c1.localizedName().compareTo(c2.localizedName())));
-        }
-
-        protected static ItemCategory deserialize(JsonObject jsonObject) {
-            ItemCategory category = new ItemCategory(jsonObject.get("name").getAsString());
-            ItemSubCategory commonSubCategory = new ItemSubCategory("oxygen_core.category.common");
-            category.subCategories.add(commonSubCategory);
-            ItemSubCategory subCategory;
-            for (JsonElement subCategoryEntry : jsonObject.get("sub_categories").getAsJsonArray()) {
-                category.subCategories.add(subCategory = ItemSubCategory.deserialize(subCategoryEntry.getAsJsonObject()));
-                commonSubCategory.registryNames.addAll(subCategory.registryNames);
+                Files.write(Paths.get(folderStr + "/" + category + ".txt"), lines, StandardCharsets.UTF_8);
             }
-            category.sortSubCategories();
-            return category;
-        }
-
-        protected JsonObject serialize() {
-            JsonObject categoryEntry = new JsonObject();
-            categoryEntry.add("name", new JsonPrimitive(this.name));
-            JsonArray subCategoryEntries = new JsonArray();
-            for (ItemSubCategory subCategory : this.subCategories)
-                subCategoryEntries.add(subCategory.serialize());
-            categoryEntry.add("sub_categories", subCategoryEntries);
-            return categoryEntry;
-        }
-
-        protected static ItemCategory read(ByteBuf buffer) {
-            ItemCategory category = new ItemCategory(ByteBufUtils.readString(buffer));
-            int amount = buffer.readByte();
-            for (int i = 0; i < amount; i++)
-                category.subCategories.add(ItemSubCategory.read(buffer));
-            return category;
+            OxygenMain.logInfo(2, "[Core] Created preset <{}> data file", getName());
+        } catch (IOException exception) {
+            OxygenMain.logError(1, "[Core] Failed to create <{}> preset data file", getName());
+            exception.printStackTrace();
         }
     }
 
-    public static class ItemSubCategory {
+    @Override
+    public void write(ByteBuf buffer) {}
 
-        public final String name;
-
-        protected final Set<ResourceLocation> registryNames = new HashSet<>();
-
-        public ItemSubCategory(String name) {
-            this.name = name;
-        }
-
-        public boolean isValid(ResourceLocation registryName) {
-            return this.registryNames.contains(registryName);
-        }
-
-        public String localizedName() {
-            return ClientReference.localize(this.name);
-        }
-
-        protected static ItemSubCategory deserialize(JsonObject jsonObject) {
-            ItemSubCategory subCategory = new ItemSubCategory(jsonObject.get("name").getAsString());
-            for (JsonElement itemEntry : jsonObject.get("items").getAsJsonArray())
-                subCategory.registryNames.add(new ResourceLocation(itemEntry.getAsString()));
-            return subCategory;
-        }
-
-        protected JsonObject serialize() {
-            JsonObject subCategoryEntry = new JsonObject();
-            subCategoryEntry.add("name", new JsonPrimitive(this.name));
-            JsonArray itemEntries = new JsonArray();
-            for (ResourceLocation registryName : this.registryNames)
-                itemEntries.add(new JsonPrimitive(registryName.toString()));
-            subCategoryEntry.add("items", itemEntries);
-            return subCategoryEntry;
-        }
-
-        protected static ItemSubCategory read(ByteBuf buffer) {
-            ItemSubCategory subCategory = new ItemSubCategory(ByteBufUtils.readString(buffer));
-            int amount = buffer.readShort();
-            for (int i = 0; i < amount; i++)
-                subCategory.registryNames.add(new ResourceLocation(ByteBufUtils.readString(buffer)));
-            return subCategory;
-        }
-    }
-
-    public static class ItemSubCategoryCommon extends ItemSubCategory {
-
-        public ItemSubCategoryCommon(String name) {
-            super(name);
-        }
-
-        public boolean isValid(ResourceLocation registryName) {
-            return true;
+    @Override
+    public void read(ByteBuf buffer) {
+        categoriesMap.clear();
+        version = buffer.readLong();
+        int categoriesAmount = buffer.readByte();
+        for (int i = 0; i < categoriesAmount; i++) {
+            String category = ByteBufUtils.readString(buffer);
+            int subCategoriesAmount = buffer.readByte();
+            for (int j = 0; j < subCategoriesAmount; j++) {
+                ItemsSubCategory subCategory = ItemsSubCategory.read(buffer);
+                categoriesMap.put(category, subCategory);
+            }
         }
     }
 }

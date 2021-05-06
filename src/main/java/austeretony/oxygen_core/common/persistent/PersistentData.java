@@ -1,22 +1,22 @@
 package austeretony.oxygen_core.common.persistent;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
+import net.minecraft.nbt.NBTTagCompound;
 
 public interface PersistentData {
 
-    String getDisplayName();
+    String getName();
 
     String getPath();
 
     boolean isChanged();
 
-    void setChanged(boolean flag);
+    void markChanged();
 
-    void write(BufferedOutputStream bos) throws IOException;
+    void resetChangedMark();
 
-    void read(BufferedInputStream bis) throws IOException;
+    void writeToNBT(NBTTagCompound tagCompound);
+
+    void readFromNBT(NBTTagCompound tagCompound);
 
     void reset();
 }

@@ -8,31 +8,31 @@ import java.util.UUID;
 
 public class StreamUtils {
 
-    public static void write(byte[] bytes, OutputStream os) throws IOException {
+    public static void writeBytes(byte[] bytes, OutputStream os) throws IOException {
         os.write(bytes);
     }
 
-    public static void write(boolean flag, OutputStream os) throws IOException {
+    public static void writeByte(int value, OutputStream os) throws IOException {
+        os.write(value);
+    }
+
+    public static void writeBoolean(boolean flag, OutputStream os) throws IOException {
         os.write(flag ? 1 : 0);
     }
 
-    public static void write(byte value, OutputStream os) throws IOException {
-        os.write(value);
+    public static void writeShort(int value, OutputStream os) throws IOException {
+        os.write((short) value >> 8);
+        os.write((short) value);
     }
 
-    public static void write(short value, OutputStream os) throws IOException {
-        os.write(value >> 8);
-        os.write(value);
-    }
-
-    public static void write(int value, OutputStream os) throws IOException {
+    public static void writeInt(int value, OutputStream os) throws IOException {
         os.write(value >> 24);
         os.write(value >> 16);
         os.write(value >> 8);
         os.write(value);
     }
 
-    public static void write(long value, OutputStream os) throws IOException {
+    public static void writeLong(long value, OutputStream os) throws IOException {
         os.write((byte) value);
         os.write((byte) (value >> 8));
         os.write((byte) (value >> 16));
@@ -43,36 +43,36 @@ public class StreamUtils {
         os.write((byte) (value >> 56));
     }
 
-    public static void write(float value, OutputStream os) throws IOException {
-        write(Float.floatToIntBits(value), os);
+    public static void writeFloat(float value, OutputStream os) throws IOException {
+        writeInt(Float.floatToIntBits(value), os);
     }
 
-    public static void write(double value, OutputStream os) throws IOException {
-        write(Double.doubleToLongBits(value), os);
+    public static void writeDouble(double value, OutputStream os) throws IOException {
+        writeLong(Double.doubleToLongBits(value), os);
     }
 
-    public static void write(String value, OutputStream os) throws IOException {
+    public static void writeString(String value, OutputStream os) throws IOException {
         byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
-        write((short) bytes.length, os);
+        writeShort(bytes.length, os);
         os.write(bytes);
     }
 
-    public static void write(UUID uuid, OutputStream os) throws IOException {
-        write(uuid.getMostSignificantBits(), os);
-        write(uuid.getLeastSignificantBits(), os);
+    public static void writeUUID(UUID uuid, OutputStream os) throws IOException {
+        writeLong(uuid.getMostSignificantBits(), os);
+        writeLong(uuid.getLeastSignificantBits(), os);
     }
 
-    public static void readBytes(byte[] bytes, InputStream is) throws IOException {
-        is.read(bytes);
-    }
-
-    public static boolean readBoolean(InputStream is) throws IOException {
-        return is.read() == 0 ? false : true;
+    public static int readBytes(byte[] bytes, InputStream is) throws IOException {
+        return is.read(bytes);
     }
 
     public static int readByte(InputStream is) throws IOException {
         int value = is.read();
         return value > - 1 ? (byte) value : value;
+    }
+
+    public static boolean readBoolean(InputStream is) throws IOException {
+        return is.read() != 0;
     }
 
     public static int readShort(InputStream is) throws IOException {

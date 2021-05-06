@@ -1,378 +1,300 @@
 package austeretony.oxygen_core.common.main;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.UUID;
-
-import org.apache.logging.log4j.Logger;
-
 import austeretony.oxygen_core.client.OxygenManagerClient;
-import austeretony.oxygen_core.client.OxygenStatusMessagesHandler;
-import austeretony.oxygen_core.client.api.ClientReference;
-import austeretony.oxygen_core.client.api.EnumBaseClientSetting;
-import austeretony.oxygen_core.client.api.EnumBaseGUISetting;
-import austeretony.oxygen_core.client.api.InventoryProviderClient;
-import austeretony.oxygen_core.client.api.OxygenGUIHelper;
-import austeretony.oxygen_core.client.api.OxygenHelperClient;
-import austeretony.oxygen_core.client.api.OxygenOverlayHandler;
+import austeretony.oxygen_core.client.command.AcceptArgumentClient;
+import austeretony.oxygen_core.client.command.RejectArgumentClient;
+import austeretony.oxygen_core.client.condition.ConditionsClient;
+import austeretony.oxygen_core.client.event.OxygenEventsClient;
+import austeretony.oxygen_core.client.gui.menu.OxygenMenuHelper;
+import austeretony.oxygen_core.client.preset.CurrencyPropertiesPresetClient;
+import austeretony.oxygen_core.client.preset.DimensionNamesPresetClient;
+import austeretony.oxygen_core.client.preset.ItemCategoriesPresetClient;
+import austeretony.oxygen_core.client.settings.CoreSettings;
+import austeretony.oxygen_core.client.settings.gui.SettingsScreen;
+import austeretony.oxygen_core.client.util.MinecraftClient;
+import austeretony.oxygen_core.client.api.OxygenClient;
 import austeretony.oxygen_core.client.command.CommandOxygenClient;
 import austeretony.oxygen_core.client.command.CoreArgumentClient;
-import austeretony.oxygen_core.client.currency.OxygenCoinsCurrencyProperties;
-import austeretony.oxygen_core.client.currency.OxygenShardsCurrencyProperties;
-import austeretony.oxygen_core.client.currency.OxygenVouchersCurrencyProperties;
-import austeretony.oxygen_core.client.event.OxygenEventsClient;
-import austeretony.oxygen_core.client.gui.notifications.NotificationsScreen;
-import austeretony.oxygen_core.client.gui.overlay.RequestOverlay;
-import austeretony.oxygen_core.client.gui.privileges.information.PrivilegesScreen;
-import austeretony.oxygen_core.client.gui.settings.BaseSettingsContainer;
-import austeretony.oxygen_core.client.gui.settings.CoreSettingsContainer;
-import austeretony.oxygen_core.client.gui.settings.SettingsScreen;
-import austeretony.oxygen_core.client.settings.EnumCoreClientSetting;
-import austeretony.oxygen_core.client.settings.gui.EnumCoreGUISetting;
-import austeretony.oxygen_core.common.InstantDataAbsorption;
-import austeretony.oxygen_core.common.InstantDataArmor;
-import austeretony.oxygen_core.common.InstantDataHealth;
-import austeretony.oxygen_core.common.InstantDataMaxHealth;
-import austeretony.oxygen_core.common.InstantDataPotionEffects;
-import austeretony.oxygen_core.common.api.CommonReference;
-import austeretony.oxygen_core.common.api.OxygenHelperCommon;
-import austeretony.oxygen_core.common.condition.ConditionsRegistry;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.ConditionWorldIsDaytime;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerDimension;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerExperience;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHaveItem;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHealth;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerHeldItem;
-import austeretony.oxygen_core.common.condition.conditions.minecraft.player.ConditionPlayerUsername;
-import austeretony.oxygen_core.common.condition.conditions.oxygen.ConditionPlayerCurrency;
+import austeretony.oxygen_core.common.api.OxygenCommon;
 import austeretony.oxygen_core.common.config.ConfigManager;
-import austeretony.oxygen_core.common.config.OxygenConfig;
-import austeretony.oxygen_core.common.config.PrivilegesConfig;
-import austeretony.oxygen_core.common.inventory.VanillaPlayerInventoryProvider;
+import austeretony.oxygen_core.common.config.CoreConfig;
 import austeretony.oxygen_core.common.network.Network;
-import austeretony.oxygen_core.common.network.client.CPAddSharedData;
-import austeretony.oxygen_core.common.network.client.CPDefaultPrivilegeOperation;
-import austeretony.oxygen_core.common.network.client.CPPlaySoundEvent;
-import austeretony.oxygen_core.common.network.client.CPPlayerRolesChanged;
-import austeretony.oxygen_core.common.network.client.CPRemoveSharedData;
-import austeretony.oxygen_core.common.network.client.CPRoleAction;
-import austeretony.oxygen_core.common.network.client.CPRolePrivilegeOperation;
-import austeretony.oxygen_core.common.network.client.CPShowStatusMessage;
-import austeretony.oxygen_core.common.network.client.CPSyncAbsentData;
-import austeretony.oxygen_core.common.network.client.CPSyncConfigs;
-import austeretony.oxygen_core.common.network.client.CPSyncInstantData;
-import austeretony.oxygen_core.common.network.client.CPSyncMainData;
-import austeretony.oxygen_core.common.network.client.CPSyncNotification;
-import austeretony.oxygen_core.common.network.client.CPSyncObservedPlayersData;
-import austeretony.oxygen_core.common.network.client.CPSyncPlayerRoles;
-import austeretony.oxygen_core.common.network.client.CPSyncPreset;
-import austeretony.oxygen_core.common.network.client.CPSyncPresetsVersions;
-import austeretony.oxygen_core.common.network.client.CPSyncPrivilegesManagementData;
-import austeretony.oxygen_core.common.network.client.CPSyncRolesData;
-import austeretony.oxygen_core.common.network.client.CPSyncSharedData;
-import austeretony.oxygen_core.common.network.client.CPSyncValidDataIds;
-import austeretony.oxygen_core.common.network.client.CPSyncWatchedValue;
-import austeretony.oxygen_core.common.network.server.SPAbsentDataIds;
-import austeretony.oxygen_core.common.network.server.SPDefaultPrivilegeOperation;
-import austeretony.oxygen_core.common.network.server.SPPlayerRoleOperation;
-import austeretony.oxygen_core.common.network.server.SPRemoveRole;
-import austeretony.oxygen_core.common.network.server.SPRequestPresetSync;
-import austeretony.oxygen_core.common.network.server.SPRequestPrivilegesData;
-import austeretony.oxygen_core.common.network.server.SPRequestReply;
-import austeretony.oxygen_core.common.network.server.SPRequestSharedDataSync;
-import austeretony.oxygen_core.common.network.server.SPRoleOperation;
-import austeretony.oxygen_core.common.network.server.SPRolePrivilegeOperation;
-import austeretony.oxygen_core.common.network.server.SPSetActivityStatus;
-import austeretony.oxygen_core.common.network.server.SPSetChatFormattingRole;
-import austeretony.oxygen_core.common.network.server.SPStartDataSync;
-import austeretony.oxygen_core.common.privilege.PrivilegeUtils;
-import austeretony.oxygen_core.common.scripting.ScriptingProvider;
-import austeretony.oxygen_core.common.scripting.adapter.DummyScriptingAdapter;
-import austeretony.oxygen_core.common.scripting.adapter.ECMAScriptAdapter;
-import austeretony.oxygen_core.common.sound.OxygenSoundEffects;
-import austeretony.oxygen_core.common.util.OxygenUtils;
+import austeretony.oxygen_core.common.network.packets.client.*;
+import austeretony.oxygen_core.common.network.packets.server.*;
+import austeretony.oxygen_core.common.player.shared.SharedDataRegistry;
+import austeretony.oxygen_core.common.util.MinecraftCommon;
+import austeretony.oxygen_core.common.util.LoggingUtils;
+import austeretony.oxygen_core.common.util.value.ValueType;
 import austeretony.oxygen_core.server.OxygenManagerServer;
-import austeretony.oxygen_core.server.api.CurrencyHelperServer;
-import austeretony.oxygen_core.server.api.InventoryProviderServer;
-import austeretony.oxygen_core.server.api.OxygenHelperServer;
-import austeretony.oxygen_core.server.api.PrivilegesProviderServer;
-import austeretony.oxygen_core.server.api.event.OxygenWorldLoadedEvent;
+import austeretony.oxygen_core.server.api.OxygenServer;
 import austeretony.oxygen_core.server.command.CommandOxygenOperator;
 import austeretony.oxygen_core.server.command.CommandOxygenServer;
 import austeretony.oxygen_core.server.command.CoreArgumentOperator;
-import austeretony.oxygen_core.server.currency.OxygenCoinsCurrencyProvider;
-import austeretony.oxygen_core.server.currency.OxygenShardsCurrencyProvider;
-import austeretony.oxygen_core.server.currency.OxygenVouchersCurrencyProvider;
+import austeretony.oxygen_core.server.command.CoreArgumentServer;
+import austeretony.oxygen_core.server.condition.ConditionsServer;
+import austeretony.oxygen_core.server.currency.CoinsProvider;
+import austeretony.oxygen_core.server.currency.CurrencyProvider;
+import austeretony.oxygen_core.server.currency.ShardsProvider;
+import austeretony.oxygen_core.server.currency.VouchersProvider;
 import austeretony.oxygen_core.server.event.OxygenEventsServer;
-import austeretony.oxygen_core.server.event.PlayerVersusPlayerEvents;
-import austeretony.oxygen_core.server.event.PrivilegesEventsServer;
-import austeretony.oxygen_core.server.instant.InstantDataRegistryServer;
-import austeretony.oxygen_core.server.item.ItemsBlackList;
-import austeretony.oxygen_core.server.network.NetworkRequestsRegistryServer;
-import net.minecraftforge.common.MinecraftForge;
+import austeretony.oxygen_core.server.preset.CurrencyPropertiesPresetServer;
+import austeretony.oxygen_core.server.preset.DimensionNamesPresetServer;
+import austeretony.oxygen_core.server.preset.ItemCategoriesPresetServer;
+import austeretony.oxygen_core.common.util.value.custom.PotionEffectsListValue;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Mod(
-        modid = OxygenMain.MODID, 
-        name = OxygenMain.NAME, 
+        modid = OxygenMain.MOD_ID,
+        name = OxygenMain.NAME,
         version = OxygenMain.VERSION,
         certificateFingerprint = "@FINGERPRINT@",
         updateJSON = OxygenMain.VERSIONS_FORGE_URL)
 public class OxygenMain {
 
-    public static final String 
-    MODID = "oxygen_core", 
-    NAME = "Oxygen Core", 
-    VERSION = "0.11.4", 
-    VERSION_CUSTOM = VERSION + ":beta:0",
-    GAME_VERSION = "1.12.2",
-    VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/mod_versions_forge.json";
+    public static final String
+            MOD_ID = "oxygen_core",
+            NAME = "Oxygen Core",
+            VERSION = "0.12.0",
+            VERSION_CUSTOM = VERSION + ":beta:0",
+            VERSIONS_FORGE_URL = "https://raw.githubusercontent.com/AustereTony-MCMods/Oxygen-Core/info/versions.json";
 
-    public static final Logger LOGGER = OxygenUtils.getLogger("common", "oxygen", "Oxygen");
+    private static final Logger LOGGER = LoggingUtils.getLogger("common", "oxygen", "Oxygen");
+    public static final Logger OPERATIONS_LOGGER = LoggingUtils.getLogger("operations", "operations", "Oxygen Operations");
 
     private static Network network;
 
-    /*
-     * Indexes:
-     * 
-     * Core - 0
-     * Teleportation - 1 
-     * Groups - 2
-     * Exchange - 3 
-     * Merchants - 4 
-     * Players List - 5 
-     * Friends List - 6
-     * Player Interaction - 7
-     * Mail - 8
-     * Chat - 9 (WIP)
-     * Market (Trade) - 10
-     * Guilds - 11 (WIP)
-     * Interaction - 12 (WIP)
-     * Regions - 13 (WIP)
-     * Daily Rewards - 14
-     * Shop - 15 
-     * Essentials - 16 (WIP)
-     * Store - 17
-     * Duels - 18 (WIP)
-     */
-
-    //Shared Constants
-
-    public static final int 
-    OXYGEN_CORE_MOD_INDEX = 0,
-
-    NOTIFICATIONS_SCREEN_ID = 0,
-    SETTINGS_SCREEN_ID = 1,
-    PRIVILEGES_SCREEN_ID = 2,
-
-    SIMPLE_NOTIFICATION_ID = 0,
-
-    ACTIVITY_STATUS_SHARED_DATA_ID = 0,
-    DIMENSION_SHARED_DATA_ID = 1,
-
-    ROLES_SHARED_DATA_STARTING_INDEX = 10,
-    DEFAULT_ROLE_INDEX = - 1,
-    MAX_ROLES_PER_PLAYER = 5,
-
-    PRESETS_SYNC_REQUEST_ID = 0,
-    SHARED_DATA_SYNC_REQUEST_ID = 1,
-    REQUEST_REPLY_REQUEST_ID = 2,
-    SET_ACTIVITY_STATUS_REQUEST_ID = 3,
-    MANAGE_PRIVILEGES_REQUEST_ID = 4,
-
-    ITEM_CATEGORIES_PRESET_ID = 0,
-
-    COMMON_CURRENCY_INDEX = 0,
-
-    OPERATOR_ROLE_ID = 100,
-
-    HEALTH_INSTANT_DATA_INDEX = 0,
-    MAX_HEALTH_INSTANT_DATA_INDEX = 1,
-    TOTAL_ARMOR_INSTANT_DATA_INDEX = 2,
-    ABSORPTION_INSTANT_DATA_INDEX = 3,
-    ACTIVE_EFFECTS_INSTANT_DATA_INDEX = 10;
-
     public static final DateTimeFormatter
-    ID_DATE_FORMAT = DateTimeFormatter.ofPattern("yyMMddHHmmss", Locale.ENGLISH),
-    DEBUG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:dd z", Locale.ENGLISH);
+            ID_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss", Locale.ROOT),
+            DEBUG_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z", Locale.ROOT);
 
     public static final String SYSTEM_SENDER = "oxygen_core.sender.sys";
-
     public static final UUID SYSTEM_UUID = UUID.fromString("d10d07f6-ae3c-4ec6-a055-1160c4cf848a");
 
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
-        ConfigManager.create();
-        OxygenHelperCommon.registerConfig(new OxygenConfig());
-        OxygenHelperCommon.registerConfig(new PrivilegesConfig());
-        if (event.getSide() == Side.CLIENT)
-            CommandOxygenClient.registerArgument(new CoreArgumentClient());
-    }
+    //oxygen module index
+    public static int MODULE_INDEX = 0;
 
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-        ConfigManager.instance().loadConfigs();
-        this.initNetwork();
-        OxygenManagerServer.create();
-        CommonReference.registerEvent(new OxygenSoundEffects());
-        CommonReference.registerEvent(new OxygenEventsServer());
-        if (OxygenConfig.ENABLE_PVP_MANAGER.asBoolean())
-            CommonReference.registerEvent(new PlayerVersusPlayerEvents());
-        if (OxygenConfig.ENABLE_PRIVILEGES.asBoolean())
-            CommonReference.registerEvent(new PrivilegesEventsServer());
-        OxygenHelperServer.registerSharedDataValue(ACTIVITY_STATUS_SHARED_DATA_ID, Byte.BYTES);
-        OxygenHelperServer.registerSharedDataValue(DIMENSION_SHARED_DATA_ID, Integer.BYTES);
-        for (int i = 0; i < MAX_ROLES_PER_PLAYER; i++)
-            OxygenHelperServer.registerSharedDataValue(i + ROLES_SHARED_DATA_STARTING_INDEX, Byte.BYTES);
-        CommandOxygenOperator.registerArgument(new CoreArgumentOperator());
-        NetworkRequestsRegistryServer.registerRequest(PRESETS_SYNC_REQUEST_ID, 10000);
-        NetworkRequestsRegistryServer.registerRequest(SHARED_DATA_SYNC_REQUEST_ID, 1000);
-        NetworkRequestsRegistryServer.registerRequest(REQUEST_REPLY_REQUEST_ID, 1000);
-        NetworkRequestsRegistryServer.registerRequest(SET_ACTIVITY_STATUS_REQUEST_ID, 1000);
-        NetworkRequestsRegistryServer.registerRequest(MANAGE_PRIVILEGES_REQUEST_ID, 1000);
-        CurrencyHelperServer.registerCurrencyProvider(new OxygenCoinsCurrencyProvider());
-        CurrencyHelperServer.registerCurrencyProvider(new OxygenShardsCurrencyProvider());
-        CurrencyHelperServer.registerCurrencyProvider(new OxygenVouchersCurrencyProvider());
-        InstantDataRegistryServer.registerInstantData(new InstantDataHealth());
-        InstantDataRegistryServer.registerInstantData(new InstantDataMaxHealth());
-        InstantDataRegistryServer.registerInstantData(new InstantDataAbsorption());
-        InstantDataRegistryServer.registerInstantData(new InstantDataArmor());
-        InstantDataRegistryServer.registerInstantData(new InstantDataPotionEffects());
-        InventoryProviderServer.registerPlayerInventoryProvider(new VanillaPlayerInventoryProvider());
-        ScriptingProvider.registerAdapter(new DummyScriptingAdapter());
-        if (OxygenConfig.ENABLE_ECMASCRIPT_ADAPTER.asBoolean())
-            ScriptingProvider.registerAdapter(new ECMAScriptAdapter());
-        ConditionsRegistry.registerCondition("minecraft:worldIsDaytime", ConditionWorldIsDaytime.class);
-        ConditionsRegistry.registerCondition("minecraft:playerDimension", ConditionPlayerDimension.class);
-        ConditionsRegistry.registerCondition("minecraft:playerHealthAmount", ConditionPlayerHealth.class);
-        ConditionsRegistry.registerCondition("minecraft:playerExperienceLevel", ConditionPlayerExperience.class);
-        ConditionsRegistry.registerCondition("minecraft:playerHaveItem", ConditionPlayerHaveItem.class);
-        ConditionsRegistry.registerCondition("minecraft:playerHeldItem", ConditionPlayerHeldItem.class);
-        ConditionsRegistry.registerCondition("minecraft:playerUsername", ConditionPlayerUsername.class);
-        ConditionsRegistry.registerCondition("oxygen_core:playerCurrencyAmount", ConditionPlayerCurrency.class);
-        EnumOxygenPrivilege.register();
-        if (event.getSide() == Side.CLIENT) {     
-            OxygenManagerClient.create();
-            ClientReference.registerCommand(new CommandOxygenClient("oxygenc"));
-            CommonReference.registerEvent(new OxygenEventsClient());
-            CommonReference.registerEvent(new OxygenOverlayHandler());     
-            OxygenGUIHelper.registerOverlay(new RequestOverlay());
-            OxygenGUIHelper.registerOxygenMenuEntry(NotificationsScreen.NOTIFICATIONS_MENU_ENTRY);
-            OxygenGUIHelper.registerOxygenMenuEntry(SettingsScreen.SETTINGS_MENU_ENTRY);
-            OxygenGUIHelper.registerOxygenMenuEntry(PrivilegesScreen.PRIVILEGES_MENU_ENTRY);
-            OxygenHelperClient.registerStatusMessagesHandler(new OxygenStatusMessagesHandler());
-            EnumBaseClientSetting.register();
-            EnumCoreClientSetting.register();
-            EnumBaseGUISetting.register();
-            EnumCoreGUISetting.register();
-            SettingsScreen.registerSettingsContainer(new BaseSettingsContainer());
-            SettingsScreen.registerSettingsContainer(new CoreSettingsContainer());
-            OxygenHelperClient.registerCurrencyProperties(new OxygenCoinsCurrencyProperties());
-            OxygenHelperClient.registerCurrencyProperties(new OxygenShardsCurrencyProperties());
-            OxygenHelperClient.registerCurrencyProperties(new OxygenVouchersCurrencyProperties());
-            OxygenHelperClient.registerInstantData(new InstantDataHealth());
-            OxygenHelperClient.registerInstantData(new InstantDataMaxHealth());
-            OxygenHelperClient.registerInstantData(new InstantDataAbsorption());
-            OxygenHelperClient.registerInstantData(new InstantDataArmor());
-            OxygenHelperClient.registerInstantData(new InstantDataPotionEffects());
-            InventoryProviderClient.registerPlayerInventoryProvider(new VanillaPlayerInventoryProvider());
-        }
-    }
+    //presets ids
+    public static final int
+            PRESET_DIMENSION_NAMES = 0,
+            PRESET_CURRENCY_PROPERTIES = 1,
+            PRESET_ITEM_CATEGORIES = 2;
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        this.network.sortPackets();
-        ItemsBlackList.loadBlackLists();
-        OxygenManagerServer.instance().getPresetsManager().loadPresets();
-    }
+    //shared data ids
+    public static final int
+            SHARED_LAST_ACTIVITY_TIME = 0,
+            SHARED_ACTIVITY_STATUS = 1,
+            SHARED_DIMENSION = 2;
 
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent event) {
-        CommonReference.registerCommand(event, new CommandOxygenOperator("oxygenop"));
-        CommonReference.registerCommand(event, new CommandOxygenServer("oxygens"));
-        OxygenManagerServer.instance().getChatChannelsManager().initChannels(event);
+    //network requests ids
+    public static final int
+            NET_REQUEST_PRESETS_SYNC = 0,
+            NET_REQUEST_SHARED_DATA_SYNC = 1,
+            NET_REQUEST_REQUEST_ACTION = 3,
+            NET_REQUEST_ACTIVITY_STATUS_CHANGE = 4;
 
-        String 
-        worldName = event.getServer().getFolderName(),
-        worldFolder = event.getServer().isSinglePlayer() ? CommonReference.getGameFolder() + "/saves/" + worldName : CommonReference.getGameFolder() + "/" + worldName;
-        LOGGER.info("[Core] Initializing world: {}", worldName);
-        OxygenManagerServer.instance().worldLoaded(worldFolder);
-        OxygenManagerServer.instance().getPrivilegesContainer().worldLoaded();
+    //currency ids
+    public static final int
+            CURRENCY_COINS = 0,
+            CURRENCY_SHARDS = 1,
+            CURRENCY_VOUCHERS = 2;
 
-        LOGGER.info("[Core] Active common currency provider: <{}>", OxygenManagerServer.instance().getCurrencyManager().getCommonCurrencyProvider().getDisplayName());
-        LOGGER.info("[Core] Loaded currency providers:");
-        CurrencyHelperServer.getCurrencyProviders()
-        .stream()
-        .sorted((p1, p2)->p1.getIndex() - p2.getIndex())
-        .forEach((provider)->LOGGER.info("[Core]  - index: <{}>, name: <{}>", provider.getIndex(), provider.getDisplayName()));
+    //observable entity values ids
+    public static final int
+            OBSERVED_HEALTH = 0,
+            OBSERVED_MAX_HEALTH = 1,
+            OBSERVED_ABSORPTION = 2,
+            OBSERVED_ARMOR = 3,
+            OBSERVED_POTION_EFFECTS = 4;
 
-        MinecraftForge.EVENT_BUS.post(new OxygenWorldLoadedEvent());
-    }
+    //screen ids
+    public static final int SCREEN_ID_SETTINGS = 0;
 
-    public static void addDefaultPrivileges() {
-        if (PrivilegesProviderServer.getRole(OPERATOR_ROLE_ID).getPrivilege(EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id()) == null) {
-            PrivilegesProviderServer.getRole(OPERATOR_ROLE_ID).addPrivilege(PrivilegeUtils.getPrivilege(EnumOxygenPrivilege.EXPOSE_OFFLINE_PLAYERS.id(), true));
-            OxygenManagerServer.instance().getPrivilegesContainer().markChanged();
-            LOGGER.info("[Core] Default Operator role privileges added.");
-        }
-    }
+    //operations
+    public static final String
+            OPERATION_CURRENCY_GAIN = "core:currency_gain",
+            OPERATION_CURRENCY_WITHDRAW = "core:currency_withdraw";
 
-    @EventHandler
-    public void serverStopping(FMLServerStoppingEvent event) { 
-        OxygenManagerServer.instance().worldUnloaded();
-        if (event.getSide() == Side.SERVER)
-            OxygenManagerServer.instance().getExecutionManager().shutdown();
-    }
-
-    private void initNetwork() {
-        network = Network.create(MODID);
-
-        network.registerPacket(CPSyncConfigs.class);
-        network.registerPacket(CPSyncMainData.class);
-        network.registerPacket(CPSyncPlayerRoles.class);
-        network.registerPacket(CPSyncRolesData.class);
-        network.registerPacket(CPSyncSharedData.class);
-        network.registerPacket(CPShowStatusMessage.class);
-        network.registerPacket(CPSyncNotification.class);
-        network.registerPacket(CPSyncObservedPlayersData.class);
-        network.registerPacket(CPPlaySoundEvent.class);
-        network.registerPacket(CPSyncValidDataIds.class);
-        network.registerPacket(CPSyncAbsentData.class);
-        network.registerPacket(CPSyncPresetsVersions.class);
-        network.registerPacket(SPRequestPresetSync.class);
-        network.registerPacket(CPSyncPreset.class);
-        network.registerPacket(CPSyncWatchedValue.class);
-        network.registerPacket(CPAddSharedData.class);
-        network.registerPacket(CPRemoveSharedData.class);
-        network.registerPacket(CPSyncPrivilegesManagementData.class);
-        network.registerPacket(CPRoleAction.class);
-        network.registerPacket(CPRolePrivilegeOperation.class);
-        network.registerPacket(CPPlayerRolesChanged.class);
-        network.registerPacket(CPDefaultPrivilegeOperation.class);
-        network.registerPacket(CPSyncInstantData.class);
-
-        network.registerPacket(SPRequestReply.class);
-        network.registerPacket(SPSetActivityStatus.class);
-        network.registerPacket(SPStartDataSync.class);
-        network.registerPacket(SPAbsentDataIds.class);
-        network.registerPacket(SPRequestSharedDataSync.class);
-        network.registerPacket(SPSetChatFormattingRole.class);
-        network.registerPacket(SPRequestPrivilegesData.class);
-        network.registerPacket(SPRoleOperation.class);
-        network.registerPacket(SPRemoveRole.class);
-        network.registerPacket(SPRolePrivilegeOperation.class);
-        network.registerPacket(SPDefaultPrivilegeOperation.class);
-        network.registerPacket(SPPlayerRoleOperation.class);
-    }
+    public static final String KEY_BINDINGS_CATEGORY = "Oxygen";
+    public static int USERNAME_FIELD_LENGTH = 24;
 
     public static Network network() {
         return network;
+    }
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        OxygenCommon.registerConfig(new CoreConfig());
+        if (event.getSide() == Side.CLIENT) {
+            CommandOxygenClient.registerArgument(new CoreArgumentClient());
+            CommandOxygenClient.registerArgument(new AcceptArgumentClient());
+            CommandOxygenClient.registerArgument(new RejectArgumentClient());
+        }
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        ConfigManager.instance().loadConfigs();
+        initNetwork();
+        MinecraftCommon.registerEventHandler(new OxygenEventsServer());
+        CommandOxygenServer.registerArgument(new CoreArgumentServer());
+        CommandOxygenOperator.registerArgument(new CoreArgumentOperator());
+        OxygenServer.registerCurrencyProvider(new CoinsProvider());
+        OxygenServer.registerCurrencyProvider(new ShardsProvider());
+        OxygenServer.registerCurrencyProvider(new VouchersProvider());
+        SharedDataRegistry.register(SHARED_LAST_ACTIVITY_TIME, ValueType.LONG);
+        SharedDataRegistry.register(SHARED_ACTIVITY_STATUS, ValueType.BYTE);
+        SharedDataRegistry.register(SHARED_DIMENSION, ValueType.INTEGER);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_PRESETS_SYNC, 10_000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_SHARED_DATA_SYNC, 2_000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_REQUEST_ACTION, 2_000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_ACTIVITY_STATUS_CHANGE, 2_000);
+        OxygenServer.registerPreset(new DimensionNamesPresetServer());
+        OxygenServer.registerPreset(new CurrencyPropertiesPresetServer());
+        OxygenServer.registerPreset(new ItemCategoriesPresetServer());
+        OxygenServer.registerObservedValue(OBSERVED_HEALTH, ValueType.FLOAT, entityId -> {
+            EntityLivingBase entity = MinecraftCommon.getEntityLivingBaseById(entityId);
+            if (entity != null) return entity.getHealth();
+            return 0F;
+        });
+        OxygenServer.registerObservedValue(OBSERVED_MAX_HEALTH, ValueType.FLOAT, entityId -> {
+            EntityLivingBase entity = MinecraftCommon.getEntityLivingBaseById(entityId);
+            if (entity != null) return entity.getMaxHealth();
+            return 0F;
+        });
+        OxygenServer.registerObservedValue(OBSERVED_ABSORPTION, ValueType.FLOAT, entityId -> {
+            EntityLivingBase entity = MinecraftCommon.getEntityLivingBaseById(entityId);
+            if (entity != null) return entity.getAbsorptionAmount();
+            return 0F;
+        });
+        OxygenServer.registerObservedValue(OBSERVED_ARMOR, ValueType.INTEGER, entityId -> {
+            EntityLivingBase entity = MinecraftCommon.getEntityLivingBaseById(entityId);
+            if (entity != null) return entity.getTotalArmorValue();
+            return 0;
+        });
+        OxygenServer.registerObservedValue(OBSERVED_POTION_EFFECTS,
+                PotionEffectsListValue::new,
+                entityId -> {
+                    EntityLivingBase entity = MinecraftCommon.getEntityLivingBaseById(entityId);
+                    if (entity != null) return new ArrayList<>(entity.getActivePotionEffects());
+                    return null;
+                });
+        CorePrivileges.register();
+        ConditionsServer.register();
+        if (event.getSide() == Side.CLIENT) {
+            MinecraftCommon.registerEventHandler(new OxygenEventsClient());
+            MinecraftClient.registerCommand(new CommandOxygenClient("oxygenc"));
+            OxygenClient.registerPreset(new DimensionNamesPresetClient());
+            OxygenClient.registerPreset(new CurrencyPropertiesPresetClient());
+            OxygenClient.registerPreset(new ItemCategoriesPresetClient());
+            OxygenClient.registerWatcherValue(CURRENCY_COINS, ValueType.LONG);
+            OxygenClient.registerWatcherValue(CURRENCY_SHARDS, ValueType.LONG);
+            OxygenClient.registerWatcherValue(CURRENCY_VOUCHERS, ValueType.LONG);
+            OxygenClient.registerObservedValue(OBSERVED_HEALTH, ValueType.FLOAT);
+            OxygenClient.registerObservedValue(OBSERVED_MAX_HEALTH, ValueType.FLOAT);
+            OxygenClient.registerObservedValue(OBSERVED_ABSORPTION, ValueType.FLOAT);
+            OxygenClient.registerObservedValue(OBSERVED_ARMOR, ValueType.INTEGER);
+            OxygenClient.registerObservedValue(OBSERVED_POTION_EFFECTS, PotionEffectsListValue::new);
+            CoreSettings.register();
+            OxygenMenuHelper.addMenuEntry(SettingsScreen.SETTINGS_SCREEN_ENTRY);
+            OxygenClient.registerScreen(SCREEN_ID_SETTINGS, SettingsScreen::open);
+            ConditionsClient.register();
+            OxygenManagerClient.instance().getKeyHandler().registerKeyBindings();
+        }
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        OxygenManagerServer.instance().getItemsBlacklistManager().loadBlacklists();
+        if (event.getSide() == Side.CLIENT) {
+            OxygenManagerClient.instance().getSettingsManager().loadSettings();
+        }
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        MinecraftCommon.registerCommand(event, new CommandOxygenOperator("oxygenop"));
+        MinecraftCommon.registerCommand(event, new CommandOxygenServer("oxygens"));
+
+        String
+                worldName = event.getServer().getFolderName(),
+                worldFolder = event.getServer().isSinglePlayer()
+                        ? MinecraftCommon.getGameFolder() + "/saves/" + worldName
+                        : MinecraftCommon.getGameFolder() + "/" + worldName;
+        logInfo(1,"[Core] Initializing world: {}", worldName);
+        OxygenManagerServer.instance().serverStarting(worldFolder);
+
+        logInfo(1, "[Core] Loaded currency providers:");
+        OxygenServer.getCurrencyProviders()
+                .stream()
+                .sorted(Comparator.comparing(CurrencyProvider::getIndex))
+                .forEach(provider ->
+                        logInfo(1,"[Core] - index: <{}>, name: <{}>", provider.getIndex(), provider.getName()));
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+        OxygenManagerServer.instance().serverStopping(event.getSide());
+    }
+
+    private void initNetwork() {
+        network = Network.create(MOD_ID);
+
+        network.registerPacket(CPSyncConfigs.class);
+        network.registerPacket(CPSyncMainData.class);
+        network.registerPacket(CPSyncAbsentData.class);
+        network.registerPacket(CPSyncValidDataIds.class);
+        network.registerPacket(CPDataSyncFailed.class);
+        network.registerPacket(CPSyncWatcherValues.class);
+        network.registerPacket(CPSyncSharedData.class);
+        network.registerPacket(CPSyncPresetsVersions.class);
+        network.registerPacket(CPSyncPreset.class);
+        network.registerPacket(CPSyncObservedEntitiesData.class);
+        network.registerPacket(CPSendRequest.class);
+        network.registerPacket(CPSendStatusMessage.class);
+        network.registerPacket(CPOpenOxygenGUI.class);
+        network.registerPacket(CPSyncSharedDataList.class);
+        network.registerPacket(CPRemoveSharedDataList.class);
+        network.registerPacket(CPPerformOperation.class);
+
+        network.registerPacket(SPAbsentDataIds.class);
+        network.registerPacket(SPRequestDataSync.class);
+        network.registerPacket(SPRequestSharedDataSync.class);
+        network.registerPacket(SPRequestPresetsSync.class);
+        network.registerPacket(SPRequestAction.class);
+        network.registerPacket(SPChangeActivityStatus.class);
+        network.registerPacket(SPPerformOperation.class);
+        network.registerPacket(CPPlaySoundAtPlayer.class);
+    }
+
+    public static void log(Level loggingLevel, int level, String message, Object... args) {
+        if (level <= CoreConfig.LOGGING_LEVEL.asInt()) {
+            LOGGER.log(loggingLevel, message, args);
+        }
+    }
+
+    public static void log(Level loggingLevel, int level, String message, Throwable throwable) {
+        if (level <= CoreConfig.LOGGING_LEVEL.asInt()) {
+            LOGGER.log(loggingLevel, message, throwable);
+        }
+    }
+
+    public static void logInfo(int level, String message, Object... args) {
+        log(Level.INFO, level, message, args);
+    }
+
+    public static void logError(int level, String message, Object... args) {
+        log(Level.ERROR, level, message, args);
+    }
+
+    public static void logError(int level, String message, Throwable throwable) {
+        log(Level.ERROR, level, message, throwable);
     }
 }

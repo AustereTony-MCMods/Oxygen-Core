@@ -1,74 +1,99 @@
 package austeretony.oxygen_core.client.preset;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import austeretony.oxygen_core.client.api.OxygenHelperClient;
-import austeretony.oxygen_core.common.api.CommonReference;
+import austeretony.oxygen_core.client.api.OxygenClient;
+import austeretony.oxygen_core.common.api.OxygenCommon;
 import austeretony.oxygen_core.common.main.OxygenMain;
-import austeretony.oxygen_core.common.network.server.SPRequestPresetSync;
+import austeretony.oxygen_core.common.network.packets.server.SPRequestPresetsSync;
+import austeretony.oxygen_core.common.preset.Preset;
 import io.netty.buffer.ByteBuf;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class PresetsManagerClient {
 
-    private final List<PresetClient> presets = new ArrayList<>(5);
+    public final Map<Integer, Preset> presetsMap = new HashMap<>();
 
-    public void registerPreset(PresetClient preset) {
-        this.presets.add(preset);
+    public void registerPreset(Preset preset) {
+        presetsMap.put(preset.getId(), preset);
     }
 
-    public void presetsVersionsReceived(long[] data) {
-        OxygenHelperClient.addIOTask(()->{
-            OxygenMain.LOGGER.info("[Core] Presets loading started...");
-            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + data[0] + "/";
-            for (PresetClient preset : this.presets) {
-                if (preset.loadVersionId(folder + "/presets/" + preset.getDirectory() + "/"))
-                    OxygenMain.LOGGER.info("[Core] Preset <{}> version id loaded successfully.", preset.getName());
-                else
-                    OxygenMain.LOGGER.error("[Core] Failed to load preset <{}> version id.", preset.getName());
+    public void initPresets(List<String> data) {
+        String worldId = data.get(0);
+        OxygenMain.logInfo(1, "[Core] Initializing presets for world: {}", worldId);
+        List<Integer> outdatedIds = new ArrayList<>(3);
+
+        int index = 1;
+        for (Preset preset : presetsMap.values()) {
+            preset.loadVersion(worldId);
+            if (preset.getVersion() < Long.parseLong(data.get(index++))) {
+                OxygenMain.logInfo(1, "[Core] Preset <{}> outdated", preset.getName());
+                outdatedIds.add(preset.getId());
+            } else {
+                OxygenMain.logInfo(1, "[Core] Preset <{}> up-to-date, loading...", preset.getName());
+                preset.load(worldId);
             }
-            int index = 1;
-            for (PresetClient preset : this.presets) {
-                if (preset.getVersionId() != data[index++]) {
-                    OxygenMain.network().sendToServer(new SPRequestPresetSync(preset.getId()));
-                    OxygenMain.LOGGER.info("[Core] Preset <{}> is outdated, sync requested.", preset.getName());
-                } else {
-                    OxygenMain.LOGGER.info("[Core] Preset <{}> is up-to-date, loading...", preset.getName());
-                    if (preset.load(folder + "/presets/" + preset.getDirectory() + "/"))
-                        OxygenMain.LOGGER.info("[Core] Preset <{}> loaded successfully.", preset.getName());
-                    else
-                        OxygenMain.LOGGER.error("[Core] Failed to load preset <{}>.", preset.getName());                        
-                }
-            }  
-        });  
+        }
+
+        if (!outdatedIds.isEmpty()) {
+            OxygenMain.logInfo(1, "[Core] Requesting outdated presets synchronization");
+            OxygenMain.network().sendToServer(new SPRequestPresetsSync(outdatedIds));
+        }
     }
 
-    public void rawPresetReceived(ByteBuf buffer) {
+    public void updatePreset(ByteBuf buffer) {
         try {
-            long worldId = buffer.readLong();
-            int presetId = buffer.readByte();
-            String folder = CommonReference.getGameFolder() + "/config/oxygen/data/client/worlds/" + worldId + "/";
-            for (PresetClient preset : this.presets)
-                if (preset.getId() == presetId) {
-                    OxygenMain.LOGGER.info("[Core] Received raw preset <{}> data, processing...", preset.getName());
-                    preset.read(buffer);
-                    OxygenHelperClient.addIOTask(()->{
-                        if (preset.save(folder + "/presets/" + preset.getDirectory() + "/"))
-                            OxygenMain.LOGGER.info("[Core] Preset <{}> saved successfully.", preset.getName());
-                        else
-                            OxygenMain.LOGGER.error("[Core] Failed to save preset <{}>.", preset.getName());
-                        if (preset.reloadAfterSave()) {
-                            OxygenMain.LOGGER.info("[Core] Reloading preset <{}>...", preset.getName());
-                            if (preset.load(folder + "/presets/" + preset.getDirectory() + "/"))
-                                OxygenMain.LOGGER.info("[Core] Preset <{}> loaded successfully.", preset.getName());
-                            else
-                                OxygenMain.LOGGER.error("[Core] Failed to load preset <{}>.", preset.getName());  
-                        }
-                    });
-                }
+            int id = buffer.readByte();
+            Preset preset = presetsMap.get(id);
+            if (preset != null) {
+                preset.read(buffer);
+
+                OxygenMain.logInfo(1, "[Core] Updating preset <{}>", preset.getName());
+                preset.save();
+            }
         } finally {
-            if (buffer != null)
+            if (buffer != null) {
                 buffer.release();
+            }
+        }
+    }
+
+    @Nullable
+    public Preset getPreset(int id) {
+        return presetsMap.get(id);
+    }
+
+    public static long loadVersion(String presetName, String worldId) {
+        long version = -1L;
+        Path path = Paths.get(OxygenCommon.getConfigFolder() + "/data/client/worlds/" + worldId
+                + "/presets/" + presetName + "/version.txt");
+        if (Files.exists(path)) {
+            try {
+                List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+                String versionSrt = lines.get(0).trim();
+                version = Long.parseLong(versionSrt);
+                OxygenMain.logInfo(1, "[Core] Loaded preset <{}> version: {}", presetName, version);
+            } catch (Exception exception) {
+                OxygenMain.logError(1, "[Core] Failed to load version preset <{}>", presetName);
+            }
+        }
+        return version;
+    }
+
+    public static void saveVersion(String presetName, long version) {
+        Path path = Paths.get(OxygenCommon.getConfigFolder() + "/data/client/worlds/" + OxygenClient.getWorldId()
+                + "/presets/" + presetName + "/version.txt");
+        try {
+            Files.createDirectories(path.getParent());
+            Files.write(path, Collections.singletonList(String.valueOf(version)), StandardCharsets.UTF_8);
+            OxygenMain.logInfo(1, "[Core] Created preset <{}> version file", presetName, version);
+        } catch (IOException exception) {
+            OxygenMain.logError(1, "[Core] Failed to create <{}> preset version file", presetName);
         }
     }
 }
