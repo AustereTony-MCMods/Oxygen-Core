@@ -34,11 +34,13 @@ public class SPRequestSharedDataSync extends Packet {
             final int index = buffer.readShort();
             final boolean observedData = buffer.readBoolean();
 
-            if (observedData) {
-                OxygenServer.syncObservedPlayersSharedData(playerMP, index);
-            } else {
-                OxygenServer.syncSharedData(playerMP, index);
-            }
+            OxygenServer.addTask(() -> {
+                if (observedData) {
+                    OxygenServer.syncObservedPlayersSharedData(playerMP, index);
+                } else {
+                    OxygenServer.syncSharedData(playerMP, index);
+                }
+            });
         }
     }
 }

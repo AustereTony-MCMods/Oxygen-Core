@@ -152,10 +152,10 @@ public class OxygenMain {
         SharedDataRegistry.register(SHARED_LAST_ACTIVITY_TIME, ValueType.LONG);
         SharedDataRegistry.register(SHARED_ACTIVITY_STATUS, ValueType.BYTE);
         SharedDataRegistry.register(SHARED_DIMENSION, ValueType.INTEGER);
-        OxygenServer.registerNetworkRequest(NET_REQUEST_PRESETS_SYNC, 10_000);
-        OxygenServer.registerNetworkRequest(NET_REQUEST_SHARED_DATA_SYNC, 2_000);
-        OxygenServer.registerNetworkRequest(NET_REQUEST_REQUEST_ACTION, 2_000);
-        OxygenServer.registerNetworkRequest(NET_REQUEST_ACTIVITY_STATUS_CHANGE, 2_000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_PRESETS_SYNC, 10000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_SHARED_DATA_SYNC, 1000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_REQUEST_ACTION, 1000);
+        OxygenServer.registerNetworkRequest(NET_REQUEST_ACTIVITY_STATUS_CHANGE, 1000);
         OxygenServer.registerPreset(new DimensionNamesPresetServer());
         OxygenServer.registerPreset(new CurrencyPropertiesPresetServer());
         OxygenServer.registerPreset(new ItemCategoriesPresetServer());

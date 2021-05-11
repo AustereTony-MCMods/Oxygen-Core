@@ -10,6 +10,7 @@ import austeretony.oxygen_core.client.gui.base.core.Widget;
 import austeretony.oxygen_core.client.settings.CoreSettings;
 import austeretony.oxygen_core.client.util.MinecraftClient;
 import austeretony.oxygen_core.common.sound.SoundEffects;
+import net.minecraft.client.renderer.GlStateManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,11 +80,18 @@ public class CheckBox extends Widget<CheckBox> {
         }
         GUIUtils.drawFrame(0, 0, getWidth(), getHeight(), FRAME_WIDTH, color);
 
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
         if (state == State.ACTIVE) {
             GUIUtils.colorDef();
             GUIUtils.drawTexturedRect(0, 0, texture.getWidth(), texture.getHeight(), texture.getTexture(),
                     iconU, texture.getV(), texture.getImageWidth(), texture.getImageHeight());
         }
+
+        GlStateManager.disableBlend();
 
         GUIUtils.popMatrix();
     }

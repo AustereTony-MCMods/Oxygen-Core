@@ -88,7 +88,7 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
         GUIUtils.pushMatrix();
         GUIUtils.translate(getX(), getY());
 
-        int statusIconU = status.ordinal() * activityTexture.getWidth();
+        int statusIconU = activityTexture.getU() + status.ordinal() * activityTexture.getWidth();
         GUIUtils.colorDef();
         GUIUtils.drawTexturedRect(2F, (getHeight() - activityTexture.getHeight()) / 2F,
                 activityTexture.getWidth(), activityTexture.getHeight(), activityTexture.getTexture(),
@@ -98,9 +98,8 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
         GUIUtils.translate(7, (getHeight() - GUIUtils.getTextHeight(text.getScale())) / 2 + .5F);
         GUIUtils.scale(text.getScale(), text.getScale());
 
-        int
-                color = text.getColorEnabled(),
-                iconU = activityTexture.getU();
+        int color = text.getColorEnabled();
+        int iconU = activityTexture.getU();
         if (!isEnabled()) {
             color = text.getColorDisabled();
             iconU += activityTexture.getWidth();
@@ -143,8 +142,9 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
     @Override
     public boolean mouseOver(int mouseX, int mouseY) {
         if (opened) {
-            for (Widget widget : getWidgets())
+            for (Widget widget : getWidgets()) {
                 widget.mouseOver(mouseX - getX(), mouseY - getY());
+            }
         }
         if (getLayer() == Layer.MIDDLE) {
             mouseX -= getScreen().getWorkspace().getX();
@@ -164,6 +164,10 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
                     status = entry.getEntry();
                     if (changeStatusOnClick) {
                         OxygenMain.network().sendToServer(new SPChangeActivityStatus(entry.getEntry()));
+                        PlayerSharedData sharedData = OxygenClient.getClientPlayerSharedData();
+                        if (sharedData != null) {
+                            sharedData.setValue(OxygenMain.SHARED_ACTIVITY_STATUS, entry.getEntry().ordinal());
+                        }
                     }
                     if (clickListener != null) {
                         clickListener.click(null, entry, mouseX, mouseY, mouseButton);
@@ -210,7 +214,10 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
 
     @Override
     public String toString() {
-        return "ActivityStatusSwitcher[x= " + getX() + ", y= " + getY() + "]";
+        return "ActivityStatusSwitcher[" +
+                "x= " + getX() + ", " +
+                "y= " + getY() + "" +
+                "]";
     }
 
     private static class Entry extends ListEntry<ActivityStatus> {
@@ -235,11 +242,11 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
 
             GUIUtils.drawRect(0, 0, getWidth(), getHeight(), getColorFromState(getFill()));
 
+            int statusIconU = activityTexture.getU() + entry.ordinal() * activityTexture.getWidth();
             GUIUtils.colorDef();
             GUIUtils.drawTexturedRect(2F, (getHeight() - activityTexture.getHeight()) / 2F,
                     activityTexture.getWidth(), activityTexture.getHeight(), activityTexture.getTexture(),
-                    entry.ordinal() * activityTexture.getWidth(), activityTexture.getV(),
-                    activityTexture.getImageWidth(), activityTexture.getImageHeight());
+                    statusIconU, activityTexture.getV(), activityTexture.getImageWidth(), activityTexture.getImageHeight());
 
             GUIUtils.pushMatrix();
             GUIUtils.translate(7F, (getHeight() - GUIUtils.getTextHeight(text.getScale())) / 2 + .5F);
