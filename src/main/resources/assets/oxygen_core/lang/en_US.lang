@@ -1,4 +1,4 @@
-oxygen_core.currency.money=Money
+oxygen_core.currency.money=Currency
 
 oxygen_core.message.request.action=[Request] Use '/oxygenc accept' or '/oxygenc reject'
 
@@ -9,7 +9,7 @@ oxygen.status_message.not_enough_money=Not enough money
 oxygen.status_message.operation_failed=Operation failed
 oxygen.status_message.item_blacklisted=Blacklisted item
 oxygen.status_message.no_access=No access
-oxygen.status_message.invalid_operation=Неверная операция
+oxygen.status_message.invalid_operation=Invalid operation
 
 oxygen_core.operation.failure_reason.generic=Operation failed
 oxygen_core.operation.failure_reason.validation_timeout=Operation timeout
@@ -62,11 +62,11 @@ oxygen_core.gui.settings.title=Settings
 oxygen_core.gui.settings.common.title=Common
 oxygen_core.gui.settings.interface.title=Interface
 oxygen_core.gui.settings.button.reset_module_settings=Reset module settings
-oxygen_core.gui.settings.callback.reset_module_settings=Module Settings Reset
+oxygen_core.gui.settings.callback.reset_module_settings=Settings Reset
 oxygen_core.gui.settings.callback.reset_module_settings_message=Selected module settings will be reset to default values.
 
-oxygen_core.gui.settings.widget.hex_argb_color=Hex ARGB color
-oxygen_core.gui.settings.widget.hsv_color_model=HSV color model
+oxygen_core.gui.settings.widget.hex_argb_color=ARGB
+oxygen_core.gui.settings.widget.hsv_color_model=HSV color
 oxygen_core.gui.settings.widget.opacity=Opacity
 oxygen_core.gui.settings.widget.pixels=pix.
 oxygen_core.gui.settings.widget.test=Test
@@ -76,83 +76,81 @@ oxygen_core.gui.settings.widget.size_pixels=Size in pixels
 oxygen_core.gui.settings.widget.value_integer=Integer value
 
 oxygen.gui.setting.category.misc=Misc
-oxygen.gui.setting.enable_vertical_gradient=Enable background gradient fill
+oxygen.gui.setting.enable_vertical_gradient=Background gradient fill
 
-oxygen.gui.setting.enable_sound_effects=Enable sound effects
-oxygen.gui.setting.enable_rarity_colors_gui_display=Enable rarity colors in gui
-oxygen.gui.setting.enable_durability_bars_gui_display=Enable durability bars in gui
-oxygen.gui.setting.enable_status_messages=Enable status messages
-
-oxygen.gui.setting.add_settings_screen=Add settings screen
+oxygen.gui.setting.enable_sound_effects=Sound effects
+oxygen.gui.setting.enable_rarity_colors_gui_display=Rarity colors
+oxygen.gui.setting.enable_durability_bars_gui_display=Durability bars
+oxygen.gui.setting.enable_status_messages=Status messages in chat
 
 oxygen.gui.setting.category.alignment=Alignment
-oxygen.gui.setting.settings_screen_alignment=Settings screen alignment
+oxygen.gui.setting.settings_screen_alignment=Settings screen
 
 oxygen.gui.setting.category.oxygen_menu=Oxygen Menu
-oxygen.gui.setting.settings_screen_alignment=Add settings screen
+oxygen.gui.setting.add_settings_screen=Show settings screen
 
-oxygen.gui.setting.category.color_background_fill=Interface Background Color
-oxygen.gui.setting.color_screen_background_fill=Screen background
-oxygen.gui.setting.color_callback_background_fill=Dialog window background
+oxygen.gui.setting.category.color_background_fill=Background color
+oxygen.gui.setting.color_screen_background_fill=Screen
+oxygen.gui.setting.color_callback_background_fill=Dialog window
 
-oxygen.gui.setting.category.color_background_screen=Screen Fill Color
+oxygen.gui.setting.category.color_background_screen=Screen color
 oxygen.gui.setting.color_background_base=Base
 oxygen.gui.setting.color_background_additional=Additional
 
-oxygen.gui.setting.category.color_element=Element Color
-oxygen.gui.setting.color_element_enabled=Enabled element
-oxygen.gui.setting.color_element_disabled=Disabled element
-oxygen.gui.setting.color_element_mouse_over=Mouse over element
+oxygen.gui.setting.category.color_element=List item color
+oxygen.gui.setting.color_element_enabled=Enabled
+oxygen.gui.setting.color_element_disabled=Disabled
+oxygen.gui.setting.color_element_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_button=Button Color
-oxygen.gui.setting.color_button_enabled=Enabled button
-oxygen.gui.setting.color_button_disabled=Disabled button
-oxygen.gui.setting.color_button_mouse_over=Mouse over button
+oxygen.gui.setting.category.color_button=Button color
+oxygen.gui.setting.color_button_enabled=Enabled
+oxygen.gui.setting.color_button_disabled=Disabled
+oxygen.gui.setting.color_button_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_slider=Slider Color
-oxygen.gui.setting.color_slider_enabled=Enabled slider
-oxygen.gui.setting.color_slider_disabled=Disabled slider
-oxygen.gui.setting.color_slider_mouse_over=Mouse over slider
+oxygen.gui.setting.category.color_slider=Slider color
+oxygen.gui.setting.color_slider_enabled=Enabled
+oxygen.gui.setting.color_slider_disabled=Disabled
+oxygen.gui.setting.color_slider_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_text_base=Common Text Color
-oxygen.gui.setting.color_text_base_enabled=Enabled element text
-oxygen.gui.setting.color_text_base_disabled=Disabled element text
-oxygen.gui.setting.color_text_base_mouse_over=Mouse over element text
+oxygen.gui.setting.category.color_text_base=Common text color
+oxygen.gui.setting.color_text_base_enabled=Enabled
+oxygen.gui.setting.color_text_base_disabled=Disabled
+oxygen.gui.setting.color_text_base_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_text_bonus=Additional Text Color
-oxygen.gui.setting.color_text_additional_enabled=Enabled element text
-oxygen.gui.setting.color_text_additional_disabled=Disabled element text
-oxygen.gui.setting.color_text_additional_mouse_over=Mouse over element text
+oxygen.gui.setting.category.color_text_bonus=Additional text color
+oxygen.gui.setting.color_text_additional_enabled=Enabled
+oxygen.gui.setting.color_text_additional_disabled=Disabled
+oxygen.gui.setting.color_text_additional_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_text_field=Text Field Color
-oxygen.gui.setting.color_text_field_enabled=Enabled text field
-oxygen.gui.setting.color_text_field_disabled=Disabled text field
-oxygen.gui.setting.color_text_field_mouse_over=Mouse over text field
+oxygen.gui.setting.category.color_text_field=Text field color
+oxygen.gui.setting.color_text_field_enabled=Enabled
+oxygen.gui.setting.color_text_field_disabled=Disabled
+oxygen.gui.setting.color_text_field_mouse_over=Mouse over
 
-oxygen.gui.setting.category.color_overlay_text=Overlay Text Color
-oxygen.gui.setting.color_overlay_text_base=Common text
-oxygen.gui.setting.color_overlay_text_additional=Additional text
+oxygen.gui.setting.category.color_overlay_text=Overlay text color
+oxygen.gui.setting.color_overlay_text_base=Common
+oxygen.gui.setting.color_overlay_text_additional=Additional
 
-oxygen.gui.setting.category.color_tooltip_text=Tooltip Text Color
-oxygen.gui.setting.color_tooltip_text_base=Common text
-oxygen.gui.setting.color_tooltip_text_additional=Additional text
+oxygen.gui.setting.category.color_tooltip_text=Tooltip text color
+oxygen.gui.setting.color_tooltip_text_base=Common
+oxygen.gui.setting.color_tooltip_text_additional=Additional
 
-oxygen.gui.setting.category.color_special=Special Color
+oxygen.gui.setting.category.color_special=Additional
 oxygen.gui.setting.color_element_active=Active element
-oxygen.gui.setting.color_text_active=Active element text
+oxygen.gui.setting.color_text_active=Text
 oxygen.gui.setting.color_element_inactive=Inactive element
-oxygen.gui.setting.color_text_inactive=Inactive element text
+oxygen.gui.setting.color_text_inactive=Text
 oxygen.gui.setting.color_element_special=Special element
-oxygen.gui.setting.color_text_special=Special element text
+oxygen.gui.setting.color_text_special=Text
 
-oxygen.gui.setting.category.scale_text=Text Size
-oxygen.gui.setting.scale_text_base=Common text scale
-oxygen.gui.setting.scale_text_additional=Additional text scale
-oxygen.gui.setting.scale_text_title=Title text scale
-oxygen.gui.setting.scale_text_button=Button text scale
-oxygen.gui.setting.scale_text_panel=Panel text scale
-oxygen.gui.setting.scale_text_tooltip=Tooltip text scale
-oxygen.gui.setting.scale_text_overlay=Overlay text scale
+oxygen.gui.setting.category.scale_text=Text size
+oxygen.gui.setting.scale_text_base=Common
+oxygen.gui.setting.scale_text_additional=Additional
+oxygen.gui.setting.scale_text_title=Title
+oxygen.gui.setting.scale_text_button=Button
+oxygen.gui.setting.scale_text_panel=List item
+oxygen.gui.setting.scale_text_tooltip=Tooltip
+oxygen.gui.setting.scale_text_overlay=Overlay
 
 oxygen.gui.setting.category.scale_misc=Scale
 oxygen.gui.setting.scale_overlay=Overlay scale

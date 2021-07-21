@@ -20,8 +20,8 @@ public class ItemStackSelectionWidget extends Widget<ItemStackSelectionWidget> {
 
     public static final Texture PLUS_ICONS_TEXTURE = Texture.builder()
             .texture(Textures.PLUS_ICONS)
-            .size(10, 10)
-            .imageSize(10 * 3, 10)
+            .size(6, 6)
+            .imageSize(6 * 3, 6)
             .build();
     public static final Texture CROSS_ICONS_TEXTURE = Texture.builder()
             .texture(Textures.CROSS_ICONS)
@@ -59,7 +59,7 @@ public class ItemStackSelectionWidget extends Widget<ItemStackSelectionWidget> {
 
     @Override
     public void init() {
-        addWidget(selectButton = new ImageButton(4, 4, 10, 10, PLUS_ICONS_TEXTURE,
+        addWidget(selectButton = new ImageButton(5, 5, 6, 6, PLUS_ICONS_TEXTURE,
                 localize("oxygen_core.gui.item_stack_selector.tooltip.select_item"))
                 .setMouseClickListener((mouseX, mouseY, button) -> openItemSelectionCallback()));
         addWidget(resetButton = new ImageButton(14, -3, 5, 5, CROSS_ICONS_TEXTURE,

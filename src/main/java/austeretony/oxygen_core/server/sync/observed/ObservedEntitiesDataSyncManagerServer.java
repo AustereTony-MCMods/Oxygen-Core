@@ -18,31 +18,31 @@ import java.util.function.Supplier;
 
 public class ObservedEntitiesDataSyncManagerServer {
 
-    private final Map<Integer, ObservedValue> values = new LinkedHashMap<>();
-    private final Multimap<UUID, Integer> observers = HashMultimap.create();
+    private final Map<Integer, ObservedValue> valuesMap = new LinkedHashMap<>();
+    private final Multimap<UUID, Integer> observersMap = HashMultimap.create();
 
     public <T> void registerObservedValue(int id, ValueType type, Function<Integer, T> extractor) {
-        values.put(id, new ObservedValue(type, extractor));
+        valuesMap.put(id, new ObservedValue(type, extractor));
     }
 
     public <T> void registerObservedValue(int id, Supplier<? extends TypedValue> valueSupplier, Function<Integer, T> extractor) {
-        values.put(id, new ObservedValue(valueSupplier, extractor));
+        valuesMap.put(id, new ObservedValue(valueSupplier, extractor));
     }
 
     public void startObservingEntity(UUID playerUUID, int observedEntityId) {
-        synchronized (observers) {
-            observers.put(playerUUID, observedEntityId);
-            for (ObservedValue observed : values.values()) {
+        synchronized (observersMap) {
+            observersMap.put(playerUUID, observedEntityId);
+            for (ObservedValue observed : valuesMap.values()) {
                 observed.getOrCreate(observedEntityId);
             }
         }
     }
 
     public void stopObservingEntity(UUID playerUUID, int observedEntityId) {
-        synchronized (observers) {
-            observers.get(playerUUID).remove(observedEntityId);
-            if (!observers.containsValue(observedEntityId)) {
-                for (ObservedValue observed : values.values()) {
+        synchronized (observersMap) {
+            observersMap.get(playerUUID).remove(observedEntityId);
+            if (!observersMap.containsValue(observedEntityId)) {
+                for (ObservedValue observed : valuesMap.values()) {
                     observed.remove(observedEntityId);
                 }
             }
@@ -54,12 +54,12 @@ public class ObservedEntitiesDataSyncManagerServer {
     }
 
     public void playerLoggedOut(EntityPlayerMP playerMP) {
-        synchronized (observers) {
-            Collection<Integer> entities = observers.removeAll(MinecraftCommon.getEntityUUID(playerMP));
+        synchronized (observersMap) {
+            Collection<Integer> entities = observersMap.removeAll(MinecraftCommon.getEntityUUID(playerMP));
             if (!entities.isEmpty()) {
                 for (int entityId : entities) {
-                    if (!observers.containsValue(entityId)) {
-                        for (ObservedValue observed : values.values()) {
+                    if (!observersMap.containsValue(entityId)) {
+                        for (ObservedValue observed : valuesMap.values()) {
                             observed.remove(entityId);
                         }
                     }
@@ -71,7 +71,7 @@ public class ObservedEntitiesDataSyncManagerServer {
     public void update() {
         if (MinecraftCommon.getServer() == null) return;
         final Runnable task = () -> {
-            synchronized (observers) {
+            synchronized (observersMap) {
                 collectData();
                 sync();
             }
@@ -80,13 +80,13 @@ public class ObservedEntitiesDataSyncManagerServer {
     }
 
     private void collectData() {
-        for (ObservedValue observed : values.values()) {
+        for (ObservedValue observed : valuesMap.values()) {
             observed.collectData();
         }
     }
 
     private void sync() {
-        for (Map.Entry<UUID, Collection<Integer>> entry : observers.asMap().entrySet()) {
+        for (Map.Entry<UUID, Collection<Integer>> entry : observersMap.asMap().entrySet()) {
             EntityPlayerMP playerMP = MinecraftCommon.getPlayerByUUID(entry.getKey());
             if (playerMP != null) {
                 ByteBuf buffer = null;
@@ -96,7 +96,7 @@ public class ObservedEntitiesDataSyncManagerServer {
                     buffer.writeShort(entry.getValue().size());
                     for (int entityId : entry.getValue()) {
                         buffer.writeInt(entityId);
-                        for (ObservedValue value : values.values()) {
+                        for (ObservedValue value : valuesMap.values()) {
                             value.getOrCreate(entityId).write(buffer);
                         }
                     }
@@ -119,7 +119,7 @@ public class ObservedEntitiesDataSyncManagerServer {
         @Nullable
         private final Supplier<? extends TypedValue> valueSupplier;
         private final Function<Integer, T> extractor;
-        private final Map<Integer, TypedValue<T>> entities = new HashMap<>();
+        private final Map<Integer, TypedValue<T>> entitiesMap = new HashMap<>();
 
         ObservedValue(ValueType type, Function<Integer, T> extractor) {
             this.type = type;
@@ -134,24 +134,24 @@ public class ObservedEntitiesDataSyncManagerServer {
         }
 
         TypedValue<T> getOrCreate(int entityId) {
-            TypedValue<T> value = entities.get(entityId);
+            TypedValue<T> value = entitiesMap.get(entityId);
             if (value == null) {
                 if (valueSupplier == null) {
                     value = ValueType.createValue(type);
                 } else {
                     value = valueSupplier.get();
                 }
-                entities.put(entityId, value);
+                entitiesMap.put(entityId, value);
             }
             return value;
         }
 
         void remove(int entityId) {
-            entities.remove(entityId);
+            entitiesMap.remove(entityId);
         }
 
         void collectData() {
-            for (Map.Entry<Integer, TypedValue<T>> entry : entities.entrySet()) {
+            for (Map.Entry<Integer, TypedValue<T>> entry : entitiesMap.entrySet()) {
                 T value = extractor.apply(entry.getKey());
                 if (value != null) {
                     entry.getValue().setValue(value);

@@ -1,20 +1,20 @@
-oxygen_core.currency.money=Деньги
+oxygen_core.currency.money=Валюта
 
 oxygen_core.message.request.action=[Запрос] Используйте '/oxygenc accept' или '/oxygenc reject'
 
 oxygen.status_message.operation_timeout=Таймаут операции
 oxygen.status_message.not_enough_free_inventory_space=Не хватает свободного места в инвентаре
-oxygen.status_message.not_enough_items=Не достаточно предметов в инвентаре
-oxygen.status_message.not_enough_money=Не достаточно денег
+oxygen.status_message.not_enough_items=Недостаточно предметов в инвентаре
+oxygen.status_message.not_enough_money=Недостаточно денег
 oxygen.status_message.operation_failed=Опереция отменена
 oxygen.status_message.item_blacklisted=Предмет в чёрном списке
 oxygen.status_message.no_access=Нет доступа
 oxygen.status_message.invalid_operation=Некорректная операция
 
-oxygen_core.operation.failure_reason.generic=Опереция отменена
+oxygen_core.operation.failure_reason.generic=Операция отменена
 oxygen_core.operation.failure_reason.validation_timeout=Таймаут операции
-oxygen_core.operation.failure_reason.insufficient_funds=Не достаточно денег
-oxygen_core.operation.failure_reason.not_enough_items=Не достаточно предметов в инвентаре
+oxygen_core.operation.failure_reason.insufficient_funds=Недостаточно денег
+oxygen_core.operation.failure_reason.not_enough_items=Недостаточно предметов в инвентаре
 oxygen_core.operation.failure_reason.not_enough_free_inventory_space=Не хватает свободного места в инвентаре
 
 oxygen_core.sender.sys=Система
@@ -47,26 +47,26 @@ oxygen_core.gui.label.quantity=Количество
 oxygen_core.gui.label.item=Предмет
 oxygen_core.gui.label.player=Игрок
 oxygen_core.gui.label.item_category=Категория
-oxygen_core.gui.label.text_search=Текстовый поиск
+oxygen_core.gui.label.text_search=По названию
 
 oxygen_core.gui.sorter.by_activity_status=по статусу активности
-oxygen_core.gui.sorter.by_username=по имени
+oxygen_core.gui.sorter.by_username=по нику
 oxygen_core.gui.sorter.by_dimension_name=по измерению
 oxygen_core.gui.sorter.by_price=по стоимости
 oxygen_core.gui.sorter.by_item_name=по названию предмета
 
 oxygen_core.gui.label.last_activity=Последняя активность %s
-oxygen_core.gui.label.expires_in=до истечения %s
+oxygen_core.gui.label.expires_in=осталось %s
 
 oxygen_core.gui.settings.title=Настройки
 oxygen_core.gui.settings.common.title=Общие
 oxygen_core.gui.settings.interface.title=Интерфейс
-oxygen_core.gui.settings.button.reset_module_settings=Сбросить настройки модуля
-oxygen_core.gui.settings.callback.reset_module_settings=Сброс Настроек Модуля
-oxygen_core.gui.settings.callback.reset_module_settings_message=Настройки выбранного модуля будут сброшены до значений по умолчанию.
+oxygen_core.gui.settings.button.reset_module_settings=Сбросить настройки раздела
+oxygen_core.gui.settings.callback.reset_module_settings=Сброс Настроек
+oxygen_core.gui.settings.callback.reset_module_settings_message=Настройки выбранного раздела будут сброшены до значений по умолчанию.
 
-oxygen_core.gui.settings.widget.hex_argb_color=ARGB цвет в щестнадцат. формате
-oxygen_core.gui.settings.widget.hsv_color_model=Цветовая модель HSV
+oxygen_core.gui.settings.widget.hex_argb_color=ARGB
+oxygen_core.gui.settings.widget.hsv_color_model=Цвет HSV
 oxygen_core.gui.settings.widget.opacity=Непрозрачность
 oxygen_core.gui.settings.widget.pixels=пикс.
 oxygen_core.gui.settings.widget.test=Тест
@@ -76,81 +76,79 @@ oxygen_core.gui.settings.widget.size_pixels=Размер в пикселях
 oxygen_core.gui.settings.widget.value_integer=Целочисленное значение
 
 oxygen.gui.setting.category.misc=Другое
-oxygen.gui.setting.enable_vertical_gradient=Разрешить заливку фона градиентом
+oxygen.gui.setting.enable_vertical_gradient=Градиент на фоне
 
-oxygen.gui.setting.enable_sound_effects=Разрешить звуковые эффекты
-oxygen.gui.setting.enable_rarity_colors_gui_display=Показывать цвета редкости предметов
-oxygen.gui.setting.enable_durability_bars_gui_display=Показывать состояние предметов
-oxygen.gui.setting.enable_status_messages=Показывать системные сообщения в чате
-
-oxygen.gui.setting.add_settings_screen=Добавить меню настроек
+oxygen.gui.setting.enable_sound_effects=Звуковые эффекты
+oxygen.gui.setting.enable_rarity_colors_gui_display=Цвета редкости предметов
+oxygen.gui.setting.enable_durability_bars_gui_display=Состояние предметов
+oxygen.gui.setting.enable_status_messages=Системные сообщения в чате
 
 oxygen.gui.setting.category.alignment=Выравнивание
-oxygen.gui.setting.settings_screen_alignment=Выравнивание меню настроек
+oxygen.gui.setting.settings_screen_alignment=Меню настроек
 
 oxygen.gui.setting.category.oxygen_menu=Oxygen Menu
-oxygen.gui.setting.settings_screen_alignment=Добавить меню настроек
+oxygen.gui.setting.add_settings_screen=Показывать меню настроек
 
-oxygen.gui.setting.category.color_background_fill=Цвет Фона Интерфейса
+oxygen.gui.setting.category.color_background_fill=Цвет фона
 oxygen.gui.setting.color_screen_background_fill=Фон меню
 oxygen.gui.setting.color_callback_background_fill=Фон диалогового окна
 
-oxygen.gui.setting.category.color_background_screen=Цвет Интерфейса
+oxygen.gui.setting.category.color_background_screen=Цвет интерфейса
 oxygen.gui.setting.color_background_base=Базовый
 oxygen.gui.setting.color_background_additional=Дополнительный
 
-oxygen.gui.setting.category.color_element=Цвет Элемента
+oxygen.gui.setting.category.color_element=Цвет элемента списка
 oxygen.gui.setting.color_element_enabled=Активен
 oxygen.gui.setting.color_element_disabled=Неактивен
 oxygen.gui.setting.color_element_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_button=Цвет Кнопки
-oxygen.gui.setting.color_button_enabled=Активен
-oxygen.gui.setting.color_button_disabled=Неактивен
+oxygen.gui.setting.category.color_button=Цвет кнопки
+oxygen.gui.setting.color_button_enabled=Активна
+oxygen.gui.setting.color_button_disabled=Неактивна
 oxygen.gui.setting.color_button_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_slider=Цвет Слайдера
+oxygen.gui.setting.category.color_slider=Цвет слайдера
 oxygen.gui.setting.color_slider_enabled=Активен
 oxygen.gui.setting.color_slider_disabled=Неактивен
 oxygen.gui.setting.color_slider_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_text_base=Цвет Текста Базовый
-oxygen.gui.setting.color_text_base_enabled=Элемент активен
-oxygen.gui.setting.color_text_base_disabled=Элемент неактивен
+oxygen.gui.setting.category.color_text_base=Базовый цвет текста
+oxygen.gui.setting.color_text_base_enabled=Активен
+oxygen.gui.setting.color_text_base_disabled=Неактивен
 oxygen.gui.setting.color_text_base_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_text_bonus=Цвет Текста Дополнительный
-oxygen.gui.setting.color_text_additional_enabled=Элемент активен
-oxygen.gui.setting.color_text_additional_disabled=Элемент неактивен
+oxygen.gui.setting.category.color_text_bonus=Дополнительный цвет текста
+oxygen.gui.setting.color_text_additional_enabled=Активен
+oxygen.gui.setting.color_text_additional_disabled=Неактивен
 oxygen.gui.setting.color_text_additional_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_text_field=Цвет Текстового Поля
+oxygen.gui.setting.category.color_text_field=Цвет поля для ввода
 oxygen.gui.setting.color_text_field_enabled=Активно
 oxygen.gui.setting.color_text_field_disabled=Неактивно
 oxygen.gui.setting.color_text_field_mouse_over=При наведении курсора
 
-oxygen.gui.setting.category.color_overlay_text=Цвет Текста в Оверлее
+oxygen.gui.setting.category.color_overlay_text=Цвет текста в оверлее
 oxygen.gui.setting.color_overlay_text_base=Базовый
 oxygen.gui.setting.color_overlay_text_additional=Дополнительный
 
-oxygen.gui.setting.category.color_tooltip_text=Текст Текста в Тултипе
+oxygen.gui.setting.category.color_tooltip_text=Цвет текста подсказок
 oxygen.gui.setting.color_tooltip_text_base=Базовый
 oxygen.gui.setting.color_tooltip_text_additional=Дополнительный
 
-oxygen.gui.setting.category.color_special=Дополнительный Цвет
+oxygen.gui.setting.category.color_special=Дополнительно
 oxygen.gui.setting.color_element_active=Активный элемент
-oxygen.gui.setting.color_text_active=Текст активного элемента
+oxygen.gui.setting.color_text_active=Текст
 oxygen.gui.setting.color_element_inactive=Неактивный элемент
-oxygen.gui.setting.color_text_inactive=Текст неактивного элемента
+oxygen.gui.setting.color_text_inactive=Текст
 oxygen.gui.setting.color_element_special=Специальный элемент
-oxygen.gui.setting.color_text_special=Текст специального элемента
+oxygen.gui.setting.color_text_special=Текст
 
-oxygen.gui.setting.category.scale_text=Размер Текста
+oxygen.gui.setting.category.scale_text=Размер текста
 oxygen.gui.setting.scale_text_base=Базовый
 oxygen.gui.setting.scale_text_additional=Дополнительный
 oxygen.gui.setting.scale_text_title=Заголовок
 oxygen.gui.setting.scale_text_button=Кнопка
-oxygen.gui.setting.scale_text_panel=Панель
+oxygen.gui.setting.scale_text_panel=Элемент списка
 oxygen.gui.setting.scale_text_tooltip=Тултип
 oxygen.gui.setting.scale_text_overlay=Оверлей
 

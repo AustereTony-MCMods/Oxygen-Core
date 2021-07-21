@@ -131,8 +131,15 @@ public class CheckBox extends Widget<CheckBox> {
 
     @Override
     public String toString() {
-        return "CheckBox[x= " + getX() + ", y= " + getY() + ", width= " + getWidth() + ", height= " + getHeight()
-                + ", state= " + state + ", fill= " + fill + ", texture= " + texture + "]";
+        return "CheckBox[" +
+                "x= " + getX() + ", " +
+                "y= " + getY() + ", " +
+                "width= " + getWidth() + ", " +
+                "height= " + getHeight() + ", " +
+                "state= " + state + ", " +
+                "fill= " + fill + ", " +
+                "texture= " + texture + "" +
+                "]";
     }
 
     @FunctionalInterface
