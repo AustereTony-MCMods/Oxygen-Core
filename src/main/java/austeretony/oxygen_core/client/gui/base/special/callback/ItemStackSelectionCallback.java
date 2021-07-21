@@ -228,7 +228,9 @@ public class ItemStackSelectionCallback extends Callback {
             elementToSelected = inventoryItemsList.getWidgets().size() - 1;
         }
         if (elementToSelected < inventoryItemsList.getWidgets().size()) {
-            ((ItemStackListEntry) inventoryItemsList.getWidgets().get(elementToSelected)).setSelected(true);
+            ItemStackListEntry entry = (ItemStackListEntry) inventoryItemsList.getWidgets().get(elementToSelected);
+            entry.setSelected(true);
+            inventoryItemsList.setPreviousClicked(entry);
         }
     }
 

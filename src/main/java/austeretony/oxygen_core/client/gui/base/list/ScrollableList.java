@@ -346,6 +346,15 @@ public class ScrollableList<T> extends Widget<ScrollableList> {
         super.update();
     }
 
+    @Nullable
+    public ListEntry<T> getPreviousClicked() {
+        return previousClicked;
+    }
+
+    public void setPreviousClicked(ListEntry<T> entry) {
+        previousClicked = entry;
+    }
+
     @Nonnull
     public Fill getFill() {
         return fill;
