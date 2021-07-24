@@ -103,11 +103,11 @@ public class Sorter extends Widget<Sorter> {
             MinecraftClient.playUISound(SoundEffects.uiButtonClick);
             State prevState = state;
             switch (state) {
+                case INACTIVE:
                 case UP:
                     state = State.DOWN;
                     break;
                 case DOWN:
-                case INACTIVE:
                     state = State.UP;
                     break;
             }
