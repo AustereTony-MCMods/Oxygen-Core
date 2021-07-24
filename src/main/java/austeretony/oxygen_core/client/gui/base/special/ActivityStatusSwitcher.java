@@ -33,7 +33,7 @@ public class ActivityStatusSwitcher extends Widget<ActivityStatusSwitcher> {
     @Nullable
     protected ListEntryClickListener<ActivityStatus> clickListener;
 
-    protected ActivityStatus status = ActivityStatus.OFFLINE;
+    protected ActivityStatus status = ActivityStatus.ONLINE;
     protected boolean opened;
 
     public ActivityStatusSwitcher(int x, int y, boolean changeStatusOnClick) {
